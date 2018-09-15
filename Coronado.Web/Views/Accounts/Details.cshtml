@@ -8,20 +8,12 @@
 <h2 id="accountName"></h2>
 
 <table id="transactions">
-  <thead>
-  <tr>
-    <th>Vendor</th>
-    <th>Description</th>
-    <th>Debit</th>
-    <th>Credit</th>
-  </tr>
-  </thead>
 </table>
 
 @section Scripts
 {
   <script type="text/javascript" language="javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
       var accountId = "@Model";
       $.getJSON("/api/Accounts/" + accountId,
         function(data) {
@@ -34,22 +26,13 @@
           "dataSrc": ""
         },
         "columns": [
+          { "data": "date" },
           { "data": "vendor" },
           { "data": "description" },
           { "data": "debit" },
           { "data": "credit" }
         ]
       });
-//    $.getJSON("/api/Transactions/?accountId=" + accountId,
-//      function(data) {
-//      }).done(function (data) {
-//      $.each(data,
-//        function(key, value) {
-//          var row = $("<tr><td>" + value.vendor + "</td></tr>");
-//          $("#transactions").append(row);
-//        });
-//    });
-
     });
   </script>
 }

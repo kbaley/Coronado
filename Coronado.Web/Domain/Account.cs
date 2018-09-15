@@ -29,5 +29,6 @@ namespace Coronado.Web.Domain
         public decimal? Debit { get; set; }
         public decimal? Credit { get; set; }
         public bool IsReconciled { get; set; }
+        public DateTime Date { get; set; }
     }
 }
