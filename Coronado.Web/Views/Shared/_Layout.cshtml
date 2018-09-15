@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Coronado.Web</title>
 
-    <environment include="Development">
+  <link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+  <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
@@ -48,6 +49,8 @@
             <p>&copy; 2018 - Coronado.Web</p>
         </footer>
     </div>
+  
+  
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -69,6 +72,7 @@
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
+  <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
 
     @RenderSection("Scripts", required: false)
 </body>

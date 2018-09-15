@@ -50,8 +50,11 @@
     $(document).ready(function() {
       $.getJSON("/api/Accounts",
         function(data) {
-        }).done(function(data) {
-        alert(JSON.stringify(data));
+        }).done(function (data) {
+        $.each(data,
+          function (key, value) {
+            $("#accountList").append($("<li><a href='/Accounts/Details/" + value.accountId + "'>" + value.name + "</a></li>"));
+          });
       });
     });
   </script>

@@ -7,60 +7,60 @@ using Coronado.Web.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Coronado.Web.Controllers
+namespace Coronado.Web.Controllers.Api
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TransactionsController : ControllerBase
+    public class AccountsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public TransactionsController(ApplicationDbContext context)
+        public AccountsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Transactions
+        // GET: api/Accounts
         [HttpGet]
-        public IEnumerable<Transaction> GetTransaction()
+        public IEnumerable<Account> GetAccounts()
         {
-            return _context.Transactions;
+            return _context.Accounts;
         }
 
-        // GET: api/Transactions/5
+        // GET: api/Accounts/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetTransaction([FromRoute] Guid id)
+        public async Task<IActionResult> GetAccount([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var transaction = await _context.Transactions.FindAsync(id);
+            var account = await _context.Accounts.FindAsync(id);
 
-            if (transaction == null)
+            if (account == null)
             {
                 return NotFound();
             }
 
-            return Ok(transaction);
+            return Ok(account);
         }
 
-        // PUT: api/Transactions/5
+        // PUT: api/Accounts/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTransaction([FromRoute] Guid id, [FromBody] Transaction transaction)
+        public async Task<IActionResult> PutAccount([FromRoute] Guid id, [FromBody] Account account)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != transaction.TransactionId)
+            if (id != account.AccountId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(transaction).State = EntityState.Modified;
+            _context.Entry(account).State = EntityState.Modified;
 
             try
             {
@@ -68,7 +68,7 @@ namespace Coronado.Web.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TransactionExists(id))
+                if (!AccountExists(id))
                 {
                     return NotFound();
                 }
@@ -81,45 +81,45 @@ namespace Coronado.Web.Controllers
             return NoContent();
         }
 
-        // POST: api/Transactions
+        // POST: api/Accounts
         [HttpPost]
-        public async Task<IActionResult> PostTransaction([FromBody] Transaction transaction)
+        public async Task<IActionResult> PostAccount([FromBody] Account account)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Transactions.Add(transaction);
+            _context.Accounts.Add(account);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTransaction", new { id = transaction.TransactionId }, transaction);
+            return CreatedAtAction("GetAccount", new { id = account.AccountId }, account);
         }
 
-        // DELETE: api/Transactions/5
+        // DELETE: api/Accounts/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTransaction([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteAccount([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var transaction = await _context.Transactions.FindAsync(id);
-            if (transaction == null)
+            var account = await _context.Accounts.FindAsync(id);
+            if (account == null)
             {
                 return NotFound();
             }
 
-            _context.Transactions.Remove(transaction);
+            _context.Accounts.Remove(account);
             await _context.SaveChangesAsync();
 
-            return Ok(transaction);
+            return Ok(account);
         }
 
-        private bool TransactionExists(Guid id)
+        private bool AccountExists(Guid id)
         {
-            return _context.Transactions.Any(e => e.TransactionId == id);
+            return _context.Accounts.Any(e => e.AccountId == id);
         }
     }
 }

@@ -1,37 +1,55 @@
-﻿@model Coronado.Web.Domain.Account
+﻿@model Guid
 
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<h2 id="accountName"></h2>
 
-<div>
-    <h4>Account</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.StartingBalance)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.StartingBalance)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CurrentBalance)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CurrentBalance)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.AccountId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+<table id="transactions">
+  <thead>
+  <tr>
+    <th>Vendor</th>
+    <th>Description</th>
+    <th>Debit</th>
+    <th>Credit</th>
+  </tr>
+  </thead>
+</table>
+
+@section Scripts
+{
+  <script type="text/javascript" language="javascript">
+    $(document).ready(function() {
+      var accountId = "@Model";
+      $.getJSON("/api/Accounts/" + accountId,
+        function(data) {
+        }).done(function(data) {
+        $("#accountName").text(data.name);
+      });
+      $("#transactions").DataTable({
+        "ajax": {
+          "url": "/api/Transactions/?accountId=" + accountId,
+          "dataSrc": ""
+        },
+        "columns": [
+          { "data": "vendor" },
+          { "data": "description" },
+          { "data": "debit" },
+          { "data": "credit" }
+        ]
+      });
+//    $.getJSON("/api/Transactions/?accountId=" + accountId,
+//      function(data) {
+//      }).done(function (data) {
+//      $.each(data,
+//        function(key, value) {
+//          var row = $("<tr><td>" + value.vendor + "</td></tr>");
+//          $("#transactions").append(row);
+//        });
+//    });
+
+    });
+  </script>
+}

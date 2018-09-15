@@ -1,126 +1,90 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Coronado.Web.Data;
-using Coronado.Web.Domain;
 
 namespace Coronado.Web.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AccountsController : ControllerBase
+    public class AccountsController : Controller
     {
-        private readonly ApplicationDbContext _context;
-
-        public AccountsController(ApplicationDbContext context)
+        // GET: Accounts
+        public ActionResult Index()
         {
-            _context = context;
+            return View();
         }
 
-        // GET: api/Accounts
-        [HttpGet]
-        public IEnumerable<Account> GetAccounts()
+        // GET: Accounts/Details/<guid>
+        public ActionResult Details(Guid id)
         {
-            return _context.Accounts;
+            return View(id);
         }
 
-        // GET: api/Accounts/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetAccount([FromRoute] Guid id)
+        // GET: Accounts/Create
+        public ActionResult Create()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var account = await _context.Accounts.FindAsync(id);
-
-            if (account == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(account);
+            return View();
         }
 
-        // PUT: api/Accounts/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAccount([FromRoute] Guid id, [FromBody] Account account)
+        // POST: Accounts/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(IFormCollection collection)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != account.AccountId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(account).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AccountExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                // TODO: Add insert logic here
 
-            return NoContent();
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
         }
 
-        // POST: api/Accounts
+        // GET: Accounts/Edit/5
+        public ActionResult Edit(int id)
+        {
+            return View();
+        }
+
+        // POST: Accounts/Edit/5
         [HttpPost]
-        public async Task<IActionResult> PostAccount([FromBody] Account account)
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int id, IFormCollection collection)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                // TODO: Add update logic here
+
+                return RedirectToAction(nameof(Index));
             }
-
-            _context.Accounts.Add(account);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetAccount", new { id = account.AccountId }, account);
+            catch
+            {
+                return View();
+            }
         }
 
-        // DELETE: api/Accounts/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAccount([FromRoute] Guid id)
+        // GET: Accounts/Delete/5
+        public ActionResult Delete(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var account = await _context.Accounts.FindAsync(id);
-            if (account == null)
-            {
-                return NotFound();
-            }
-
-            _context.Accounts.Remove(account);
-            await _context.SaveChangesAsync();
-
-            return Ok(account);
+            return View();
         }
 
-        private bool AccountExists(Guid id)
+        // POST: Accounts/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id, IFormCollection collection)
         {
-            return _context.Accounts.Any(e => e.AccountId == id);
+            try
+            {
+                // TODO: Add delete logic here
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
         }
     }
 }
