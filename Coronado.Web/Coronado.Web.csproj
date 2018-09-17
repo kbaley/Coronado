@@ -60,12 +60,4 @@
     </ItemGroup>
   </Target>
 
-<!--
-  <ItemGroup>
-    <Content Update="Views\Home\Index.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-  </ItemGroup>
--->
-
 </Project>

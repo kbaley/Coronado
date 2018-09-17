@@ -22,7 +22,7 @@ export class NavMenu extends Component {
     return (
       <Nav>
           {accounts.map(account =>
-            <LinkContainer to={'/account/' + account.accountId}>
+            <LinkContainer to={'/account/' + account.accountId} key={account.accountId}>
               <NavItem>
                 <Glyphicon glyph='piggy-bank' /> {account.name}
               </NavItem>

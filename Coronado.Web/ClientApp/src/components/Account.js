@@ -5,16 +5,33 @@ export class Account extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { accounts: [], loading: true };
-
-    fetch('api/Transactions/?accountId=' + props.match.params.accountId)
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ accounts: data, loading: false });
-      });
+    this.state = { transactions: [], accountData: {}, loading: true };
   }
 
-  static renderAccountsTable(accounts) {
+  componentDidMount() {
+    // const { accountId } = this.props.match.params;
+    console.log("Account: " + this.props.match.params.accountId);
+
+    fetch('api/Transactions/?accountId=' + this.props.match.params.accountId)
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ transactions: data, loading: false });
+      });
+
+    fetch('api/Accounts/' + this.props.match.params.accountId)
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ accountData: data});
+      })
+  }
+
+  static renderAccount(accountData) {
+    return (
+      <h1>{accountData.name}</h1>
+    );
+  }
+
+  static renderTransactions(transactions) {
     return (
       <table className='table'>
         <thead>
@@ -25,11 +42,11 @@ export class Account extends Component {
           </tr>
         </thead>
         <tbody>
-          {accounts.map(account =>
-            <tr key={account.accountId}>
-              <td>{account.vendor}</td>
-              <td>{account.description}</td>
-              <td>{new Date(account.date).toLocaleDateString()}</td>
+          {transactions.map(trx =>
+            <tr key={trx.transactionId}>
+              <td>{trx.vendor}</td>
+              <td>{trx.description}</td>
+              <td>{new Date(trx.date).toLocaleDateString()}</td>
             </tr>
           )}
         </tbody>
@@ -37,15 +54,37 @@ export class Account extends Component {
     );
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    console.log('getDerivedState');
+    if (nextProps.match.params.accountId != prevState.accountId) {
+      const currentAccountId = nextProps.match.params.accountId;
+    fetch('api/Transactions/?accountId=' + nextProps.match.params.accountId)
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ transactions: data, loading: false });
+      });
+
+    fetch('api/Accounts/' + nextProps.match.params.accountId)
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ accountData: data});
+      });
+      return null;
+    }
+  }
+
   render() {
+    console.log('render')
+    let accountData = this.state.loading
+      ? <span></span>
+      : Account.renderAccount(this.state.accountData);
     let contents = this.state.loading
       ? <p><em>Loading...</em></p>
-      : Account.renderAccountsTable(this.state.accounts);
+      : Account.renderTransactions(this.state.transactions);
 
     return (
       <div>
-        <h1>Accounts</h1>
-        <p>This component demonstrates fetching data from the server.</p>
+        {accountData}
         {contents}
       </div>
     );
