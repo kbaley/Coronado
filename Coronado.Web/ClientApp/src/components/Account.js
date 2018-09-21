@@ -5,30 +5,42 @@ export class Account extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { transactions: [], accountData: {}, loading: true };
+    this.state = { loadingTransactions: true, loadingAccountData: true };
   }
 
   componentDidMount() {
-    // const { accountId } = this.props.match.params;
-    console.log("Account: " + this.props.match.params.accountId);
+    this.loadData();
+  }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.loadingAccountData || this.state.loadingTransactions) {
+      this.loadData();
+    }
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.match.params.accountId != prevState.prevAccountId) {
+      return {
+        prevAccountId: nextProps.match.params.accountId,
+        loadingAccountData: true,
+        loadingTransactions: true
+      }
+    }
+    return null;
+  }
+
+  loadData() {
     fetch('api/Transactions/?accountId=' + this.props.match.params.accountId)
       .then(response => response.json())
       .then(data => {
-        this.setState({ transactions: data, loading: false });
+        this.setState({ transactions: data, loadingTransactions: false });
       });
 
     fetch('api/Accounts/' + this.props.match.params.accountId)
       .then(response => response.json())
       .then(data => {
-        this.setState({ accountData: data});
+        this.setState({ accountData: data, accountName: data.name, loadingAccountData: false });
       })
-  }
-
-  static renderAccount(accountData) {
-    return (
-      <h1>{accountData.name}</h1>
-    );
   }
 
   static renderTransactions(transactions) {
@@ -54,39 +66,20 @@ export class Account extends Component {
     );
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    console.log('getDerivedState');
-    if (nextProps.match.params.accountId != prevState.accountId) {
-      const currentAccountId = nextProps.match.params.accountId;
-    fetch('api/Transactions/?accountId=' + nextProps.match.params.accountId)
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ transactions: data, loading: false });
-      });
-
-    fetch('api/Accounts/' + nextProps.match.params.accountId)
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ accountData: data});
-      });
-      return null;
-    }
-  }
-
   render() {
-    console.log('render')
-    let accountData = this.state.loading
-      ? <span></span>
-      : Account.renderAccount(this.state.accountData);
-    let contents = this.state.loading
+    let contents = this.state.loadingTransactions
       ? <p><em>Loading...</em></p>
       : Account.renderTransactions(this.state.transactions);
 
     return (
       <div>
-        {accountData}
+        <AccountHeader name={this.state.accountName} />
         {contents}
       </div>
     );
   }
+}
+
+function AccountHeader(props) {
+  return <h1>{props.name}</h1>
 }

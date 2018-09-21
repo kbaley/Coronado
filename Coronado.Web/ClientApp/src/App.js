@@ -15,7 +15,7 @@ export default class App extends Component {
         <Route exact path='/' component={Home} />
         <Route path='/counter' component={Counter} />
         <Route path='/fetchdata' component={FetchData} />
-        <Route path='/account/:accountId' component={Account} />
+        <Route path='/account/:accountId' render={props => <Account {...props} />} />
       </Layout>
     );
   }
