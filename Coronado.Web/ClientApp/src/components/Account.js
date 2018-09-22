@@ -9,16 +9,20 @@ export class Account extends Component {
   }
 
   componentDidMount() {
+    console.log('didmount');
     this.loadData();
   }
 
   componentDidUpdate(prevProps, prevState) {
+    console.log('didupdate');
     if (this.state.loadingAccountData || this.state.loadingTransactions) {
+      console.log('loaddata');
       this.loadData();
     }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
+    console.log('getstate');
     if (nextProps.match.params.accountId != prevState.prevAccountId) {
       return {
         prevAccountId: nextProps.match.params.accountId,

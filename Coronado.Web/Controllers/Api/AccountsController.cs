@@ -20,6 +20,12 @@ namespace Coronado.Web.Controllers.Api
             _context = context;
         }
 
+        [HttpGet("newId")]
+        public Guid GetNewId()
+        {
+            return Guid.NewGuid();
+        }
+
         // GET: api/Accounts
         [HttpGet]
         public IEnumerable<Account> GetAccounts()

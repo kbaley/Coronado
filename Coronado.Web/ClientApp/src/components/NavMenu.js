@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { Glyphicon, Nav, Navbar, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import { NewAccount } from './NewAccount';
 import './NavMenu.css';
 
 export class NavMenu extends Component {
@@ -47,6 +48,7 @@ export class NavMenu extends Component {
         </Navbar.Header>
         <Navbar.Collapse>
             {contents}
+            <NewAccount />
         </Navbar.Collapse>
       </Navbar>
     );
