@@ -23,7 +23,7 @@ export class Account extends Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     console.log('getstate');
-    if (nextProps.match.params.accountId != prevState.prevAccountId) {
+    if (nextProps.match.params.accountId !== prevState.prevAccountId) {
       return {
         prevAccountId: nextProps.match.params.accountId,
         loadingAccountData: true,
