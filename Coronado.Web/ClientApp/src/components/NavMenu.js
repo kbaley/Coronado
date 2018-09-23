@@ -1,8 +1,8 @@
 ﻿import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Glyphicon, Nav, Navbar, NavItem } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
 import { NewAccount } from './NewAccount';
+import { Navbar } from 'react-bootstrap';
+import { AccountNavList } from './AccountNavList';
 import './NavMenu.css';
 
 export class NavMenu extends Component {
@@ -10,33 +10,25 @@ export class NavMenu extends Component {
 
   constructor(props) {
     super(props);
+    this.handleAccountAdded = this.handleAccountAdded.bind(this);
+    this.handleAccountDeleted = this.handleAccountDeleted.bind(this);
     this.state = { accounts: [], loading: true };
-
-    fetch('api/Accounts')
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ accounts: data, loading: false });
-      });
   }
 
-  static renderAccountsTable(accounts) {
-    return (
-      <Nav>
-          {accounts.map(account =>
-            <LinkContainer to={'/account/' + account.accountId} key={account.accountId}>
-              <NavItem>
-                <Glyphicon glyph='piggy-bank' /> {account.name}
-              </NavItem>
-            </LinkContainer>
-          )}
-      </Nav>
-    );
+  handleAccountDeleted(account) {
+    this.setState((prevState) => ({
+      accounts: prevState.accounts.filter(accountToDelete => accountToDelete.accountId !== account.accountId)
+    }));
+    this.props.history.push('/');
+  }
+
+  handleAccountAdded(account) {
+    this.setState(prevState => ({
+      accounts: [...prevState.accounts, account]
+    }));
   }
 
   render() {
-    let contents = this.state.loading
-      ? <p><em>Loading...</em></p>
-      : NavMenu.renderAccountsTable(this.state.accounts);
 
     return (
       <Navbar inverse fixedTop fluid collapseOnSelect>
@@ -47,8 +39,8 @@ export class NavMenu extends Component {
           <Navbar.Toggle />
         </Navbar.Header>
         <Navbar.Collapse>
-            {contents}
-            <NewAccount />
+            <AccountNavList onAccountDeleted={this.handleAccountDeleted} />
+            <NewAccount onAccountAdded={this.handleAccountAdded} />
         </Navbar.Collapse>
       </Navbar>
     );

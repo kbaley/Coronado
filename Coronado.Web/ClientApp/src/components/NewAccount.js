@@ -47,7 +47,14 @@ export class NewAccount extends Component {
         name: this.state.accountName,
         startingBalance: this.state.startingBalance
       })
-    });
+    })
+
+      .then(response => response.json())
+      .then(data => {
+        console.log(this.props);
+        this.props.onAccountAdded(data);
+        this.setState({show:false});
+      })
   }
 
   render() {

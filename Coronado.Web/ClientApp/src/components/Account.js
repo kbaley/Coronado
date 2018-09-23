@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { DeleteAccount } from './DeleteAccount';
 
 export class Account extends Component {
   displayName = Account.name;
@@ -9,20 +10,16 @@ export class Account extends Component {
   }
 
   componentDidMount() {
-    console.log('didmount');
     this.loadData();
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('didupdate');
     if (this.state.loadingAccountData || this.state.loadingTransactions) {
-      console.log('loaddata');
       this.loadData();
     }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    console.log('getstate');
     if (nextProps.match.params.accountId !== prevState.prevAccountId) {
       return {
         prevAccountId: nextProps.match.params.accountId,
@@ -71,14 +68,15 @@ export class Account extends Component {
   }
 
   render() {
-    let contents = this.state.loadingTransactions
+    let transactions = this.state.loadingTransactions
       ? <p><em>Loading...</em></p>
       : Account.renderTransactions(this.state.transactions);
 
     return (
       <div>
         <AccountHeader name={this.state.accountName} />
-        {contents}
+        {transactions}
+        <DeleteAccount accountId={this.props.match.params.accountId} />
       </div>
     );
   }
@@ -87,3 +85,4 @@ export class Account extends Component {
 function AccountHeader(props) {
   return <h1>{props.name}</h1>
 }
+
