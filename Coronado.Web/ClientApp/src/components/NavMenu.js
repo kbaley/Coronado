@@ -4,8 +4,11 @@ import { NewAccount } from './NewAccount';
 import { Navbar } from 'react-bootstrap';
 import { AccountNavList } from './AccountNavList';
 import './NavMenu.css';
+import { actionCreators } from '../store/NavMenu';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-export class NavMenu extends Component {
+class NavMenu extends Component {
   displayName = NavMenu.name
 
   constructor(props) {
@@ -46,3 +49,7 @@ export class NavMenu extends Component {
     );
   }
 }
+export default connect(
+  state => state.accounts,
+  dispatch => bindActionCreators(actionCreators, dispatch)
+)(NavMenu);
