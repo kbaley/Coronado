@@ -22,6 +22,7 @@ export const actionCreators = {
 export const reducer = (state, action) => {
   state = state || initialState;
 
+  console.log('reducing: ' + action.type);
   if (action.type === requestWeatherForecastsType) {
     return {
       ...state,

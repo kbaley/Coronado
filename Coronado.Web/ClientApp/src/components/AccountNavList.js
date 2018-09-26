@@ -1,24 +1,25 @@
 import React, { Component } from 'react';
 import { Glyphicon, Nav, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import { actionCreators } from '../store/NavMenu';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-export class AccountNavList extends Component {
+class AccountNavList extends Component {
   displayName = AccountNavList.name;
 
-  constructor(props) {
-    super(props);
-    this.state = { loading: true };
-
-    fetch('api/Accounts')
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ accounts: data, loading: false });
-      });
+  componentDidMount() {
+    // This method runs when the component is first added to the page
+    console.log("Did mount");
+    this.props.requestAccountList();
   }
-  static renderAccountsTable(accounts) {
+
+  render() {
     return (
       <Nav>
-          {accounts.map(account =>
+        {console.log(JSON.stringify(this.props))}
+          {!this.props.accounts ? "" : 
+          this.props.accounts.map(account =>
             <LinkContainer to={'/account/' + account.accountId} key={account.accountId}>
               <NavItem>
                 <Glyphicon glyph='piggy-bank' /> {account.name}
@@ -28,14 +29,9 @@ export class AccountNavList extends Component {
       </Nav>
     );
   }
-
-  render() {
-    let contents = this.state.loading
-      ? <p><em>Loading...</em></p>
-      : AccountNavList.renderAccountsTable(this.state.accounts);
-    return (
-      <div>{contents}</div>
-    );
-  }
 }
 
+export default connect(
+  state => state.accounts,
+  dispatch => bindActionCreators(actionCreators, dispatch)
+)(AccountNavList);
