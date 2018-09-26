@@ -4,11 +4,8 @@ import { NewAccount } from './NewAccount';
 import { Navbar } from 'react-bootstrap';
 import AccountNavList from './AccountNavList';
 import './NavMenu.css';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { actionCreators } from '../store/Counter';
 
-const NavMenu = props => (
+export default props => (
   <Navbar inverse fixedTop fluid collapseOnSelect>
     <Navbar.Header>
       <Navbar.Brand>
@@ -17,11 +14,8 @@ const NavMenu = props => (
       <Navbar.Toggle />
     </Navbar.Header>
     <Navbar.Collapse>
+        <AccountNavList />
+        <NewAccount />
     </Navbar.Collapse>
   </Navbar>
 );
-
-export default connect(
-  state => state.accounts,
-  dispatch => bindActionCreators(actionCreators, dispatch)
-)(NavMenu);
