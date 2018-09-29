@@ -1,7 +1,10 @@
 ﻿import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
+import { actionCreators } from '../store/AccountNavList';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-export class DeleteAccount extends Component {
+class DeleteAccount extends Component {
   displayName = DeleteAccount.name
 
   constructor(props) {
@@ -11,14 +14,7 @@ export class DeleteAccount extends Component {
   }
 
   deleteAccount() {
-    console.log("ID: " + this.props.accountId);
-    fetch('/api/Accounts/' + this.props.accountId, {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
+    this.props.deleteAccount(this.props.accountId);
   }
 
   render() {
@@ -29,3 +25,8 @@ export class DeleteAccount extends Component {
     );
   }
 }
+
+export default connect(
+  state => state.accountNavList,
+  dispatch => bindActionCreators(actionCreators, dispatch)
+)(DeleteAccount);

@@ -30,5 +30,7 @@ class AccountNavList extends Component {
 
 export default connect(
   state => state.accountNavList,
-  dispatch => bindActionCreators(actionCreators, dispatch)
+  dispatch => bindActionCreators(actionCreators, dispatch),
+  null,
+  {pure:false}
 )(AccountNavList);

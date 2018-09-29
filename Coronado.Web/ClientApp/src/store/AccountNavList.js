@@ -1,7 +1,7 @@
 ﻿const requestAccountsType = 'REQUEST_ACCOUNT_LIST';
 const receiveAccountsType = 'RECEIVE_ACCOUNT_LIST';
-const requestNewAccountType = 'REQUEST_NEW_ACCOUNT';
 const receiveNewAccountType = 'RECEIVE_NEW_ACCOUNT';
+const deleteAccountType = 'DELETE_ACCOUNT';
 const initialState = { accounts: [], isLoading: true};
 
 export const actionCreators = {
@@ -13,6 +13,20 @@ export const actionCreators = {
 
     dispatch({ type: receiveAccountsType, accounts });
   },
+
+  deleteAccount: (accountId) => async (dispatch) => {
+
+    const response = await fetch('/api/Accounts/' + accountId, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
+    const deletedAccount = await response.json();
+    dispatch( { type: deleteAccountType, deletedAccount } );
+  },
+
   saveNewAccount: (account) => async (dispatch, getState) => {
     const newIdResponse = await fetch('api/Accounts/newId');
     const newId = await newIdResponse.json();
@@ -49,15 +63,19 @@ export const reducer = (state, action) => {
     };
   }
 
-  if (action.type === requestNewAccountType) {
-    return state;
-  }
-
   if (action.type === receiveNewAccountType) {
     return {
       ...state,
       accounts: state.accounts.concat(action.newAccount)
     };
+  }
+
+  if (action.type === deleteAccountType) {
+    console.log(state.accounts.filter(e => e.accountId !== action.deletedAccount.accountId));
+    return {
+      ...state,
+      accounts: state.accounts.filter(el => el.accountId !== action.deletedAccount.accountId )
+    }
   }
 
   return state;

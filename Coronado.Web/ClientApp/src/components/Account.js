@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DeleteAccount } from './DeleteAccount';
+import DeleteAccount from './DeleteAccount';
 
 export class Account extends Component {
   displayName = Account.name;
