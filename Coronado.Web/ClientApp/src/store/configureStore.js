@@ -1,11 +1,11 @@
 ﻿import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { routerReducer, routerMiddleware } from 'react-router-redux';
-import * as NavMenu from './NavMenu';
+import * as AccountNavList from './AccountNavList';
 
 export default function configureStore(history, initialState) {
   const reducers = {
-    accountNavList: NavMenu.reducer
+    accountNavList: AccountNavList.reducer
   };
 
   const middleware = [

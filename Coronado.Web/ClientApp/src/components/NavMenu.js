@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import { Link } from 'react-router-dom';
-import { NewAccount } from './NewAccount';
+import NewAccount from './NewAccount';
 import { Navbar } from 'react-bootstrap';
 import AccountNavList from './AccountNavList';
 import './NavMenu.css';
