@@ -2,7 +2,7 @@ import React from 'react';
 import { Route } from 'react-router';
 import Layout from './components/Layout';
 import Home from './components/Home';
-import { Account } from './components/Account';
+import Account from './components/Account';
 
 export default () => (
   <Layout>

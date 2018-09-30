@@ -1,21 +1,25 @@
 import React, { Component } from 'react';
 import DeleteAccount from './DeleteAccount';
+import { actionCreators } from '../store/Account';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-export class Account extends Component {
+ class Account extends Component {
   displayName = Account.name;
 
   constructor(props) {
     super(props);
-    this.state = { loadingTransactions: true, loadingAccountData: true };
+    this.state = { loading: true };
   }
 
   componentDidMount() {
-    this.loadData();
+    this.props.requestAccountData(this.props.match.params.accountId);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.loadingAccountData || this.state.loadingTransactions) {
-      this.loadData();
+    if (this.state.loading) {
+      this.props.requestAccountData(this.props.match.params.accountId);
+      this.setState(...this.state, {loading:false});
     }
   }
 
@@ -23,28 +27,13 @@ export class Account extends Component {
     if (nextProps.match.params.accountId !== prevState.prevAccountId) {
       return {
         prevAccountId: nextProps.match.params.accountId,
-        loadingAccountData: true,
-        loadingTransactions: true
+        loading: true
       }
     }
     return null;
   }
 
-  loadData() {
-    fetch('api/Transactions/?accountId=' + this.props.match.params.accountId)
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ transactions: data, loadingTransactions: false });
-      });
-
-    fetch('api/Accounts/' + this.props.match.params.accountId)
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ accountData: data, accountName: data.name, loadingAccountData: false });
-      })
-  }
-
-  static renderTransactions(transactions) {
+  renderTransactions(transactions) {
     return (
       <table className='table'>
         <thead>
@@ -68,15 +57,15 @@ export class Account extends Component {
   }
 
   render() {
-    let transactions = this.state.loadingTransactions
-      ? <p><em>Loading...</em></p>
-      : Account.renderTransactions(this.state.transactions);
-
     return (
       <div>
-        <AccountHeader name={this.state.accountName} />
-        {transactions}
-        <DeleteAccount accountId={this.props.match.params.accountId} />
+        {this.props.isLoading ? <p><em>Loading...</em></p> : (
+          <div>
+            <AccountHeader name={this.props.account.name} />
+            {this.renderTransactions(this.props.transactions)}
+            <DeleteAccount accountId={this.props.match.params.accountId} />
+          </div>
+        )}
       </div>
     );
   }
@@ -86,3 +75,7 @@ function AccountHeader(props) {
   return <h1>{props.name}</h1>
 }
 
+export default connect(
+  state => state.account,
+  dispatch => bindActionCreators(actionCreators, dispatch)
+)(Account);
