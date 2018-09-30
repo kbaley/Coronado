@@ -33,36 +33,13 @@ import { connect } from 'react-redux';
     return null;
   }
 
-  renderTransactions(transactions) {
-    return (
-      <table className='table'>
-        <thead>
-          <tr>
-            <th>Vendor</th>
-            <th>Description</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map(trx =>
-            <tr key={trx.transactionId}>
-              <td>{trx.vendor}</td>
-              <td>{trx.description}</td>
-              <td>{new Date(trx.date).toLocaleDateString()}</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    );
-  }
-
   render() {
     return (
       <div>
         {this.props.isLoading ? <p><em>Loading...</em></p> : (
           <div>
             <AccountHeader name={this.props.account.name} />
-            {this.renderTransactions(this.props.transactions)}
+            <TransactionList transactions={this.props.transactions} />
             <DeleteAccount accountId={this.props.match.params.accountId} />
           </div>
         )}
@@ -73,6 +50,29 @@ import { connect } from 'react-redux';
 
 function AccountHeader(props) {
   return <h1>{props.name}</h1>
+}
+
+function TransactionList(props) {
+  return (
+    <table className='table'>
+      <thead>
+        <tr>
+          <th>Vendor</th>
+          <th>Description</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {props.transactions.map(trx =>
+          <tr key={trx.transactionId}>
+            <td>{trx.vendor}</td>
+            <td>{trx.description}</td>
+            <td>{new Date(trx.date).toLocaleDateString()}</td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  );
 }
 
 export default connect(
