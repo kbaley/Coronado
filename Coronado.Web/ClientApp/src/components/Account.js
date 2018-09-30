@@ -39,7 +39,7 @@ import { connect } from 'react-redux';
         {this.props.isLoading ? <p><em>Loading...</em></p> : (
           <div>
             <AccountHeader name={this.props.account.name} />
-            <TransactionList transactions={this.props.transactions} />
+            <TransactionList transactions={this.props.account.transactions} />
             <DeleteAccount accountId={this.props.match.params.accountId} />
           </div>
         )}

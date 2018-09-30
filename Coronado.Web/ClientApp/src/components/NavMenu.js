@@ -1,7 +1,8 @@
 ﻿import React from 'react';
 import { Link } from 'react-router-dom';
+import { LinkContainer } from 'react-router-bootstrap';
 import NewAccount from './NewAccount';
-import { Navbar } from 'react-bootstrap';
+import { Navbar, Nav, NavItem, Glyphicon } from 'react-bootstrap';
 import AccountNavList from './AccountNavList';
 import './NavMenu.css';
 
@@ -16,6 +17,15 @@ export default props => (
     <Navbar.Collapse>
         <AccountNavList />
         <NewAccount />
+    </Navbar.Collapse>
+    <Navbar.Collapse>
+      <Nav>
+        <LinkContainer to={'/categories'}>
+        <NavItem>
+          <Glyphicon glyph='cog' /> Categories
+        </NavItem>
+        </LinkContainer>
+      </Nav>
     </Navbar.Collapse>
   </Navbar>
 );

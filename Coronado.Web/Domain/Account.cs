@@ -16,6 +16,19 @@ namespace Coronado.Web.Domain
         public decimal CurrentBalance { get; set; }
     }
 
+    [Table("categories")]
+    public class Category
+    {
+        [Key]
+        public Guid CategoryId {get;set;}
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Type { get; set; }
+    }
+
     [Table("transactions")]
     public class Transaction
     {
@@ -30,5 +43,6 @@ namespace Coronado.Web.Domain
         public decimal? Credit { get; set; }
         public bool IsReconciled { get; set; }
         public DateTime Date { get; set; }
+        public Category Category { get; set; }
     }
 }

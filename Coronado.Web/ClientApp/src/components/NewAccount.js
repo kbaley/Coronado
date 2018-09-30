@@ -1,4 +1,5 @@
 ﻿import React, { Component } from 'react';
+import { Nav, NavItem } from 'react-bootstrap';
 import { Button,Modal,Form,FormControl,FormGroup,ControlLabel,Col } from 'react-bootstrap';
 import { actionCreators } from '../store/AccountNavList';
 import { bindActionCreators } from 'redux';
@@ -43,7 +44,8 @@ class NewAccount extends Component {
 
   render() {
     return (
-      <div>
+      <Nav>
+        <NavItem>
         <Button onClick={this.newAccount}>New Account</Button>
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton>
@@ -76,7 +78,8 @@ class NewAccount extends Component {
             <Button onClick={this.saveNewAccount}>Save</Button>
           </Modal.Footer>
         </Modal>
-      </div>
+        </NavItem>
+      </Nav>
     );
   }
 }

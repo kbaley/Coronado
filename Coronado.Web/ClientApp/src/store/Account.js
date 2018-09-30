@@ -5,12 +5,10 @@ const initialState = { transactions: [], isLoading: true};
 export const actionCreators = {
   requestAccountData: (accountId) => async (dispatch, getState) => {
     dispatch({ type: requestAccountDataType });
-    const transactionResponse = await fetch('api/Transactions/?accountId=' + accountId)
-    const transactions = await transactionResponse.json();
-    const accountResponse = await fetch('api/Accounts/' + accountId);
-    const account = await accountResponse.json();
+    const response = await fetch('api/Accounts/' + accountId);
+    const account = await response.json();
 
-    dispatch({ type: receiveAccountDataType, transactions, account });
+    dispatch({ type: receiveAccountDataType, account });
   }
 };
 
@@ -27,7 +25,6 @@ export const reducer = (state, action) => {
   if (action.type === receiveAccountDataType) {
     return {
       ...state,
-      transactions: action.transactions,
       account: action.account,
       isLoading: false
     };

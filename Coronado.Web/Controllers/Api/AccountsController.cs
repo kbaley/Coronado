@@ -33,7 +33,7 @@ namespace Coronado.Web.Controllers.Api
             return _context.Accounts;
         }
 
-        // GET: api/Accounts/5
+        // GET:sapi/Accounts/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAccount([FromRoute] Guid id)
         {
@@ -49,7 +49,17 @@ namespace Coronado.Web.Controllers.Api
                 return NotFound();
             }
 
-            return Ok(account);
+
+            var transactions =  _context.Transactions.Where(t => t.Account.AccountId == id);
+            transactions.Select(t => new AccountWithTransactions());
+            var transactionsModel = transactions.Select(AccountWithTransactions.AccountTransaction.FromTransaction);
+            var model = new AccountWithTransactions{
+                AccountId = account.AccountId,
+                Name = account.Name,
+                Transactions = transactionsModel
+            };
+
+            return Ok(model);
         }
 
         // PUT: api/Accounts/5
