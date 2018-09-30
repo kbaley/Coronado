@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace Coronado.Web.Domain
 {
@@ -14,6 +15,8 @@ namespace Coronado.Web.Domain
 
         public decimal StartingBalance { get; set; }
         public decimal CurrentBalance { get; set; }
+
+        public IList<Transaction> Transactions {get;set;}
     }
 
     [Table("categories")]

@@ -49,10 +49,8 @@ namespace Coronado.Web.Controllers.Api
                 return NotFound();
             }
 
-
-            var transactions =  _context.Transactions.Where(t => t.Account.AccountId == id);
-            transactions.Select(t => new AccountWithTransactions());
-            var transactionsModel = transactions.Select(AccountWithTransactions.AccountTransaction.FromTransaction);
+            _context.Entry(account).Collection(a => a.Transactions).Query().Include(t => t.Category).Load();
+            var transactionsModel = account.Transactions.Select(AccountWithTransactions.AccountTransaction.FromTransaction);
             var model = new AccountWithTransactions{
                 AccountId = account.AccountId,
                 Name = account.Name,

@@ -58,6 +58,7 @@ function TransactionList(props) {
       <thead>
         <tr>
           <th>Vendor</th>
+          <th>Category</th>
           <th>Description</th>
           <th>Date</th>
         </tr>
@@ -66,8 +67,9 @@ function TransactionList(props) {
         {props.transactions.map(trx =>
           <tr key={trx.transactionId}>
             <td>{trx.vendor}</td>
+            <td>{trx.categoryName}</td>
             <td>{trx.description}</td>
-            <td>{new Date(trx.date).toLocaleDateString()}</td>
+            <td>{new Date(trx.transactionDate).toLocaleDateString()}</td>
           </tr>
         )}
       </tbody>
