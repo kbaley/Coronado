@@ -1,4 +1,5 @@
-﻿const requestAccountsType = 'REQUEST_ACCOUNT_LIST';
+﻿import { push } from 'react-router-redux';
+const requestAccountsType = 'REQUEST_ACCOUNT_LIST';
 const receiveAccountsType = 'RECEIVE_ACCOUNT_LIST';
 const receiveNewAccountType = 'RECEIVE_NEW_ACCOUNT';
 const deleteAccountType = 'DELETE_ACCOUNT';
@@ -14,7 +15,7 @@ export const actionCreators = {
     dispatch({ type: receiveAccountsType, accounts });
   },
 
-  deleteAccount: (accountId) => async (dispatch) => {
+  deleteAccount: (accountId) => async (dispatch, getState) => {
 
     const response = await fetch('/api/Accounts/' + accountId, {
       method: 'DELETE',
@@ -25,6 +26,7 @@ export const actionCreators = {
     });
     const deletedAccount = await response.json();
     dispatch( { type: deleteAccountType, deletedAccount } );
+    dispatch(push('/account/' + getState().accountNavList.accounts[0].accountId));
   },
 
   saveNewAccount: (account) => async (dispatch, getState) => {
@@ -71,7 +73,6 @@ export const reducer = (state, action) => {
   }
 
   if (action.type === deleteAccountType) {
-    console.log(state.accounts.filter(e => e.accountId !== action.deletedAccount.accountId));
     return {
       ...state,
       accounts: state.accounts.filter(el => el.accountId !== action.deletedAccount.accountId )
