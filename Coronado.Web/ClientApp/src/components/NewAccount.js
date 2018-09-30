@@ -25,6 +25,7 @@ class NewAccount extends Component {
 
   saveNewAccount() {
     this.props.saveNewAccount(this.state.account);
+    this.setState(...this.state, {account: {name: '', startingBalance: 0}});
     this.handleClose();
   }
 

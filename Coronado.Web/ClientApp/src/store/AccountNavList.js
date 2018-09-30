@@ -44,6 +44,7 @@ export const actionCreators = {
     const newAccount = await response.json();
 
     dispatch({ type: receiveNewAccountType, newAccount });
+    dispatch(push('/account/' + newAccount.accountId));
   }
 };
 
