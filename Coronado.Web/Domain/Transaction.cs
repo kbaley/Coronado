@@ -19,5 +19,6 @@ namespace Coronado.Web.Domain
         public bool IsReconciled { get; set; }
         public DateTime Date { get; set; }
         public Category Category { get; set; }
+        public DateTime EnteredDate {get;set;} = DateTime.Now;
     }
 }
