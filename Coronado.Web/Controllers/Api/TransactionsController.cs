@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Coronado.Web.Data;
 using Coronado.Web.Domain;
+using Coronado.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -99,7 +100,7 @@ namespace Coronado.Web.Controllers.Api
 
             return CreatedAtAction("GetTransaction", new { id = transaction.TransactionId }, transaction);
         }
-
+        
         // DELETE: api/Transactions/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTransaction([FromRoute] Guid id)

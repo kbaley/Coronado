@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 
@@ -7,8 +10,14 @@ namespace Coronado.ConsoleApp
 {
     class Program
     {
-        static int Main(string[] args)
+        static void Main(string[] args)
         {
+            RunAsync(args).GetAwaiter().GetResult();
+        }
+
+        static async Task RunAsync(string[] args)
+        {
+            var url = "http://localhost:5000/";
             var app = new CommandLineApplication();
             app.Name = "Coronado";
             app.Description = "Console app for managing accounts and transactions with Coronado";
@@ -19,17 +28,58 @@ namespace Coronado.ConsoleApp
                 command.HelpOption("-?|-h|--help");
                 var name = command.Option("-n|--name", "Name of account", CommandOptionType.SingleValue);
                 var startingBalance = command.Option("-b|--balance", "Starting balance", CommandOptionType.SingleValue);
-                command.OnExecute(() => {
+                command.OnExecute(async () => {
                     if (!name.HasValue()) {
                         Console.WriteLine("Enter a name");
                         return;
                     }
-                    var balance = startingBalance.HasValue() ? Convert.ToDouble(startingBalance.Value()) : 0.0;
-                    Console.WriteLine($"NEw account: {balance}");
+                    var balance = startingBalance.HasValue() ? Convert.ToDecimal(startingBalance.Value()) : 0m;
+                    var account = new Account {
+                        AccountId = Guid.NewGuid(),
+                        Name = name.Value(),
+                        StartingBalance = balance
+                    };
+                    var client = new HttpClient();
+                    client.BaseAddress = new Uri(url);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(
+                        new MediaTypeWithQualityHeaderValue("application/json")
+                    );
+                    var response = await client.PostAsJsonAsync("api/accounts", account );
+                    response.EnsureSuccessStatusCode();
+
+                    Console.WriteLine($"Account '{name.Value()}' created");
                 });
             });
-            var url = "http://localhost:5000/api/";
-            return app.Execute(args);
+            app.Command("trx", (command) => {
+                command.Description = "Add a transaction";
+                command.HelpOption("-?|-h|--help");
+                var account = command.Option("-a|--account", "Account name", CommandOptionType.SingleValue);
+                var trxDate = command.Option("-d|--date", "Thing", CommandOptionType.SingleValue);
+                var vendor = command.Option("-v|--vendor", "Vendor", CommandOptionType.SingleValue);
+                var description = command.Option("-p|--description", "Description", CommandOptionType.SingleValue);
+                var category = command.Option("-c|--category", "Transaction category", CommandOptionType.SingleValue);
+
+                command.OnExecute(async () => {
+                    var trx = new Transaction();
+                    trx.TransactionId = Guid.NewGuid();
+                    trx.AccountName = account.Value();
+                    trx.TransactionDate = DateTime.Parse(trxDate.Value());
+                    trx.Vendor = vendor.Value();
+                    trx.Description = description.Value();
+                    trx.CategoryName = category.Value();
+                    var client = new HttpClient();
+                    client.BaseAddress = new Uri(url);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(
+                        new MediaTypeWithQualityHeaderValue("application/json")
+                    );
+                    var response = await client.PostAsJsonAsync("api/simpletransactions", trx );
+                    response.EnsureSuccessStatusCode();
+                    Console.WriteLine("Transaction added");
+                });
+            });
+            await Task.Run(() => app.Execute(args));
         }
 
         static void handleNewTransaction(string[] args)
@@ -41,6 +91,15 @@ namespace Coronado.ConsoleApp
         {
 
         }
+    }
+
+    public class Transaction {
+        public Guid TransactionId {get;set;}
+        public DateTime TransactionDate { get; set; }
+        public string Vendor { get; set; }
+        public string Description { get; set; }
+        public string AccountName { get; set; }
+        public string CategoryName { get; set; }
     }
 
     class AutoCompletionHandler : IAutoCompleteHandler

@@ -7,7 +7,7 @@ import AccountNavList from './AccountNavList';
 import './NavMenu.css';
 
 export default props => (
-  <Navbar inverse fixedTop fluid collapseOnSelect>
+  <Navbar inverse fixedTop fluid collapseOnSelect maxHeight>
     <Navbar.Header>
       <Navbar.Brand>
         <Link to={'/'}>Accounts</Link>

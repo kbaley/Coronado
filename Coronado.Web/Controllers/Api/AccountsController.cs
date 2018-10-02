@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Coronado.Web.Data;
 using Coronado.Web.Domain;
+using Coronado.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
