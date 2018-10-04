@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { Glyphicon,Button,Modal,Form,FormControl,FormGroup,ControlLabel,Col } from 'react-bootstrap';
 import { actionCreators } from '../store/Categories';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import * as Mousetrap from 'mousetrap';
 
 class AddCategory extends Component {
   displayName = AddCategory.name;
@@ -17,8 +19,20 @@ class AddCategory extends Component {
     };
   }
 
+  componentDidMount() {
+      Mousetrap.bind('n c', this.showForm);
+  }
+
+  componentWillUnmount() {
+      Mousetrap.unbind('n c');
+  }
+
   showForm() {
     this.setState({show:true});
+    let node = ReactDOM.findDOMNode(this.refs.inputName);
+    if (node && node.focus instanceof Function)
+      node.focus();
+    return false;
   }
 
   saveCategory() {
@@ -51,7 +65,7 @@ class AddCategory extends Component {
                 <Col sm={9}>
               <FormControl
                 type="text"
-                name="name"
+                name="name" ref="inputName"
                 value={this.state.category.name}
                 onChange={this.handleChangeName}
               />

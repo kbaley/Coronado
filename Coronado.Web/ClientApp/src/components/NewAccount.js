@@ -1,9 +1,11 @@
 ﻿import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { Nav, NavItem } from 'react-bootstrap';
 import { Button,Modal,Form,FormControl,FormGroup,ControlLabel,Col } from 'react-bootstrap';
 import { actionCreators } from '../store/AccountNavList';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import * as Mousetrap from 'mousetrap';
 
 class NewAccount extends Component {
   displayName = NewAccount.name
@@ -20,8 +22,20 @@ class NewAccount extends Component {
      };
   }
 
+  componentDidMount() {
+    Mousetrap.bind('n a', this.newAccount);
+  }
+
+  componentWillUnmount() {
+    Mousetrap.unbind('n a');
+  }
+
   newAccount() {
     this.setState({show:true});
+    let node = ReactDOM.findDOMNode(this.refs.inputName);
+    if (node && node.focus instanceof Function)
+      node.focus();
+    return false;
   }
 
   saveNewAccount() {
@@ -57,7 +71,7 @@ class NewAccount extends Component {
                 <Col componentClass={ControlLabel} sm={3}>Account Name</Col>
                 <Col sm={9}>
               <FormControl
-                type="text"
+                type="text" ref="inputName"
                 value={this.state.account.name}
                 onChange={this.handleChangeName}
               />
