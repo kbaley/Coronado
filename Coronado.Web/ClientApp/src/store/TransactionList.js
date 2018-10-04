@@ -5,7 +5,6 @@ const initialState = { };
 
 export const actionCreators = {
   setTransactionList: (transactions) => async (dispatch, getState) => {
-    console.log(getState());
     dispatch( {type: setTransactionListType, transactions});
   },
   deleteTransaction: (transactionId) => async (dispatch, getState) => {

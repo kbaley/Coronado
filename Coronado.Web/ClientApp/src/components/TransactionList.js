@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Glyphicon } from 'react-bootstrap';
+import { DeleteIcon } from './DeleteIcon';
 import { actionCreators } from '../store/TransactionList';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -16,7 +17,6 @@ class TransactionList extends Component {
   }
 
   deleteTransaction(transactionId) {
-    // console.log(this.props);
       this.props.deleteTransaction(transactionId);
   }
 
@@ -32,29 +32,28 @@ class TransactionList extends Component {
         </tr>
       </thead>
       <tbody>
-        {this.props.transactionList ? this.props.transactionList.map(trx => <tr key={trx.transactionId}>
-          <td>{trx.vendor}</td>
-          <td>{trx.categoryName}</td>
-          <td>{trx.description}</td>
-          <td>{new Date(trx.transactionDate).toLocaleDateString()}</td>
-          <td>
-            <EditTransaction transactionId={trx.transactionId} />
-            <a onClick={() => this.deleteTransaction(trx.transactionId)} style={{ cursor: 'pointer', color: "#000" }}>
-              <Glyphicon glyph='remove-circle' style={{ color: "#aa0000" }} />
-            </a>
-          </td>
-        </tr>) : <tr/>}
+        {this.props.transactionList ? this.props.transactionList.map(trx => 
+        <TransactionRow key={trx.transactionId} transaction={trx} onDelete={() => this.deleteTransaction(trx.transactionId)}/>
+        ) : <tr/>}
       </tbody>
     </table>);
   }
 }
 
-export function EditTransaction(props) {
-  return (
-    <a onClick={console.log} style={{cursor: 'pointer', color: "#000"}}>
-    <Glyphicon glyph='pencil' style={{paddingRight: "10px"}}/>
-    </a>
-  )
+function TransactionRow(props) {
+    var trx = props.transaction;
+    return <tr>
+    <td>{trx.vendor}</td>
+    <td>{trx.categoryName}</td>
+    <td>{trx.description}</td>
+    <td>{new Date(trx.transactionDate).toLocaleDateString()}</td>
+    <td>
+      <a onClick={console.log} style={{cursor: 'pointer', color: "#000"}}>
+      <Glyphicon glyph='pencil' style={{paddingRight: "10px"}}/>
+      </a>
+      <DeleteIcon onDelete={props.onDelete} />
+    </td>
+  </tr>
 }
 
 export default connect(

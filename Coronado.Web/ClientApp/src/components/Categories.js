@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { actionCreators } from '../store/Categories';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import CategoryList from './CategoryList';
+import AddCategory from './AddCategory';
 
- class Categories extends Component {
+class Categories extends Component {
   displayName = Categories.name;
 
   componentDidMount() {
@@ -15,34 +17,16 @@ import { connect } from 'react-redux';
       <div>
         {this.props.isLoading ? <p><em>Loading...</em></p> : (
           <div>
-            <h1>Categories</h1>
+            <h1>
+              Categories
+              <AddCategory />
+            </h1>
             <CategoryList categories={this.props.categories} />
           </div>
         )}
       </div>
     );
   }
-}
-
-function CategoryList(props) {
-  return (
-    <table className='table'>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-        </tr>
-      </thead>
-      <tbody>
-        {props.categories.map(cat =>
-          <tr key={cat.categoryId}>
-            <td>{cat.name}</td>
-            <td>{cat.type}</td>
-          </tr>
-        )}
-      </tbody>
-    </table>
-  );
 }
 
 export default connect(

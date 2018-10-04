@@ -21,7 +21,6 @@ class NewAccount extends Component {
   }
 
   newAccount() {
-    console.log(this.props);
     this.setState({show:true});
   }
 
@@ -61,7 +60,6 @@ class NewAccount extends Component {
                 type="text"
                 value={this.state.account.name}
                 onChange={this.handleChangeName}
-                placeholder="Enter name"
               />
                 </Col>
               </FormGroup>

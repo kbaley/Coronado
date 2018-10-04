@@ -10,3 +10,20 @@
     max-height:none !important;
 }
 }
+
+a.delete-icon {
+    cursor: pointer;
+}
+
+a.delete-icon > .glyphicon {
+    color: #990000;
+    font-size:20px;
+}
+
+.add-icon {
+    vertical-align: middle;
+    color: green;
+    margin-left: 15px;
+    font-size: 25px;
+    cursor: pointer;
+}
