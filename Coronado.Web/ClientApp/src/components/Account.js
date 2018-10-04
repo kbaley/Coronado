@@ -3,6 +3,7 @@ import DeleteAccount from './DeleteAccount';
 import { actionCreators } from '../store/Account';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import TransactionList from './TransactionList';
 
  class Account extends Component {
   displayName = Account.name;
@@ -50,31 +51,6 @@ import { connect } from 'react-redux';
 
 function AccountHeader(props) {
   return <h1>{props.name}</h1>
-}
-
-function TransactionList(props) {
-  return (
-    <table className='table'>
-      <thead>
-        <tr>
-          <th>Vendor</th>
-          <th>Category</th>
-          <th>Description</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {props.transactions.map(trx =>
-          <tr key={trx.transactionId}>
-            <td>{trx.vendor}</td>
-            <td>{trx.categoryName}</td>
-            <td>{trx.description}</td>
-            <td>{new Date(trx.transactionDate).toLocaleDateString()}</td>
-          </tr>
-        )}
-      </tbody>
-    </table>
-  );
 }
 
 export default connect(

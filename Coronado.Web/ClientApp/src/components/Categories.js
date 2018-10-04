@@ -6,10 +6,6 @@ import { connect } from 'react-redux';
  class Categories extends Component {
   displayName = Categories.name;
 
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     this.props.requestCategories();
   }

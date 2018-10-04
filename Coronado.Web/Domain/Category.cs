@@ -15,5 +15,7 @@ namespace Coronado.Web.Domain
 
         [Required]
         public string Type { get; set; }
+
+        public Category Parent { get;set; }
     }
 }

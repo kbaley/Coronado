@@ -21,6 +21,7 @@ class NewAccount extends Component {
   }
 
   newAccount() {
+    console.log(this.props);
     this.setState({show:true});
   }
 

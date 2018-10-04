@@ -1,6 +1,6 @@
 ﻿const requestAccountDataType = 'REQUEST_ACCOUNT_DATA';
 const receiveAccountDataType = 'RECEIVE_ACCOUNT_DATA';
-const initialState = { transactions: [], isLoading: true};
+const initialState = { isLoading: true};
 
 export const actionCreators = {
   requestAccountData: (accountId) => async (dispatch, getState) => {
