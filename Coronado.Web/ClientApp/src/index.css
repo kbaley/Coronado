@@ -27,3 +27,7 @@ a.delete-icon > .glyphicon {
     font-size: 25px;
     cursor: pointer;
 }
+
+.add-icon a {
+    color: green;
+}

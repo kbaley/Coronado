@@ -37,7 +37,9 @@ class AddCategory extends Component {
   }
   render() {
     return (<span className='add-icon'>
-        <Glyphicon glyph='plus-sign' onClick={this.showForm} />
+        <a onClick={this.showForm}>
+        <Glyphicon glyph='plus-sign' />
+        </a>
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>New category</Modal.Title>
