@@ -10,8 +10,8 @@ class CategoryList extends Component {
     this.deleteCategory = this.deleteCategory.bind(this);
   }
 
-  deleteCategory(categoryId) {
-    this.props.deleteCategory(categoryId);
+  deleteCategory(categoryId, categoryName) {
+    this.props.deleteCategory(categoryId, categoryName);
   }
   
   render() {
@@ -24,11 +24,11 @@ class CategoryList extends Component {
         </tr>
       </thead>
       <tbody>
-        {this.props.categories.map(cat => <tr key={cat.categoryId}>
+        {this.props.categoryState.categories.map(cat => <tr key={cat.categoryId}>
           <td>{cat.name}</td>
           <td>{cat.type}</td>
           <td>
-            <DeleteIcon onDelete={() => this.deleteCategory(cat.categoryId)} />
+            <DeleteIcon onDelete={() => this.deleteCategory(cat.categoryId, cat.name)} />
           </td>
         </tr>)}
       </tbody>
@@ -37,6 +37,6 @@ class CategoryList extends Component {
 }
 
 export default connect(
-    state => state.categories,
+    state => ({categoryState: state.categories, notifications: state.notifications}),
     dispatch => bindActionCreators(actionCreators, dispatch)
 )(CategoryList);

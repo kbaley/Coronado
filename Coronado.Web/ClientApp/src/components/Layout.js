@@ -1,6 +1,7 @@
 import React from 'react';
 import { Col, Grid, Row } from 'react-bootstrap';
 import NavMenu from './NavMenu';
+import NotificationsComponent from './Notifications';
 
 export default props => (
   <Grid fluid>
@@ -12,5 +13,6 @@ export default props => (
         {props.children}
       </Col>
     </Row>
+    <NotificationsComponent />
   </Grid>
 );

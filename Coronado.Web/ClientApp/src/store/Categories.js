@@ -1,8 +1,25 @@
-﻿const requestCategoriesType = 'REQUEST_CATEGORIES';
+﻿import { info } from 'react-notification-system-redux';
+
+const requestCategoriesType = 'REQUEST_CATEGORIES';
 const receiveCategoriesType = 'RECEIVE_CATEGORIES';
 const deleteCategoryType = 'DELETE_CATEGORY';
 const receiveNewCategoryType = 'RECEIVE_NEW_CATEGORY';
-const initialState = { categories: [], isLoading: true};
+const undoDeleteCategoryType = 'UNDO_DELETE_CATEGORY';
+const removeDeletedCategoryType = 'REMOVE_DELETED_CATEGORY';
+const initialState = { categories: [], isLoading: true, deletedCategories: []};
+
+async function deleteCategoryForReal(categoryId, dispatch, deletedCategories) {
+  if (deletedCategories.some(c => c.categoryId === categoryId)) {
+    await fetch('/api/Categories/' + categoryId, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
+    dispatch({type: removeDeletedCategoryType, categoryId: categoryId});
+  }
+}
 
 export const actionCreators = {
   requestCategories: () => async (dispatch, getState) => {
@@ -12,18 +29,21 @@ export const actionCreators = {
 
     dispatch({ type: receiveCategoriesType, categories });
   },
-  deleteCategory: (categoryId) => async (dispatch) => {
-    const response = await fetch('/api/Categories/' + categoryId, {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+  deleteCategory: (categoryId, categoryName) => async (dispatch, getState) => {
+
+    const notificationOpts = {
+      message: 'Category ' + categoryName + ' deleted',
+      position: 'bl',
+      onRemove: () => { deleteCategoryForReal(categoryId, dispatch, getState().categories.deletedCategories) },
+      action: {
+        label: 'Undo',
+        callback: () => {dispatch({type: undoDeleteCategoryType, categoryId: categoryId })}
       }
-    });
-    await response.json();
+    };
     dispatch( { type: deleteCategoryType, categoryId: categoryId } );
+    dispatch(info(notificationOpts));
   },
-  saveNewCategory: (category) => async (dispatch, getState) => {
+  saveNewCategory: (category) => async (dispatch) => {
     const newIdResponse = await fetch('api/Accounts/newId');
     const newId = await newIdResponse.json();
     category.category = newId;
@@ -62,8 +82,24 @@ export const reducer = (state, action) => {
   if (action.type === deleteCategoryType) {
     return {
       ...state,
+      deletedCategories: state.deletedCategories.concat(state.categories.filter(el => el.categoryId === action.categoryId)),
       categories: state.categories.filter(el => el.categoryId !== action.categoryId )
     };
+  }
+
+  if (action.type === undoDeleteCategoryType) {
+    return {
+      ...state,
+      categories: state.categories.concat(state.deletedCategories.filter(el => el.categoryId === action.categoryId)),
+      deletedCategories: state.deletedCategories.filter(el => el.categoryId !== action.categoryId)
+    }
+  }
+
+  if (action.type === removeDeletedCategoryType) {
+    return {
+      ...state,
+      deletedCategories: state.deletedCategories.filter(el => el.categoryId !== action.categoryId)
+    }
   }
 
   if (action.type === receiveNewCategoryType) {

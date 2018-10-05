@@ -1,6 +1,7 @@
 ﻿import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { routerReducer, routerMiddleware } from 'react-router-redux';
+import {reducer as notifications} from 'react-notification-system-redux';
 import * as AccountNavList from './AccountNavList';
 import * as Account from './Account';
 import * as Categories from './Categories';
@@ -26,9 +27,11 @@ export default function configureStore(history, initialState) {
     enhancers.push(window.devToolsExtension());
   }
 
+  initialState = initialState || { };
   const rootReducer = combineReducers({
     ...reducers,
-    routing: routerReducer
+    routing: routerReducer,
+    notifications
   });
 
   return createStore(
