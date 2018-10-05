@@ -9,9 +9,11 @@ class CategoryList extends Component {
     super(props);
     this.deleteCategory = this.deleteCategory.bind(this);
   }
+
   deleteCategory(categoryId) {
     this.props.deleteCategory(categoryId);
   }
+  
   render() {
     return (<table className='table'>
       <thead>

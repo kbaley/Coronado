@@ -20,8 +20,8 @@ export const actionCreators = {
         'Content-Type': 'application/json'
       }
     });
-    const deleted = await response.json();
-    dispatch( { type: deleteCategoryType, categoryId: deleted.categoryId } );
+    await response.json();
+    dispatch( { type: deleteCategoryType, categoryId: categoryId } );
   },
   saveNewCategory: (category) => async (dispatch, getState) => {
     const newIdResponse = await fetch('api/Accounts/newId');
