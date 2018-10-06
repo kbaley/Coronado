@@ -14,8 +14,8 @@ namespace Coronado.Web.Domain
         public Account Account { get; set; }
         public string Vendor { get; set; }
         public string Description { get; set; }
-        public decimal? Debit { get; set; }
-        public decimal? Credit { get; set; }
+
+        public decimal Amount { get; set; }
         public bool IsReconciled { get; set; }
         public DateTime Date { get; set; }
         public Category Category { get; set; }

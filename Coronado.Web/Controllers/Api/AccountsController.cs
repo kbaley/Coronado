@@ -51,7 +51,9 @@ namespace Coronado.Web.Controllers.Api
             }
 
             _context.Entry(account).Collection(a => a.Transactions).Query().Include(t => t.Category).Load();
-            var transactionsModel = account.Transactions.Select(AccountWithTransactions.AccountTransaction.FromTransaction);
+            var transactionsModel = account.Transactions
+                .Select(AccountWithTransactions.AccountTransaction.FromTransaction)
+                .OrderByDescending(t => t.TransactionDate);
             var model = new AccountWithTransactions
             {
                 AccountId = account.AccountId,
@@ -122,7 +124,7 @@ namespace Coronado.Web.Controllers.Api
                 var transaction = new Transaction
                 {
                     Account = newAccount,
-                    Credit = account.StartingBalance,
+                    Amount = account.StartingBalance,
                     Date = account.StartDate,
                     Description = "Start Balance",
                     Category = category
