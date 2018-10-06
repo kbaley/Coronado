@@ -24,11 +24,11 @@ class TransactionList extends Component {
     return (<table className='table'>
       <thead>
         <tr>
+          <th>Date</th>
           <th>Vendor</th>
           <th>Category</th>
           <th>Description</th>
-          <th>Date</th>
-          <th></th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -43,10 +43,10 @@ class TransactionList extends Component {
 function TransactionRow(props) {
     var trx = props.transaction;
     return <tr>
+    <td>{new Date(trx.transactionDate).toLocaleDateString()}</td>
     <td>{trx.vendor}</td>
     <td>{trx.categoryName}</td>
     <td>{trx.description}</td>
-    <td>{new Date(trx.transactionDate).toLocaleDateString()}</td>
     <td>
       <a onClick={console.log} style={{cursor: 'pointer', color: "#000"}}>
       <Glyphicon glyph='pencil' style={{paddingRight: "10px"}}/>
