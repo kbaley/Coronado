@@ -52,7 +52,8 @@ namespace Coronado.Web.Controllers.Api
 
             _context.Entry(account).Collection(a => a.Transactions).Query().Include(t => t.Category).Load();
             var transactionsModel = account.Transactions.Select(AccountWithTransactions.AccountTransaction.FromTransaction);
-            var model = new AccountWithTransactions{
+            var model = new AccountWithTransactions
+            {
                 AccountId = account.AccountId,
                 Name = account.Name,
                 Transactions = transactionsModel
@@ -98,17 +99,41 @@ namespace Coronado.Web.Controllers.Api
 
         // POST: api/Accounts
         [HttpPost]
-        public async Task<IActionResult> PostAccount([FromBody] Account account)
+        public IActionResult PostAccount([FromBody] AccountForPosting account)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Accounts.Add(account);
-            await _context.SaveChangesAsync();
+            var newAccount = new Account
+            {
+                AccountId = Guid.NewGuid(),
+                Name = account.Name,
+                Currency = account.Currency,
+                CurrentBalance = account.StartingBalance
+            };
 
-            return CreatedAtAction("GetAccount", new { id = account.AccountId }, account);
+            using (var dbTrx = _context.Database.BeginTransaction())
+            {
+                var category = _context.Categories.First(c => c.Name == "Starting Balance");
+                _context.Accounts.Add(newAccount);
+
+                var transaction = new Transaction
+                {
+                    Account = newAccount,
+                    Credit = account.StartingBalance,
+                    Date = account.StartDate,
+                    Description = "Start Balance",
+                    Category = category
+                };
+                _context.Transactions.Add(transaction);
+                _context.SaveChanges();
+                dbTrx.Commit();
+            }
+            newAccount.Transactions.Clear();
+
+            return CreatedAtAction("GetAccount", new { id = newAccount.AccountId }, newAccount);
         }
 
         // DELETE: api/Accounts/5

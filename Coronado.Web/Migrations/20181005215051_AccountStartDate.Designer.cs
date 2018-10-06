@@ -3,15 +3,17 @@ using System;
 using Coronado.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Coronado.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181005215051_AccountStartDate")]
+    partial class AccountStartDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,15 +27,17 @@ namespace Coronado.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnName("account_id");
 
-                    b.Property<string>("Currency")
-                        .IsRequired()
-                        .HasColumnName("currency");
-
                     b.Property<decimal>("CurrentBalance")
                         .HasColumnName("current_balance");
 
                     b.Property<string>("Name")
                         .HasColumnName("name");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnName("start_date");
+
+                    b.Property<decimal>("StartingBalance")
+                        .HasColumnName("starting_balance");
 
                     b.HasKey("AccountId")
                         .HasName("pk_accounts");

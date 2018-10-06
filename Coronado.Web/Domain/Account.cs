@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Coronado.Web.Domain
 {
@@ -13,9 +14,12 @@ namespace Coronado.Web.Domain
 
         public string Name { get; set; }
 
-        public decimal StartingBalance { get; set; }
         public decimal CurrentBalance { get; set; }
 
-        public IList<Transaction> Transactions {get;set;}
+        [Required]
+        [DefaultValue("USD")]
+        public string Currency {get;set;}
+
+        public IList<Transaction> Transactions {get;set;} = new List<Transaction>();
     }
 }

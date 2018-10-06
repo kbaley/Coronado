@@ -4,6 +4,16 @@ using Coronado.Web.Domain;
 
 namespace Coronado.Web.Models
 {
+
+    public class AccountForPosting
+    {
+        public Guid AccountId { get; set; }
+        public string Name { get; set; }
+        public decimal StartingBalance { get; set; }
+        public DateTime StartDate { get; set; }
+        public string Currency { get; set; }
+    }
+
     public class AccountWithTransactions
     {
         public string Name { get; set; }

@@ -16,9 +16,8 @@ class NewAccount extends Component {
     this.saveNewAccount = this.saveNewAccount.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleChangeName = this.handleChangeName.bind(this);
-    this.handleChangeBalance = this.handleChangeBalance.bind(this);
     this.state = { show: false, 
-      account: {name: '', startingBalance: 0}
+      account: {name: '', startingBalance: 10, currency: 'USD', startDate: new Date().toLocaleDateString()}
      };
   }
 
@@ -40,7 +39,7 @@ class NewAccount extends Component {
 
   saveNewAccount() {
     this.props.saveNewAccount(this.state.account);
-    this.setState(...this.state, {account: {name: '', startingBalance: 0}});
+    this.setState(...this.state, {account: {...this.state.account, name: '', startingBalance: 0, currency: 'USD'}});
     this.handleClose();
   }
 
@@ -49,11 +48,9 @@ class NewAccount extends Component {
   }
 
   handleChangeName(e) {
-    this.setState( { account: {...this.state.account, name: e.target.value } } );
-  }
+    var name = e.target.name;
+    this.setState( { account: {...this.state.account, [name]: e.target.value } } );
 
-  handleChangeBalance(e) {
-    this.setState( { account: {...this.state.account, startingBalance: e.target.value } } );
   }
 
   render() {
@@ -71,7 +68,7 @@ class NewAccount extends Component {
                 <Col componentClass={ControlLabel} sm={3}>Account Name</Col>
                 <Col sm={9}>
               <FormControl
-                type="text" ref="inputName"
+                type="text" ref="inputName" name="name"
                 value={this.state.account.name}
                 onChange={this.handleChangeName}
               />
@@ -80,9 +77,22 @@ class NewAccount extends Component {
               <FormGroup>
                 <Col componentClass={ControlLabel} sm={3}>Starting Balance</Col>
                 <Col sm={3}>
-                  <FormControl type="number" value={this.state.account.startingBalance}
-                    onChange={this.handleChangeBalance}
-                  />
+                  <FormControl type="number" name="startingBalance" value={this.state.account.startingBalance}
+                    onChange={this.handleChangeName} />
+                </Col>
+              </FormGroup>
+              <FormGroup>
+                <Col componentClass={ControlLabel} sm={3}>Starting Date</Col>
+                <Col sm={5}>
+                  <FormControl type="text" name="startDate" value={this.state.account.startDate}
+                    onChange={this.handleChangeName} placeholder="mm/dd/yyyy" />
+                </Col>
+              </FormGroup>
+              <FormGroup>
+                <Col componentClass={ControlLabel} sm={3}>Currency</Col>
+                <Col sm={3}>
+                  <FormControl type="text" name="currency" value={this.state.account.currency}
+                    onChange={this.handleChangeName} />
                 </Col>
               </FormGroup>
             </Form>

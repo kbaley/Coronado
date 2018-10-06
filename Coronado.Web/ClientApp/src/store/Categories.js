@@ -22,7 +22,7 @@ async function deleteCategoryForReal(categoryId, dispatch, deletedCategories) {
 }
 
 export const actionCreators = {
-  requestCategories: () => async (dispatch, getState) => {
+  requestCategories: () => async (dispatch) => {
     dispatch({ type: requestCategoriesType });
     const response = await fetch('api/Categories');
     const categories = await response.json();
