@@ -46,13 +46,21 @@ class AccountNavList extends Component {
             <LinkContainer to={'/account/' + account.accountId} key={account.accountId}>
               <NavItem>
                 <Glyphicon glyph='piggy-bank' /> {account.name}
-                <div style={{float: "right"}}>{account.currentBalance}</div>
+                <div style={{float: "right"}}>
+                  <CurrencyFormat value={account.currentBalance} />
+                </div>
               </NavItem>
             </LinkContainer>
           )}
       </Nav>
     );
   }
+}
+
+function CurrencyFormat(props) {
+  return (
+    <span>{Number(props.value).toLocaleString("en-US", {style: "currency", currency: "USD", minimumFractionDigits: 2})}</span>
+  );
 }
 
 export default withRouter(connect(
