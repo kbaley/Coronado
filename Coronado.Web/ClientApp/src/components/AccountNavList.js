@@ -6,6 +6,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
 import { withRouter } from 'react-router-dom';
+import './AccountNavList.css'
+import { CurrencyFormat } from './CurrencyFormat';
 
 class AccountNavList extends Component {
   displayName = AccountNavList.name;
@@ -45,7 +47,9 @@ class AccountNavList extends Component {
           this.props.accounts.map(account =>
             <LinkContainer to={'/account/' + account.accountId} key={account.accountId}>
               <NavItem>
-                <Glyphicon glyph='piggy-bank' /> {account.name}
+                <div className='accountName'>
+                  <Glyphicon glyph='piggy-bank' /> {account.name}
+                </div>
                 <div style={{float: "right"}}>
                   <CurrencyFormat value={account.currentBalance} />
                 </div>
@@ -55,12 +59,6 @@ class AccountNavList extends Component {
       </Nav>
     );
   }
-}
-
-function CurrencyFormat(props) {
-  return (
-    <span>{Number(props.value).toLocaleString("en-US", {style: "currency", currency: "USD", minimumFractionDigits: 2})}</span>
-  );
 }
 
 export default withRouter(connect(

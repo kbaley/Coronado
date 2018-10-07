@@ -56,8 +56,6 @@ class NewAccount extends Component {
   render() {
     return (
       <Nav>
-        <NavItem>
-        <Button onClick={this.newAccount}>New Account</Button>
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>New account</Modal.Title>
@@ -101,6 +99,8 @@ class NewAccount extends Component {
             <Button onClick={this.saveNewAccount}>Save</Button>
           </Modal.Footer>
         </Modal>
+        <NavItem>
+        <Button onClick={this.newAccount}>New Account</Button>
         </NavItem>
       </Nav>
     );
