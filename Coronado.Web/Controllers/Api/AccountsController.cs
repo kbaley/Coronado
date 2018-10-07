@@ -29,9 +29,19 @@ namespace Coronado.Web.Controllers.Api
 
         // GET: api/Accounts
         [HttpGet]
-        public IEnumerable<Account> GetAccounts()
+        public IEnumerable<AccountForListing> GetAccounts()
         {
-            return _context.Accounts;
+            var accounts = _context.Accounts.Include(a => a.Transactions).ToList();
+            var moo = accounts.Select(a => new AccountForListing());
+            var accountModel = accounts.Select(a =>
+                new AccountForListing{
+                    AccountId = a.AccountId,
+                    Name = a.Name,
+                    CurrentBalance = a.CurrentBalance
+                }
+            );
+
+            return accountModel;
         }
 
         // GET:sapi/Accounts/5
@@ -113,7 +123,6 @@ namespace Coronado.Web.Controllers.Api
                 AccountId = Guid.NewGuid(),
                 Name = account.Name,
                 Currency = account.Currency,
-                CurrentBalance = account.StartingBalance
             };
 
             using (var dbTrx = _context.Database.BeginTransaction())

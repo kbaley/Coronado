@@ -46,6 +46,7 @@ class AccountNavList extends Component {
             <LinkContainer to={'/account/' + account.accountId} key={account.accountId}>
               <NavItem>
                 <Glyphicon glyph='piggy-bank' /> {account.name}
+                <div style={{float: "right"}}>{account.currentBalance}</div>
               </NavItem>
             </LinkContainer>
           )}

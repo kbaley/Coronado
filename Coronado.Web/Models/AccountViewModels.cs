@@ -14,6 +14,13 @@ namespace Coronado.Web.Models
         public string Currency { get; set; }
     }
 
+    public class AccountForListing
+    {
+        public string Name { get; set; }
+        public Guid AccountId { get; set; }
+        public decimal CurrentBalance { get; set; }
+    }
+
     public class AccountWithTransactions
     {
         public string Name { get; set; }
