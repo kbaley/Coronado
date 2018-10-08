@@ -32,7 +32,6 @@ namespace Coronado.Web.Controllers.Api
         public IEnumerable<AccountForListing> GetAccounts()
         {
             var accounts = _context.Accounts.Include(a => a.Transactions).ToList();
-            var moo = accounts.Select(a => new AccountForListing());
             var accountModel = accounts.Select(a =>
                 new AccountForListing{
                     AccountId = a.AccountId,
@@ -142,9 +141,17 @@ namespace Coronado.Web.Controllers.Api
                 _context.SaveChanges();
                 dbTrx.Commit();
             }
-            newAccount.Transactions.Clear();
+            var transactionsModel = newAccount.Transactions
+                .Select(AccountWithTransactions.AccountTransaction.FromTransaction)
+                .OrderByDescending(t => t.TransactionDate);
+            var model = new AccountForListing
+            {
+                AccountId = newAccount.AccountId,
+                Name = newAccount.Name,
+                CurrentBalance = newAccount.CurrentBalance
+            };
 
-            return CreatedAtAction("GetAccount", new { id = newAccount.AccountId }, newAccount);
+            return CreatedAtAction("GetAccount", new { id = newAccount.AccountId }, model);
         }
 
         // DELETE: api/Accounts/5
