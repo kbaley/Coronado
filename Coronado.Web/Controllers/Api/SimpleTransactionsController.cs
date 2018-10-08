@@ -29,8 +29,13 @@ namespace Coronado.Web.Controllers.Api
         [HttpPost]
         public async Task<IActionResult> PostSimpleTransaction([FromBody] SimpleTransaction transaction)
         {
-            try {
-            var account = _context.Accounts.FirstOrDefault(a => a.Name.Equals(transaction.AccountName, StringComparison.CurrentCultureIgnoreCase));
+            if (transaction.TransactionId == null) transaction.TransactionId = Guid.NewGuid();
+            Account account;
+            if (transaction.AccountId != null) {
+                account = await _context.Accounts.FindAsync(transaction.AccountId);
+            } else {
+                account = _context.Accounts.FirstOrDefault(a => a.Name.Equals(transaction.AccountName, StringComparison.CurrentCultureIgnoreCase));
+            }
             var category = _context.Categories.FirstOrDefault(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase)));
 
             var newTransaction = new Transaction {
@@ -39,16 +44,14 @@ namespace Coronado.Web.Controllers.Api
                 Vendor = transaction.Vendor,
                 Description = transaction.Description,
                 Account = account,
-                Category = category
+                Category = category,
+                Amount = transaction.Amount
             };
 
             _context.Transactions.Add(newTransaction);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTransaction", new { id = newTransaction.TransactionId });
-            } catch (Exception exception) {
-                return Ok(exception.Message);
-            }
+            return CreatedAtAction("GetTransaction", new { id = newTransaction.TransactionId }, newTransaction);
         }
     }
 

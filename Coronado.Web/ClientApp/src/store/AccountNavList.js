@@ -41,7 +41,6 @@ export const actionCreators = {
       },
       body: JSON.stringify(account)
     });
-    console.log(response);
     const newAccount = await response.json();
 
     dispatch({ type: receiveNewAccountType, newAccount });

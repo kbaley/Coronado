@@ -11,6 +11,19 @@ class TransactionList extends Component {
   constructor(props) {
     super(props);
     this.deleteTransaction = this.deleteTransaction.bind(this);
+    this.handleChangeField = this.handleChangeField.bind(this);
+    this.saveTransaction = this.saveTransaction.bind(this);
+    this.handleChangeDebit = this.handleChangeDebit.bind(this);
+    this.handleChangeCredit = this.handleChangeCredit.bind(this);
+    this.state = {
+      trx: {
+        transactionDate: new Date().toLocaleDateString(), 
+        vendor: '', 
+        categoryName: '',
+        description: '',
+        accountId: props.accountId
+      }
+    }
   }
 
   componentDidMount() {
@@ -19,6 +32,29 @@ class TransactionList extends Component {
 
   deleteTransaction(transactionId) {
       this.props.deleteTransaction(transactionId);
+  }
+
+  saveTransaction() {
+    this.props.saveTransaction(this.state.trx);
+  }
+
+  handleChangeField(e) {
+    var name = e.target.name;
+    this.setState( { trx: {...this.state.trx, [name]: e.target.value } } );
+  }
+
+  handleChangeDebit(e) {
+    if (e.targetValue !== '') {
+      var amount = 0 - parseFloat(e.target.value);
+      this.setState( { trx: {...this.state.trx, amount: amount}});
+    }
+  }
+
+  handleChangeCredit(e) {
+    if (e.targetValue !== '') {
+      var amount = parseFloat(e.target.value);
+      this.setState( { trx: {...this.state.trx, amount: amount}});
+    }
   }
 
   render() {
@@ -35,6 +71,17 @@ class TransactionList extends Component {
         </tr>
       </thead>
       <tbody>
+        <tr>
+          <td>
+            <Glyphicon glyph="ok" style={{color: "green", cursor: "pointer"}} onClick={this.saveTransaction} />
+          </td>
+          <td><input type="text" name="date" value={this.state.trx.transactionDate} onChange={this.handleChangeField}/></td>
+          <td><input type="text" name="vendor" value={this.state.trx.vendor} onChange={this.handleChangeField} /></td>
+          <td><input type="text" name="categoryName" value={this.state.trx.category} onChange={this.handleChangeField} /></td>
+          <td><input type="text" name="description" value={this.state.trx.description} onChange={this.handleChangeField} /></td>
+          <td><input type="text" name="debit" value={this.state.debit} onChange={this.handleChangeDebit} /></td>
+          <td><input type="text" name="credit" value={this.state.credit} onChange={this.handleChangeCredit} /></td>
+        </tr>
         {this.props.transactionList ? this.props.transactionList.map(trx => 
         <TransactionRow key={trx.transactionId} transaction={trx} onDelete={() => this.deleteTransaction(trx.transactionId)}/>
         ) : <tr/>}

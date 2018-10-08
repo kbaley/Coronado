@@ -10,5 +10,7 @@ namespace Coronado.Web.Models
         public DateTime TransactionDate { get; set; }
         public string CategoryName { get; set; }
         public string AccountName { get; set; }
+        public decimal Amount { get; set; }
+        public Guid AccountId { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿const deleteTransactionType = 'DELETE_TRANSACTION';
 const setTransactionListType = 'SET_TRANSACTION';
+const receiveNewTransactionType = 'RECEIVE_TRANSACTION';
 
 const initialState = { };
 
@@ -17,6 +18,21 @@ export const actionCreators = {
     });
     const deletedTrx = await response.json();
     dispatch( { type: deleteTransactionType, transactionId: deletedTrx.transactionId } );
+  },
+
+  saveTransaction: (transaction) => async (dispatch) => {
+
+    const response = await fetch('/api/SimpleTransactions', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(transaction)
+    });
+    const newTransaction = await response.json();
+
+    dispatch({ type: receiveNewTransactionType, newTransaction });
   }
 };
 
@@ -33,6 +49,13 @@ export const reducer = (state, action) => {
     return {
       ...state,
       transactionList: state.transactionList.filter(el => el.transactionId !== action.transactionId )
+    }
+  }
+
+  if (action.type === receiveNewTransactionType) {
+    return {
+      ...state,
+      transactionList: state.transactionList.concat(action.newTransaction)
     }
   }
 
