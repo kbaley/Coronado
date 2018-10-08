@@ -48,10 +48,20 @@ namespace Coronado.Web.Controllers.Api
                 Amount = transaction.Amount
             };
 
+            var model = new AccountTransaction {
+                TransactionId = newTransaction.TransactionId,
+                TransactionDate = newTransaction.Date,
+                Vendor = newTransaction.Vendor,
+                Description = newTransaction.Description,
+                Amount = newTransaction.Amount,
+                CategoryId = newTransaction.Category.CategoryId,
+                CategoryName = newTransaction.Category.Name
+            };
+
             _context.Transactions.Add(newTransaction);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTransaction", new { id = newTransaction.TransactionId }, newTransaction);
+            return CreatedAtAction("GetTransaction", new { id = model.TransactionId }, model);
         }
     }
 

@@ -64,7 +64,7 @@ namespace Coronado.Web.Controllers.Api
             _context.Entry(account).Collection(a => a.Transactions).Query().Include(t => t.Category).Load();
             var transactionsModel = account.Transactions
                 .OrderByDescending(t => t.Date)
-                .Select(AccountWithTransactions.AccountTransaction.FromTransaction);
+                .Select(AccountTransaction.FromTransaction);
             var model = new AccountWithTransactions
             {
                 AccountId = account.AccountId,
@@ -144,7 +144,7 @@ namespace Coronado.Web.Controllers.Api
                 dbTrx.Commit();
             }
             var transactionsModel = newAccount.Transactions
-                .Select(AccountWithTransactions.AccountTransaction.FromTransaction)
+                .Select(AccountTransaction.FromTransaction)
                 .OrderByDescending(t => t.TransactionDate);
             var model = new AccountForListing
             {

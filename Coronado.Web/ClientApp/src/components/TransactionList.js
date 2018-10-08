@@ -15,6 +15,7 @@ class TransactionList extends Component {
     this.saveTransaction = this.saveTransaction.bind(this);
     this.handleChangeDebit = this.handleChangeDebit.bind(this);
     this.handleChangeCredit = this.handleChangeCredit.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
     this.state = {
       trx: {
         transactionDate: new Date().toLocaleDateString(), 
@@ -36,11 +37,19 @@ class TransactionList extends Component {
 
   saveTransaction() {
     this.props.saveTransaction(this.state.trx);
+    this.setState(...this.state, {trx: {...this.state.trx, vendor: '', categoryName: '', description: '', amount: ''}});
+    this.refs["inputDate"].focus();
   }
 
   handleChangeField(e) {
     var name = e.target.name;
     this.setState( { trx: {...this.state.trx, [name]: e.target.value } } );
+  }
+  handleKeyPress(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      this.saveTransaction();
+    }
   }
 
   handleChangeDebit(e) {
@@ -71,16 +80,19 @@ class TransactionList extends Component {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr key="new-transaction">
           <td>
             <Glyphicon glyph="ok" style={{color: "green", cursor: "pointer"}} onClick={this.saveTransaction} />
           </td>
-          <td><input type="text" name="date" value={this.state.trx.transactionDate} onChange={this.handleChangeField}/></td>
+          <td><input type="text" name="transactionDate" ref="inputDate"
+            value={this.state.trx.transactionDate} onChange={this.handleChangeField}/></td>
           <td><input type="text" name="vendor" value={this.state.trx.vendor} onChange={this.handleChangeField} /></td>
           <td><input type="text" name="categoryName" value={this.state.trx.category} onChange={this.handleChangeField} /></td>
           <td><input type="text" name="description" value={this.state.trx.description} onChange={this.handleChangeField} /></td>
-          <td><input type="text" name="debit" value={this.state.debit} onChange={this.handleChangeDebit} /></td>
-          <td><input type="text" name="credit" value={this.state.credit} onChange={this.handleChangeCredit} /></td>
+          <td><input type="text" name="debit" value={this.state.debit} 
+            onChange={this.handleChangeDebit} onKeyPress={this.handleKeyPress} /></td>
+          <td><input type="text" name="credit" value={this.state.credit} 
+            onChange={this.handleChangeCredit} onKeyPress={this.handleKeyPress} /></td>
         </tr>
         {this.props.transactionList ? this.props.transactionList.map(trx => 
         <TransactionRow key={trx.transactionId} transaction={trx} onDelete={() => this.deleteTransaction(trx.transactionId)}/>

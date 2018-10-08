@@ -1,7 +1,6 @@
 ﻿import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import { Nav, NavItem } from 'react-bootstrap';
-import { Button,Modal,Form,FormControl,FormGroup,ControlLabel,Col } from 'react-bootstrap';
+import { Button, Modal, Form, FormControl, FormGroup, ControlLabel, Col } from 'react-bootstrap';
 import { actionCreators } from '../store/AccountNavList';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -16,9 +15,10 @@ class NewAccount extends Component {
     this.saveNewAccount = this.saveNewAccount.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleChangeName = this.handleChangeName.bind(this);
-    this.state = { show: false, 
-      account: {name: '', startingBalance: 10, currency: 'USD', startDate: new Date().toLocaleDateString()}
-     };
+    this.state = {
+      show: false,
+      account: { name: '', startingBalance: 10, currency: 'USD', startDate: new Date().toLocaleDateString() }
+    };
   }
 
   componentDidMount() {
@@ -30,32 +30,34 @@ class NewAccount extends Component {
   }
 
   newAccount() {
-    this.setState({show:true});
-    let node = ReactDOM.findDOMNode(this.refs.inputName);
-    if (node && node.focus instanceof Function)
-      node.focus();
+    this.setState({ show: true });
     return false;
   }
 
   saveNewAccount() {
     this.props.saveNewAccount(this.state.account);
-    this.setState(...this.state, {account: {...this.state.account, name: '', startingBalance: 0, currency: 'USD'}});
+    this.setState(...this.state, { account: { ...this.state.account, name: '', startingBalance: 0, currency: 'USD' } });
     this.handleClose();
   }
 
   handleClose() {
-    this.setState({show:false});
+    this.setState({ show: false });
   }
 
   handleChangeName(e) {
     var name = e.target.name;
-    this.setState( { account: {...this.state.account, [name]: e.target.value } } );
+    this.setState({ account: { ...this.state.account, [name]: e.target.value } });
 
   }
 
   render() {
     return (
-      <Nav>
+      <div>
+        <Nav>
+          <NavItem>
+            <Button onClick={this.newAccount}>New Account</Button>
+          </NavItem>
+        </Nav>
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>New account</Modal.Title>
@@ -65,11 +67,11 @@ class NewAccount extends Component {
               <FormGroup>
                 <Col componentClass={ControlLabel} sm={3}>Account Name</Col>
                 <Col sm={9}>
-              <FormControl
-                type="text" ref="inputName" name="name"
-                value={this.state.account.name}
-                onChange={this.handleChangeName}
-              />
+                  <FormControl autoFocus
+                    type="text" ref="inputName" name="name"
+                    value={this.state.account.name}
+                    onChange={this.handleChangeName}
+                  />
                 </Col>
               </FormGroup>
               <FormGroup>
@@ -99,10 +101,7 @@ class NewAccount extends Component {
             <Button onClick={this.saveNewAccount}>Save</Button>
           </Modal.Footer>
         </Modal>
-        <NavItem>
-        <Button onClick={this.newAccount}>New Account</Button>
-        </NavItem>
-      </Nav>
+      </div>
     );
   }
 }
