@@ -4,6 +4,7 @@ import { DeleteIcon } from './DeleteIcon';
 import { actionCreators } from '../store/TransactionList';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { DecimalFormat } from './DecimalFormat'
 
 class TransactionList extends Component {
   displayName = TransactionList.name;
@@ -24,11 +25,13 @@ class TransactionList extends Component {
     return (<table className='table'>
       <thead>
         <tr>
+          <th></th>
           <th>Date</th>
           <th>Vendor</th>
           <th>Category</th>
           <th>Description</th>
-          <th>Actions</th>
+          <th>Debit</th>
+          <th>Credit</th>
         </tr>
       </thead>
       <tbody>
@@ -43,16 +46,18 @@ class TransactionList extends Component {
 function TransactionRow(props) {
     var trx = props.transaction;
     return <tr>
-    <td>{new Date(trx.transactionDate).toLocaleDateString()}</td>
-    <td>{trx.vendor}</td>
-    <td>{trx.categoryName}</td>
-    <td>{trx.description}</td>
     <td>
       <a onClick={console.log} style={{cursor: 'pointer', color: "#000"}}>
       <Glyphicon glyph='pencil' style={{paddingRight: "10px"}}/>
       </a>
       <DeleteIcon onDelete={props.onDelete} />
     </td>
+    <td>{new Date(trx.transactionDate).toLocaleDateString()}</td>
+    <td>{trx.vendor}</td>
+    <td>{trx.categoryName}</td>
+    <td>{trx.description}</td>
+    <td><DecimalFormat isDebit={true} amount={trx.amount} /></td>
+    <td><DecimalFormat isCredit={true} amount={trx.amount} /></td>
   </tr>
 }
 

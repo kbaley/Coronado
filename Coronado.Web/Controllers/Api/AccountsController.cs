@@ -32,7 +32,9 @@ namespace Coronado.Web.Controllers.Api
         public IEnumerable<AccountForListing> GetAccounts()
         {
             var accounts = _context.Accounts.Include(a => a.Transactions).ToList();
-            var accountModel = accounts.Select(a =>
+            var accountModel = accounts
+                .OrderBy(a => a.Name)
+                .Select(a =>
                 new AccountForListing{
                     AccountId = a.AccountId,
                     Name = a.Name,
@@ -61,8 +63,8 @@ namespace Coronado.Web.Controllers.Api
 
             _context.Entry(account).Collection(a => a.Transactions).Query().Include(t => t.Category).Load();
             var transactionsModel = account.Transactions
-                .Select(AccountWithTransactions.AccountTransaction.FromTransaction)
-                .OrderByDescending(t => t.TransactionDate);
+                .OrderByDescending(t => t.Date)
+                .Select(AccountWithTransactions.AccountTransaction.FromTransaction);
             var model = new AccountWithTransactions
             {
                 AccountId = account.AccountId,

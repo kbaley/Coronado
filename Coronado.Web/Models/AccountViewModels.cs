@@ -35,6 +35,8 @@ namespace Coronado.Web.Models
             public DateTime TransactionDate { get; set; }
             public Guid? CategoryId { get; set; }
             public string CategoryName { get; set; }
+            public decimal Amount { get; set; }
+            public decimal RunningTotal { get; set; }
 
             public static AccountTransaction FromTransaction(Transaction t)
             {
@@ -44,6 +46,7 @@ namespace Coronado.Web.Models
                     Vendor = t.Vendor,
                     Description = t.Description,
                     TransactionDate = t.Date,
+                    Amount = t.Amount,
                     CategoryId = (t.Category != null ? t.Category.CategoryId : Guid.Empty),
                     CategoryName = (t.Category != null ? t.Category.Name : "")
                 };
