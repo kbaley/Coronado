@@ -111,6 +111,7 @@ namespace Coronado.Web.Controllers.Api
             }
 
             var transaction = await _context.Transactions.FindAsync(id);
+            _context.Entry(transaction).Reference(t => t.Account).Load();
             if (transaction == null)
             {
                 return NotFound();
@@ -119,7 +120,10 @@ namespace Coronado.Web.Controllers.Api
             _context.Transactions.Remove(transaction);
             await _context.SaveChangesAsync();
 
-            return Ok(transaction);
+            var transactions = _context.Transactions.Include(t => t.Category)
+                .Where(t => t.Account.AccountId == transaction.Account.AccountId).GetTransactionModels();
+
+            return Ok(transactions);
         }
 
         private bool TransactionExists(Guid id)

@@ -16,8 +16,8 @@ export const actionCreators = {
         'Content-Type': 'application/json'
       }
     });
-    const deletedTrx = await response.json();
-    dispatch( { type: deleteTransactionType, transactionId: deletedTrx.transactionId } );
+    const deleteTransactionModel = await response.json();
+    dispatch( { type: deleteTransactionType, deleteTransactionModel } );
   },
 
   saveTransaction: (transaction) => async (dispatch) => {
@@ -48,20 +48,15 @@ export const reducer = (state, action) => {
   if (action.type === deleteTransactionType) {
     return {
       ...state,
-      transactionList: state.transactionList.filter(el => el.transactionId !== action.transactionId )
+      transactionList: action.deleteTransactionModel
     }
   }
 
   if (action.type === receiveNewTransactionType) {
 
-    console.log(action.newTransactionModel);
-    const left = state.transactionList.slice(0, action.newTransactionModel.Position);
-    const right = state.transactionList.slice(action.newTransactionModel.Position);
-    console.log(left);
-    console.log(right);
     return {
       ...state,
-      transactionList: left.concat(action.newTransactionModel.Transaction, right)
+      transactionList: action.newTransactionModel
     }
   }
 

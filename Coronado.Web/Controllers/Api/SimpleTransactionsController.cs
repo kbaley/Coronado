@@ -53,22 +53,8 @@ namespace Coronado.Web.Controllers.Api
             _context.Transactions.Add(newTransaction);
             await _context.SaveChangesAsync();
 
-            dynamic model = new ExpandoObject();
-            var transactionModel = new AccountTransaction {
-                TransactionId = newTransaction.TransactionId,
-                TransactionDate = newTransaction.Date,
-                Vendor = newTransaction.Vendor,
-                Description = newTransaction.Description,
-                Amount = newTransaction.Amount,
-                CategoryId = newTransaction.Category.CategoryId,
-                CategoryName = newTransaction.Category.Name
-            };
-            model.Transaction = transactionModel;
-
-            var indexedResults = account.Transactions
-                .OrderByDescending(t => t.Date)
-                .Select((item, index) => new {index, item});
-            model.Position = indexedResults.First(i => i.item.TransactionId == newTransaction.TransactionId).index;
+            var transactions = _context.Transactions.Include(t => t.Category);
+            var model = transactions.Where(t => t.Account.AccountId == account.AccountId).GetTransactionModels();
 
             return CreatedAtAction("GetTransaction", new { id = newTransaction.TransactionId }, model);
         }

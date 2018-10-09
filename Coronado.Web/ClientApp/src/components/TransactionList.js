@@ -121,6 +121,7 @@ class TransactionList extends Component {
 
 function TransactionRow(props) {
     var trx = props.transaction;
+    console.log(trx);
     return <tr>
     <td>
       <a onClick={console.log} style={{cursor: 'pointer', color: "#000"}}>
