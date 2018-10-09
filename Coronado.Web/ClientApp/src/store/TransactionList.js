@@ -30,9 +30,9 @@ export const actionCreators = {
       },
       body: JSON.stringify(transaction)
     });
-    const newTransaction = await response.json();
+    const newTransactionModel = await response.json();
 
-    dispatch({ type: receiveNewTransactionType, newTransaction });
+    dispatch({ type: receiveNewTransactionType, newTransactionModel });
   }
 };
 
@@ -53,9 +53,15 @@ export const reducer = (state, action) => {
   }
 
   if (action.type === receiveNewTransactionType) {
+
+    console.log(action.newTransactionModel);
+    const left = state.transactionList.slice(0, action.newTransactionModel.Position);
+    const right = state.transactionList.slice(action.newTransactionModel.Position);
+    console.log(left);
+    console.log(right);
     return {
       ...state,
-      transactionList: state.transactionList.concat(action.newTransaction)
+      transactionList: left.concat(action.newTransactionModel.Transaction, right)
     }
   }
 

@@ -37,7 +37,8 @@ class TransactionList extends Component {
 
   saveTransaction() {
     this.props.saveTransaction(this.state.trx);
-    this.setState(...this.state, {trx: {...this.state.trx, vendor: '', categoryName: '', description: '', amount: ''}});
+    this.setState(...this.state, 
+      {trx: {...this.state.trx, vendor: '', categoryName: '', description: '', amount: '', debit: '', credit: ''}});
     this.refs["inputDate"].focus();
   }
 
@@ -87,7 +88,7 @@ class TransactionList extends Component {
           <td><input type="text" name="transactionDate" ref="inputDate"
             value={this.state.trx.transactionDate} onChange={this.handleChangeField}/></td>
           <td><input type="text" name="vendor" value={this.state.trx.vendor} onChange={this.handleChangeField} /></td>
-          <td><input type="text" name="categoryName" value={this.state.trx.category} onChange={this.handleChangeField} /></td>
+          <td><input type="text" name="categoryName" value={this.state.trx.categoryName} onChange={this.handleChangeField} /></td>
           <td><input type="text" name="description" value={this.state.trx.description} onChange={this.handleChangeField} /></td>
           <td><input type="text" name="debit" value={this.state.debit} 
             onChange={this.handleChangeDebit} onKeyPress={this.handleKeyPress} /></td>

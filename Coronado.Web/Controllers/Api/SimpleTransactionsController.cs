@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Dynamic;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,6 +37,7 @@ namespace Coronado.Web.Controllers.Api
             } else {
                 account = _context.Accounts.FirstOrDefault(a => a.Name.Equals(transaction.AccountName, StringComparison.CurrentCultureIgnoreCase));
             }
+            await _context.Entry(account).Collection(a => a.Transactions).LoadAsync();
             var category = _context.Categories.FirstOrDefault(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase)));
 
             var newTransaction = new Transaction {
@@ -48,7 +50,11 @@ namespace Coronado.Web.Controllers.Api
                 Amount = transaction.Amount
             };
 
-            var model = new AccountTransaction {
+            _context.Transactions.Add(newTransaction);
+            await _context.SaveChangesAsync();
+
+            dynamic model = new ExpandoObject();
+            var transactionModel = new AccountTransaction {
                 TransactionId = newTransaction.TransactionId,
                 TransactionDate = newTransaction.Date,
                 Vendor = newTransaction.Vendor,
@@ -57,11 +63,14 @@ namespace Coronado.Web.Controllers.Api
                 CategoryId = newTransaction.Category.CategoryId,
                 CategoryName = newTransaction.Category.Name
             };
+            model.Transaction = transactionModel;
 
-            _context.Transactions.Add(newTransaction);
-            await _context.SaveChangesAsync();
+            var indexedResults = account.Transactions
+                .OrderByDescending(t => t.Date)
+                .Select((item, index) => new {index, item});
+            model.Position = indexedResults.First(i => i.item.TransactionId == newTransaction.TransactionId).index;
 
-            return CreatedAtAction("GetTransaction", new { id = model.TransactionId }, model);
+            return CreatedAtAction("GetTransaction", new { id = newTransaction.TransactionId }, model);
         }
     }
 
