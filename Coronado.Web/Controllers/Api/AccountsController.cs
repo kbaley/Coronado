@@ -7,6 +7,7 @@ using Coronado.Web.Domain;
 using Coronado.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Coronado.Web.Controllers;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -62,9 +63,7 @@ namespace Coronado.Web.Controllers.Api
             }
 
             _context.Entry(account).Collection(a => a.Transactions).Query().Include(t => t.Category).Load();
-            var transactionsModel = account.Transactions
-                .OrderByDescending(t => t.Date)
-                .Select(AccountTransaction.FromTransaction);
+            var transactionsModel = account.Transactions.GetTransactionModels();
             var model = new AccountWithTransactions
             {
                 AccountId = account.AccountId,

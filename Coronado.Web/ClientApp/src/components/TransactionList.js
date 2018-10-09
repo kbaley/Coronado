@@ -92,6 +92,7 @@ class TransactionList extends Component {
           <th>Description</th>
           <th>Debit</th>
           <th>Credit</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -108,6 +109,7 @@ class TransactionList extends Component {
             onChange={this.handleChangeDebit} onKeyPress={this.handleKeyPress} /></td>
           <td><input type="text" name="credit" value={this.state.credit} 
             onChange={this.handleChangeCredit} onKeyPress={this.handleKeyPress} /></td>
+            <td></td>
         </tr>
         {this.props.transactionList ? this.props.transactionList.map(trx => 
         <TransactionRow key={trx.transactionId} transaction={trx} onDelete={() => this.deleteTransaction(trx.transactionId)}/>
@@ -132,6 +134,7 @@ function TransactionRow(props) {
     <td>{trx.description}</td>
     <td><DecimalFormat isDebit={true} amount={trx.amount} /></td>
     <td><DecimalFormat isCredit={true} amount={trx.amount} /></td>
+    <td>{Number(trx.runningTotal).toFixed(2)}</td>
   </tr>
 }
 
