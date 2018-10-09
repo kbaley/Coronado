@@ -5,6 +5,7 @@ import { actionCreators } from '../store/TransactionList';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { DecimalFormat } from './DecimalFormat'
+import * as Mousetrap from 'mousetrap';
 
 class TransactionList extends Component {
   displayName = TransactionList.name;
@@ -16,6 +17,7 @@ class TransactionList extends Component {
     this.handleChangeDebit = this.handleChangeDebit.bind(this);
     this.handleChangeCredit = this.handleChangeCredit.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.setFocus = this.setFocus.bind(this);
     this.state = {
       trx: {
         transactionDate: new Date().toLocaleDateString(), 
@@ -27,8 +29,20 @@ class TransactionList extends Component {
     }
   }
 
+
   componentDidMount() {
       this.props.setTransactionList(this.props.transactions);
+      Mousetrap.bind('n t', this.setFocus);
+  }
+
+  componentWillUnmount() {
+    Mousetrap.unbind('n t');
+  }
+
+  setFocus(e) {
+    e.preventDefault();
+    this.refs["inputDate"].focus();
+    return false;
   }
 
   deleteTransaction(transactionId) {
