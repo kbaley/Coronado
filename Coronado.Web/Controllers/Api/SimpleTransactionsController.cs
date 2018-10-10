@@ -52,8 +52,9 @@ namespace Coronado.Web.Controllers.Api
 
             _context.Transactions.Add(newTransaction);
             await _context.SaveChangesAsync();
+            newTransaction.Account = null;
 
-            return CreatedAtAction("GetTransaction", new { id = newTransaction.TransactionId }, newTransaction.ToAccountTransaction());
+            return CreatedAtAction("GetTransaction", new { id = newTransaction.TransactionId }, newTransaction);
         }
     }
 

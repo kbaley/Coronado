@@ -1,12 +1,11 @@
 ﻿import { push } from 'react-router-redux';
-import { filter, orderBy, concat, forEachRight, find } from 'lodash'; 
+import { filter, orderBy, concat, forEachRight } from 'lodash'; 
 const requestAccountsType = 'REQUEST_ACCOUNT_LIST';
 const selectAccountType = 'SELECT_ACCOUNT';
 const receiveAccountsType = 'RECEIVE_ACCOUNT_LIST';
 const receiveNewAccountType = 'RECEIVE_NEW_ACCOUNT';
 const deleteAccountType = 'DELETE_ACCOUNT';
 const deleteTransactionType = 'DELETE_TRANSACTION';
-const setTransactionListType = 'SET_TRANSACTION';
 const receiveNewTransactionType = 'RECEIVE_NEW_TRANSACTION';
 const requestAccountDataType = 'REQUEST_ACCOUNT_DATA';
 const receiveAccountDataType = 'RECEIVE_ACCOUNT_DATA';
@@ -14,7 +13,6 @@ const initialState = { isAccountLoading: true, isNavListLoading: true};
 
 function computeRunningTotal(transactions) {
   var total = 0;
-  console.log(transactions);
   var sorted = orderBy(transactions, ['date'], ['desc']);
   forEachRight(sorted, (value) => {
     total += value.amount;
@@ -32,10 +30,6 @@ export const actionCreators = {
     const transactions = await response.json();
 
     dispatch({ type: receiveAccountDataType, transactions, accountId });
-  },
-
-  setTransactionList: (transactions) => async (dispatch, getState) => {
-    dispatch( {type: setTransactionListType, transactions});
   },
 
   deleteTransaction: (transactionId) => async (dispatch, getState) => {
@@ -135,13 +129,6 @@ export const reducer = (state, action) => {
     };
   }
 
-  if (action.type === setTransactionListType) {
-    return {
-      ...state,
-      transactionList: action.transactions
-    }
-  }
-
   if (action.type === deleteTransactionType) {
     return {
       ...state,
@@ -152,8 +139,10 @@ export const reducer = (state, action) => {
   if (action.type === receiveNewTransactionType) {
     return {
       ...state,
-      transactionList: computeRunningTotal(concat(state.transactionList, action.newTransaction))
-    }
+      accounts: state.accounts.map( (a) => a.accountId === state.selectedAccount
+        ? { ...a, transactions: computeRunningTotal(concat(a.transactions, action.newTransaction))}
+        : a)
+    };
   }
 
   if (action.type === requestAccountsType) {

@@ -31,7 +31,6 @@ class TransactionList extends Component {
 
 
   componentDidMount() {
-      this.props.setTransactionList(this.props.transactions);
       Mousetrap.bind('n t', this.setFocus);
   }
 
@@ -111,7 +110,7 @@ class TransactionList extends Component {
             onChange={this.handleChangeCredit} onKeyPress={this.handleKeyPress} /></td>
             <td></td>
         </tr>
-        {this.props.transactionList ? this.props.transactionList.map(trx => 
+        {this.props.transactions ? this.props.transactions.map(trx => 
         <TransactionRow key={trx.transactionId} transaction={trx} onDelete={() => this.deleteTransaction(trx.transactionId)}/>
         ) : <tr/>}
       </tbody>
