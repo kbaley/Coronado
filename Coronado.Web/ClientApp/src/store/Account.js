@@ -1,5 +1,5 @@
 ﻿import { push } from 'react-router-redux';
-import { filter, orderBy, concat, forEachRight } from 'lodash'; 
+import { filter, orderBy, concat, forEachRight, sumBy } from 'lodash'; 
 const requestAccountsType = 'REQUEST_ACCOUNT_LIST';
 const selectAccountType = 'SELECT_ACCOUNT';
 const receiveAccountsType = 'RECEIVE_ACCOUNT_LIST';
@@ -19,6 +19,12 @@ function computeRunningTotal(transactions) {
     value.runningTotal = total; 
   });
   return sorted;
+}
+
+function computeBalance(transactions, newTransaction) {
+  var total = sumBy(transactions, (t) => { return t.amount; });
+  if (newTransaction) total += newTransaction.amount;
+  return total;
 }
 
 export const actionCreators = {
@@ -140,7 +146,9 @@ export const reducer = (state, action) => {
     return {
       ...state,
       accounts: state.accounts.map( (a) => a.accountId === state.selectedAccount
-        ? { ...a, transactions: computeRunningTotal(concat(a.transactions, action.newTransaction))}
+        ? { ...a, 
+          transactions: computeRunningTotal(concat(a.transactions, action.newTransaction)),
+          currentBalance: computeBalance(a.transactions, action.newTransaction) }
         : a)
     };
   }
