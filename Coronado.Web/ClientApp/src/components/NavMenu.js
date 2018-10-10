@@ -1,10 +1,10 @@
 ﻿import React from 'react';
 import { Link } from 'react-router-dom';
-import { LinkContainer } from 'react-router-bootstrap';
 import NewAccount from './NewAccount';
-import { Navbar, Nav, NavItem, Glyphicon } from 'react-bootstrap';
+import { Navbar, Nav } from 'react-bootstrap';
 import AccountNavList from './AccountNavList';
 import './NavMenu.css';
+import CategoriesMenu from './CategoriesMenu';
 
 export default props => (
   <Navbar inverse fixedTop fluid collapseOnSelect>
@@ -20,12 +20,10 @@ export default props => (
     </Navbar.Collapse>
     <Navbar.Collapse>
       <Nav>
-        <LinkContainer to={'/categories'}>
-        <NavItem>
-          <Glyphicon glyph='cog' /> Categories
-        </NavItem>
-        </LinkContainer>
+        <CategoriesMenu />
       </Nav>
     </Navbar.Collapse>
   </Navbar>
 );
+
+;
