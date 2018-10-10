@@ -5,14 +5,12 @@ import {reducer as notifications} from 'react-notification-system-redux';
 import * as AccountNavList from './AccountNavList';
 import * as Account from './Account';
 import * as Categories from './Categories';
-import * as TransactionList from './TransactionList';
 
 export default function configureStore(history, initialState) {
   const reducers = {
     accountNavList: AccountNavList.reducer,
     account: Account.reducer,
-    categories: Categories.reducer,
-    transactionList: TransactionList.reducer
+    categories: Categories.reducer
   };
 
   const middleware = [

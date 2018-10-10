@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Glyphicon } from 'react-bootstrap';
 import { DeleteIcon } from './DeleteIcon';
-import { actionCreators } from '../store/TransactionList';
+import { actionCreators } from '../store/Account';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { DecimalFormat } from './DecimalFormat'
@@ -139,6 +139,6 @@ function TransactionRow(props) {
 }
 
 export default connect(
-  state => state.transactionList,
+  state => state.account,
   dispatch => bindActionCreators(actionCreators, dispatch)
 )(TransactionList);
