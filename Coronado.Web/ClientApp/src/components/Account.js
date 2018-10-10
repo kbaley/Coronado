@@ -15,12 +15,12 @@ import { find } from 'lodash';
   }
 
   componentDidMount() {
-    this.props.requestAccountData(this.props.match.params.accountId);
+    this.props.requestTransactions(this.props.match.params.accountId);
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.loading) {
-      this.props.requestAccountData(this.props.match.params.accountId);
+      this.props.requestTransactions(this.props.match.params.accountId);
       this.setState(...this.state, {loading:false});
     }
   }

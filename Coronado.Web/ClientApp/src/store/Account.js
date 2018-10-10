@@ -7,8 +7,8 @@ const receiveNewAccountType = 'RECEIVE_NEW_ACCOUNT';
 const deleteAccountType = 'DELETE_ACCOUNT';
 const deleteTransactionType = 'DELETE_TRANSACTION';
 const receiveNewTransactionType = 'RECEIVE_NEW_TRANSACTION';
-const requestAccountDataType = 'REQUEST_ACCOUNT_DATA';
-const receiveAccountDataType = 'RECEIVE_ACCOUNT_DATA';
+const requestTransactionsType = 'REQUEST_TRANSACTIONS';
+const receiveTransactionsType = 'RECEIVE_TRANSACTIONS';
 const initialState = { isAccountLoading: true, isNavListLoading: true};
 
 function computeRunningTotal(transactions) {
@@ -29,13 +29,13 @@ function computeBalance(transactions, newTransaction) {
 
 export const actionCreators = {
 
-  requestAccountData: (accountId) => async (dispatch, getState) => {
-    dispatch({ type: requestAccountDataType });
+  requestTransactions: (accountId) => async (dispatch, getState) => {
+    dispatch({ type: requestTransactionsType });
     dispatch({ type: selectAccountType, accountId} );
     const response = await fetch('api/Transactions/?accountId=' + accountId);
     const transactions = await response.json();
 
-    dispatch({ type: receiveAccountDataType, transactions, accountId });
+    dispatch({ type: receiveTransactionsType, transactions, accountId });
   },
 
   deleteTransaction: (transactionId) => async (dispatch, getState) => {
@@ -110,7 +110,7 @@ export const actionCreators = {
 export const reducer = (state, action) => {
   state = state || initialState;
 
-  if (action.type === requestAccountDataType) {
+  if (action.type === requestTransactionsType) {
     return {
       ...state,
       isAccountLoading: true
@@ -124,7 +124,7 @@ export const reducer = (state, action) => {
     }
   }
 
-  if (action.type === receiveAccountDataType) {
+  if (action.type === receiveTransactionsType) {
     const transactions = computeRunningTotal(action.transactions);
     return {
       ...state,
