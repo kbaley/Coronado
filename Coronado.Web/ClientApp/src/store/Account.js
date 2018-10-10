@@ -9,7 +9,7 @@ const setTransactionListType = 'SET_TRANSACTION';
 const receiveNewTransactionType = 'RECEIVE_TRANSACTION';
 const requestAccountDataType = 'REQUEST_ACCOUNT_DATA';
 const receiveAccountDataType = 'RECEIVE_ACCOUNT_DATA';
-const initialState = { isLoadingAccount: true, isNavListLoading: true};
+const initialState = { isAccountLoading: true, isNavListLoading: true};
 
 function computeRunningTotal(transactions) {
   var total = 0;
@@ -23,6 +23,7 @@ function computeRunningTotal(transactions) {
 }
 
 export const actionCreators = {
+
   requestAccountData: (accountId) => async (dispatch, getState) => {
     dispatch({ type: requestAccountDataType });
     const response = await fetch('api/Accounts/' + accountId);
@@ -30,9 +31,11 @@ export const actionCreators = {
 
     dispatch({ type: receiveAccountDataType, account });
   },
+
   setTransactionList: (transactions) => async (dispatch, getState) => {
     dispatch( {type: setTransactionListType, transactions});
   },
+
   deleteTransaction: (transactionId) => async (dispatch, getState) => {
     const response = await fetch('/api/Transactions/' + transactionId, {
       method: 'DELETE',
@@ -108,7 +111,7 @@ export const reducer = (state, action) => {
   if (action.type === requestAccountDataType) {
     return {
       ...state,
-      isLoadingAccount: true
+      isAccountLoading: true
     };
   }
 
@@ -116,7 +119,7 @@ export const reducer = (state, action) => {
     return {
       ...state,
       account: action.account,
-      isLoadingAccount: false
+      isAccountLoading: false
     };
   }
 

@@ -30,20 +30,15 @@ namespace Coronado.Web.Controllers.Api
 
         // GET: api/Accounts
         [HttpGet]
-        public IEnumerable<AccountForListing> GetAccounts()
+        public IEnumerable<Account> GetAccounts()
         {
             var accounts = _context.Accounts.Include(a => a.Transactions).ToList();
-            var accountModel = accounts
-                .OrderBy(a => a.Name)
-                .Select(a =>
-                new AccountForListing{
-                    AccountId = a.AccountId,
-                    Name = a.Name,
-                    CurrentBalance = a.CurrentBalance
-                }
-            );
+            accounts.ForEach(a => {
+                a.CurrentBalance = a.Transactions.Sum(t => t.Amount);
+                a.Transactions.Clear();
+            });
 
-            return accountModel;
+            return accounts;
         }
 
         // GET:sapi/Accounts/5

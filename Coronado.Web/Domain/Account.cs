@@ -15,9 +15,7 @@ namespace Coronado.Web.Domain
 
         public string Name { get; set; }
 
-        public decimal CurrentBalance { get {
-            return Transactions.Sum(t => t.Amount);
-        } }
+        public decimal CurrentBalance { get; set; }
 
         [Required]
         [DefaultValue("USD")]
