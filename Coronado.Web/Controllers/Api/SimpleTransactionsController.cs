@@ -53,10 +53,7 @@ namespace Coronado.Web.Controllers.Api
             _context.Transactions.Add(newTransaction);
             await _context.SaveChangesAsync();
 
-            var transactions = _context.Transactions.Include(t => t.Category);
-            var model = transactions.Where(t => t.Account.AccountId == account.AccountId).GetTransactionModels();
-
-            return CreatedAtAction("GetTransaction", new { id = newTransaction.TransactionId }, model);
+            return CreatedAtAction("GetTransaction", new { id = newTransaction.TransactionId }, newTransaction.ToAccountTransaction());
         }
     }
 

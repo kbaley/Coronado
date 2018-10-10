@@ -6,6 +6,18 @@ using System.Linq;
 namespace Coronado.Web.Controllers
 {
     public static class Extensions {
+        public static AccountTransaction ToAccountTransaction(this Transaction transaction) {
+            return new AccountTransaction{
+                    TransactionId = transaction.TransactionId,
+                    TransactionDate = transaction.Date,
+                    Vendor = transaction.Vendor,
+                    Description = transaction.Description,
+                    Amount = transaction.Amount,
+                    CategoryId = transaction.Category?.CategoryId,
+                    CategoryName = transaction.Category?.Name
+                };
+        }
+        
         public static IEnumerable<AccountTransaction> GetTransactionModels(this IEnumerable<Transaction> transactions) {
             decimal runningTotal = 0;
             return transactions

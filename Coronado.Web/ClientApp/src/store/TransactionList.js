@@ -1,23 +1,34 @@
-﻿const deleteTransactionType = 'DELETE_TRANSACTION';
+﻿import { filter, orderBy, concat } from 'lodash'; 
+import { createSelector } from 'reselect';
+const deleteTransactionType = 'DELETE_TRANSACTION';
 const setTransactionListType = 'SET_TRANSACTION';
 const receiveNewTransactionType = 'RECEIVE_TRANSACTION';
 
 const initialState = { };
+const getTransactions = state => state.transactionList;
+
+export const getTransactionsWithRunningTotal = createSelector(
+  [getTransactions],
+  (transactions) => {
+    console.log(transactionId);
+    return orderBy(transactions, ['transactionDate'], ['desc'])
+  }
+)
 
 export const actionCreators = {
   setTransactionList: (transactions) => async (dispatch, getState) => {
     dispatch( {type: setTransactionListType, transactions});
   },
   deleteTransaction: (transactionId) => async (dispatch, getState) => {
-    const response = await fetch('/api/Transactions/' + transactionId, {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
-    const deleteTransactionModel = await response.json();
-    dispatch( { type: deleteTransactionType, deleteTransactionModel } );
+    // const response = await fetch('/api/Transactions/' + transactionId, {
+    //   method: 'DELETE',
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json'
+    //   }
+    // });
+    // const transaction = await response.json();
+    dispatch( { type: deleteTransactionType, transactionId } );
   },
 
   saveTransaction: (transaction) => async (dispatch) => {
@@ -30,9 +41,9 @@ export const actionCreators = {
       },
       body: JSON.stringify(transaction)
     });
-    const newTransactionModel = await response.json();
+    const newTransaction = await response.json();
 
-    dispatch({ type: receiveNewTransactionType, newTransactionModel });
+    dispatch({ type: receiveNewTransactionType, newTransaction });
   }
 };
 
@@ -48,15 +59,14 @@ export const reducer = (state, action) => {
   if (action.type === deleteTransactionType) {
     return {
       ...state,
-      transactionList: action.deleteTransactionModel
+      transactionList: filter(state.transactions, (n) => { return n.transactionId !== action.transactionId })
     }
   }
 
   if (action.type === receiveNewTransactionType) {
-
     return {
       ...state,
-      transactionList: action.newTransactionModel
+      transactionList: orderBy(concat(state.transactionList, action.newTransaction), ['transactionDate'], ['desc'])
     }
   }
 

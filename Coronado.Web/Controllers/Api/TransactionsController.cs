@@ -120,10 +120,7 @@ namespace Coronado.Web.Controllers.Api
             _context.Transactions.Remove(transaction);
             await _context.SaveChangesAsync();
 
-            var transactions = _context.Transactions.Include(t => t.Category)
-                .Where(t => t.Account.AccountId == transaction.Account.AccountId).GetTransactionModels();
-
-            return Ok(transactions);
+            return Ok(transaction);
         }
 
         private bool TransactionExists(Guid id)
