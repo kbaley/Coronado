@@ -1,12 +1,13 @@
 ﻿import { push } from 'react-router-redux';
 import { filter, orderBy, concat, forEachRight } from 'lodash'; 
 const requestAccountsType = 'REQUEST_ACCOUNT_LIST';
+const selectAccountType = 'SELECT_ACCOUNT';
 const receiveAccountsType = 'RECEIVE_ACCOUNT_LIST';
 const receiveNewAccountType = 'RECEIVE_NEW_ACCOUNT';
 const deleteAccountType = 'DELETE_ACCOUNT';
 const deleteTransactionType = 'DELETE_TRANSACTION';
 const setTransactionListType = 'SET_TRANSACTION';
-const receiveNewTransactionType = 'RECEIVE_TRANSACTION';
+const receiveNewTransactionType = 'RECEIVE_NEW_TRANSACTION';
 const requestAccountDataType = 'REQUEST_ACCOUNT_DATA';
 const receiveAccountDataType = 'RECEIVE_ACCOUNT_DATA';
 const initialState = { isAccountLoading: true, isNavListLoading: true};
@@ -26,6 +27,7 @@ export const actionCreators = {
 
   requestAccountData: (accountId) => async (dispatch, getState) => {
     dispatch({ type: requestAccountDataType });
+    dispatch({ type: selectAccountType, accountId} );
     const response = await fetch('api/Accounts/' + accountId);
     const account = await response.json();
 
@@ -113,6 +115,13 @@ export const reducer = (state, action) => {
       ...state,
       isAccountLoading: true
     };
+  }
+
+  if (action.type === selectAccountType) {
+    return {
+      ...state,
+      selectedAccount: action.accountId
+    }
   }
 
   if (action.type === receiveAccountDataType) {

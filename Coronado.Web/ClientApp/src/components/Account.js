@@ -4,6 +4,7 @@ import { actionCreators } from '../store/Account';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import TransactionList from './TransactionList';
+import { find } from 'lodash';
 
  class Account extends Component {
   displayName = Account.name;
@@ -34,12 +35,17 @@ import TransactionList from './TransactionList';
     return null;
   }
 
+  getSelectedAccount() {
+    const account = find(this.props.accounts, (a) => { return a.accountId === this.props.match.params.accountId });
+    return account;
+  }
+
   render() {
     return (
       <div>
         {this.props.isAccountLoading ? <p><em>Loading...</em></p> : (
           <div>
-            <AccountHeader name={this.props.account.name} />
+            <AccountHeader name={this.getSelectedAccount().name} />
             <TransactionList transactions={this.props.account.transactions} accountId={this.props.account.accountId}/>
             <DeleteAccount accountId={this.props.match.params.accountId} />
           </div>
