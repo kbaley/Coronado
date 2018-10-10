@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
-import { actionCreators } from '../store/AccountNavList';
+import { actionCreators } from '../store/Account';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -27,6 +27,6 @@ class DeleteAccount extends Component {
 }
 
 export default connect(
-  state => state.accountNavList,
+  state => state.account,
   dispatch => bindActionCreators(actionCreators, dispatch)
 )(DeleteAccount);

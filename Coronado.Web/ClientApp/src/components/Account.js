@@ -37,7 +37,7 @@ import TransactionList from './TransactionList';
   render() {
     return (
       <div>
-        {this.props.isLoading ? <p><em>Loading...</em></p> : (
+        {this.props.isLoadingAccount ? <p><em>Loading...</em></p> : (
           <div>
             <AccountHeader name={this.props.account.name} />
             <TransactionList transactions={this.props.account.transactions} accountId={this.props.account.accountId}/>

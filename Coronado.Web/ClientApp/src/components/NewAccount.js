@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { Nav, NavItem } from 'react-bootstrap';
 import { Button, Modal, Form, FormControl, FormGroup, ControlLabel, Col } from 'react-bootstrap';
-import { actionCreators } from '../store/AccountNavList';
+import { actionCreators } from '../store/Account';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
@@ -107,6 +107,6 @@ class NewAccount extends Component {
 }
 
 export default connect(
-  state => state.accountNavList,
+  state => state.account,
   dispatch => bindActionCreators(actionCreators, dispatch)
 )(NewAccount);
