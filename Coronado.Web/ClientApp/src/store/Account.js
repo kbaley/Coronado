@@ -1,5 +1,5 @@
 ﻿import { push } from 'react-router-redux';
-import { filter, orderBy, concat, forEachRight } from 'lodash'; 
+import { filter, orderBy, concat, forEachRight, find } from 'lodash'; 
 const requestAccountsType = 'REQUEST_ACCOUNT_LIST';
 const selectAccountType = 'SELECT_ACCOUNT';
 const receiveAccountsType = 'RECEIVE_ACCOUNT_LIST';
@@ -15,7 +15,7 @@ const initialState = { isAccountLoading: true, isNavListLoading: true};
 function computeRunningTotal(transactions) {
   var total = 0;
   console.log(transactions);
-  var sorted = orderBy(transactions, ['transactionDate'], ['desc']);
+  var sorted = orderBy(transactions, ['date'], ['desc']);
   forEachRight(sorted, (value) => {
     total += value.amount;
     value.runningTotal = total; 
@@ -28,10 +28,10 @@ export const actionCreators = {
   requestAccountData: (accountId) => async (dispatch, getState) => {
     dispatch({ type: requestAccountDataType });
     dispatch({ type: selectAccountType, accountId} );
-    const response = await fetch('api/Accounts/' + accountId);
-    const account = await response.json();
+    const response = await fetch('api/Transactions/?accountId=' + accountId);
+    const transactions = await response.json();
 
-    dispatch({ type: receiveAccountDataType, account });
+    dispatch({ type: receiveAccountDataType, transactions, accountId });
   },
 
   setTransactionList: (transactions) => async (dispatch, getState) => {
@@ -125,10 +125,13 @@ export const reducer = (state, action) => {
   }
 
   if (action.type === receiveAccountDataType) {
+    const transactions = computeRunningTotal(action.transactions);
     return {
       ...state,
-      account: action.account,
-      isAccountLoading: false
+      isAccountLoading: false,
+      accounts: state.accounts.map( (a) => a.accountId === action.accountId 
+      ? { ...a, transactions: transactions }
+      : a)
     };
   }
 

@@ -128,9 +128,9 @@ function TransactionRow(props) {
       </a>
       <DeleteIcon onDelete={props.onDelete} />
     </td>
-    <td>{new Date(trx.transactionDate).toLocaleDateString()}</td>
+    <td>{new Date(trx.date).toLocaleDateString()}</td>
     <td>{trx.vendor}</td>
-    <td>{trx.categoryName}</td>
+    <td>{trx.category.name}</td>
     <td>{trx.description}</td>
     <td><DecimalFormat isDebit={true} amount={trx.amount} /></td>
     <td><DecimalFormat isCredit={true} amount={trx.amount} /></td>

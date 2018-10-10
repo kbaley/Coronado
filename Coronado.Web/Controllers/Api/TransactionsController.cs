@@ -27,9 +27,11 @@ namespace Coronado.Web.Controllers.Api
         {
             if (query.AccountId != Guid.Empty)
             {
-                return _context.Transactions.Where(t => t.Account.AccountId == query.AccountId);
+                return _context.Transactions
+                .Include(t => t.Category)
+                .Where(t => t.Account.AccountId == query.AccountId);
             }
-            return _context.Transactions;
+            return _context.Transactions.Include(t => t.Category);
         }
 
         // GET: api/Transactions/5

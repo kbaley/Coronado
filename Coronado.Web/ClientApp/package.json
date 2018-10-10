@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "immutability-helper": "^2.8.1",
     "lodash": "^4.17.11",
     "mousetrap": "^1.6.2",
     "react": "^16.5.2",

@@ -46,7 +46,7 @@ import { find } from 'lodash';
         {this.props.isAccountLoading ? <p><em>Loading...</em></p> : (
           <div>
             <AccountHeader name={this.getSelectedAccount().name} />
-            <TransactionList transactions={this.props.account.transactions} accountId={this.props.account.accountId}/>
+            <TransactionList transactions={this.getSelectedAccount().transactions} accountId={this.props.match.params.accountId}/>
             <DeleteAccount accountId={this.props.match.params.accountId} />
           </div>
         )}
