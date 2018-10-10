@@ -20,7 +20,6 @@ class AccountNavList extends Component {
 
   componentDidMount() {
     this.props.requestAccountList();
-      // Mousetrap.bind('3', (e) => {this.goToAccount(e)});
   }
 
   componentDidUpdate() {

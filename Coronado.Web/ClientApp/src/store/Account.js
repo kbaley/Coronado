@@ -29,7 +29,7 @@ function computeBalance(transactions, newTransaction) {
 
 export const actionCreators = {
 
-  requestTransactions: (accountId) => async (dispatch, getState) => {
+  requestTransactions: (accountId) => async (dispatch) => {
     dispatch({ type: requestTransactionsType });
     dispatch({ type: selectAccountType, accountId} );
     const response = await fetch('api/Transactions/?accountId=' + accountId);
@@ -38,7 +38,7 @@ export const actionCreators = {
     dispatch({ type: receiveTransactionsType, transactions, accountId });
   },
 
-  deleteTransaction: (transactionId) => async (dispatch, getState) => {
+  deleteTransaction: (transactionId) => async (dispatch) => {
     const response = await fetch('/api/Transactions/' + transactionId, {
       method: 'DELETE',
       headers: {
@@ -138,7 +138,15 @@ export const reducer = (state, action) => {
   if (action.type === deleteTransactionType) {
     return {
       ...state,
-      transactionList: computeRunningTotal(filter(state.transactionList, (n) => { return n.transactionId !== action.transactionId }))
+      accounts: state.accounts.map( (a) => a.accountId === state.selectedAccount
+        ? { ...a,
+            transactions: 
+              computeRunningTotal(filter(a.transactions, (t) => 
+              { return t.transactionId !== action.transactionId })),
+            currentBalance: computeBalance(filter(a.transactions, (t) => 
+              { return t.transactionId !== action.transactionId}))
+          }
+        : a)
     }
   }
 
