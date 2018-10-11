@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Glyphicon } from 'react-bootstrap';
 import { actionCreators } from '../store/Account';
+import { actionCreators as categoryActionCreators } from '../store/Categories';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
@@ -31,6 +32,7 @@ class TransactionList extends Component {
 
   componentDidMount() {
       Mousetrap.bind('n t', this.setFocus);
+      this.props.requestCategories();
   }
 
   componentWillUnmount() {
@@ -105,7 +107,14 @@ class TransactionList extends Component {
           <td><input type="text" name="transactionDate" ref="inputDate"
             value={this.state.trx.transactionDate} onChange={this.handleChangeField}/></td>
           <td><input type="text" name="vendor" value={this.state.trx.vendor} onChange={this.handleChangeField} /></td>
-          <td><input type="text" name="categoryName" value={this.state.trx.categoryName} onChange={this.handleChangeField} /></td>
+          <td>
+            <select name="category">
+            {this.props.categories ? this.props.categories.map(c =>
+              <option key={c.categoryId} value={c.categoryId}>{c.name}</option>
+            ) : <option>Pick one</option>}
+            </select>
+            <input type="text" name="categoryName" value={this.state.trx.categoryName} onChange={this.handleChangeField} />
+            </td>
           <td><input type="text" name="description" value={this.state.trx.description} onChange={this.handleChangeField} /></td>
           <td><input type="text" name="debit" value={this.state.debit} 
             onChange={this.handleChangeDebit} onKeyPress={this.handleKeyPress} /></td>
@@ -124,6 +133,6 @@ class TransactionList extends Component {
 }
 
 export default connect(
-  state => state.account,
-  dispatch => bindActionCreators(actionCreators, dispatch)
+  state => { return { ...state.account, ...state.categories } },
+  dispatch => bindActionCreators({ ...actionCreators, ...categoryActionCreators }, dispatch)
 )(TransactionList);
