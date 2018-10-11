@@ -9,7 +9,7 @@ const deleteTransactionType = 'DELETE_TRANSACTION';
 const receiveNewTransactionType = 'RECEIVE_NEW_TRANSACTION';
 const requestTransactionsType = 'REQUEST_TRANSACTIONS';
 const receiveTransactionsType = 'RECEIVE_TRANSACTIONS';
-const initialState = { isAccountLoading: true, isNavListLoading: true};
+const initialState = { isAccountLoading: true, isNavListLoading: true, accounts: []};
 
 function computeRunningTotal(transactions) {
   var total = 0;

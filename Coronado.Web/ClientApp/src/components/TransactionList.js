@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { Glyphicon } from 'react-bootstrap';
-import { DeleteIcon } from './DeleteIcon';
 import { actionCreators } from '../store/Account';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { DecimalFormat } from './DecimalFormat'
 import * as Mousetrap from 'mousetrap';
+import { TransactionRow } from './TransactionRow';
 
 class TransactionList extends Component {
   displayName = TransactionList.name;
@@ -46,6 +45,10 @@ class TransactionList extends Component {
 
   deleteTransaction(transactionId) {
       this.props.deleteTransaction(transactionId);
+  }
+
+  startEditing() {
+
   }
 
   saveTransaction() {
@@ -111,30 +114,13 @@ class TransactionList extends Component {
             <td></td>
         </tr>
         {this.props.transactions ? this.props.transactions.map(trx => 
-        <TransactionRow key={trx.transactionId} transaction={trx} onDelete={() => this.deleteTransaction(trx.transactionId)}/>
+        <TransactionRow key={trx.transactionId} transaction={trx} 
+          onDelete={() => this.deleteTransaction(trx.transactionId)}
+          onStartEditing={() => this.startEditing()}/>
         ) : <tr/>}
       </tbody>
     </table>);
   }
-}
-
-function TransactionRow(props) {
-    var trx = props.transaction;
-    return <tr>
-    <td>
-      <a onClick={console.log} style={{cursor: 'pointer', color: "#000"}}>
-      <Glyphicon glyph='pencil' style={{paddingRight: "10px"}}/>
-      </a>
-      <DeleteIcon onDelete={props.onDelete} />
-    </td>
-    <td>{new Date(trx.date).toLocaleDateString()}</td>
-    <td>{trx.vendor}</td>
-    <td>{trx.category.name}</td>
-    <td>{trx.description}</td>
-    <td><DecimalFormat isDebit={true} amount={trx.amount} /></td>
-    <td><DecimalFormat isCredit={true} amount={trx.amount} /></td>
-    <td>{Number(trx.runningTotal).toFixed(2)}</td>
-  </tr>
 }
 
 export default connect(

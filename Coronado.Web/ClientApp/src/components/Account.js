@@ -36,6 +36,7 @@ import { find } from 'lodash';
   }
 
   getSelectedAccount() {
+    if (!this.props.accounts) return { name: '', transactions: []}
     const account = find(this.props.accounts, (a) => { return a.accountId === this.props.match.params.accountId });
     return account;
   }
