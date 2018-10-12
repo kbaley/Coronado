@@ -12,5 +12,6 @@ namespace Coronado.Web.Models
         public string AccountName { get; set; }
         public decimal Amount { get; set; }
         public Guid AccountId { get; set; }
+        public Guid CategoryId { get; set; }
     }
 }

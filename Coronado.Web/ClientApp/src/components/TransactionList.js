@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Select from 'react-select';
 import { Glyphicon } from 'react-bootstrap';
 import { actionCreators } from '../store/Account';
 import { actionCreators as categoryActionCreators } from '../store/Categories';
@@ -6,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
 import { TransactionRow } from './TransactionRow';
+import './TransactionList.css';
 
 class TransactionList extends Component {
   displayName = TransactionList.name;
@@ -16,19 +18,20 @@ class TransactionList extends Component {
     this.saveTransaction = this.saveTransaction.bind(this);
     this.handleChangeDebit = this.handleChangeDebit.bind(this);
     this.handleChangeCredit = this.handleChangeCredit.bind(this);
+    this.handleChangeCategory = this.handleChangeCategory.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.setFocus = this.setFocus.bind(this);
     this.state = {
       trx: {
         transactionDate: new Date().toLocaleDateString(), 
         vendor: '', 
-        categoryName: '',
         description: '',
         accountId: props.accountId
-      }
+      },
+      categories: [],
+      selectedCategory: null
     }
   }
-
 
   componentDidMount() {
       Mousetrap.bind('n t', this.setFocus);
@@ -56,7 +59,10 @@ class TransactionList extends Component {
   saveTransaction() {
     this.props.saveTransaction(this.state.trx);
     this.setState(...this.state, 
-      {trx: {...this.state.trx, vendor: '', categoryName: '', description: '', amount: '', debit: '', credit: ''}});
+      {
+        trx: {...this.state.trx, vendor: '', categoryId: null, description: '', amount: '', debit: '', credit: ''},
+        selectedCategory : null
+      });
     this.refs["inputDate"].focus();
   }
 
@@ -69,6 +75,11 @@ class TransactionList extends Component {
       e.preventDefault();
       this.saveTransaction();
     }
+  }
+
+  handleChangeCategory(selectedOption) {
+    this.setState( {trx: {...this.state.trx, categoryId: selectedOption.value }});
+    this.setState( { selectedCategory: selectedOption });
   }
 
   handleChangeDebit(e) {
@@ -85,7 +96,31 @@ class TransactionList extends Component {
     }
   }
 
+  static getDerivedStateFromProps(props, state) {
+    var categories = props.categories.map( c => {
+      return { value: c.categoryId, label: c.name }
+    });
+    return {
+      ...state,
+      categories
+    }
+  }
+
   render() {
+    const customStyles = {
+      option: (base) => ({
+        ...base,
+      }),
+      control: (base) => ({
+        // none of react-selects styles are passed to <View />
+        ...base,
+        width: 200,
+        minHeight: 27,
+        height: 27,
+        borderRadius: 0
+      })
+    }
+
     return (<table className='table'>
       <thead>
         <tr>
@@ -108,12 +143,8 @@ class TransactionList extends Component {
             value={this.state.trx.transactionDate} onChange={this.handleChangeField}/></td>
           <td><input type="text" name="vendor" value={this.state.trx.vendor} onChange={this.handleChangeField} /></td>
           <td>
-            <select name="category">
-            {this.props.categories ? this.props.categories.map(c =>
-              <option key={c.categoryId} value={c.categoryId}>{c.name}</option>
-            ) : <option>Pick one</option>}
-            </select>
-            <input type="text" name="categoryName" value={this.state.trx.categoryName} onChange={this.handleChangeField} />
+            <Select value={this.state.selectedCategory} onChange={this.handleChangeCategory}
+              options={this.state.categories} styles={customStyles}  />
             </td>
           <td><input type="text" name="description" value={this.state.trx.description} onChange={this.handleChangeField} /></td>
           <td><input type="text" name="debit" value={this.state.debit} 

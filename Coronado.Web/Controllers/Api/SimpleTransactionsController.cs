@@ -38,7 +38,12 @@ namespace Coronado.Web.Controllers.Api
                 account = _context.Accounts.FirstOrDefault(a => a.Name.Equals(transaction.AccountName, StringComparison.CurrentCultureIgnoreCase));
             }
             await _context.Entry(account).Collection(a => a.Transactions).LoadAsync();
-            var category = _context.Categories.FirstOrDefault(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase)));
+            Category category;
+            if (transaction.CategoryId == null) {
+                category = _context.Categories.FirstOrDefault(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase)));
+            } else {
+                category = await _context.Categories.FindAsync(transaction.CategoryId);
+            }
 
             var newTransaction = new Transaction {
                 TransactionId = transaction.TransactionId,
