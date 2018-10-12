@@ -6,7 +6,7 @@ import { actionCreators as categoryActionCreators } from '../store/Categories';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
-import { TransactionRow } from './TransactionRow';
+import TransactionRow from './TransactionRow';
 import './TransactionList.css';
 
 class TransactionList extends Component {
@@ -50,10 +50,6 @@ class TransactionList extends Component {
 
   deleteTransaction(transactionId) {
       this.props.deleteTransaction(transactionId);
-  }
-
-  startEditing() {
-
   }
 
   saveTransaction() {
@@ -154,9 +150,8 @@ class TransactionList extends Component {
             <td></td>
         </tr>
         {this.props.transactions ? this.props.transactions.map(trx => 
-        <TransactionRow key={trx.transactionId} transaction={trx} 
-          onDelete={() => this.deleteTransaction(trx.transactionId)}
-          onStartEditing={() => this.startEditing()}/>
+        <TransactionRow key={trx.transactionId} transaction={trx} categories={this.state.categories}
+          onDelete={() => this.deleteTransaction(trx.transactionId)} />
         ) : <tr/>}
       </tbody>
     </table>);

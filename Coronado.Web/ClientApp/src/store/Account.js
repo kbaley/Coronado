@@ -1,11 +1,12 @@
 ﻿import { push } from 'react-router-redux';
-import { filter, orderBy, concat, forEachRight, sumBy } from 'lodash'; 
+import { filter, orderBy, concat, forEachRight, sumBy, find } from 'lodash'; 
 const requestAccountsType = 'REQUEST_ACCOUNT_LIST';
 const selectAccountType = 'SELECT_ACCOUNT';
 const receiveAccountsType = 'RECEIVE_ACCOUNT_LIST';
 const receiveNewAccountType = 'RECEIVE_NEW_ACCOUNT';
 const deleteAccountType = 'DELETE_ACCOUNT';
 const deleteTransactionType = 'DELETE_TRANSACTION';
+const updateTransactionType = 'UPDATE_TRANSACTION';
 const receiveNewTransactionType = 'RECEIVE_NEW_TRANSACTION';
 const requestTransactionsType = 'REQUEST_TRANSACTIONS';
 const receiveTransactionsType = 'RECEIVE_TRANSACTIONS';
@@ -48,6 +49,20 @@ export const actionCreators = {
     });
     await response.json();
     dispatch( { type: deleteTransactionType, transactionId } );
+  },
+
+  updateTransaction: (transaction) => async (dispatch) => {
+
+    const response = await fetch('/api/SimpleTransactions/' + transaction.transactionId, {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(transaction)
+    });
+    const updatedTransaction = await response.json();
+    dispatch({ type: updateTransactionType, updatedTransaction });
   },
 
   saveTransaction: (transaction) => async (dispatch) => {
@@ -159,6 +174,21 @@ export const reducer = (state, action) => {
           currentBalance: computeBalance(a.transactions, action.newTransaction) }
         : a)
     };
+  }
+
+  if (action.type === updateTransactionType) {
+    var account = find(state.accounts, a => a.accountId === state.selectedAccount);
+    var transactions = computeRunningTotal(account.transactions.map( t => 
+      t.transactionId === action.updatedTransaction.transactionId ? action.updatedTransaction : t));
+    return {
+      ...state,
+      accounts: state.accounts.map( a => a.accountId === state.selectedAccount
+        ? { ...a,
+          transactions: computeRunningTotal(a.transactions.map( t => 
+            t.transactionId === action.updatedTransaction.transactionId ? action.updatedTransaction : t)),
+          currentBalance: computeBalance(transactions) }
+        : a)
+    }
   }
 
   if (action.type === requestAccountsType) {

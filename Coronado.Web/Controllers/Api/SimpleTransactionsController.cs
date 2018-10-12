@@ -27,6 +27,41 @@ namespace Coronado.Web.Controllers.Api
             return Ok("moo");
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutSimpleTransaction([FromRoute] Guid id, 
+                [FromBody] SimpleTransaction simpleTransaction) {
+
+            if (id != simpleTransaction.TransactionId)
+            {
+                return BadRequest();
+            }
+
+
+            var transaction = await _context.Transactions.FindAsync(simpleTransaction.TransactionId);
+            try
+            {
+                transaction.Vendor = simpleTransaction.Vendor;
+                transaction.Description = simpleTransaction.Description;
+                transaction.Date = simpleTransaction.TransactionDate;
+                transaction.Category = await _context.Categories.FindAsync(simpleTransaction.CategoryId);
+                transaction.Amount = simpleTransaction.Amount;
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TransactionExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return Ok(transaction);
+        }
+
         [HttpPost]
         public async Task<IActionResult> PostSimpleTransaction([FromBody] SimpleTransaction transaction)
         {
@@ -60,6 +95,11 @@ namespace Coronado.Web.Controllers.Api
             newTransaction.Account = null;
 
             return CreatedAtAction("GetTransaction", new { id = newTransaction.TransactionId }, newTransaction);
+        }
+
+        private bool TransactionExists(Guid id)
+        {
+            return _context.Transactions.Any(e => e.TransactionId == id);
         }
     }
 
