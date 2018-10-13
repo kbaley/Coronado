@@ -14,7 +14,7 @@ class DeleteAccount extends Component {
   }
 
   deleteAccount() {
-    this.props.deleteAccount(this.props.accountId);
+    this.props.deleteAccount(this.props.accountId, this.props.accountName);
   }
 
   render() {

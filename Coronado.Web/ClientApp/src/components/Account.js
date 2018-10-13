@@ -52,7 +52,7 @@ import { find } from 'lodash';
               transactions={this.getSelectedAccount().transactions} 
               categories={this.props.categories}
               accountId={this.props.match.params.accountId}/>
-            <DeleteAccount accountId={this.props.match.params.accountId} />
+            <DeleteAccount accountId={this.props.match.params.accountId} accountName={this.getSelectedAccount().name} />
           </div>
         )}
       </div>
