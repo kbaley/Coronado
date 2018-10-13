@@ -41,6 +41,10 @@ namespace Coronado.Web.Data
                     index.Relational().Name = index.Relational().Name.ToSnakeCase();
                 }
             }
+
+            builder.Entity<Category>().HasData(
+                new Category { CategoryId = Guid.NewGuid(), Name = "Starting Balance", Type = "Income" }
+            );
         }
 
     }
