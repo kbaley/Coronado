@@ -34,6 +34,7 @@ class TransactionList extends Component {
 
   componentDidMount() {
       Mousetrap.bind('n t', this.setFocus);
+      this.props.requestCategories();
   }
 
   componentWillUnmount() {
