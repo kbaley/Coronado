@@ -17,6 +17,7 @@ class TransactionRow extends Component {
     this.handleChangeCredit = this.handleChangeCredit.bind(this);
     this.handleChangeCategory = this.handleChangeCategory.bind(this);
     this.updateTransaction = this.updateTransaction.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
     this.state = { isEditing: false, 
         debit: '',
         credit: '',
@@ -35,6 +36,13 @@ class TransactionRow extends Component {
         debit: amount <= 0 ? (0 - amount).toFixed(2) : '',
         credit: amount > 0 ? amount.toFixed(2) : '',
     })
+  }
+
+  handleKeyPress(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      this.updateTransaction();
+    }
   }
 
   handleChangeField(e) {
@@ -84,11 +92,12 @@ class TransactionRow extends Component {
         <td>
         <input type="text" name="transactionDate" 
           onChange={this.handleChangeField}
+          onKeyPress={this.handleKeyPress}
           value={this.state.trx.transactionDate} />
         </td>
         <td>
             <input type="text" name="vendor" onChange={this.handleChangeField}
-                value={this.state.trx.vendor} />
+                value={this.state.trx.vendor} onKeyPress={this.handleKeyPress} />
         </td>
         <td>
             <CategorySelect selectedCategoryId={this.state.trx.category.categoryId} categories={this.props.categories}
@@ -96,14 +105,14 @@ class TransactionRow extends Component {
         </td>
         <td>
             <input type="text" name="description" onChange={this.handleChangeField}
-                value={this.state.trx.description} />
+                value={this.state.trx.description} onKeyPress={this.handleKeyPress} />
         </td>
         <td>
           <input type="text" name="debit" value={this.state.trx.debit} 
-            onChange={this.handleChangeDebit} /></td>
+            onChange={this.handleChangeDebit} onKeyPress={this.handleKeyPress} /></td>
         <td>
           <input type="text" name="credit" value={this.state.trx.credit} 
-            onChange={this.handleChangeCredit} /></td>
+            onChange={this.handleChangeCredit} onKeyPress={this.handleKeyPress} /></td>
       </tr> :
 
       <tr>
