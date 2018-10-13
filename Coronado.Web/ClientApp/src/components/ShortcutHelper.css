@@ -1,0 +1,8 @@
+﻿.borderless td, .borderless th {
+    border: 0 !important;
+}
+
+.borderless td:first-child {
+    font-family: 'Courier New', Courier, monospace;
+    width: 80px;
+}

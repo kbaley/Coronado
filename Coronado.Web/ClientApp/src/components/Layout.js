@@ -2,6 +2,7 @@ import React from 'react';
 import { Col, Grid, Row } from 'react-bootstrap';
 import NavMenu from './NavMenu';
 import NotificationsComponent from './Notifications';
+import { ShortcutHelper } from './ShortcutHelper';
 
 export default props => (
   <Grid fluid>
@@ -14,5 +15,6 @@ export default props => (
       </Col>
     </Row>
     <NotificationsComponent />
+    <ShortcutHelper />
   </Grid>
 );

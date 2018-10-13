@@ -27,7 +27,7 @@ class AccountNavList extends Component {
     if (this.state.isLoading && this.props.accounts && this.props.accounts.length > 0) {
       for (var i = 0; i < this.props.accounts.length; i++) {
         if (i < 10) {
-          Mousetrap.bind((i+1) + '', this.goToAccount);
+          Mousetrap.bind('g ' + (i+1), this.goToAccount);
         }
       }
       this.setState(...this.state, {isLoading: false});
@@ -36,7 +36,7 @@ class AccountNavList extends Component {
 
   componentWillUnmount() {
     for (var i = 0; i < 10; i++) {
-      Mousetrap.unbind((i+1) + '');
+      Mousetrap.unbind('g ' + (i+1));
     }
   }
 

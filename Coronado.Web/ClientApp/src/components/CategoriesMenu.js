@@ -13,7 +13,7 @@ class CategoriesMenu extends Component {
   }
 
   componentDidMount() {
-      Mousetrap.bind('c', this.goToCategories);
+      Mousetrap.bind('g c', this.goToCategories);
   }
 
   goToCategories() {
