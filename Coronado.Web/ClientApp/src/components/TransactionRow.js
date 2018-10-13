@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
 import { DeleteIcon } from './DeleteIcon';
 import { EditIcon } from './EditIcon';
 import { DecimalFormat } from './DecimalFormat';
 import { Glyphicon } from 'react-bootstrap';
-import { find } from 'lodash';
 import { actionCreators } from '../store/Account';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { CategorySelect } from './CategorySelect';
 
 class TransactionRow extends Component {
   constructor(props) {
@@ -21,7 +20,6 @@ class TransactionRow extends Component {
     this.state = { isEditing: false, 
         debit: '',
         credit: '',
-        selectedCategory: null,
         trx: {...props.transaction, 
             transactionDate: new Date(props.transaction.date).toLocaleDateString(),
             credit: props.transaction.amount > 0 ? props.transaction.amount.toFixed(2) : '',
@@ -36,7 +34,6 @@ class TransactionRow extends Component {
         isEditing: true,
         debit: amount <= 0 ? (0 - amount).toFixed(2) : '',
         credit: amount > 0 ? amount.toFixed(2) : '',
-        selectedCategory: find(this.props.categories, c => c.value === this.state.trx.category.categoryId)
     })
   }
 
@@ -57,22 +54,20 @@ class TransactionRow extends Component {
   handleChangeCredit(e) {
     if (e.targetValue !== '') {
       var amount = parseFloat(e.target.value);
-      this.setState( { trx: {...this.state.trx, amount: amount, credit: amount}});
+      this.setState( { trx: {...this.state.trx, amount: amount, credit: e.target.value}});
     } else {
       this.handleChangeField();
     }
   }
 
-  handleChangeCategory(selectedOption) {
-    this.setState( {trx: {...this.state.trx, categoryId: selectedOption.value }});
-    this.setState( { selectedCategory: selectedOption });
+  handleChangeCategory(categoryId) {
+    this.setState( {trx: {...this.state.trx, categoryId }});
   }
 
   updateTransaction() {
     this.props.updateTransaction(this.state.trx);
     this.setState(...this.state, 
       {
-        selectedCategory : null,
         isEditing: false
       });
 
@@ -80,20 +75,6 @@ class TransactionRow extends Component {
 
   render() {
     const trx = this.props.transaction;
-    const customStyles = {
-      option: (base) => ({
-        ...base,
-      }),
-      control: (base) => ({
-        // none of react-selects styles are passed to <View />
-        ...base,
-        width: 200,
-        minHeight: 27,
-        height: 27,
-        borderRadius: 0
-      })
-    }
-
     return (
       this.state.isEditing ? 
       <tr>
@@ -110,8 +91,8 @@ class TransactionRow extends Component {
                 value={this.state.trx.vendor} />
         </td>
         <td>
-            <Select value={this.state.selectedCategory} onChange={this.handleChangeCategory}
-              options={this.props.categories} styles={customStyles}  />
+            <CategorySelect selectedCategoryId={this.state.trx.category.categoryId} categories={this.props.categories}
+              onCategoryChanged={this.handleChangeCategory} />
         </td>
         <td>
             <input type="text" name="description" onChange={this.handleChangeField}
@@ -134,9 +115,9 @@ class TransactionRow extends Component {
         <td>{trx.vendor}</td>
         <td>{trx.category.name}</td>
         <td>{trx.description}</td>
-        <td><DecimalFormat isDebit={true} amount={trx.amount} /></td>
-        <td><DecimalFormat isCredit={true} amount={trx.amount} /></td>
-        <td>{Number(trx.runningTotal).toFixed(2)}</td>
+        <td style={{textAlign: 'right'}}><DecimalFormat isDebit={true} amount={trx.amount} /></td>
+        <td style={{textAlign: 'right'}}><DecimalFormat isCredit={true} amount={trx.amount} /></td>
+        <td style={{textAlign: 'right'}}>{Number(trx.runningTotal).toFixed(2)}</td>
       </tr>
     );
   }

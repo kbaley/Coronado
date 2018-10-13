@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import DeleteAccount from './DeleteAccount';
 import { actionCreators } from '../store/Account';
+import { actionCreators as categoryActionCreators } from '../store/Categories';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import TransactionList from './TransactionList';
@@ -16,6 +17,7 @@ import { find } from 'lodash';
 
   componentDidMount() {
     this.props.requestTransactions(this.props.match.params.accountId);
+    this.props.requestCategories();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -48,7 +50,10 @@ import { find } from 'lodash';
         {this.props.isAccountLoading ? <p><em>Loading...</em></p> : (
           <div>
             <AccountHeader name={this.getSelectedAccount().name} />
-            <TransactionList transactions={this.getSelectedAccount().transactions} accountId={this.props.match.params.accountId}/>
+            <TransactionList 
+              transactions={this.getSelectedAccount().transactions} 
+              categories={this.props.categories}
+              accountId={this.props.match.params.accountId}/>
             <DeleteAccount accountId={this.props.match.params.accountId} />
           </div>
         )}
@@ -62,6 +67,6 @@ function AccountHeader(props) {
 }
 
 export default connect(
-  state => state.account,
-  dispatch => bindActionCreators(actionCreators, dispatch)
+  state => { return { ...state.account, ...state.categories } },
+  dispatch => bindActionCreators({ ...actionCreators, ...categoryActionCreators }, dispatch)
 )(Account);
