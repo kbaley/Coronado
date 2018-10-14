@@ -47,6 +47,13 @@ export class ShortcutHelper extends Component {
               <td>n c</td>
               <td>New category</td>
             </tr>
+            <tr>
+              <td></td>
+              <td>Include <span style={{fontFamily: "monospace"}}>
+                bf: &lt;amount&gt; &lt;bank fee description&gt;</span> in a transaction description to 
+                automatically add one or more bank fee transactions<br/>
+                E.g. <span style={{fontFamily: "monospace"}}>Payment for services bf: 35.00 transfer fee bf: 2.45 tax on fee</span></td>
+            </tr>
           </tbody>
         </Table>
       </Modal.Body>
