@@ -90,7 +90,7 @@ namespace Coronado.Web.Controllers.Api
                 Amount = transaction.Amount
             };
 
-            var bankFeeTransactions = GetBankFeeTransactions(transaction.Description, account, transaction.TransactionDate);
+            var bankFeeTransactions = GetBankFeeTransactions(newTransaction, account);
             var transactions = new List<Transaction>();
             transactions.Add(newTransaction);
             transactions.AddRange(bankFeeTransactions);
@@ -101,11 +101,13 @@ namespace Coronado.Web.Controllers.Api
             return CreatedAtAction("GetTransaction", new { id = newTransaction.TransactionId }, transactions);
         }
 
-        private IEnumerable<Transaction> GetBankFeeTransactions(string description, Account account, DateTime transactionDate) {
+        private IEnumerable<Transaction> GetBankFeeTransactions(Transaction newTransaction, Account account) {
             var transactions = new List<Transaction>();
+            var description = newTransaction.Description;
 
             var category = _context.Categories.First(c => c.Name.Equals("bank fees", StringComparison.CurrentCultureIgnoreCase));
             if (description.Contains("bf:", StringComparison.CurrentCultureIgnoreCase)) {
+                newTransaction.Description = description.Substring(0, description.IndexOf("bf:", StringComparison.CurrentCultureIgnoreCase));
                 var parsed = description.Substring(description.IndexOf("bf:", 0, StringComparison.CurrentCultureIgnoreCase));
                 while (parsed.StartsWith("bf:", StringComparison.CurrentCultureIgnoreCase)) {
                     var next = parsed.IndexOf("bf:", 1, StringComparison.CurrentCultureIgnoreCase);
@@ -113,11 +115,13 @@ namespace Coronado.Web.Controllers.Api
                     var transactionData = (parsed.Substring(3, next - 3)).Trim().Split(" ");
                     Decimal amount;
                     if (decimal.TryParse(transactionData[0], out amount)) {
+                        var bankFeeDescription = string.Join(" ", transactionData.Skip(1).ToArray());
                         var transaction = new Transaction {
                             TransactionId = Guid.NewGuid(),
-                            Date = transactionDate,
+                            Date = newTransaction.Date,
                             Account = account,
                             Category = category,
+                            Description = bankFeeDescription,
                             Amount = 0 - amount
                         };
                         transactions.Add(transaction);

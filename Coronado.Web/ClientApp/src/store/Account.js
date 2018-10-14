@@ -31,7 +31,7 @@ async function deleteAccountForReal(accountId, dispatch, deletedAccounts) {
 
 function computeRunningTotal(transactions) {
   var total = 0;
-  var sorted = orderBy(transactions, ['date'], ['desc']);
+  var sorted = orderBy(transactions, ['date', 'enteredDate'], ['desc', 'desc']);
   forEachRight(sorted, (value) => {
     total += value.amount;
     value.runningTotal = total; 
@@ -39,9 +39,9 @@ function computeRunningTotal(transactions) {
   return sorted;
 }
 
-function computeBalance(transactions, newTransaction) {
+function computeBalance(transactions, newTransactions) {
   var total = sumBy(transactions, (t) => { return t.amount; });
-  if (newTransaction) total += newTransaction.amount;
+  if (newTransactions) total += sumBy(newTransactions, t => { return t.amount; });
   return total;
 }
 
