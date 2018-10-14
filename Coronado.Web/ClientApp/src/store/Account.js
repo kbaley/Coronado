@@ -1,6 +1,6 @@
 ﻿import { info } from 'react-notification-system-redux';
 import { push } from 'react-router-redux';
-import { filter, orderBy, concat, forEachRight, sumBy, find } from 'lodash'; 
+import { filter, orderBy, forEachRight, sumBy, find } from 'lodash'; 
 const requestAccountsType = 'REQUEST_ACCOUNT_LIST';
 const selectAccountType = 'SELECT_ACCOUNT';
 const receiveAccountsType = 'RECEIVE_ACCOUNT_LIST';
@@ -190,7 +190,7 @@ export const reducer = (state, action) => {
       ...state,
       accounts: state.accounts.map( (a) => a.accountId === state.selectedAccount
         ? { ...a, 
-          transactions: computeRunningTotal(concat(a.transactions, action.newTransaction)),
+          transactions: computeRunningTotal(a.transactions.concat(action.newTransaction)),
           currentBalance: computeBalance(a.transactions, action.newTransaction) }
         : a)
     };

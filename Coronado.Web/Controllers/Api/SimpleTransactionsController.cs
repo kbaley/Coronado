@@ -90,11 +90,42 @@ namespace Coronado.Web.Controllers.Api
                 Amount = transaction.Amount
             };
 
-            _context.Transactions.Add(newTransaction);
+            var bankFeeTransactions = GetBankFeeTransactions(transaction.Description, account, transaction.TransactionDate);
+            var transactions = new List<Transaction>();
+            transactions.Add(newTransaction);
+            transactions.AddRange(bankFeeTransactions);
+            _context.Transactions.AddRange(transactions);
             await _context.SaveChangesAsync();
             newTransaction.Account = null;
 
-            return CreatedAtAction("GetTransaction", new { id = newTransaction.TransactionId }, newTransaction);
+            return CreatedAtAction("GetTransaction", new { id = newTransaction.TransactionId }, transactions);
+        }
+
+        private IEnumerable<Transaction> GetBankFeeTransactions(string description, Account account, DateTime transactionDate) {
+            var transactions = new List<Transaction>();
+
+            var category = _context.Categories.First(c => c.Name.Equals("bank fees", StringComparison.CurrentCultureIgnoreCase));
+            if (description.Contains("bf:", StringComparison.CurrentCultureIgnoreCase)) {
+                var parsed = description.Substring(description.IndexOf("bf:", 0, StringComparison.CurrentCultureIgnoreCase));
+                while (parsed.StartsWith("bf:", StringComparison.CurrentCultureIgnoreCase)) {
+                    var next = parsed.IndexOf("bf:", 1, StringComparison.CurrentCultureIgnoreCase);
+                    if (next == -1) next = parsed.Length;
+                    var transactionData = (parsed.Substring(3, next - 3)).Trim().Split(" ");
+                    Decimal amount;
+                    if (decimal.TryParse(transactionData[0], out amount)) {
+                        var transaction = new Transaction {
+                            TransactionId = Guid.NewGuid(),
+                            Date = transactionDate,
+                            Account = account,
+                            Category = category,
+                            Amount = 0 - amount
+                        };
+                        transactions.Add(transaction);
+                    }
+                    parsed = parsed.Substring(next);
+                } 
+            }
+            return transactions;
         }
 
         private bool TransactionExists(Guid id)
