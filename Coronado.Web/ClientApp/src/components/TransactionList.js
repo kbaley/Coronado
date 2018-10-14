@@ -90,7 +90,7 @@ class TransactionList extends Component {
   }
 
   render() {
-    return (<table className='table'>
+    return (<table className='table transactionList'>
       <thead>
         <tr>
           <th></th>

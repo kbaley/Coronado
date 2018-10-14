@@ -6,3 +6,39 @@
     height: 27px;
     min-height: 27px !important;
 }
+
+.transactionList td {
+    white-space: nowrap;
+}
+
+.transactionList input {
+    width: 100%;
+}
+
+.transactionList td:nth-child(1) {
+    width: 50px;
+}
+
+.transactionList td:nth-child(2) {
+    width: 120px;
+}
+
+.transactionList td:nth-child(3) {
+    width: 150px;
+}
+
+.transactionList td:nth-child(4) {
+    width: 120px;
+}
+
+.transactionList td:nth-child(6) {
+    width: 100px;
+}
+
+.transactionList td:nth-child(7) {
+    width: 100px;
+}
+
+.transactionList td:nth-child(8) {
+    width: 100px;
+}

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { DeleteIcon } from './DeleteIcon';
 import { EditIcon } from './EditIcon';
-import { DecimalFormat } from './DecimalFormat';
+import { DecimalFormat, MoneyFormat } from './DecimalFormat';
 import { Glyphicon } from 'react-bootstrap';
 import { actionCreators } from '../store/Account';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { CategorySelect } from './CategorySelect';
+import './TransactionRow.css';
 
 class TransactionRow extends Component {
   constructor(props) {
@@ -85,7 +86,7 @@ class TransactionRow extends Component {
     const trx = this.props.transaction;
     return (
       this.state.isEditing ? 
-      <tr>
+      <tr className="transactionRow">
         <td>
         <Glyphicon glyph="ok" style={{color: "green", cursor: "pointer"}} onClick={this.updateTransaction} />
         </td>
@@ -108,10 +109,11 @@ class TransactionRow extends Component {
                 value={this.state.trx.description} onKeyPress={this.handleKeyPress} />
         </td>
         <td>
-          <input type="text" name="debit" value={this.state.trx.debit} 
-            onChange={this.handleChangeDebit} onKeyPress={this.handleKeyPress} /></td>
+          <MoneyInput name="debit" value={this.state.trx.debit} 
+            onChange={this.handleChangeDebit} onKeyPress={this.handleKeyPress} />
+        </td>
         <td>
-          <input type="text" name="credit" value={this.state.trx.credit} 
+          <MoneyInput name="credit" value={this.state.trx.credit} 
             onChange={this.handleChangeCredit} onKeyPress={this.handleKeyPress} /></td>
       </tr> :
 
@@ -124,12 +126,19 @@ class TransactionRow extends Component {
         <td>{trx.vendor}</td>
         <td>{trx.category.name}</td>
         <td>{trx.description}</td>
-        <td style={{textAlign: 'right'}}><DecimalFormat isDebit={true} amount={trx.amount} /></td>
-        <td style={{textAlign: 'right'}}><DecimalFormat isCredit={true} amount={trx.amount} /></td>
-        <td style={{textAlign: 'right'}}>{Number(trx.runningTotal).toFixed(2)}</td>
+        <td><DecimalFormat isDebit={true} amount={trx.amount} /></td>
+        <td><DecimalFormat isCredit={true} amount={trx.amount} /></td>
+        <td><MoneyFormat amount={trx.runningTotal} /></td>
       </tr>
     );
   }
+}
+
+function MoneyInput(props) {
+  return (
+    <input type="text" name={props.name} value={props.value} 
+      onChange={props.onChange} onKeyPress={props.onKeyPress} />
+  );
 }
 
 export default connect(
