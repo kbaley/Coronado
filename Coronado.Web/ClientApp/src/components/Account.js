@@ -5,6 +5,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import TransactionList from './TransactionList';
 import { find } from 'lodash';
+import { Glyphicon } from 'react-bootstrap';
+import './Account.css';
 
  class Account extends Component {
   displayName = Account.name;
@@ -61,7 +63,17 @@ import { find } from 'lodash';
 }
 
 function AccountHeader(props) {
-  return <h1>{props.name}</h1>
+  return <h1>
+    {props.name} <EditAccount />
+    </h1>
+}
+
+class EditAccount extends Component {
+  render() {
+    return (
+      <Glyphicon glyph="pencil" className="edit-icon" />
+    );
+  }
 }
 
 export default connect(
