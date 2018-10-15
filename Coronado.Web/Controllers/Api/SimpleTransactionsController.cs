@@ -122,6 +122,7 @@ namespace Coronado.Web.Controllers.Api
                             Account = account,
                             Category = category,
                             Description = bankFeeDescription,
+                            Vendor = account.Vendor,
                             Amount = 0 - amount
                         };
                         transactions.Add(transaction);

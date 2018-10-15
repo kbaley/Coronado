@@ -12,6 +12,7 @@ namespace Coronado.Web.Models
         public decimal StartingBalance { get; set; }
         public DateTime StartDate { get; set; }
         public string Currency { get; set; }
+        public string Vendor { get; set; }
     }
 
     public class AccountForListing

@@ -118,6 +118,7 @@ namespace Coronado.Web.Controllers.Api
                 AccountId = Guid.NewGuid(),
                 Name = account.Name,
                 Currency = account.Currency,
+                Vendor = account.Vendor
             };
 
             using (var dbTrx = _context.Database.BeginTransaction())

@@ -21,6 +21,8 @@ namespace Coronado.Web.Domain
         [DefaultValue("USD")]
         public string Currency {get;set;}
 
+        public string Vendor { get; set; }
+
         public IList<Transaction> Transactions {get;set;} = new List<Transaction>();
 
     }

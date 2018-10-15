@@ -36,7 +36,8 @@ class NewAccount extends Component {
 
   saveNewAccount() {
     this.props.saveNewAccount(this.state.account);
-    this.setState(...this.state, { account: { ...this.state.account, name: '', startingBalance: 0, currency: 'USD' } });
+    this.setState(...this.state, 
+      { account: { ...this.state.account, name: '', startingBalance: 0, currency: 'USD', vendor: '' } });
     this.handleClose();
   }
 
@@ -72,6 +73,14 @@ class NewAccount extends Component {
                     value={this.state.account.name}
                     onChange={this.handleChangeName}
                   />
+                </Col>
+              </FormGroup>
+              <FormGroup>
+                <Col componentClass={ControlLabel} sm={3}>Vendor</Col>
+                <Col sm={9}>
+                  <FormControl type="text" ref="inputVendor" name="vendor"
+                    value={this.state.account.vendor}
+                    onChange={this.handleChangeName} />
                 </Col>
               </FormGroup>
               <FormGroup>
