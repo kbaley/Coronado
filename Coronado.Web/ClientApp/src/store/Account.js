@@ -14,7 +14,14 @@ const requestTransactionsType = 'REQUEST_TRANSACTIONS';
 const receiveTransactionsType = 'RECEIVE_TRANSACTIONS';
 const undoDeleteAccountType = 'UNDO_DELETE_ACCOUNT';
 const removeDeletedAccountType = 'REMOVE_DELETED_ACCOUNT';
-const initialState = { isAccountLoading: true, isNavListLoading: true, accounts: [], deletedAccounts: []};
+const receiveAccountTypesType = 'RECEIVE_ACCOUNT_TYPES';
+const initialState = { 
+  isAccountLoading: true, 
+  isNavListLoading: true, 
+  accounts: [], 
+  deletedAccounts: [], 
+  accountTypes: []
+};
 
 async function deleteAccountForReal(accountId, dispatch, deletedAccounts) {
   if (deletedAccounts.some(a => a.accountId === accountId)) {
@@ -154,6 +161,15 @@ export const actionCreators = {
 
     dispatch({ type: receiveNewAccountType, newAccount });
     dispatch(push('/account/' + newAccount.accountId));
+  },
+
+  requestAccountTypes: () => async (dispatch, getState) => {
+    if (getState().account.accountTypes.length > 0) return null;
+
+    const response = await fetch('api/AccountTypes');
+    const accountTypes = await response.json();
+
+    dispatch({ type: receiveAccountTypesType, accountTypes });
   }
 };
 
@@ -256,6 +272,7 @@ export const reducer = (state, action) => {
         ? {...a, 
           name: action.updatedAccount.name, 
           vendor: action.updatedAccount.vendor, 
+          accountType: action.updatedAccount.accountType,
           currency: action.updatedAccount.currency }
         : a )
     }
@@ -274,6 +291,13 @@ export const reducer = (state, action) => {
       ...state,
       accounts: state.accounts.concat(state.deletedAccounts.filter(el => el.accountId === action.accountId)),
       deletedAccounts: state.deletedAccounts.filter(el => el.accountId !== action.accountId)
+    }
+  }
+
+  if (action.type === receiveAccountTypesType) {
+    return {
+      ...state,
+      accountTypes: action.accountTypes
     }
   }
 

@@ -87,6 +87,7 @@ namespace Coronado.Web.Controllers.Api
             existingAccount.Name = account.Name;
             existingAccount.Currency = account.Currency;
             existingAccount.Vendor = account.Vendor;
+            existingAccount.AccountType = account.AccountType;
 
             try
             {
@@ -121,7 +122,8 @@ namespace Coronado.Web.Controllers.Api
                 AccountId = Guid.NewGuid(),
                 Name = account.Name,
                 Currency = account.Currency,
-                Vendor = account.Vendor
+                Vendor = account.Vendor,
+                AccountType = account.AccountType
             };
 
             using (var dbTrx = _context.Database.BeginTransaction())

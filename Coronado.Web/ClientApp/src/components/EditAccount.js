@@ -15,6 +15,7 @@ class EditAccount extends Component {
   }
   showForm() {
     this.setState({ show: true });
+    this.props.requestAccountTypes();
   }
   hideForm() {
     this.setState({ show: false });
@@ -29,7 +30,9 @@ class EditAccount extends Component {
         show={this.state.show} 
         onClose={this.hideForm} 
         account={this.props.account} 
-        onSave={this.saveAccount} />
+        onSave={this.saveAccount}
+        accountTypes={this.props.accountTypes}
+      />
     </span>);
   }
 }
