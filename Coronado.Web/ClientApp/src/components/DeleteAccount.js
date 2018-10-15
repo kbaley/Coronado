@@ -3,6 +3,7 @@ import { Button } from 'react-bootstrap';
 import { actionCreators } from '../store/Account';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Glyphicon } from 'react-bootstrap';
 
 class DeleteAccount extends Component {
   displayName = DeleteAccount.name
@@ -19,9 +20,9 @@ class DeleteAccount extends Component {
 
   render() {
     return (
-      <div>
-        <Button onClick={this.deleteAccount}>Delete Account</Button>
-      </div>
+      <span>
+        <Glyphicon glyph="remove-sign" className="delete-icon" onClick={this.deleteAccount} />
+      </span>
     );
   }
 }

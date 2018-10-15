@@ -128,7 +128,10 @@ export const actionCreators = {
     };
     dispatch( { type: deleteAccountType, accountId } );
     dispatch(info(notificationOpts));
-    dispatch(push('/account/' + getState().account.accounts[0].accountId));
+    if (getState().account.accounts.length > 0)
+      dispatch(push('/account/' + getState().account.accounts[0].accountId));
+    else
+      dispatch(push('/'));
   },
 
   updateAccount: (account) => async (dispatch) => {

@@ -54,7 +54,6 @@ import EditAccount from './EditAccount';
               transactions={this.getSelectedAccount().transactions} 
               categories={this.props.categories}
               accountId={this.props.match.params.accountId}/>
-            <DeleteAccount accountId={this.props.match.params.accountId} accountName={this.getSelectedAccount().name} />
           </div>
         )}
       </div>
@@ -64,7 +63,9 @@ import EditAccount from './EditAccount';
 
 function AccountHeader(props) {
   return <h1>
-    {props.account ? props.account.name : ""} <EditAccount account={props.account} />
+    {props.account ? props.account.name : ""} 
+    <EditAccount account={props.account} />
+    <DeleteAccount accountId={props.account.accountId} accountName={props.account.name} />
     </h1>
 }
 

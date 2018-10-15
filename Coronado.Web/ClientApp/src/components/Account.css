@@ -1,6 +1,11 @@
-﻿.edit-icon {
+﻿.edit-icon, .delete-icon {
     font-size: 20px;
     margin: 0 0 10px 10px;
     cursor: pointer;
     vertical-align: middle;
+    padding: 0 0 0 10px;
+}
+
+.delete-icon {
+    color: #990000;
 }
