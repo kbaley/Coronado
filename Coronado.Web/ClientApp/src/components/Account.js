@@ -5,8 +5,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import TransactionList from './TransactionList';
 import { find } from 'lodash';
-import { Glyphicon } from 'react-bootstrap';
 import './Account.css';
+import EditAccount from './EditAccount';
 
  class Account extends Component {
   displayName = Account.name;
@@ -49,7 +49,7 @@ import './Account.css';
       <div>
         {this.props.isAccountLoading ? <p><em>Loading...</em></p> : (
           <div>
-            <AccountHeader name={this.getSelectedAccount().name} />
+            <AccountHeader account={this.getSelectedAccount()} />
             <TransactionList 
               transactions={this.getSelectedAccount().transactions} 
               categories={this.props.categories}
@@ -64,16 +64,8 @@ import './Account.css';
 
 function AccountHeader(props) {
   return <h1>
-    {props.name} <EditAccount />
+    {props.account ? props.account.name : ""} <EditAccount account={props.account} />
     </h1>
-}
-
-class EditAccount extends Component {
-  render() {
-    return (
-      <Glyphicon glyph="pencil" className="edit-icon" />
-    );
-  }
 }
 
 export default connect(

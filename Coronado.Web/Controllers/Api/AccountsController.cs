@@ -71,7 +71,7 @@ namespace Coronado.Web.Controllers.Api
 
         // PUT: api/Accounts/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAccount([FromRoute] Guid id, [FromBody] Account account)
+        public async Task<IActionResult> PutAccount([FromRoute] Guid id, [FromBody] AccountForPosting account)
         {
             if (!ModelState.IsValid)
             {
@@ -83,7 +83,10 @@ namespace Coronado.Web.Controllers.Api
                 return BadRequest();
             }
 
-            _context.Entry(account).State = EntityState.Modified;
+            var existingAccount = await _context.Accounts.FindAsync(id);
+            existingAccount.Name = account.Name;
+            existingAccount.Currency = account.Currency;
+            existingAccount.Vendor = account.Vendor;
 
             try
             {
@@ -101,7 +104,7 @@ namespace Coronado.Web.Controllers.Api
                 }
             }
 
-            return NoContent();
+            return Ok(existingAccount);
         }
 
         // POST: api/Accounts

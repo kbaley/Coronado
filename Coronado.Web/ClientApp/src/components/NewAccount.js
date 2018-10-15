@@ -21,7 +21,7 @@ class NewAccount extends Component {
   componentDidMount() {
     Mousetrap.bind('n a', this.newAccount);
   }
-  
+
   componentWillUnmount() {
     Mousetrap.unbind('n a');
   }
@@ -47,7 +47,7 @@ class NewAccount extends Component {
             <Button onClick={this.newAccount}>New Account</Button>
           </NavItem>
         </Nav>
-        <AccountForm show={this.state.show} handleClose={this.handleClose}
+        <AccountForm show={this.state.show} onClose={this.handleClose}
           onSave={this.saveNewAccount} />
       </div>
     );

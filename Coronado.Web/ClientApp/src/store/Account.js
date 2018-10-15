@@ -5,6 +5,7 @@ const requestAccountsType = 'REQUEST_ACCOUNT_LIST';
 const selectAccountType = 'SELECT_ACCOUNT';
 const receiveAccountsType = 'RECEIVE_ACCOUNT_LIST';
 const receiveNewAccountType = 'RECEIVE_NEW_ACCOUNT';
+const receiveUpdatedAccountType = 'UPDATE_ACCOUNT';
 const deleteAccountType = 'DELETE_ACCOUNT';
 const deleteTransactionType = 'DELETE_TRANSACTION';
 const updateTransactionType = 'UPDATE_TRANSACTION';
@@ -123,7 +124,21 @@ export const actionCreators = {
     dispatch(push('/account/' + getState().account.accounts[0].accountId));
   },
 
-  saveNewAccount: (account) => async (dispatch, getState) => {
+  updateAccount: (account) => async (dispatch) => {
+    const response = await fetch('api/Accounts/' + account.accountId, {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(account)
+    });
+    const updatedAccount = await response.json();
+
+    dispatch({type: receiveUpdatedAccountType, updatedAccount});
+  },
+
+  saveNewAccount: (account) => async (dispatch) => {
     const newIdResponse = await fetch('api/Accounts/newId');
     const newId = await newIdResponse.json();
     account.accountId = newId;
@@ -231,6 +246,19 @@ export const reducer = (state, action) => {
       ...state,
       accounts: state.accounts.concat(action.newAccount)
     };
+  }
+
+  if (action.type === receiveUpdatedAccountType) {
+    return {
+      ...state,
+      selectedAccount: action.updatedAccount.accountId,
+      accounts: state.accounts.map( a => a.accountId === action.updatedAccount.accountId
+        ? {...a, 
+          name: action.updatedAccount.name, 
+          vendor: action.updatedAccount.vendor, 
+          currency: action.updatedAccount.currency }
+        : a )
+    }
   }
 
   if (action.type === deleteAccountType) {
