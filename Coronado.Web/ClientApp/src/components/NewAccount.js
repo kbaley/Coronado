@@ -28,6 +28,7 @@ class NewAccount extends Component {
 
   newAccount() {
     this.setState({ show: true });
+    this.props.requestAccountTypes();
     return false;
   }
 
@@ -48,7 +49,7 @@ class NewAccount extends Component {
           </NavItem>
         </Nav>
         <AccountForm show={this.state.show} onClose={this.handleClose}
-          onSave={this.saveNewAccount} />
+          onSave={this.saveNewAccount} accountTypes={this.props.accountTypes} />
       </div>
     );
   }
