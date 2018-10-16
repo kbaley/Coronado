@@ -45,6 +45,20 @@ class AccountNavList extends Component {
     this.props.history.push('/account/' + this.props.accounts[key].accountId);
   }
 
+  getIcon(accountType) {
+    switch (accountType) {
+      case "Credit Card":
+        return "credit-card";
+      case "Asset":
+        return "car";
+      case "Mortgage":
+        return "home";
+      case "Investment":
+        return "usd";
+    }
+    return "piggy-bank";
+  }
+
   render() {
     return (
       <Nav>
@@ -53,7 +67,7 @@ class AccountNavList extends Component {
             <LinkContainer to={'/account/' + account.accountId} key={account.accountId}>
               <NavItem>
                 <div className='accountName'>
-                  <Glyphicon glyph='piggy-bank' /> {account.name}
+                  <Glyphicon glyph={this.getIcon(account.accountType)} /> {account.name}
                 </div>
                 <div style={{float: "right"}}>
                   <CurrencyFormat value={account.currentBalance} />

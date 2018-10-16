@@ -147,14 +147,9 @@ namespace Coronado.Web.Controllers.Api
             var transactionsModel = newAccount.Transactions
                 .Select(AccountTransaction.FromTransaction)
                 .OrderByDescending(t => t.TransactionDate);
-            var model = new AccountForListing
-            {
-                AccountId = newAccount.AccountId,
-                Name = newAccount.Name,
-                CurrentBalance = newAccount.CurrentBalance
-            };
+            newAccount.CurrentBalance = newAccount.Transactions.Sum(t => t.Amount);
 
-            return CreatedAtAction("GetAccount", new { id = newAccount.AccountId }, model);
+            return CreatedAtAction("GetAccount", new { id = newAccount.AccountId }, newAccount);
         }
 
         // DELETE: api/Accounts/5
