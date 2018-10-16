@@ -45,11 +45,16 @@ import EditAccount from './EditAccount';
   }
 
   render() {
+    var account = this.getSelectedAccount();
     return (
       <div>
         {this.props.isAccountLoading ? <p><em>Loading...</em></p> : (
           <div>
-            <AccountHeader account={this.getSelectedAccount()} />
+            <div style={{float: "right", width: "100px"}}>
+              <EditAccount account={account} />
+              <DeleteAccount accountId={account.accountId} accountName={account.name} />
+            </div>
+            <AccountHeader account={account} />
             <TransactionList 
               transactions={this.getSelectedAccount().transactions} 
               categories={this.props.categories}
@@ -64,8 +69,6 @@ import EditAccount from './EditAccount';
 function AccountHeader(props) {
   return <h1>
     {props.account ? props.account.name : ""} 
-    <EditAccount account={props.account} />
-    <DeleteAccount accountId={props.account.accountId} accountName={props.account.name} />
     </h1>
 }
 
