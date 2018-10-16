@@ -2,7 +2,8 @@
 import { actionCreators } from '../store/Account';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Glyphicon } from 'react-bootstrap';
+import { DeleteIcon } from './DeleteIcon';
+import './DeleteAccount.css';
 
 class DeleteAccount extends Component {
   displayName = DeleteAccount.name
@@ -20,7 +21,7 @@ class DeleteAccount extends Component {
   render() {
     return (
       <span>
-        <Glyphicon glyph="remove-sign" className="delete-icon" onClick={this.deleteAccount} />
+        <DeleteIcon onDelete={this.deleteAccount} className="delete-account"/>
       </span>
     );
   }

@@ -20,6 +20,7 @@ class TransactionRow extends Component {
     this.handleChangeCategory = this.handleChangeCategory.bind(this);
     this.updateTransaction = this.updateTransaction.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.cancelEditing = this.cancelEditing.bind(this);
     this.state = { isEditing: false, 
         debit: '',
         credit: '',
@@ -39,6 +40,12 @@ class TransactionRow extends Component {
         debit: amount <= 0 ? (0 - amount).toFixed(2) : '',
         credit: amount > 0 ? amount.toFixed(2) : '',
         selectedCategory: find(this.props.categories, c => c.categoryId === this.props.transaction.category.categoryId),
+    })
+  }
+
+  cancelEditing() {
+    this.setState({
+      isEditing: false
     })
   }
 
@@ -96,6 +103,7 @@ class TransactionRow extends Component {
       <tr className="transactionRow">
         <td>
         <Glyphicon glyph="ok" style={{color: "green", cursor: "pointer"}} onClick={this.updateTransaction} />
+        <Glyphicon glyph="remove" style={{color: "#990000", cursor: "pointer"}} onClick={this.cancelEditing} />
         </td>
         <td>
         <input type="text" name="transactionDate" 

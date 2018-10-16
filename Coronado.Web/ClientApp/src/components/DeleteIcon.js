@@ -1,8 +1,10 @@
 import React from 'react';
 import { Glyphicon } from 'react-bootstrap';
+import './DeleteIcon.css';
 
 export function DeleteIcon(props) {
-  return (<a onClick={props.onDelete} className="delete-icon">
-    <Glyphicon glyph='remove-sign' />
-  </a>);
+  const classes = `delete-icon ${props.className}`
+  return (
+    <Glyphicon glyph='remove-sign' className={classes} onClick={props.onDelete} />
+  );
 }
