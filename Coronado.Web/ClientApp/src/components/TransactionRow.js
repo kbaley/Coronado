@@ -10,6 +10,8 @@ import './TransactionRow.css';
 import { find } from 'lodash';
 import { CheckIcon } from './icons/CheckIcon';
 import { CancelIcon } from './icons/CancelIcon';
+import { MoneyInput } from './MoneyInput';
+import * as Mousetrap from 'mousetrap';
 
 class TransactionRow extends Component {
   constructor(props) {
@@ -42,13 +44,15 @@ class TransactionRow extends Component {
         debit: amount <= 0 ? (0 - amount).toFixed(2) : '',
         credit: amount > 0 ? amount.toFixed(2) : '',
         selectedCategory: find(this.props.categories, c => c.categoryId === this.props.transaction.category.categoryId),
-    })
+    });
+    Mousetrap.bind('esc', this.cancelEditing);
   }
 
   cancelEditing() {
     this.setState({
       isEditing: false
-    })
+    });
+    Mousetrap.unbind('esc');
   }
 
   handleKeyPress(e) {
@@ -150,13 +154,6 @@ class TransactionRow extends Component {
       </tr>
     );
   }
-}
-
-function MoneyInput(props) {
-  return (
-    <input type="text" name={props.name} value={props.value} 
-      onChange={props.onChange} onKeyPress={props.onKeyPress} />
-  );
 }
 
 export default connect(
