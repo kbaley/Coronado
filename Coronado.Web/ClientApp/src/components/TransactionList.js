@@ -28,6 +28,8 @@ class TransactionList extends Component {
         description: '',
         accountId: props.accountId
       },
+      credit: '',
+      debit: '',
       categories: []
     }
   }
@@ -55,7 +57,8 @@ class TransactionList extends Component {
     this.props.saveTransaction(this.state.trx);
     this.setState(...this.state, 
       {
-        trx: {...this.state.trx, vendor: '', categoryId: null, description: '', amount: '', debit: '', credit: ''},
+        trx: {...this.state.trx, vendor: '', categoryId: null, description: '', amount: ''},
+        debit: '', credit: ''
       });
     this.refs["inputDate"].focus();
   }
@@ -78,14 +81,14 @@ class TransactionList extends Component {
   handleChangeDebit(e) {
     if (e.targetValue !== '') {
       var amount = 0 - parseFloat(e.target.value);
-      this.setState( { trx: {...this.state.trx, amount: amount}});
+      this.setState( { trx: {...this.state.trx, amount: amount}, debit: e.target.value});
     }
   }
 
   handleChangeCredit(e) {
     if (e.targetValue !== '') {
       var amount = parseFloat(e.target.value);
-      this.setState( { trx: {...this.state.trx, amount: amount}});
+      this.setState( { trx: {...this.state.trx, amount: amount}, credit: e.target.value});
     }
   }
 
