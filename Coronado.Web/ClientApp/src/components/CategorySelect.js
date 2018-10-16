@@ -1,34 +1,27 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { find } from 'lodash';
 
 export class CategorySelect extends Component {
   constructor(props) {
     super(props);
     this.handleChangeCategory = this.handleChangeCategory.bind(this);
     this.state = {
-      categories: this.props.categories.map(c => {return {value: c.categoryId, label: c.name}}),
       categoriesLoaded: false
     };
   }
 
-  componentDidMount() {
-    this.setState({selectedCategory: find(this.state.categories, c => c.value === this.props.selectedCategoryId)})
-  }
-
   componentDidUpdate() {
-      if (this.state.categories.length === 0 && this.props.categories.length > 0 && !this.state.categoriesLoaded) {
-        this.setState(
-          {
-            categories: this.props.categories.map(c => {return {value: c.categoryId, label: c.name}}),
-            categoriesLoaded: true
-          })
-      }
+      // if (this.state.categories.length === 0 && this.props.categories.length > 0 && !this.state.categoriesLoaded) {
+      //   this.setState(
+      //     {
+      //       categories: this.props.categories.map(c => {return {value: c.categoryId, label: c.name}}),
+      //       categoriesLoaded: true
+      //     })
+      // }
   }
 
   handleChangeCategory(selectedOption) {
-    this.props.onCategoryChanged(selectedOption.value);
-    this.setState({ selectedCategory: selectedOption });
+    this.props.onCategoryChanged(selectedOption.categoryId);
   }
   render() {
     const customStyles = {
@@ -44,8 +37,10 @@ export class CategorySelect extends Component {
       })
     };
     return (
-        <Select value={this.state.selectedCategory} 
+        <Select value={this.props.selectedCategory} 
             onChange={this.handleChangeCategory} 
-            options={this.state.categories} styles={customStyles} />);
+            getOptionLabel={o => o.name}
+            getOptionValue={o => o.categoryId}
+            options={this.props.categories} styles={customStyles} />);
   }
 }

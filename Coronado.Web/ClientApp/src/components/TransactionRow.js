@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { CategorySelect } from './CategorySelect';
 import './TransactionRow.css';
+import { find } from 'lodash';
 
 class TransactionRow extends Component {
   constructor(props) {
@@ -22,6 +23,7 @@ class TransactionRow extends Component {
     this.state = { isEditing: false, 
         debit: '',
         credit: '',
+        selectedCategory: { },
         trx: {...props.transaction, 
             transactionDate: new Date(props.transaction.date).toLocaleDateString(),
             credit: props.transaction.amount > 0 ? props.transaction.amount.toFixed(2) : '',
@@ -36,6 +38,7 @@ class TransactionRow extends Component {
         isEditing: true,
         debit: amount <= 0 ? (0 - amount).toFixed(2) : '',
         credit: amount > 0 ? amount.toFixed(2) : '',
+        selectedCategory: find(this.props.categories, c => c.categoryId === this.props.transaction.category.categoryId),
     })
   }
 
@@ -70,7 +73,11 @@ class TransactionRow extends Component {
   }
 
   handleChangeCategory(categoryId) {
-    this.setState( {trx: {...this.state.trx, categoryId }});
+    var selectedCategory = find(this.props.categories, c => c.categoryId===categoryId);
+    this.setState( {
+      trx: {...this.state.trx, categoryId },
+      selectedCategory
+    });
   }
 
   updateTransaction() {
@@ -101,7 +108,7 @@ class TransactionRow extends Component {
                 value={this.state.trx.vendor} onKeyPress={this.handleKeyPress} />
         </td>
         <td>
-            <CategorySelect selectedCategoryId={this.state.trx.category.categoryId} categories={this.props.categories}
+            <CategorySelect selectedCategory={this.state.selectedCategory} categories={this.props.categories}
               onCategoryChanged={this.handleChangeCategory} />
         </td>
         <td>

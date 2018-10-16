@@ -8,6 +8,7 @@ import * as Mousetrap from 'mousetrap';
 import TransactionRow from './TransactionRow';
 import './TransactionList.css';
 import { CategorySelect } from './CategorySelect';
+import { find } from 'lodash';
 
 class TransactionList extends Component {
   displayName = TransactionList.name;
@@ -30,6 +31,7 @@ class TransactionList extends Component {
       },
       credit: '',
       debit: '',
+      selectedCategory: {},
       categories: []
     }
   }
@@ -58,7 +60,7 @@ class TransactionList extends Component {
     this.setState(...this.state, 
       {
         trx: {...this.state.trx, vendor: '', categoryId: null, description: '', amount: ''},
-        debit: '', credit: ''
+        debit: '', credit: '', selectedCategory: null
       });
     this.refs["inputDate"].focus();
   }
@@ -75,7 +77,10 @@ class TransactionList extends Component {
   }
 
   handleChangeCategory(categoryId) {
-    this.setState( {trx: {...this.state.trx, categoryId }});
+    var selectedCategory = find(this.props.categories, c => c.categoryId===categoryId);
+    this.setState( {
+      trx: {...this.state.trx, categoryId },
+      selectedCategory});
   }
 
   handleChangeDebit(e) {
@@ -115,7 +120,7 @@ class TransactionList extends Component {
             value={this.state.trx.transactionDate} onChange={this.handleChangeField}/></td>
           <td><input type="text" name="vendor" value={this.state.trx.vendor} onChange={this.handleChangeField} /></td>
           <td>
-            <CategorySelect 
+            <CategorySelect selectedCategory={this.state.selectedCategory}
               onCategoryChanged={this.handleChangeCategory} categories={this.props.categories} />
           </td>
           <td><input type="text" name="description" value={this.state.trx.description} onChange={this.handleChangeField} /></td>
