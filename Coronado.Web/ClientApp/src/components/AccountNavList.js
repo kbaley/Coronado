@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Glyphicon, Nav, NavItem } from 'react-bootstrap';
+import { Nav, NavItem, Row, Col, Grid } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { actionCreators } from '../store/Account';
 import { bindActionCreators } from 'redux';
@@ -8,6 +8,7 @@ import * as Mousetrap from 'mousetrap';
 import { withRouter } from 'react-router-dom';
 import './AccountNavList.css'
 import { CurrencyFormat } from './CurrencyFormat';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class AccountNavList extends Component {
   displayName = AccountNavList.name;
@@ -54,7 +55,11 @@ class AccountNavList extends Component {
       case "Mortgage":
         return "home";
       case "Investment":
-        return "usd";
+        return "dollar-sign";
+      case "Loan":
+        return "hand-holding-usd";
+      case "Cash":
+        return "money-bill-wave";
     }
     return "piggy-bank";
   }
@@ -66,12 +71,15 @@ class AccountNavList extends Component {
           this.props.accounts.map(account =>
             <LinkContainer to={'/account/' + account.accountId} key={account.accountId}>
               <NavItem>
-                <div className='accountName'>
-                  <Glyphicon glyph={this.getIcon(account.accountType)} /> {account.name}
-                </div>
-                <div style={{float: "right"}}>
-                  <CurrencyFormat value={account.currentBalance} />
-                </div>
+                <Row>
+                  <Col sm={1}>
+                    <FontAwesomeIcon icon={this.getIcon(account.accountType)} />
+                  </Col>
+                  <Col sm={6} style={{overflow: "hidden", textOverflow: "ellipsis"}}>{account.name}</Col>
+                  <Col sm={4} style={{textAlign: "right"}}>
+                    <CurrencyFormat value={account.currentBalance} />
+                  </Col>
+                </Row>
               </NavItem>
             </LinkContainer>
           )}

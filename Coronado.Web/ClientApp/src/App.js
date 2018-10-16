@@ -4,6 +4,10 @@ import Layout from './components/Layout';
 import Home from './components/Home';
 import Account from './components/Account';
 import Categories from './components/Categories';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faPiggyBank, faCreditCard, faHome, faHandHoldingUsd, faDollarSign, faCar, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faPiggyBank, faCreditCard, faHome, faHandHoldingUsd, faDollarSign, faCar, faMoneyBillWave);
 
 export default () => (
   <Layout>

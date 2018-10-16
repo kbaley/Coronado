@@ -4,3 +4,14 @@
     text-overflow: ellipsis;
     float: left;
 }
+
+.nav .row div {
+    padding: 0;
+    font-size: 13px;
+}
+
+.nav .row div:first-child {
+    margin-left: 8px;
+    margin-right: 5px;
+    text-align: center;
+}
