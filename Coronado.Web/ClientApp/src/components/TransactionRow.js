@@ -27,6 +27,7 @@ class TransactionRow extends Component {
         credit: '',
         selectedCategory: { },
         trx: {...props.transaction, 
+            vendor: props.transaction.vendor || '',
             transactionDate: new Date(props.transaction.date).toLocaleDateString(),
             credit: props.transaction.amount > 0 ? props.transaction.amount.toFixed(2) : '',
             debit: props.transaction.amount <= 0 ? (0 - props.transaction.amount).toFixed(2) : '',
@@ -131,6 +132,7 @@ class TransactionRow extends Component {
         <td>
           <MoneyInput name="credit" value={this.state.trx.credit} 
             onChange={this.handleChangeCredit} onKeyPress={this.handleKeyPress} /></td>
+        <td></td>
       </tr> :
 
       <tr>

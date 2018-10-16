@@ -1,0 +1,14 @@
+.icon {
+    --icon-font-size: var(--font-size, 15px);
+    cursor: pointer;
+    font-size: var(--icon-font-size);
+    vertical-align: middle;
+    padding: 4px;
+    border: 1px solid transparent;
+}
+
+.icon:hover {
+    background-color: #eee;
+    border-radius: 4px;
+    border: 1px solid #666;
+}

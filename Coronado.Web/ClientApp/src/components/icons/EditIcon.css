@@ -1,5 +1,3 @@
-.edit-icon {
-    --icon-font-size: var(--font-size, 18px);
-    cursor: pointer;
-    font-size: var(--icon-font-size);
+.edit-icon:hover {
+    color: #333;
 }

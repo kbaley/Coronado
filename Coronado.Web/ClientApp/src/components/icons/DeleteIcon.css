@@ -1,6 +1,3 @@
 .delete-icon {
-    --icon-font-size: var(--font-size, 18px);
     color: #990000;
-    cursor: pointer;
-    font-size: var(--icon-font-size);
 }

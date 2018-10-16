@@ -137,6 +137,7 @@ namespace Coronado.Web.Controllers.Api
                     Amount = account.StartingBalance,
                     Date = account.StartDate,
                     Description = "Start Balance",
+                    Vendor = "",
                     Category = category
                 };
                 _context.Transactions.Add(transaction);

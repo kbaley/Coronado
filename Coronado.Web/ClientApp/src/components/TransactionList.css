@@ -7,8 +7,13 @@
     min-height: 27px !important;
 }
 
-.transactionList td {
+.transactionList > tbody > tr> td {
     white-space: nowrap;
+    padding: 3px 8px;
+}
+
+.transactionList > tbody > tr {
+    height: 32px;
 }
 
 .transactionList input {
