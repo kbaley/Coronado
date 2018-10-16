@@ -1,0 +1,6 @@
+.check-icon {
+    --icon-font-size: var(--font-size, 18px);
+    color: green;
+    cursor: pointer;
+    font-size: var(--icon-font-size);
+}

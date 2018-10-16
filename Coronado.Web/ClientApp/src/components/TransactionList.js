@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Glyphicon } from 'react-bootstrap';
 import { actionCreators } from '../store/Account';
 import { actionCreators as categoryActionCreators } from '../store/Categories';
 import { bindActionCreators } from 'redux';
@@ -9,6 +8,7 @@ import TransactionRow from './TransactionRow';
 import './TransactionList.css';
 import { CategorySelect } from './CategorySelect';
 import { find } from 'lodash';
+import { CheckIcon } from './icons/CheckIcon';
 
 class TransactionList extends Component {
   displayName = TransactionList.name;
@@ -114,7 +114,7 @@ class TransactionList extends Component {
       <tbody>
         <tr key="new-transaction">
           <td>
-            <Glyphicon glyph="ok" style={{color: "green", cursor: "pointer"}} onClick={this.saveTransaction} />
+            <CheckIcon onClick={this.saveTransaction} />
           </td>
           <td><input type="text" name="transactionDate" ref="inputDate"
             value={this.state.trx.transactionDate} onChange={this.handleChangeField}/></td>

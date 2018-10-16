@@ -3,7 +3,7 @@ import { AccountForm } from './AccountForm';
 import { actionCreators } from '../store/Account';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { EditIcon } from './EditIcon';
+import { EditIcon } from './icons/EditIcon';
 import './EditAccount.css';
 
 class EditAccount extends Component {

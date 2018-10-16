@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { actionCreators } from '../store/Categories';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { DeleteIcon } from './DeleteIcon';
+import { DeleteIcon } from './icons/DeleteIcon';
 
 class CategoryList extends Component {
   constructor(props) {

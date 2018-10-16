@@ -2,7 +2,7 @@
 import { actionCreators } from '../store/Account';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { DeleteIcon } from './DeleteIcon';
+import { DeleteIcon } from './icons/DeleteIcon';
 import './DeleteAccount.css';
 
 class DeleteAccount extends Component {

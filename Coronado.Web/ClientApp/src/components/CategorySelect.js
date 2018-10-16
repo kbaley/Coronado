@@ -10,16 +10,6 @@ export class CategorySelect extends Component {
     };
   }
 
-  componentDidUpdate() {
-      // if (this.state.categories.length === 0 && this.props.categories.length > 0 && !this.state.categoriesLoaded) {
-      //   this.setState(
-      //     {
-      //       categories: this.props.categories.map(c => {return {value: c.categoryId, label: c.name}}),
-      //       categoriesLoaded: true
-      //     })
-      // }
-  }
-
   handleChangeCategory(selectedOption) {
     this.props.onCategoryChanged(selectedOption.categoryId);
   }
@@ -31,8 +21,8 @@ export class CategorySelect extends Component {
       control: (base) => ({
         ...base,
         width: 200,
-        minHeight: 27,
-        height: 27,
+        minHeight: 25,
+        height: 25,
         borderRadius: 0
       })
     };

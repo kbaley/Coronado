@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { DeleteIcon } from './DeleteIcon';
-import { EditIcon } from './EditIcon';
+import { DeleteIcon } from './icons/DeleteIcon';
+import { EditIcon } from './icons/EditIcon';
 import { DecimalFormat, MoneyFormat } from './DecimalFormat';
-import { Glyphicon } from 'react-bootstrap';
 import { actionCreators } from '../store/Account';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { CategorySelect } from './CategorySelect';
 import './TransactionRow.css';
 import { find } from 'lodash';
+import { CheckIcon } from './icons/CheckIcon';
+import { CancelIcon } from './icons/CancelIcon';
 
 class TransactionRow extends Component {
   constructor(props) {
@@ -102,8 +103,8 @@ class TransactionRow extends Component {
       this.state.isEditing ? 
       <tr className="transactionRow">
         <td>
-        <Glyphicon glyph="ok" style={{color: "green", cursor: "pointer"}} onClick={this.updateTransaction} />
-        <Glyphicon glyph="remove" style={{color: "#990000", cursor: "pointer"}} onClick={this.cancelEditing} />
+          <CheckIcon onClick={this.updateTransaction} className="icon" />
+          <CancelIcon onCancel={this.cancelEditing} />
         </td>
         <td>
         <input type="text" name="transactionDate" 
@@ -134,7 +135,7 @@ class TransactionRow extends Component {
 
       <tr>
         <td>
-            <EditIcon onStartEditing={this.startEditing} className="edit-icon" />
+            <EditIcon onStartEditing={this.startEditing} className="icon" />
             <DeleteIcon onDelete={this.props.onDelete} />
         </td>
         <td>{new Date(trx.date).toLocaleDateString()}</td>
