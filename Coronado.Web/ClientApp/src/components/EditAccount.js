@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Glyphicon } from 'react-bootstrap';
 import { AccountForm } from './AccountForm';
 import { actionCreators } from '../store/Account';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { EditIcon } from './EditIcon';
+import './EditAccount.css';
 
 class EditAccount extends Component {
   constructor(props) {
@@ -25,7 +26,8 @@ class EditAccount extends Component {
   }
   render() {
     return (<span>
-      <Glyphicon glyph="pencil" className="edit-icon" onClick={this.showForm} />
+      {/* <Glyphicon glyph="pencil" className="edit-icon" onClick={this.showForm} /> */}
+      <EditIcon className="edit-account" onStartEditing={this.showForm} />
       <AccountForm 
         show={this.state.show} 
         onClose={this.hideForm} 

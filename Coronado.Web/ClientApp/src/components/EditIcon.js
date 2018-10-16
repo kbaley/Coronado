@@ -1,10 +1,10 @@
 import React from 'react';
 import { Glyphicon } from 'react-bootstrap';
+import './EditIcon.css'
 
 export function EditIcon(props) {
+  const classes = `edit-icon ${props.className}`
   return (
-    <a onClick={props.onStartEditing} style={{cursor: 'pointer', color: "#000"}}>
-    <Glyphicon glyph='pencil' style={{paddingRight: "10px"}}/>
-    </a>
+    <Glyphicon glyph='pencil' className={classes} onClick={props.onStartEditing}/>
   );
 }

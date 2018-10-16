@@ -134,7 +134,7 @@ class TransactionRow extends Component {
 
       <tr>
         <td>
-            <EditIcon onStartEditing={this.startEditing} />
+            <EditIcon onStartEditing={this.startEditing} className="edit-icon" />
             <DeleteIcon onDelete={this.props.onDelete} />
         </td>
         <td>{new Date(trx.date).toLocaleDateString()}</td>
