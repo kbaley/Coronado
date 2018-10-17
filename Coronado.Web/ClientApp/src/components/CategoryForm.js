@@ -4,8 +4,8 @@ import { actionCreators } from '../store/Categories';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-class AddCategory extends Component {
-  displayName = AddCategory.name;
+class CategoryForm extends Component {
+  displayName = CategoryForm.name;
   constructor(props) {
     super(props);
     this.saveCategory = this.saveCategory.bind(this);   
@@ -76,4 +76,4 @@ class AddCategory extends Component {
 export default connect(
   state => state.categories,
   dispatch => bindActionCreators(actionCreators, dispatch)
-)(AddCategory);
+)(CategoryForm);

@@ -3,7 +3,7 @@ import { actionCreators } from '../store/Categories';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import CategoryList from './CategoryList';
-import AddCategory from './AddCategory';
+import NewCategory from './NewCategory';
 
 class Categories extends Component {
   displayName = Categories.name;
@@ -19,7 +19,7 @@ class Categories extends Component {
           <div>
             <h1>
               Categories
-              <AddCategory />
+              <NewCategory />
             </h1>
             <CategoryList categories={this.props.categories} />
           </div>

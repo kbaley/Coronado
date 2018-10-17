@@ -6,8 +6,8 @@ import { connect } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
 import CategoryForm from './CategoryForm';
 
-class AddCategory extends Component {
-  displayName = AddCategory.name;
+class NewCategory extends Component {
+  displayName = NewCategory.name;
   constructor(props) {
     super(props);
     this.saveCategory = this.saveCategory.bind(this);   
@@ -51,4 +51,4 @@ class AddCategory extends Component {
 export default connect(
   state => state.categories,
   dispatch => bindActionCreators(actionCreators, dispatch)
-)(AddCategory);
+)(NewCategory);
