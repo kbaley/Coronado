@@ -4,19 +4,35 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { DeleteIcon } from './icons/DeleteIcon';
 import { EditIcon } from './icons/EditIcon';
+import CategoryForm from './CategoryForm';
 
 class CategoryList extends Component {
   constructor(props) {
     super(props);
     this.deleteCategory = this.deleteCategory.bind(this);
+    this.startEditing = this.startEditing.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.saveCategory = this.saveCategory.bind(this);
+    this.state = {
+      show: false,
+      selectedCategory: {}
+    }
   }
 
   deleteCategory(categoryId, categoryName) {
     this.props.deleteCategory(categoryId, categoryName);
   }
 
-  startEditing(categoryId) {
-    console.log(categoryId);
+  startEditing(category) {
+    this.setState({show:true, selectedCategory: category});
+  }
+
+  handleClose() {
+    this.setState({show:false});
+  }
+
+  saveCategory(category) {
+    this.props.updateCategory(category);
   }
   
   render() {
@@ -32,8 +48,9 @@ class CategoryList extends Component {
       <tbody>
         {this.props.categoryState.categories.map(cat => <tr key={cat.categoryId}>
           <td>
-            <EditIcon onStartEditing={() => this.startEditing(cat.categoryId)} />
+            <EditIcon onStartEditing={() => this.startEditing(cat)} />
             <DeleteIcon onDelete={() => this.deleteCategory(cat.categoryId, cat.name)} />
+            <CategoryForm show={this.state.show} onClose={this.handleClose} category={this.state.selectedCategory} onSave={this.saveCategory} />
           </td>
           <td>{cat.name}</td>
           <td>{cat.type}</td>

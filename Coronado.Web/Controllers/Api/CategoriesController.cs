@@ -75,7 +75,7 @@ namespace Coronado.Web.Controllers.Api
                 }
             }
 
-            return NoContent();
+            return Ok(category);
         }
 
         [HttpPost]

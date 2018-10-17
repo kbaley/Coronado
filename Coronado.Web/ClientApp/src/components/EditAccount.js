@@ -26,7 +26,6 @@ class EditAccount extends Component {
   }
   render() {
     return (<span>
-      {/* <Glyphicon glyph="pencil" className="edit-icon" onClick={this.showForm} /> */}
       <EditIcon className="edit-account" onStartEditing={this.showForm} />
       <AccountForm 
         show={this.state.show} 

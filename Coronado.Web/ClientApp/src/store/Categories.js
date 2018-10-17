@@ -6,6 +6,7 @@ const deleteCategoryType = 'DELETE_CATEGORY';
 const receiveNewCategoryType = 'RECEIVE_NEW_CATEGORY';
 const undoDeleteCategoryType = 'UNDO_DELETE_CATEGORY';
 const removeDeletedCategoryType = 'REMOVE_DELETED_CATEGORY';
+const receiveUpdatedCategoryType = 'RECEIVE_UPDATED_CATEGORY';
 const initialState = { categories: [], isLoading: true, deletedCategories: []};
 
 async function deleteCategoryForReal(categoryId, dispatch, deletedCategories) {
@@ -43,6 +44,18 @@ export const actionCreators = {
     };
     dispatch( { type: deleteCategoryType, categoryId: categoryId } );
     dispatch(info(notificationOpts));
+  },
+  updateCategory: (category) => async (dispatch) => {
+    const response = await fetch('/api/Categories/' + category.categoryId, {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(category)
+    });
+    const updatedCategory = await response.json();
+    dispatch({type: receiveUpdatedCategoryType, updatedCategory});
   },
   saveNewCategory: (category) => async (dispatch) => {
     const newIdResponse = await fetch('api/Accounts/newId');
@@ -107,6 +120,18 @@ export const reducer = (state, action) => {
     return {
       ...state,
       categories: state.categories.concat(action.newCategory)
+    }
+  }
+
+  if (action.type === receiveUpdatedCategoryType) {
+    return {
+      ...state,
+      categories: state.categories.map( c => c.categoryId === action.updatedCategory.categoryId
+        ? {...c, 
+          name: action.updatedCategory.name, 
+          type: action.updatedCategory.type, 
+          parent: action.updatedCategory.parent }
+        : c )
     }
   }
 

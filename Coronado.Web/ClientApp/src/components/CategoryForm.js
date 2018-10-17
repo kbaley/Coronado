@@ -12,16 +12,22 @@ class CategoryForm extends Component {
     this.handleChangeField = this.handleChangeField.bind(this);
     this.state = {
       newCategory: true,
+      isLoading: true,
       category: {name: '', type: ''}
     };
-    if (this.props.category) {
-      this.state = {
+  }
+
+  componentDidUpdate() {
+    if (this.props.category && this.props.category.categoryId && this.props.category.categoryId !== this.state.category.categoryId ) {
+      console.log(this.props.category);
+      this.setState({
         newCategory: false,
         category: {
+          categoryId: this.props.category.categoryId,
           name: this.props.category.name,
           type: this.props.category.type
         }
-      }
+      });
     }
   }
 
