@@ -6,6 +6,7 @@ using Coronado.Web.Data;
 using Coronado.Web.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Coronado.Web.Models;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -45,7 +46,7 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory([FromRoute] Guid id, [FromBody] Category category)
+        public async Task<IActionResult> PutCategory([FromRoute] Guid id, [FromBody] CategoryForPosting category)
         {
             if (!ModelState.IsValid)
             {
@@ -57,7 +58,10 @@ namespace Coronado.Web.Controllers.Api
                 return BadRequest();
             }
 
-            _context.Entry(category).State = EntityState.Modified;
+            var updatedCategory = await _context.Categories.FindAsync(id);
+            updatedCategory.Name = category.Name;
+            updatedCategory.Type = category.Type;
+            updatedCategory.Parent = (category.ParentCategoryId == null ? null : await _context.Categories.FindAsync(category.ParentCategoryId));
 
             try
             {
@@ -75,21 +79,28 @@ namespace Coronado.Web.Controllers.Api
                 }
             }
 
-            return Ok(category);
+            return Ok(updatedCategory);
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostCategory([FromBody] Category category)
+        public async Task<IActionResult> PostCategory([FromBody] CategoryForPosting category)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Categories.Add(category);
+            var newCategory = new Category {
+                CategoryId = Guid.NewGuid(),
+                Name = category.Name,
+                Type = category.Type,
+                Parent = (category.ParentCategoryId == null ? null : await _context.Categories.FindAsync(category.ParentCategoryId))
+            };
+
+            _context.Categories.Add(newCategory);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCategory", new { id = category.CategoryId }, category);
+            return CreatedAtAction("GetCategory", new { id = newCategory.CategoryId }, newCategory);
         }
 
         [HttpDelete("{id}")]

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { DeleteIcon } from './icons/DeleteIcon';
 import { EditIcon } from './icons/EditIcon';
 import CategoryForm from './CategoryForm';
+import './CategoryList.css';
 
 class CategoryList extends Component {
   constructor(props) {
@@ -36,7 +37,7 @@ class CategoryList extends Component {
   }
   
   render() {
-    return (<table className='table'>
+    return (<table className='table category-list'>
       <thead>
         <tr>
           <th></th>
