@@ -127,10 +127,7 @@ export const reducer = (state, action) => {
     return {
       ...state,
       categories: state.categories.map( c => c.categoryId === action.updatedCategory.categoryId
-        ? {...c, 
-          name: action.updatedCategory.name, 
-          type: action.updatedCategory.type, 
-          parent: action.updatedCategory.parent }
+        ? Object.assign({}, action.updatedCategory)
         : c )
     }
   }
