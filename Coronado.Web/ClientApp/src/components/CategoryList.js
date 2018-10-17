@@ -46,11 +46,11 @@ class CategoryList extends Component {
         </tr>
       </thead>
       <tbody>
+        <CategoryForm show={this.state.show} onClose={this.handleClose} category={this.state.selectedCategory} onSave={this.saveCategory} />
         {this.props.categoryState.categories.map(cat => <tr key={cat.categoryId}>
           <td>
             <EditIcon onStartEditing={() => this.startEditing(cat)} />
             <DeleteIcon onDelete={() => this.deleteCategory(cat.categoryId, cat.name)} />
-            <CategoryForm show={this.state.show} onClose={this.handleClose} category={this.state.selectedCategory} onSave={this.saveCategory} />
           </td>
           <td>{cat.name}</td>
           <td>{cat.type}</td>
