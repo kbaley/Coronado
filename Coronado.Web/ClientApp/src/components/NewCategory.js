@@ -21,6 +21,7 @@ class NewCategory extends Component {
 
   componentDidMount() {
       Mousetrap.bind('n c', this.showForm);
+      this.props.requestCategories();
   }
 
   componentWillUnmount() {
@@ -42,7 +43,8 @@ class NewCategory extends Component {
   render() {
     return (<span>
         <NewIcon onClick={this.showForm} className="new-category" />
-        <CategoryForm show={this.state.show} onClose={this.handleClose} onSave={this.saveCategory} />
+        <CategoryForm show={this.state.show} onClose={this.handleClose} onSave={this.saveCategory}
+          categories={this.props.categories} />
       </span>);
   };
 }

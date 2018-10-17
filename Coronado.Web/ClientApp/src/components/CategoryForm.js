@@ -69,6 +69,18 @@ class CategoryForm extends Component {
                 />
               </Col>
             </FormGroup>
+            <FormGroup>
+              <Col componentClass={ControlLabel} sm={3}>Parent Category</Col>
+              <Col sm={5}>
+                <FormControl componentClass="select" name="parentCategory" 
+                    onChange={this.handleChangeParent}>
+                  <option>None</option>
+                  {this.props.categories ? this.props.categories.map(c => 
+                  <option key={c.categoryId} value={c.categoryId}>{c.name}</option>
+                  ) : <option>Select...</option>}
+                </FormControl>
+              </Col>
+            </FormGroup>
           </Form>
         </Modal.Body>
         <Modal.Footer>
