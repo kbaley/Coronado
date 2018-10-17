@@ -3,6 +3,7 @@ import { actionCreators } from '../store/Categories';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { DeleteIcon } from './icons/DeleteIcon';
+import { EditIcon } from './icons/EditIcon';
 
 class CategoryList extends Component {
   constructor(props) {
@@ -13,23 +14,30 @@ class CategoryList extends Component {
   deleteCategory(categoryId, categoryName) {
     this.props.deleteCategory(categoryId, categoryName);
   }
+
+  startEditing(categoryId) {
+    console.log(categoryId);
+  }
   
   render() {
     return (<table className='table'>
       <thead>
         <tr>
+          <th></th>
           <th>Name</th>
           <th>Type</th>
-          <th></th>
+          <th>Parent</th>
         </tr>
       </thead>
       <tbody>
         {this.props.categoryState.categories.map(cat => <tr key={cat.categoryId}>
-          <td>{cat.name}</td>
-          <td>{cat.type}</td>
           <td>
+            <EditIcon onStartEditing={() => this.startEditing(cat.categoryId)} />
             <DeleteIcon onDelete={() => this.deleteCategory(cat.categoryId, cat.name)} />
           </td>
+          <td>{cat.name}</td>
+          <td>{cat.type}</td>
+          <td>{cat.parent ? cat.parent.name : ""}</td>
         </tr>)}
       </tbody>
     </table>);

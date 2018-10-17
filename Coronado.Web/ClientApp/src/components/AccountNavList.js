@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Nav, NavItem, Row, Col, Grid } from 'react-bootstrap';
+import { Nav, NavItem, Row, Col } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { actionCreators } from '../store/Account';
 import { bindActionCreators } from 'redux';
@@ -60,8 +60,9 @@ class AccountNavList extends Component {
         return "hand-holding-usd";
       case "Cash":
         return "money-bill-wave";
+      default:
+        return "piggy-bank";
     }
-    return "piggy-bank";
   }
 
   render() {
