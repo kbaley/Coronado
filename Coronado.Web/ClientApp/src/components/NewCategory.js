@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Glyphicon } from 'react-bootstrap';
 import { actionCreators } from '../store/Categories';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
 import CategoryForm from './CategoryForm';
+import { NewIcon } from './icons/NewIcon';
+import './NewCategory.css';
 
 class NewCategory extends Component {
   displayName = NewCategory.name;
@@ -39,10 +40,8 @@ class NewCategory extends Component {
     this.setState({show:false});
   }
   render() {
-    return (<span className='add-icon'>
-        <a onClick={this.showForm}>
-        <Glyphicon glyph='plus-sign' />
-        </a>
+    return (<span>
+        <NewIcon onClick={this.showForm} className="new-category" />
         <CategoryForm show={this.state.show} onClose={this.handleClose} onSave={this.saveCategory} />
       </span>);
   };

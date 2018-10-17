@@ -19,15 +19,3 @@ a.delete-icon > .glyphicon {
     color: #990000;
     font-size:15px;
 }
-
-.add-icon {
-    vertical-align: middle;
-    color: green;
-    margin-left: 15px;
-    font-size: 25px;
-    cursor: pointer;
-}
-
-.add-icon a {
-    color: green;
-}
