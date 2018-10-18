@@ -6,6 +6,6 @@ namespace Coronado.Web.Models
         public Guid CategoryId { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
-        public Guid ParentCategoryId { get; set; }
+        public Guid? ParentCategoryId { get; set; }
     }
 }

@@ -3,7 +3,6 @@ import { Button,Modal,Form,FormControl,FormGroup,ControlLabel,Col } from 'react-
 import { actionCreators } from '../store/Categories';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { find } from 'lodash';
 
 class CategoryForm extends Component {
   displayName = CategoryForm.name;
@@ -21,14 +20,13 @@ class CategoryForm extends Component {
 
   componentDidUpdate() {
     if (this.props.category && this.props.category.categoryId && this.props.category.categoryId !== this.state.category.categoryId ) {
-      console.log(this.props.category);
       this.setState({
         newCategory: false,
         category: {
           categoryId: this.props.category.categoryId,
           name: this.props.category.name,
           type: this.props.category.type,
-          parentCategoryId: (this.props.category.parent ? this.props.category.parent.categoryId : '' )
+          parentCategoryId: this.props.category.parentCategoryId || ''
         }
       });
     }

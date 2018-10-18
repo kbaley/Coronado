@@ -61,7 +61,7 @@ namespace Coronado.Web.Controllers.Api
             var updatedCategory = await _context.Categories.FindAsync(id);
             updatedCategory.Name = category.Name;
             updatedCategory.Type = category.Type;
-            updatedCategory.Parent = (category.ParentCategoryId == null ? null : await _context.Categories.FindAsync(category.ParentCategoryId));
+            updatedCategory.ParentCategoryId = category.ParentCategoryId;
 
             try
             {
@@ -94,7 +94,7 @@ namespace Coronado.Web.Controllers.Api
                 CategoryId = Guid.NewGuid(),
                 Name = category.Name,
                 Type = category.Type,
-                Parent = (category.ParentCategoryId == null ? null : await _context.Categories.FindAsync(category.ParentCategoryId))
+                ParentCategoryId = category.ParentCategoryId
             };
 
             _context.Categories.Add(newCategory);

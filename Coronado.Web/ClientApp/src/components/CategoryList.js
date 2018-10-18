@@ -6,6 +6,7 @@ import { DeleteIcon } from './icons/DeleteIcon';
 import { EditIcon } from './icons/EditIcon';
 import CategoryForm from './CategoryForm';
 import './CategoryList.css';
+import { find } from 'lodash';
 
 class CategoryList extends Component {
   constructor(props) {
@@ -14,6 +15,7 @@ class CategoryList extends Component {
     this.startEditing = this.startEditing.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.saveCategory = this.saveCategory.bind(this);
+    this.getCategoryName = this.getCategoryName.bind(this);
     this.state = {
       show: false,
       selectedCategory: {}
@@ -35,6 +37,13 @@ class CategoryList extends Component {
   saveCategory(category) {
     this.props.updateCategory(category);
   }
+
+  getCategoryName(categoryId) {
+    if (!categoryId || categoryId === '') return '';
+
+    var category = find(this.props.categoryState.categories, c => c.categoryId === categoryId);
+    return category ? category.name : '';
+  }
   
   render() {
     return (<table className='table category-list'>
@@ -55,7 +64,7 @@ class CategoryList extends Component {
           </td>
           <td>{cat.name}</td>
           <td>{cat.type}</td>
-          <td>{cat.parent ? cat.parent.name : ""}</td>
+          <td>{this.getCategoryName(cat.parentCategoryId)}</td>
         </tr>)}
       </tbody>
     </table>);
