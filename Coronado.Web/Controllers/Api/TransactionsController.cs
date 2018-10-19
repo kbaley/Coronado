@@ -111,7 +111,11 @@ namespace Coronado.Web.Controllers.Api
             if (transaction.CategoryId == null) {
                 category = _context.Categories.FirstOrDefault(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase)));
             } else {
-                category = await _context.Categories.FindAsync(transaction.CategoryId);
+                if (transaction.CategoryId.StartsWith("TRF:", StringComparison.CurrentCultureIgnoreCase)) {
+                    category = null;
+                } else {
+                    category = await _context.Categories.FindAsync(Guid.Parse(transaction.CategoryId));
+                }
             }
 
             var newTransaction = new Transaction {

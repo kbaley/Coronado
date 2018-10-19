@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
-import { actionCreators } from '../store/Account';
-import { actionCreators as categoryActionCreators } from '../store/Categories';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import { CheckIcon } from './icons/CheckIcon';
 import * as Mousetrap from 'mousetrap';
 import { CategorySelect } from './CategorySelect';
 import { find } from 'lodash';
 
-class NewTransactionRow extends Component {
+export class NewTransactionRow extends Component {
   constructor(props) {
     super(props);
     this.saveTransaction = this.saveTransaction.bind(this);
@@ -105,8 +101,3 @@ class NewTransactionRow extends Component {
     )
   }
 }
-
-export default connect(
-  state => { return { ...state.account, ...state.categories } },
-  dispatch => bindActionCreators({ ...actionCreators, ...categoryActionCreators }, dispatch)
-)(NewTransactionRow);

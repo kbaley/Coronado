@@ -5,7 +5,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import TransactionRow from './TransactionRow';
 import './TransactionList.css';
-import NewTransactionRow from './NewTransactionRow';
+import { NewTransactionRow } from './NewTransactionRow';
+import { each } from 'lodash';
 
 class TransactionList extends Component {
   displayName = TransactionList.name;
@@ -13,11 +14,24 @@ class TransactionList extends Component {
     super(props);
     this.deleteTransaction = this.deleteTransaction.bind(this);
     this.saveTransaction = this.saveTransaction.bind(this);
-    this.state = { }
+    this.state = {
+      categories: []
+    }
   }
 
   componentDidMount() {
       this.props.requestCategories();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.categories.length === this.props.categories.length) return;
+
+    var categories = this.props.categories.slice();
+    each(this.props.accounts, a => {
+      categories.push({categoryId: 'TRF:' + a.accountId, name: 'TRANSFER: ' + a.name});
+    });
+
+    this.setState({categories});    
   }
 
   deleteTransaction(transactionId) {
@@ -25,7 +39,6 @@ class TransactionList extends Component {
   }
 
   saveTransaction(trx) {
-    console.log(trx);
     this.props.saveTransaction(trx);
   }
 
@@ -44,9 +57,12 @@ class TransactionList extends Component {
         </tr>
       </thead>
       <tbody>
-        <NewTransactionRow onSave={this.saveTransaction} accountId={this.props.accountId} />
+        <NewTransactionRow 
+          onSave={this.saveTransaction} 
+          categories={this.state.categories}
+          accountId={this.props.accountId} />
         {this.props.transactions ? this.props.transactions.map(trx => 
-        <TransactionRow key={trx.transactionId} transaction={trx} categories={this.props.categories}
+        <TransactionRow key={trx.transactionId} transaction={trx} categories={this.state.categories}
           onDelete={() => this.deleteTransaction(trx.transactionId)} />
         ) : <tr/>}
       </tbody>
