@@ -74,7 +74,7 @@ namespace Coronado.ConsoleApp
                     client.DefaultRequestHeaders.Accept.Add(
                         new MediaTypeWithQualityHeaderValue("application/json")
                     );
-                    var response = await client.PostAsJsonAsync("api/simpletransactions", trx );
+                    var response = await client.PostAsJsonAsync("api/transactions", trx );
                     response.EnsureSuccessStatusCode();
                     Console.WriteLine("Transaction added");
                 });

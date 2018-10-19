@@ -78,7 +78,7 @@ export const actionCreators = {
 
   updateTransaction: (transaction) => async (dispatch) => {
 
-    const response = await fetch('/api/SimpleTransactions/' + transaction.transactionId, {
+    const response = await fetch('/api/Transactions/' + transaction.transactionId, {
       method: 'PUT',
       headers: {
         'Accept': 'application/json',
@@ -92,7 +92,7 @@ export const actionCreators = {
 
   saveTransaction: (transaction) => async (dispatch) => {
 
-    const response = await fetch('/api/SimpleTransactions', {
+    const response = await fetch('/api/Transactions', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

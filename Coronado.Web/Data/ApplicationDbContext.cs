@@ -50,6 +50,5 @@ namespace Coronado.Web.Data
                 new Category { CategoryId = Guid.NewGuid(), Name = "Bank Fees", Type = "Expense" }
             );
         }
-
     }
 }
