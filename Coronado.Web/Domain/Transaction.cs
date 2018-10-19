@@ -20,5 +20,7 @@ namespace Coronado.Web.Domain
         public DateTime Date { get; set; }
         public Category Category { get; set; }
         public DateTime EnteredDate {get;set;} = DateTime.Now;
+
+        public Guid? RelatedTransactionId { get; set; }
     }
 }

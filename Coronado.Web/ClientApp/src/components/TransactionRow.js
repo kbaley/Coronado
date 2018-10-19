@@ -33,8 +33,8 @@ class TransactionRow extends Component {
             transactionDate: new Date(props.transaction.date).toLocaleDateString(),
             credit: props.transaction.amount > 0 ? props.transaction.amount.toFixed(2) : '',
             debit: props.transaction.amount <= 0 ? (0 - props.transaction.amount).toFixed(2) : '',
-            categoryId: props.transaction.category.categoryId,
-            categoryName: props.transaction.category.name } };
+            categoryId: props.transaction.category ? props.transaction.category.categoryId : '',
+            categoryName: props.transaction.category ? this.props.transaction.category.name : '' } };
   }
 
   startEditing() {
@@ -43,7 +43,8 @@ class TransactionRow extends Component {
         isEditing: true,
         debit: amount <= 0 ? (0 - amount).toFixed(2) : '',
         credit: amount > 0 ? amount.toFixed(2) : '',
-        selectedCategory: find(this.props.categories, c => c.categoryId === this.props.transaction.category.categoryId),
+        selectedCategory: find(this.props.categories, 
+          c => c.categoryId === this.props.transaction.category ? this.props.transaction.category.categoryId : ''),
     });
     Mousetrap.bind('esc', this.cancelEditing);
   }
@@ -146,7 +147,7 @@ class TransactionRow extends Component {
         </td>
         <td>{new Date(trx.date).toLocaleDateString()}</td>
         <td>{trx.vendor}</td>
-        <td>{trx.category.name}</td>
+        <td>{trx.category ? trx.category.name : ''}</td>
         <td>{trx.description}</td>
         <td><DecimalFormat isDebit={true} amount={trx.amount} /></td>
         <td><DecimalFormat isCredit={true} amount={trx.amount} /></td>

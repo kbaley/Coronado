@@ -108,11 +108,25 @@ namespace Coronado.Web.Controllers.Api
             }
             await _context.Entry(account).Collection(a => a.Transactions).LoadAsync();
             Category category;
+            Guid? relatedTransactionId = null;
             if (transaction.CategoryId == null) {
                 category = _context.Categories.FirstOrDefault(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase)));
             } else {
                 if (transaction.CategoryId.StartsWith("TRF:", StringComparison.CurrentCultureIgnoreCase)) {
                     category = null;
+                    relatedTransactionId = Guid.NewGuid();
+                    var relatedAccountId = Guid.Parse(transaction.CategoryId.Replace("TRF:", "").Trim());
+                    var relatedAccount = await _context.Accounts.FindAsync(relatedAccountId);
+                    var relatedTransaction = new Transaction {
+                        Date = transaction.TransactionDate,
+                        TransactionId = relatedTransactionId.Value,
+                        Vendor = transaction.Vendor,
+                        Description = transaction.Description,
+                        Account = relatedAccount,
+                        Amount = 0 - transaction.Amount,
+                        RelatedTransactionId = transaction.TransactionId
+                    };
+                    await _context.Transactions.AddAsync(relatedTransaction);
                 } else {
                     category = await _context.Categories.FindAsync(Guid.Parse(transaction.CategoryId));
                 }
@@ -125,7 +139,8 @@ namespace Coronado.Web.Controllers.Api
                 Description = transaction.Description,
                 Account = account,
                 Category = category,
-                Amount = transaction.Amount
+                Amount = transaction.Amount,
+                RelatedTransactionId = relatedTransactionId
             };
 
             var bankFeeTransactions = GetBankFeeTransactions(newTransaction, account);
