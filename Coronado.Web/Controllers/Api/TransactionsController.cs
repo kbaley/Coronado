@@ -99,6 +99,7 @@ namespace Coronado.Web.Controllers.Api
         [HttpPost]
         public async Task<IActionResult> PostSimpleTransaction([FromBody] SimpleTransaction transaction)
         {
+            var transactions = new List<Transaction>();
             if (transaction.TransactionId == null) transaction.TransactionId = Guid.NewGuid();
             Account account;
             if (transaction.AccountId != null) {
@@ -127,6 +128,7 @@ namespace Coronado.Web.Controllers.Api
                         RelatedTransactionId = transaction.TransactionId
                     };
                     await _context.Transactions.AddAsync(relatedTransaction);
+                    transactions.Add(relatedTransaction);
                 } else {
                     category = await _context.Categories.FindAsync(Guid.Parse(transaction.CategoryId));
                 }
@@ -144,7 +146,6 @@ namespace Coronado.Web.Controllers.Api
             };
 
             var bankFeeTransactions = GetBankFeeTransactions(newTransaction, account);
-            var transactions = new List<Transaction>();
             transactions.Add(newTransaction);
             transactions.AddRange(bankFeeTransactions);
             _context.Transactions.AddRange(transactions);

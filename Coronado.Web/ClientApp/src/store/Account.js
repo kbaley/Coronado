@@ -1,6 +1,6 @@
 ﻿import { info } from 'react-notification-system-redux';
 import { push } from 'react-router-redux';
-import { filter, orderBy, forEachRight, sumBy, find } from 'lodash'; 
+import { filter, orderBy, forEachRight, sumBy, find, some } from 'lodash'; 
 const requestAccountsType = 'REQUEST_ACCOUNT_LIST';
 const selectAccountType = 'SELECT_ACCOUNT';
 const receiveAccountsType = 'RECEIVE_ACCOUNT_LIST';
@@ -220,13 +220,22 @@ export const reducer = (state, action) => {
   }
 
   if (action.type === receiveNewTransactionType) {
+    var transactionsForCurrentAccount = filter(action.newTransaction, t => !t.account);
+    var transactionsForOtherAccounts = filter(action.newTransaction, t => t.account);
+    var accounts = state.accounts.map( (a) => a.accountId === state.selectedAccount
+        ? { ...a, 
+          transactions: computeRunningTotal(a.transactions.concat(transactionsForCurrentAccount)),
+          currentBalance: computeBalance(a.transactions, transactionsForCurrentAccount) }
+        : a);
+    accounts = accounts.map( a => some(transactionsForOtherAccounts, t => t.account.accountId === a.accountId) 
+      ? { ...a,
+        transactions: computeRunningTotal(a.transactions.concat(transactionsForOtherAccounts)),
+        currentBalance: a.currentBalance - sumBy(transactionsForCurrentAccount, t => t.amount)
+       }
+      : a)
     return {
       ...state,
-      accounts: state.accounts.map( (a) => a.accountId === state.selectedAccount
-        ? { ...a, 
-          transactions: computeRunningTotal(a.transactions.concat(action.newTransaction)),
-          currentBalance: computeBalance(a.transactions, action.newTransaction) }
-        : a)
+      accounts: accounts
     };
   }
 
