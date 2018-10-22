@@ -101,23 +101,23 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostSimpleTransaction([FromBody] TransactionForDisplay transaction)
+        public IActionResult PostSimpleTransaction([FromBody] TransactionForDisplay transaction)
         {
             var transactions = new List<Transaction>();
             if (transaction.TransactionId == null) transaction.TransactionId = Guid.NewGuid();
             Account account;
             if (transaction.AccountId != null) {
-                account = await _context.Accounts.FindAsync(transaction.AccountId);
+                account = _context.Accounts.Find(transaction.AccountId);
             } else {
                 account = _context.Accounts.FirstOrDefault(a => a.Name.Equals(transaction.AccountName, StringComparison.CurrentCultureIgnoreCase));
             }
-            await _context.Entry(account).Collection(a => a.Transactions).LoadAsync();
+            _context.Entry(account).Collection(a => a.Transactions).Load();
             Category category;
             Guid? relatedTransactionId = null;
             if (transaction.CategoryId == null) {
                 category = _context.Categories.FirstOrDefault(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase)));
             } else {
-                category = await _context.Categories.FindAsync(Guid.Parse(transaction.CategoryId));
+                category = _context.Categories.Find(Guid.Parse(transaction.CategoryId));
             }
 
             var newTransaction = new Transaction {
@@ -135,10 +135,11 @@ namespace Coronado.Web.Controllers.Api
             transactions.Add(newTransaction);
             transactions.AddRange(bankFeeTransactions);
             _context.Transactions.AddRange(transactions);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             newTransaction.Account = null;
 
-            return CreatedAtAction("GetTransaction", new { id = newTransaction.TransactionId }, transactions);
+            return CreatedAtAction("GetTransaction", new { id = newTransaction.TransactionId }, 
+                transactions.Select(TransactionForDisplay.FromTransaction));
         }
 
         private IEnumerable<Transaction> GetBankFeeTransactions(Transaction newTransaction, Account account) {

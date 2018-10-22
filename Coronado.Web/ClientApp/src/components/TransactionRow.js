@@ -147,7 +147,7 @@ class TransactionRow extends Component {
         </td>
         <td>{new Date(trx.transactionDate).toLocaleDateString()}</td>
         <td>{trx.vendor}</td>
-        <td>{trx.category ? trx.category.name : ''}</td>
+        <td>{trx.categoryDisplay}</td>
         <td>{trx.description}</td>
         <td><DecimalFormat isDebit={true} amount={trx.debit} /></td>
         <td><DecimalFormat isCredit={true} amount={trx.credit} /></td>

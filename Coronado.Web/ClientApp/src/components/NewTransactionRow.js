@@ -79,7 +79,6 @@ export class NewTransactionRow extends Component {
 
   saveTransaction() {
     this.props.onSave(this.state.trx);
-    console.log(this.state.trx);
     this.setState( 
       { trx: 
         { ...this.state.trx, vendor: '', description: '', debit: '', credit: '' }, 

@@ -42,14 +42,17 @@ namespace Coronado.Web.Models
         public decimal? Debit { get; set; }
         public decimal? Credit { get; set; }
 
+        public DateTime EnteredDate { get; set; }
+
         public static TransactionForDisplay FromTransaction(Transaction transaction) {
             var display = new TransactionForDisplay {
                 TransactionId = transaction.TransactionId,
                 Vendor = transaction.Vendor,
                 Description = transaction.Description,
                 TransactionDate = transaction.Date,
-                AccountName = transaction.Account.Name,
-                AccountId = transaction.Account.AccountId
+                // AccountName = transaction.Account.Name,
+                // AccountId = transaction.Account.AccountId,
+                EnteredDate = transaction.EnteredDate
             };
             if (transaction.Category != null) {
                 display.CategoryName = transaction.Category.Name;

@@ -48,8 +48,8 @@ function computeRunningTotal(transactions) {
 }
 
 function computeBalance(transactions, newTransactions) {
-  var total = sumBy(transactions, (t) => { return t.amount; });
-  if (newTransactions) total += sumBy(newTransactions, t => { return t.amount; });
+  var total = sumBy(transactions, (t) => { return (t.credit - t.debit); });
+  if (newTransactions) total += sumBy(newTransactions, t => { return (t.credit - t.debit); });
   return total;
 }
 
@@ -230,7 +230,7 @@ export const reducer = (state, action) => {
     accounts = accounts.map( a => some(transactionsForOtherAccounts, t => t.account.accountId === a.accountId) 
       ? { ...a,
         transactions: computeRunningTotal(a.transactions.concat(transactionsForOtherAccounts)),
-        currentBalance: a.currentBalance - sumBy(transactionsForCurrentAccount, t => t.amount)
+        currentBalance: a.currentBalance - sumBy(transactionsForCurrentAccount, t => (t.credit - t.debit))
        }
       : a)
     return {
