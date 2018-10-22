@@ -6,6 +6,8 @@ import './Icon.css'
 export function EditIcon(props) {
   const classes = `edit-icon icon ${props.className}`
   return (
-    <Glyphicon glyph='pencil' className={classes} onClick={props.onStartEditing}/>
+    <a onClick={props.onStartEditing} style={{color:'black'}}>
+      <Glyphicon glyph='pencil' className={classes}/>
+    </a>
   );
 }

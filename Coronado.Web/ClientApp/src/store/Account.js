@@ -90,9 +90,11 @@ export const actionCreators = {
     dispatch({ type: updateTransactionType, updatedTransaction });
   },
 
-  saveTransaction: (transaction) => async (dispatch) => {
+  saveTransaction: (transaction, transactionType) => async (dispatch) => {
 
-    const response = await fetch('/api/Transactions', {
+    var url = "/api/Transactions";
+    if (transactionType === "Transfer") url = "/api/Transfers"
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -220,14 +222,15 @@ export const reducer = (state, action) => {
   }
 
   if (action.type === receiveNewTransactionType) {
-    var transactionsForCurrentAccount = filter(action.newTransaction, t => !t.account);
-    var transactionsForOtherAccounts = filter(action.newTransaction, t => t.account);
+    var transactionsForCurrentAccount = filter(action.newTransaction, t => t.accountId === state.selectedAccount);
+    var transactionsForOtherAccounts = filter(action.newTransaction, t => t.accountId !== state.selectedAccount);
+    console.log(action.newTransaction);
     var accounts = state.accounts.map( (a) => a.accountId === state.selectedAccount
         ? { ...a, 
           transactions: computeRunningTotal(a.transactions.concat(transactionsForCurrentAccount)),
           currentBalance: computeBalance(a.transactions, transactionsForCurrentAccount) }
         : a);
-    accounts = accounts.map( a => some(transactionsForOtherAccounts, t => t.account.accountId === a.accountId) 
+    accounts = accounts.map( a => some(transactionsForOtherAccounts, t => t.accountId === a.accountId) 
       ? { ...a,
         transactions: computeRunningTotal(a.transactions.concat(transactionsForOtherAccounts)),
         currentBalance: a.currentBalance - sumBy(transactionsForCurrentAccount, t => (t.credit - t.debit))

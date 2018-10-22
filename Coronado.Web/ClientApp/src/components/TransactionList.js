@@ -38,8 +38,8 @@ class TransactionList extends Component {
       this.props.deleteTransaction(transactionId);
   }
 
-  saveTransaction(trx) {
-    this.props.saveTransaction(trx);
+  saveTransaction(trx, transactionType) {
+    this.props.saveTransaction(trx, transactionType);
   }
 
   render() {

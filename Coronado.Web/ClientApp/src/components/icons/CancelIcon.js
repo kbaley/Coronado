@@ -6,6 +6,8 @@ import './Icon.css';
 export function CancelIcon(props) {
   const classes = `cancel-icon icon ${props.className}`
   return (
-    <Glyphicon glyph='remove' className={classes} onClick={props.onCancel} />
+    <a onClick={props.onCancel} style={{color: "black"}}>
+    <Glyphicon glyph='remove' className={classes} />
+    </a>
   );
 }

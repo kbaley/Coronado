@@ -8,8 +8,6 @@ export class NewTransactionRow extends Component {
   constructor(props) {
     super(props);
     this.saveTransaction = this.saveTransaction.bind(this);
-    this.handleChangeDebit = this.handleChangeDebit.bind(this);
-    this.handleChangeCredit = this.handleChangeCredit.bind(this);
     this.handleChangeCategory = this.handleChangeCategory.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleChangeField = this.handleChangeField.bind(this); 
@@ -24,10 +22,9 @@ export class NewTransactionRow extends Component {
         credit: '',
         debit: ''
       },
-      credit: '',
-      debit: '',
       selectedCategory: {},
-      categories: []
+      categories: [],
+      transactionType: "Transaction"
     }
   }
 
@@ -58,30 +55,21 @@ export class NewTransactionRow extends Component {
 
   handleChangeCategory(categoryId) {
     var selectedCategory = find(this.props.categories, c => c.categoryId===categoryId);
+    var transactionType = "Transaction";
+    if (categoryId.substring(0,4) === "TRF:") {
+      transactionType = "Transfer";
+      categoryId = categoryId.substring(4);
+    }
     this.setState( {
       trx: {...this.state.trx, categoryId },
+      transactionType,
       selectedCategory});
   }
 
-  handleChangeDebit(e) {
-    if (e.targetValue !== '') {
-      var amount = 0 - parseFloat(e.target.value);
-      this.setState( { trx: {...this.state.trx, amount: amount}, debit: e.target.value});
-    }
-  }
-
-  handleChangeCredit(e) {
-    if (e.targetValue !== '') {
-      var amount = parseFloat(e.target.value);
-      this.setState( { trx: {...this.state.trx, amount: amount}, credit: e.target.value});
-    }
-  }
-
   saveTransaction() {
-    this.props.onSave(this.state.trx);
+    this.props.onSave(this.state.trx, this.state.transactionType);
     this.setState( 
-      { trx: 
-        { ...this.state.trx, vendor: '', description: '', debit: '', credit: '' }, 
+      { trx: { ...this.state.trx, vendor: '', description: '', debit: '', credit: '' }, 
         selectedCategory: { }
       }
     );

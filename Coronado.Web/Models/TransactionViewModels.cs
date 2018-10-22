@@ -56,8 +56,8 @@ namespace Coronado.Web.Models
                 Vendor = transaction.Vendor,
                 Description = transaction.Description,
                 TransactionDate = transaction.Date,
-                // AccountName = transaction.Account.Name,
-                // AccountId = transaction.Account.AccountId,
+                AccountName = transaction.Account.Name,
+                AccountId = transaction.Account.AccountId,
                 EnteredDate = transaction.EnteredDate
             };
             if (transaction.Category != null) {

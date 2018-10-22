@@ -31,6 +31,7 @@ namespace Coronado.Web.Controllers.Api
                 .Include(t => t.Category)
                 .Include(t => t.Account)
                 .Include(t => t.RelatedTransaction)
+                .Include(t => t.RelatedTransaction.Account)
                 .Where(t => t.Account.AccountId == query.AccountId)
                 .Select(TransactionForDisplay.FromTransaction);
 

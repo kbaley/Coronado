@@ -22,42 +22,30 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostTransfer([FromBody] SimpleTransaction transaction)
+        public IActionResult PostTransfer([FromBody] TransactionForDisplay transaction)
         {
             var transactions = new List<Transaction>();
             if (transaction.TransactionId == null) transaction.TransactionId = Guid.NewGuid();
             Account account;
             if (transaction.AccountId != null) {
-                account = await _context.Accounts.FindAsync(transaction.AccountId);
+                account = _context.Accounts.Find(transaction.AccountId);
             } else {
                 account = _context.Accounts.FirstOrDefault(a => a.Name.Equals(transaction.AccountName, StringComparison.CurrentCultureIgnoreCase));
             }
-            await _context.Entry(account).Collection(a => a.Transactions).LoadAsync();
-            Category category;
+            _context.Entry(account).Collection(a => a.Transactions).Load();
             Guid? relatedTransactionId = null;
-            if (transaction.CategoryId == null) {
-                category = _context.Categories.FirstOrDefault(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase)));
-            } else {
-                if (transaction.CategoryId.StartsWith("TRF:", StringComparison.CurrentCultureIgnoreCase)) {
-                    category = null;
-                    relatedTransactionId = Guid.NewGuid();
-                    var relatedAccountId = Guid.Parse(transaction.CategoryId.Replace("TRF:", "").Trim());
-                    var relatedAccount = await _context.Accounts.FindAsync(relatedAccountId);
-                    var relatedTransaction = new Transaction {
-                        Date = transaction.TransactionDate,
-                        TransactionId = relatedTransactionId.Value,
-                        Vendor = transaction.Vendor,
-                        Description = transaction.Description,
-                        Account = relatedAccount,
-                        Amount = 0 - transaction.Amount,
-                        RelatedTransactionId = transaction.TransactionId
-                    };
-                    await _context.Transactions.AddAsync(relatedTransaction);
-                    transactions.Add(relatedTransaction);
-                } else {
-                    category = await _context.Categories.FindAsync(Guid.Parse(transaction.CategoryId));
-                }
-            }
+            relatedTransactionId = Guid.NewGuid();
+            var relatedAccountId = Guid.Parse(transaction.CategoryId);
+            var relatedAccount = _context.Accounts.Find(relatedAccountId);
+            var relatedTransaction = new Transaction {
+                Date = transaction.TransactionDate,
+                TransactionId = relatedTransactionId.Value,
+                Vendor = transaction.Vendor,
+                Description = transaction.Description,
+                Account = relatedAccount,
+                Amount = 0 - transaction.Amount
+            };
+            transactions.Add(relatedTransaction);
 
             var newTransaction = new Transaction {
                 TransactionId = transaction.TransactionId,
@@ -65,19 +53,21 @@ namespace Coronado.Web.Controllers.Api
                 Vendor = transaction.Vendor,
                 Description = transaction.Description,
                 Account = account,
-                Category = category,
                 Amount = transaction.Amount,
-                RelatedTransactionId = relatedTransactionId
+                RelatedTransaction = relatedTransaction
             };
+            relatedTransaction.RelatedTransaction = newTransaction;
+            _context.Transactions.Add(relatedTransaction);
 
             var bankFeeTransactions = GetBankFeeTransactions(newTransaction, account);
             transactions.Add(newTransaction);
             transactions.AddRange(bankFeeTransactions);
             _context.Transactions.AddRange(transactions);
-            await _context.SaveChangesAsync();
-            newTransaction.Account = null;
+            _context.SaveChanges();
 
-            return CreatedAtAction("GetTransaction", new { id = newTransaction.TransactionId }, transactions);
+            return CreatedAtAction("PostTransfer", 
+                new { id = newTransaction.TransactionId }, 
+                transactions.Select(TransactionForDisplay.FromTransaction));
         }
 
         private IEnumerable<Transaction> GetBankFeeTransactions(Transaction newTransaction, Account account) {
