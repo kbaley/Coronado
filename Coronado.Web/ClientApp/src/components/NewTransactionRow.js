@@ -20,7 +20,9 @@ export class NewTransactionRow extends Component {
         transactionDate: new Date().toLocaleDateString(), 
         vendor: '', 
         description: '',
-        accountId: props.accountId
+        accountId: props.accountId,
+        credit: '',
+        debit: ''
       },
       credit: '',
       debit: '',
@@ -77,12 +79,11 @@ export class NewTransactionRow extends Component {
 
   saveTransaction() {
     this.props.onSave(this.state.trx);
+    console.log(this.state.trx);
     this.setState( 
       { trx: 
-        { ...this.state.trx, vendor: '', description: '', amount: '' }, 
-        selectedCategory: { }, 
-        credit: '', 
-        debit: ''  
+        { ...this.state.trx, vendor: '', description: '', debit: '', credit: '' }, 
+        selectedCategory: { }
       }
     );
   }
@@ -100,10 +101,10 @@ export class NewTransactionRow extends Component {
             onCategoryChanged={this.handleChangeCategory} categories={this.props.categories} />
         </td>
         <td><input type="text" name="description" value={this.state.trx.description} onChange={this.handleChangeField} /></td>
-        <td><input type="text" name="debit" value={this.state.debit} 
-          onChange={this.handleChangeDebit} onKeyPress={this.handleKeyPress} /></td>
-        <td><input type="text" name="credit" value={this.state.credit} 
-          onChange={this.handleChangeCredit} onKeyPress={this.handleKeyPress} /></td>
+        <td><input type="text" name="debit" value={this.state.trx.debit} 
+          onChange={this.handleChangeField} onKeyPress={this.handleKeyPress} /></td>
+        <td><input type="text" name="credit" value={this.state.trx.credit} 
+          onChange={this.handleChangeField} onKeyPress={this.handleKeyPress} /></td>
           <td></td>
       </tr>
     )

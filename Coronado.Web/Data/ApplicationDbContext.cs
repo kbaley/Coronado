@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Coronado.Web.Domain;
+using Coronado.Web.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

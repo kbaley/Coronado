@@ -22,5 +22,6 @@ namespace Coronado.Web.Domain
         public DateTime EnteredDate {get;set;} = DateTime.Now;
 
         public Guid? RelatedTransactionId { get; set; }
+        public Transaction RelatedTransaction { get; set; }
     }
 }

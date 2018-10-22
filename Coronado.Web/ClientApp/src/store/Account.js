@@ -39,9 +39,9 @@ async function deleteAccountForReal(accountId, dispatch, deletedAccounts) {
 
 function computeRunningTotal(transactions) {
   var total = 0;
-  var sorted = orderBy(transactions, ['date', 'enteredDate'], ['desc', 'desc']);
+  var sorted = orderBy(transactions, ['transactionDate', 'enteredDate'], ['desc', 'desc']);
   forEachRight(sorted, (value) => {
-    total += value.amount;
+    total += (value.credit - value.debit);
     value.runningTotal = total; 
   });
   return sorted;

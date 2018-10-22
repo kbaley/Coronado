@@ -30,10 +30,10 @@ class TransactionRow extends Component {
         selectedCategory: { },
         trx: {...props.transaction, 
             vendor: props.transaction.vendor || '',
-            transactionDate: new Date(props.transaction.date).toLocaleDateString(),
-            credit: props.transaction.amount > 0 ? props.transaction.amount.toFixed(2) : '',
-            debit: props.transaction.amount <= 0 ? (0 - props.transaction.amount).toFixed(2) : '',
+            transactionDate: new Date(props.transaction.transactionDate).toLocaleDateString(),
             categoryId: props.transaction.category ? props.transaction.category.categoryId : '',
+            debit: props.transaction.debit,
+            credit: props.transaction.credit,
             categoryName: props.transaction.category ? this.props.transaction.category.name : '' } };
   }
 
@@ -41,8 +41,8 @@ class TransactionRow extends Component {
     const amount = this.state.trx.amount;
     this.setState({
         isEditing: true,
-        debit: amount <= 0 ? (0 - amount).toFixed(2) : '',
-        credit: amount > 0 ? amount.toFixed(2) : '',
+        // debit: amount <= 0 ? (0 - amount).toFixed(2) : '',
+        // credit: amount > 0 ? amount.toFixed(2) : '',
         selectedCategory: find(this.props.categories, 
           c => c.categoryId === this.props.transaction.category ? this.props.transaction.category.categoryId : ''),
     });
@@ -145,12 +145,12 @@ class TransactionRow extends Component {
             <EditIcon onStartEditing={this.startEditing} className="icon" />
             <DeleteIcon onDelete={this.props.onDelete} />
         </td>
-        <td>{new Date(trx.date).toLocaleDateString()}</td>
+        <td>{new Date(trx.transactionDate).toLocaleDateString()}</td>
         <td>{trx.vendor}</td>
         <td>{trx.category ? trx.category.name : ''}</td>
         <td>{trx.description}</td>
-        <td><DecimalFormat isDebit={true} amount={trx.amount} /></td>
-        <td><DecimalFormat isCredit={true} amount={trx.amount} /></td>
+        <td><DecimalFormat isDebit={true} amount={trx.debit} /></td>
+        <td><DecimalFormat isCredit={true} amount={trx.credit} /></td>
         <td><MoneyFormat amount={trx.runningTotal} /></td>
       </tr>
     );

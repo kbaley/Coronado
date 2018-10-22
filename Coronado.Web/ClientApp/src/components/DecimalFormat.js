@@ -7,7 +7,7 @@ export function DecimalFormat(props) {
     amount = 0 - amount;
   }
   return (<span className="decimalAmount">
-    {(props.isDebit && props.amount <= 0) ? Number(amount).toFixed(2) : ""}
+    {(props.isDebit && props.amount > 0) ? Number(amount).toFixed(2) : ""}
     {(props.isCredit && props.amount > 0) ? Number(amount).toFixed(2) : ""}
   </span>);
 }

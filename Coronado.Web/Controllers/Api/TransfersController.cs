@@ -12,96 +12,17 @@ namespace Coronado.Web.Controllers.Api
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TransactionsController : ControllerBase
+    public class TransfersController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public TransactionsController(ApplicationDbContext context)
+        public TransfersController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Transactions
-        [HttpGet]
-        public IEnumerable<TransactionForDisplay> GetTransactions([FromQuery] UrlQuery query )
-        {
-            if (query.AccountId != Guid.Empty)
-            {
-                return _context.Transactions
-                .Include(t => t.Category)
-                .Include(t => t.Account)
-                .Include(t => t.RelatedTransaction)
-                .Where(t => t.Account.AccountId == query.AccountId)
-                .Select(TransactionForDisplay.FromTransaction);
-
-            }
-            return _context.Transactions.Include(t => t.Category).Select(TransactionForDisplay.FromTransaction);
-        }
-        
-        // DELETE: api/Transactions/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTransaction([FromRoute] Guid id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var transaction = await _context.Transactions.FindAsync(id);
-            _context.Entry(transaction).Reference(t => t.Account).Load();
-            if (transaction == null)
-            {
-                return NotFound();
-            }
-
-            _context.Transactions.Remove(transaction);
-            await _context.SaveChangesAsync();
-
-            return Ok(transaction);
-        }
-
-        private bool TransactionExists(Guid id)
-        {
-            return _context.Transactions.Any(e => e.TransactionId == id);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutSimpleTransaction([FromRoute] Guid id, 
-                [FromBody] SimpleTransaction simpleTransaction) {
-
-            if (id != simpleTransaction.TransactionId)
-            {
-                return BadRequest();
-            }
-
-
-            var transaction = await _context.Transactions.FindAsync(simpleTransaction.TransactionId);
-            try
-            {
-                transaction.Vendor = simpleTransaction.Vendor;
-                transaction.Description = simpleTransaction.Description;
-                transaction.Date = simpleTransaction.TransactionDate;
-                transaction.Category = await _context.Categories.FindAsync(simpleTransaction.CategoryId);
-                transaction.Amount = simpleTransaction.Amount;
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TransactionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Ok(transaction);
-        }
-
         [HttpPost]
-        public async Task<IActionResult> PostSimpleTransaction([FromBody] TransactionForDisplay transaction)
+        public async Task<IActionResult> PostTransfer([FromBody] SimpleTransaction transaction)
         {
             var transactions = new List<Transaction>();
             if (transaction.TransactionId == null) transaction.TransactionId = Guid.NewGuid();
@@ -117,7 +38,25 @@ namespace Coronado.Web.Controllers.Api
             if (transaction.CategoryId == null) {
                 category = _context.Categories.FirstOrDefault(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase)));
             } else {
-                category = await _context.Categories.FindAsync(Guid.Parse(transaction.CategoryId));
+                if (transaction.CategoryId.StartsWith("TRF:", StringComparison.CurrentCultureIgnoreCase)) {
+                    category = null;
+                    relatedTransactionId = Guid.NewGuid();
+                    var relatedAccountId = Guid.Parse(transaction.CategoryId.Replace("TRF:", "").Trim());
+                    var relatedAccount = await _context.Accounts.FindAsync(relatedAccountId);
+                    var relatedTransaction = new Transaction {
+                        Date = transaction.TransactionDate,
+                        TransactionId = relatedTransactionId.Value,
+                        Vendor = transaction.Vendor,
+                        Description = transaction.Description,
+                        Account = relatedAccount,
+                        Amount = 0 - transaction.Amount,
+                        RelatedTransactionId = transaction.TransactionId
+                    };
+                    await _context.Transactions.AddAsync(relatedTransaction);
+                    transactions.Add(relatedTransaction);
+                } else {
+                    category = await _context.Categories.FindAsync(Guid.Parse(transaction.CategoryId));
+                }
             }
 
             var newTransaction = new Transaction {
@@ -127,7 +66,7 @@ namespace Coronado.Web.Controllers.Api
                 Description = transaction.Description,
                 Account = account,
                 Category = category,
-                Amount = transaction.Debit.HasValue ? (0 - transaction.Debit.Value) : transaction.Credit.Value,
+                Amount = transaction.Amount,
                 RelatedTransactionId = relatedTransactionId
             };
 
@@ -172,10 +111,5 @@ namespace Coronado.Web.Controllers.Api
             }
             return transactions;
         }
-    }
-
-    public class UrlQuery
-    {
-        public Guid AccountId { get; set; }
     }
 }
