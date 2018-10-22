@@ -25,26 +25,21 @@ class TransactionRow extends Component {
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.cancelEditing = this.cancelEditing.bind(this);
     this.state = { isEditing: false, 
-        debit: '',
-        credit: '',
         selectedCategory: { },
         trx: {...props.transaction, 
             vendor: props.transaction.vendor || '',
             transactionDate: new Date(props.transaction.transactionDate).toLocaleDateString(),
-            categoryId: props.transaction.category ? props.transaction.category.categoryId : '',
-            debit: props.transaction.debit,
-            credit: props.transaction.credit,
-            categoryName: props.transaction.category ? this.props.transaction.category.name : '' } };
+            categoryId: props.transaction.categoryId,
+            debit: props.transaction.debit || '',
+            credit: props.transaction.credit || '',
+            categoryName: props.transaction.categoryDisplay } };
   }
 
   startEditing() {
-    const amount = this.state.trx.amount;
     this.setState({
         isEditing: true,
-        // debit: amount <= 0 ? (0 - amount).toFixed(2) : '',
-        // credit: amount > 0 ? amount.toFixed(2) : '',
         selectedCategory: find(this.props.categories, 
-          c => c.categoryId === this.props.transaction.category ? this.props.transaction.category.categoryId : ''),
+          c => c.categoryId === this.props.transaction.categoryId),
     });
     Mousetrap.bind('esc', this.cancelEditing);
   }
@@ -132,11 +127,11 @@ class TransactionRow extends Component {
         </td>
         <td>
           <MoneyInput name="debit" value={this.state.trx.debit} 
-            onChange={this.handleChangeDebit} onKeyPress={this.handleKeyPress} />
+            onChange={this.handleChangeField} onKeyPress={this.handleKeyPress} />
         </td>
         <td>
           <MoneyInput name="credit" value={this.state.trx.credit} 
-            onChange={this.handleChangeCredit} onKeyPress={this.handleKeyPress} /></td>
+            onChange={this.handleChangeField} onKeyPress={this.handleKeyPress} /></td>
         <td></td>
       </tr> :
 

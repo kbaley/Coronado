@@ -44,6 +44,12 @@ namespace Coronado.Web.Models
 
         public DateTime EnteredDate { get; set; }
 
+        public decimal Amount {
+            get {
+                return Debit.HasValue ? 0 - Debit.Value : Credit.Value;
+            }
+        }
+
         public static TransactionForDisplay FromTransaction(Transaction transaction) {
             var display = new TransactionForDisplay {
                 TransactionId = transaction.TransactionId,

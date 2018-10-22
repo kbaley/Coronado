@@ -67,7 +67,7 @@ namespace Coronado.Web.Controllers.Api
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSimpleTransaction([FromRoute] Guid id, 
-                [FromBody] SimpleTransaction simpleTransaction) {
+                [FromBody] TransactionForDisplay simpleTransaction) {
 
             if (id != simpleTransaction.TransactionId)
             {
@@ -75,13 +75,13 @@ namespace Coronado.Web.Controllers.Api
             }
 
 
-            var transaction = await _context.Transactions.FindAsync(simpleTransaction.TransactionId);
+            var transaction = _context.Transactions.Find(simpleTransaction.TransactionId);
             try
             {
                 transaction.Vendor = simpleTransaction.Vendor;
                 transaction.Description = simpleTransaction.Description;
                 transaction.Date = simpleTransaction.TransactionDate;
-                transaction.Category = await _context.Categories.FindAsync(simpleTransaction.CategoryId);
+                transaction.Category = _context.Categories.Find(Guid.Parse(simpleTransaction.CategoryId));
                 transaction.Amount = simpleTransaction.Amount;
                 await _context.SaveChangesAsync();
             }
@@ -97,7 +97,7 @@ namespace Coronado.Web.Controllers.Api
                 }
             }
 
-            return Ok(transaction);
+            return Ok(TransactionForDisplay.FromTransaction(transaction));
         }
 
         [HttpPost]
@@ -127,7 +127,7 @@ namespace Coronado.Web.Controllers.Api
                 Description = transaction.Description,
                 Account = account,
                 Category = category,
-                Amount = transaction.Debit.HasValue ? (0 - transaction.Debit.Value) : transaction.Credit.Value,
+                Amount = transaction.Amount,
                 RelatedTransactionId = relatedTransactionId
             };
 
