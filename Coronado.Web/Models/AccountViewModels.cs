@@ -41,7 +41,7 @@ namespace Coronado.Web.Models
                 TransactionId = t.TransactionId,
                 Vendor = t.Vendor,
                 Description = t.Description,
-                TransactionDate = t.Date,
+                TransactionDate = t.TransactionDate,
                 Amount = t.Amount,
                 CategoryId = (t.Category != null ? t.Category.CategoryId : Guid.Empty),
                 CategoryName = (t.Category != null ? t.Category.Name : "")

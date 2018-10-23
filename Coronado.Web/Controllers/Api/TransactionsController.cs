@@ -15,28 +15,21 @@ namespace Coronado.Web.Controllers.Api
     public class TransactionsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly ITransactionRepository _transactionRepo;
 
-        public TransactionsController(ApplicationDbContext context)
+        public TransactionsController(ApplicationDbContext context, ITransactionRepository transactionRepo)
         {
             _context = context;
+            _transactionRepo = transactionRepo;
         }
 
         // GET: api/Transactions
         [HttpGet]
         public IEnumerable<TransactionForDisplay> GetTransactions([FromQuery] UrlQuery query )
         {
-            if (query.AccountId != Guid.Empty)
-            {
-                return _context.Transactions
-                .Include(t => t.Category)
-                .Include(t => t.Account)
-                .Include(t => t.RelatedTransaction)
-                .Include(t => t.RelatedTransaction.Account)
-                .Where(t => t.Account.AccountId == query.AccountId)
-                .Select(TransactionForDisplay.FromTransaction);
+            var transactions = _transactionRepo.GetByAccount(query.AccountId);
 
-            }
-            return _context.Transactions.Include(t => t.Category).Select(TransactionForDisplay.FromTransaction);
+            return transactions;
         }
         
         // DELETE: api/Transactions/5
@@ -81,8 +74,8 @@ namespace Coronado.Web.Controllers.Api
             {
                 transaction.Vendor = simpleTransaction.Vendor;
                 transaction.Description = simpleTransaction.Description;
-                transaction.Date = simpleTransaction.TransactionDate;
-                transaction.Category = _context.Categories.Find(Guid.Parse(simpleTransaction.CategoryId));
+                transaction.TransactionDate = simpleTransaction.TransactionDate;
+                transaction.Category = _context.Categories.Find(simpleTransaction.CategoryId);
                 transaction.Amount = simpleTransaction.Amount;
                 await _context.SaveChangesAsync();
             }
@@ -118,12 +111,12 @@ namespace Coronado.Web.Controllers.Api
             if (transaction.CategoryId == null) {
                 category = _context.Categories.FirstOrDefault(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase)));
             } else {
-                category = _context.Categories.Find(Guid.Parse(transaction.CategoryId));
+                category = _context.Categories.Find(transaction.CategoryId);
             }
 
             var newTransaction = new Transaction {
                 TransactionId = transaction.TransactionId,
-                Date = transaction.TransactionDate,
+                TransactionDate = transaction.TransactionDate,
                 Vendor = transaction.Vendor,
                 Description = transaction.Description,
                 Account = account,
@@ -160,7 +153,7 @@ namespace Coronado.Web.Controllers.Api
                         var bankFeeDescription = string.Join(" ", transactionData.Skip(1).ToArray());
                         var transaction = new Transaction {
                             TransactionId = Guid.NewGuid(),
-                            Date = newTransaction.Date,
+                            TransactionDate = newTransaction.TransactionDate,
                             Account = account,
                             Category = category,
                             Description = bankFeeDescription,

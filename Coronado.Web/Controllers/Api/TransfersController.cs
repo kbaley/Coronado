@@ -35,10 +35,10 @@ namespace Coronado.Web.Controllers.Api
             _context.Entry(account).Collection(a => a.Transactions).Load();
             Guid? relatedTransactionId = null;
             relatedTransactionId = Guid.NewGuid();
-            var relatedAccountId = Guid.Parse(transaction.CategoryId);
+            var relatedAccountId = transaction.CategoryId;
             var relatedAccount = _context.Accounts.Find(relatedAccountId);
             var relatedTransaction = new Transaction {
-                Date = transaction.TransactionDate,
+                TransactionDate = transaction.TransactionDate,
                 TransactionId = relatedTransactionId.Value,
                 Vendor = transaction.Vendor,
                 Description = transaction.Description,
@@ -49,7 +49,7 @@ namespace Coronado.Web.Controllers.Api
 
             var newTransaction = new Transaction {
                 TransactionId = transaction.TransactionId,
-                Date = transaction.TransactionDate,
+                TransactionDate = transaction.TransactionDate,
                 Vendor = transaction.Vendor,
                 Description = transaction.Description,
                 Account = account,
@@ -87,7 +87,7 @@ namespace Coronado.Web.Controllers.Api
                         var bankFeeDescription = string.Join(" ", transactionData.Skip(1).ToArray());
                         var transaction = new Transaction {
                             TransactionId = Guid.NewGuid(),
-                            Date = newTransaction.Date,
+                            TransactionDate = newTransaction.TransactionDate,
                             Account = account,
                             Category = category,
                             Description = bankFeeDescription,

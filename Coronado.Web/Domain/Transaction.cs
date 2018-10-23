@@ -17,7 +17,7 @@ namespace Coronado.Web.Domain
 
         public decimal Amount { get; set; }
         public bool IsReconciled { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime TransactionDate { get; set; }
         public Category Category { get; set; }
         public DateTime EnteredDate {get;set;} = DateTime.Now;
 

@@ -135,7 +135,7 @@ namespace Coronado.Web.Controllers.Api
                 {
                     Account = newAccount,
                     Amount = account.StartingBalance,
-                    Date = account.StartDate,
+                    TransactionDate = account.StartDate,
                     Description = "Start Balance",
                     Vendor = "",
                     Category = category

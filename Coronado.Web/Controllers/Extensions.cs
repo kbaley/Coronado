@@ -9,7 +9,7 @@ namespace Coronado.Web.Controllers
         public static AccountTransaction ToAccountTransaction(this Transaction transaction) {
             return new AccountTransaction{
                     TransactionId = transaction.TransactionId,
-                    TransactionDate = transaction.Date,
+                    TransactionDate = transaction.TransactionDate,
                     Vendor = transaction.Vendor,
                     Description = transaction.Description,
                     Amount = transaction.Amount,
@@ -21,10 +21,10 @@ namespace Coronado.Web.Controllers
         public static IEnumerable<AccountTransaction> GetTransactionModels(this IEnumerable<Transaction> transactions) {
             decimal runningTotal = 0;
             return transactions
-                .OrderBy(t => t.Date)
+                .OrderBy(t => t.TransactionDate)
                 .Select(t => new AccountTransaction{
                     TransactionId = t.TransactionId,
-                    TransactionDate = t.Date,
+                    TransactionDate = t.TransactionDate,
                     Vendor = t.Vendor,
                     Description = t.Description,
                     Amount = t.Amount,
