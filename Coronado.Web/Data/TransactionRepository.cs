@@ -40,7 +40,8 @@ namespace Coronado.Web.Data
     WHERE transaction_id = @TransactionId", new {transactionId});
                 if (relatedTransactionId != null && relatedTransactionId != Guid.Empty) {
                     // Related transaction exists; delete it first (after clearing the FK relationship)
-                    conn.Execute("UPDATE transactions SET related_transaction_id = null WHERE transaction_id = @TransactionId", transactionId);
+                    conn.Execute("UPDATE transactions SET related_transaction_id = null WHERE transaction_id = @TransactionId", 
+                        new {transactionId});
                     conn.Execute("DELETE FROM transactions WHERE transaction_id = @TransactionId",
                         new { TransactionId = relatedTransactionId });
                 }
@@ -129,6 +130,15 @@ WHERE t.transaction_id=@transactionId;", new {transactionId});
                 }
                 return transaction;
             }
+        }
+
+        public void InsertRelatedTransaction(TransactionForDisplay first, TransactionForDisplay second)
+        {
+            first.RelatedTransactionId = null;
+            Insert(first);
+            Insert(second);
+            first.RelatedTransactionId = second.TransactionId;
+            Update(first);
         }
     }
 }

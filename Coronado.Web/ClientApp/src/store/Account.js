@@ -224,7 +224,6 @@ export const reducer = (state, action) => {
   if (action.type === receiveNewTransactionType) {
     var transactionsForCurrentAccount = filter(action.newTransaction, t => t.accountId === state.selectedAccount);
     var transactionsForOtherAccounts = filter(action.newTransaction, t => t.accountId !== state.selectedAccount);
-    console.log(action.newTransaction);
     var accounts = state.accounts.map( (a) => a.accountId === state.selectedAccount
         ? { ...a, 
           transactions: computeRunningTotal(a.transactions.concat(transactionsForCurrentAccount)),

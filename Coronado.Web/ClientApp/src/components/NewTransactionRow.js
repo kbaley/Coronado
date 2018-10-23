@@ -56,12 +56,14 @@ export class NewTransactionRow extends Component {
   handleChangeCategory(categoryId) {
     var selectedCategory = find(this.props.categories, c => c.categoryId===categoryId);
     var transactionType = "Transaction";
+    var relatedAccountId = '';
     if (categoryId.substring(0,4) === "TRF:") {
       transactionType = "Transfer";
-      categoryId = categoryId.substring(4);
+      relatedAccountId = categoryId.substring(4);
+      categoryId = '';
     }
     this.setState( {
-      trx: {...this.state.trx, categoryId },
+      trx: {...this.state.trx, categoryId, relatedAccountId },
       transactionType,
       selectedCategory});
   }
@@ -69,7 +71,7 @@ export class NewTransactionRow extends Component {
   saveTransaction() {
     this.props.onSave(this.state.trx, this.state.transactionType);
     this.setState( 
-      { trx: { ...this.state.trx, vendor: '', description: '', debit: '', credit: '' }, 
+      { trx: { ...this.state.trx, vendor: '', description: '', debit: '', credit: '', relatedAccountId: '' }, 
         selectedCategory: { }
       }
     );
