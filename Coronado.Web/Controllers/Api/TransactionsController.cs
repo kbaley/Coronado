@@ -27,36 +27,22 @@ namespace Coronado.Web.Controllers.Api
         [HttpGet]
         public IEnumerable<TransactionForDisplay> GetTransactions([FromQuery] UrlQuery query )
         {
-            var transactions = _transactionRepo.GetByAccount(query.AccountId);
-
-            return transactions;
+            return _transactionRepo.GetByAccount(query.AccountId);
         }
         
         // DELETE: api/Transactions/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTransaction([FromRoute] Guid id)
+        public IActionResult DeleteTransaction([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var transaction = await _context.Transactions.FindAsync(id);
-            _context.Entry(transaction).Reference(t => t.Account).Load();
-            if (transaction == null)
-            {
-                return NotFound();
-            }
-
-            _context.Transactions.Remove(transaction);
-            await _context.SaveChangesAsync();
+            var transaction = _transactionRepo.Get(id);
+            _transactionRepo.Delete(id);
 
             return Ok(transaction);
-        }
-
-        private bool TransactionExists(Guid id)
-        {
-            return _context.Transactions.Any(e => e.TransactionId == id);
         }
 
         [HttpPut("{id}")]
