@@ -95,52 +95,38 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpPost]
-        public IActionResult PostSimpleTransaction([FromBody] TransactionForDisplay transaction)
+        public IActionResult PostTransaction([FromBody] TransactionForDisplay transaction)
         {
-            var transactions = new List<Transaction>();
-            if (transaction.TransactionId == null) transaction.TransactionId = Guid.NewGuid();
-            Account account;
-            if (transaction.AccountId != null) {
-                account = _context.Accounts.Find(transaction.AccountId);
-            } else {
-                account = _context.Accounts.FirstOrDefault(a => a.Name.Equals(transaction.AccountName, StringComparison.CurrentCultureIgnoreCase));
+            var transactions = new List<TransactionForDisplay>();
+            if (transaction.TransactionId == null || transaction.TransactionId == Guid.Empty) transaction.TransactionId = Guid.NewGuid();
+            if (transaction.AccountId == null) {
+                transaction.AccountId = _context.Accounts.FirstOrDefault(a => a.Name.Equals(transaction.AccountName, StringComparison.CurrentCultureIgnoreCase)).AccountId;
             }
-            _context.Entry(account).Collection(a => a.Transactions).Load();
-            Category category;
-            Guid? relatedTransactionId = null;
+            if (transaction.Debit.HasValue) {
+                transaction.Amount = 0 - transaction.Debit.Value;
+            } else {
+                transaction.Amount = transaction.Credit.Value;
+            }
             if (transaction.CategoryId == null) {
-                category = _context.Categories.FirstOrDefault(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase)));
-            } else {
-                category = _context.Categories.Find(transaction.CategoryId);
+                transaction.CategoryId = _context.Categories.FirstOrDefault(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase))).CategoryId;
             }
 
-            var newTransaction = new Transaction {
-                TransactionId = transaction.TransactionId,
-                TransactionDate = transaction.TransactionDate,
-                Vendor = transaction.Vendor,
-                Description = transaction.Description,
-                Account = account,
-                Category = category,
-                Amount = transaction.Amount,
-                RelatedTransactionId = relatedTransactionId
-            };
-
-            var bankFeeTransactions = GetBankFeeTransactions(newTransaction, account);
-            transactions.Add(newTransaction);
+            var bankFeeTransactions = GetBankFeeTransactions(transaction);
+            transactions.Add(transaction);
             transactions.AddRange(bankFeeTransactions);
-            _context.Transactions.AddRange(transactions);
-            _context.SaveChanges();
-            newTransaction.Account = null;
+            foreach(var trx in transactions) {
+                _transactionRepo.Insert(trx);
+            }
 
-            return CreatedAtAction("GetTransaction", new { id = newTransaction.TransactionId }, 
-                transactions.Select(TransactionForDisplay.FromTransaction));
+            return CreatedAtAction("PostTransaction", new { id = transaction.TransactionId }, transactions);
         }
 
-        private IEnumerable<Transaction> GetBankFeeTransactions(Transaction newTransaction, Account account) {
-            var transactions = new List<Transaction>();
+        private IEnumerable<TransactionForDisplay> GetBankFeeTransactions(TransactionForDisplay newTransaction) {
+            var transactions = new List<TransactionForDisplay>();
             var description = newTransaction.Description;
 
             var category = _context.Categories.First(c => c.Name.Equals("bank fees", StringComparison.CurrentCultureIgnoreCase));
+            var account = _context.Accounts.Find(newTransaction.AccountId);
             if (description.Contains("bf:", StringComparison.CurrentCultureIgnoreCase)) {
                 newTransaction.Description = description.Substring(0, description.IndexOf("bf:", StringComparison.CurrentCultureIgnoreCase));
                 var parsed = description.Substring(description.IndexOf("bf:", 0, StringComparison.CurrentCultureIgnoreCase));
@@ -151,14 +137,15 @@ namespace Coronado.Web.Controllers.Api
                     Decimal amount;
                     if (decimal.TryParse(transactionData[0], out amount)) {
                         var bankFeeDescription = string.Join(" ", transactionData.Skip(1).ToArray());
-                        var transaction = new Transaction {
+                        var transaction = new TransactionForDisplay {
                             TransactionId = Guid.NewGuid(),
                             TransactionDate = newTransaction.TransactionDate,
-                            Account = account,
-                            Category = category,
+                            AccountId = newTransaction.AccountId,
+                            CategoryId = category.CategoryId,
                             Description = bankFeeDescription,
                             Vendor = account.Vendor,
-                            Amount = 0 - amount
+                            Amount = 0 - amount,
+                            Debit = amount
                         };
                         transactions.Add(transaction);
                     }

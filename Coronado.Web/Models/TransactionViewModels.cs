@@ -48,6 +48,8 @@ namespace Coronado.Web.Models
 
         public DateTime EnteredDate { get; set; }
 
+        public bool IsReconciled { get; set; }
+
         public static TransactionForDisplay FromTransaction(Transaction transaction) {
             var display = new TransactionForDisplay {
                 TransactionId = transaction.TransactionId,

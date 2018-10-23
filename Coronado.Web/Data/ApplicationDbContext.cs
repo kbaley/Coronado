@@ -15,6 +15,7 @@ namespace Coronado.Web.Data
     public interface ITransactionRepository
     {
         IEnumerable<TransactionForDisplay> GetByAccount(Guid accountId);
+        void Insert(TransactionForDisplay transaction);
     }
     public class TransactionRepository : ITransactionRepository
     {
@@ -35,6 +36,17 @@ namespace Coronado.Web.Data
             }
         }
 
+        public void Insert(TransactionForDisplay transaction) {
+            using (var conn = Connection) {
+                conn.Open();
+                conn.Execute(
+@"INSERT INTO transactions (transaction_id, account_id, vendor, description, is_reconciled, transaction_date, category_id,
+    entered_date, amount, related_transaction_id)
+    VALUES (@TransactionId, @AccountId, @Vendor, @Description, @IsReconciled, @TransactionDate, @CategoryId,
+    @EnteredDate, @Amount, @RelatedTransactionId)
+", transaction );
+            }
+        }
         public IEnumerable<TransactionForDisplay> GetByAccount(Guid accountId)
         {
             using (IDbConnection dbConnection = Connection)
