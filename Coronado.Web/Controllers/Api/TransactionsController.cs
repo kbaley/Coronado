@@ -60,38 +60,18 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSimpleTransaction([FromRoute] Guid id, 
-                [FromBody] TransactionForDisplay simpleTransaction) {
+        public IActionResult UpdateTransaction([FromRoute] Guid id, 
+                [FromBody] TransactionForDisplay transaction) {
 
-            if (id != simpleTransaction.TransactionId)
+            if (id != transaction.TransactionId)
             {
                 return BadRequest();
             }
 
+            transaction.SetAmount();
+            _transactionRepo.Update(transaction);
 
-            var transaction = _context.Transactions.Find(simpleTransaction.TransactionId);
-            try
-            {
-                transaction.Vendor = simpleTransaction.Vendor;
-                transaction.Description = simpleTransaction.Description;
-                transaction.TransactionDate = simpleTransaction.TransactionDate;
-                transaction.Category = _context.Categories.Find(simpleTransaction.CategoryId);
-                transaction.Amount = simpleTransaction.Amount;
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TransactionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Ok(TransactionForDisplay.FromTransaction(transaction));
+            return Ok(transaction);
         }
 
         [HttpPost]
@@ -102,11 +82,8 @@ namespace Coronado.Web.Controllers.Api
             if (transaction.AccountId == null) {
                 transaction.AccountId = _context.Accounts.FirstOrDefault(a => a.Name.Equals(transaction.AccountName, StringComparison.CurrentCultureIgnoreCase)).AccountId;
             }
-            if (transaction.Debit.HasValue) {
-                transaction.Amount = 0 - transaction.Debit.Value;
-            } else {
-                transaction.Amount = transaction.Credit.Value;
-            }
+            transaction.SetAmount();
+            transaction.EnteredDate = DateTime.Now;
             if (transaction.CategoryId == null) {
                 transaction.CategoryId = _context.Categories.FirstOrDefault(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase))).CategoryId;
             }
@@ -145,7 +122,8 @@ namespace Coronado.Web.Controllers.Api
                             Description = bankFeeDescription,
                             Vendor = account.Vendor,
                             Amount = 0 - amount,
-                            Debit = amount
+                            Debit = amount,
+                            EnteredDate = newTransaction.EnteredDate
                         };
                         transactions.Add(transaction);
                     }

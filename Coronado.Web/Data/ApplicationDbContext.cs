@@ -16,6 +16,7 @@ namespace Coronado.Web.Data
     {
         IEnumerable<TransactionForDisplay> GetByAccount(Guid accountId);
         void Insert(TransactionForDisplay transaction);
+        void Update(TransactionForDisplay transaction);
     }
     public class TransactionRepository : ITransactionRepository
     {
@@ -33,6 +34,18 @@ namespace Coronado.Web.Data
             get
             {
                 return new NpgsqlConnection(_connectionString);
+            }
+        }
+
+        public void Update(TransactionForDisplay transaction) {
+            using (var conn = Connection) {
+                conn.Open();
+                conn.Execute(
+@"UPDATE transactions
+    SET account_id = @AccountId, vendor = @Vendor, description = @Description, is_reconciled = @IsReconciled, 
+    transaction_date = @TransactionDate, category_id = @CategoryId, amount = @Amount, 
+    related_transaction_id = @RelatedTransactionId
+    WHERE transaction_id = @TransactionId", transaction);
             }
         }
 
@@ -66,14 +79,7 @@ ON t1.account_id = a1.account_id
 WHERE t.account_id=@AccountId;", new { AccountId = accountId });
                 foreach (var transaction in transactions)
                 {
-                    if (transaction.Amount < 0)
-                    {
-                        transaction.Debit = 0 - transaction.Amount;
-                    }
-                    else
-                    {
-                        transaction.Credit = transaction.Amount;
-                    }
+                    transaction.SetDebitAndCredit();
                     if (transaction.RelatedTransactionId.HasValue) 
                     {
                         transaction.CategoryDisplay = "TRF: " + transaction.RelatedAccountName;

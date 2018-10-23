@@ -18,8 +18,6 @@ class TransactionRow extends Component {
     super(props);
     this.startEditing = this.startEditing.bind(this);
     this.handleChangeField = this.handleChangeField.bind(this);
-    this.handleChangeDebit = this.handleChangeDebit.bind(this);
-    this.handleChangeCredit = this.handleChangeCredit.bind(this);
     this.handleChangeCategory = this.handleChangeCategory.bind(this);
     this.updateTransaction = this.updateTransaction.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
@@ -30,8 +28,8 @@ class TransactionRow extends Component {
             vendor: props.transaction.vendor || '',
             transactionDate: new Date(props.transaction.transactionDate).toLocaleDateString(),
             categoryId: props.transaction.categoryId,
-            debit: props.transaction.debit || '',
-            credit: props.transaction.credit || '',
+            debit: props.transaction.debit ? Number(props.transaction.debit).toFixed(2) : '',
+            credit: props.transaction.credit ? Number(props.transaction.credit).toFixed(2) : '',
             categoryName: props.transaction.categoryDisplay } };
   }
 
@@ -61,24 +59,6 @@ class TransactionRow extends Component {
   handleChangeField(e) {
     var name = e.target.name;
     this.setState( { trx: {...this.state.trx, [name]: e.target.value } } );
-  }
-
-  handleChangeDebit(e) {
-    if (e.targetValue !== '') {
-      var amount = 0 - parseFloat(e.target.value);
-      this.setState( { trx: {...this.state.trx, amount, debit: e.target.value } } );
-    } else {
-      this.handleChangeField();
-    }
-  }
-
-  handleChangeCredit(e) {
-    if (e.targetValue !== '') {
-      var amount = parseFloat(e.target.value);
-      this.setState( { trx: {...this.state.trx, amount: amount, credit: e.target.value}});
-    } else {
-      this.handleChangeField();
-    }
   }
 
   handleChangeCategory(categoryId) {

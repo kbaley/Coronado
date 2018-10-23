@@ -50,6 +50,17 @@ namespace Coronado.Web.Models
 
         public bool IsReconciled { get; set; }
 
+        public void SetAmount() {
+            Amount = Debit.HasValue ? (0 - Debit.Value) : Credit.Value;
+        }
+
+        public void SetDebitAndCredit() {
+            if (Amount < 0) {
+                Debit = 0 - Amount;
+            } else {
+                Credit = Amount;
+            }
+        }
         public static TransactionForDisplay FromTransaction(Transaction transaction) {
             var display = new TransactionForDisplay {
                 TransactionId = transaction.TransactionId,
