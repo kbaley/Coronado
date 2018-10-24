@@ -15,11 +15,16 @@ namespace Coronado.Web.Controllers.Api
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IAccountRepository _accountRepo;
+        private readonly ITransactionRepository _transactionRepo;
+        private readonly ICategoryRepository _categoryRepo;
 
-        public AccountsController(ApplicationDbContext context)
+        public AccountsController(ApplicationDbContext context, IAccountRepository accountRepo, 
+            ITransactionRepository transactionRepo, ICategoryRepository categoryRepo)
         {
-            _context = context;
+            _accountRepo = accountRepo;
+            _transactionRepo = transactionRepo;
+            _categoryRepo = categoryRepo;
         }
 
         [HttpGet("newId")]
@@ -32,46 +37,12 @@ namespace Coronado.Web.Controllers.Api
         [HttpGet]
         public IEnumerable<Account> GetAccounts()
         {
-            var accounts = _context.Accounts.Include(a => a.Transactions).ToList();
-            accounts.ForEach(a => {
-                a.CurrentBalance = a.Transactions.Sum(t => t.Amount);
-                a.Transactions.Clear();
-            });
-
-            return accounts;
-        }
-
-        // GET:sapi/Accounts/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetAccount([FromRoute] Guid id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var account = await _context.Accounts.FindAsync(id);
-
-            if (account == null)
-            {
-                return NotFound();
-            }
-
-            _context.Entry(account).Collection(a => a.Transactions).Query().Include(t => t.Category).Load();
-            var transactionsModel = account.Transactions.GetTransactionModels();
-            var model = new AccountWithTransactions
-            {
-                AccountId = account.AccountId,
-                Name = account.Name,
-                Transactions = transactionsModel
-            };
-
-            return Ok(model);
+            return _accountRepo.GetAll();
         }
 
         // PUT: api/Accounts/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAccount([FromRoute] Guid id, [FromBody] AccountForPosting account)
+        public IActionResult PutAccount([FromRoute] Guid id, [FromBody] Account account)
         {
             if (!ModelState.IsValid)
             {
@@ -83,29 +54,9 @@ namespace Coronado.Web.Controllers.Api
                 return BadRequest();
             }
 
-            var existingAccount = await _context.Accounts.FindAsync(id);
-            existingAccount.Name = account.Name;
-            existingAccount.Currency = account.Currency;
-            existingAccount.Vendor = account.Vendor;
-            existingAccount.AccountType = account.AccountType;
+            _accountRepo.Update(account);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AccountExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Ok(existingAccount);
+            return Ok(account);
         }
 
         // POST: api/Accounts
@@ -125,57 +76,44 @@ namespace Coronado.Web.Controllers.Api
                 Vendor = account.Vendor,
                 AccountType = account.AccountType
             };
+            _accountRepo.Insert(newAccount);
 
-            using (var dbTrx = _context.Database.BeginTransaction())
+            var category = _categoryRepo.GetAll().Single(c => c.Name.Equals("Starting Balance", StringComparison.CurrentCultureIgnoreCase));
+            var transaction = new TransactionForDisplay
             {
-                var category = _context.Categories.First(c => c.Name == "Starting Balance");
-                _context.Accounts.Add(newAccount);
+                AccountId = newAccount.AccountId,
+                Amount = account.StartingBalance,
+                TransactionDate = account.StartDate,
+                Vendor = "",
+                Description = "",
+                CategoryId = category.CategoryId,
+                CategoryName = category.Name,
+                EnteredDate = account.StartDate,
+                IsReconciled = true
+            };
+            _transactionRepo.Insert(transaction);
 
-                var transaction = new Transaction
-                {
-                    Account = newAccount,
-                    Amount = account.StartingBalance,
-                    TransactionDate = account.StartDate,
-                    Description = "Start Balance",
-                    Vendor = "",
-                    Category = category
-                };
-                _context.Transactions.Add(transaction);
-                _context.SaveChanges();
-                dbTrx.Commit();
-            }
-            var transactionsModel = newAccount.Transactions
-                .Select(AccountTransaction.FromTransaction)
-                .OrderByDescending(t => t.TransactionDate);
-            newAccount.CurrentBalance = newAccount.Transactions.Sum(t => t.Amount);
+            var model = new AccountWithTransactions {
+                AccountId = newAccount.AccountId,
+                Name = newAccount.Name,
+                Transactions = new List<TransactionForDisplay>(new[] {transaction}),
+                CurrentBalance = account.StartingBalance
+            };
 
-            return CreatedAtAction("GetAccount", new { id = newAccount.AccountId }, newAccount);
+            return CreatedAtAction("PostAccount", new { id = newAccount.AccountId }, model);
         }
 
         // DELETE: api/Accounts/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAccount([FromRoute] Guid id)
+        public IActionResult DeleteAccount([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var account = await _context.Accounts.FindAsync(id);
-            if (account == null)
-            {
-                return NotFound();
-            }
-
-            _context.Accounts.Remove(account);
-            await _context.SaveChangesAsync();
-
+            var account = _accountRepo.Delete(id);
             return Ok(account);
-        }
-
-        private bool AccountExists(Guid id)
-        {
-            return _context.Accounts.Any(e => e.AccountId == id);
         }
     }
 }

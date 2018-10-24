@@ -20,7 +20,8 @@ namespace Coronado.Web.Models
     {
         public string Name { get; set; }
         public Guid AccountId { get; set; }
-        public IEnumerable<AccountTransaction> Transactions { get; set; }
+        public decimal CurrentBalance { get; set; }
+        public IEnumerable<TransactionForDisplay> Transactions { get; set; }
     }
 
     public class AccountTransaction
@@ -34,7 +35,7 @@ namespace Coronado.Web.Models
         public decimal Amount { get; set; }
         public decimal RunningTotal { get; set; }
 
-        public static AccountTransaction FromTransaction(Transaction t)
+        public static AccountTransaction FromTransaction(TransactionForDisplay t)
         {
             return new AccountTransaction
             {
@@ -43,8 +44,8 @@ namespace Coronado.Web.Models
                 Description = t.Description,
                 TransactionDate = t.TransactionDate,
                 Amount = t.Amount,
-                CategoryId = (t.Category != null ? t.Category.CategoryId : Guid.Empty),
-                CategoryName = (t.Category != null ? t.Category.Name : "")
+                CategoryId = t.CategoryId,
+                CategoryName = t.CategoryName,
             };
         }
     }
