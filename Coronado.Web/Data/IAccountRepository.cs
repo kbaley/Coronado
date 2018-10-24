@@ -9,5 +9,6 @@ namespace Coronado.Web.Data
         void Update(Account account);
         void Insert(Account newAccount);
         Account Delete(Guid accountId);
+        Account Get(Guid accountId);
     }
 }

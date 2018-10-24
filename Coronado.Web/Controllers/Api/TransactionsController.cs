@@ -14,13 +14,16 @@ namespace Coronado.Web.Controllers.Api
     [ApiController]
     public class TransactionsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly ITransactionRepository _transactionRepo;
+        private readonly IAccountRepository _accountRepo;
+        private readonly ICategoryRepository _categoryRepo;
 
-        public TransactionsController(ApplicationDbContext context, ITransactionRepository transactionRepo)
+        public TransactionsController(ApplicationDbContext context, ITransactionRepository transactionRepo,
+            IAccountRepository accountRepo, ICategoryRepository categoryRepo)
         {
-            _context = context;
             _transactionRepo = transactionRepo;
+            _accountRepo = accountRepo;
+            _categoryRepo = categoryRepo;
         }
 
         // GET: api/Transactions
@@ -66,12 +69,12 @@ namespace Coronado.Web.Controllers.Api
             var transactions = new List<TransactionForDisplay>();
             if (transaction.TransactionId == null || transaction.TransactionId == Guid.Empty) transaction.TransactionId = Guid.NewGuid();
             if (transaction.AccountId == null) {
-                transaction.AccountId = _context.Accounts.FirstOrDefault(a => a.Name.Equals(transaction.AccountName, StringComparison.CurrentCultureIgnoreCase)).AccountId;
+                transaction.AccountId = _accountRepo.GetAll().Single(a => a.Name.Equals(transaction.AccountName, StringComparison.CurrentCultureIgnoreCase)).AccountId;
             }
             transaction.SetAmount();
             transaction.EnteredDate = DateTime.Now;
             if (transaction.CategoryId == null) {
-                transaction.CategoryId = _context.Categories.FirstOrDefault(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase))).CategoryId;
+                transaction.CategoryId = _categoryRepo.GetAll().Single(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase))).CategoryId;
             }
 
             var bankFeeTransactions = GetBankFeeTransactions(transaction);
@@ -88,8 +91,8 @@ namespace Coronado.Web.Controllers.Api
             var transactions = new List<TransactionForDisplay>();
             var description = newTransaction.Description;
 
-            var category = _context.Categories.First(c => c.Name.Equals("bank fees", StringComparison.CurrentCultureIgnoreCase));
-            var account = _context.Accounts.Find(newTransaction.AccountId);
+            var category = _categoryRepo.GetAll().Single(c => c.Name.Equals("bank fees", StringComparison.CurrentCultureIgnoreCase));
+            var account = _accountRepo.Get(newTransaction.AccountId.Value);
             if (description.Contains("bf:", StringComparison.CurrentCultureIgnoreCase)) {
                 newTransaction.Description = description.Substring(0, description.IndexOf("bf:", StringComparison.CurrentCultureIgnoreCase));
                 var parsed = description.Substring(description.IndexOf("bf:", 0, StringComparison.CurrentCultureIgnoreCase));

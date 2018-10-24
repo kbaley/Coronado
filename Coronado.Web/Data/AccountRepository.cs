@@ -41,6 +41,17 @@ namespace Coronado.Web.Data
             }    
         }
 
+        public Account Get(Guid accountId)
+        {
+            using (var conn = Connection) {
+                return conn.QuerySingle<Account>(
+@"SELECT a.*, (SELECT SUM(amount) FROM transactions WHERE account_id = a.account_id) as current_balance
+FROM accounts a
+WHERE account_id=@accountId", new {accountId}
+);
+            }
+        }
+
         public IEnumerable<Account> GetAll()
         {
             using (var conn = Connection) {
