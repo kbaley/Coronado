@@ -14,39 +14,21 @@ namespace Coronado.Web.Controllers.Api
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICategoryRepository _categoryRepo;
 
-        public CategoriesController(ApplicationDbContext context)
+        public CategoriesController(ApplicationDbContext context, ICategoryRepository categoryRepo)
         {
-            _context = context;
+            _categoryRepo = categoryRepo;
         }
 
         [HttpGet]
         public IEnumerable<Category> GetCategory([FromQuery] UrlQuery query )
         {
-            return _context.Categories;
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetCategory([FromRoute] Guid id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var category = await _context.Categories.FindAsync(id);
-
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(category);
+            return _categoryRepo.GetAll();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory([FromRoute] Guid id, [FromBody] CategoryForPosting category)
+        public IActionResult PutCategory([FromRoute] Guid id, [FromBody] Category category)
         {
             if (!ModelState.IsValid)
             {
@@ -58,74 +40,40 @@ namespace Coronado.Web.Controllers.Api
                 return BadRequest();
             }
 
-            var updatedCategory = await _context.Categories.FindAsync(id);
-            updatedCategory.Name = category.Name;
-            updatedCategory.Type = category.Type;
-            updatedCategory.ParentCategoryId = category.ParentCategoryId;
+            _categoryRepo.Update(category);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CategoryExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Ok(updatedCategory);
+            return Ok(category);
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostCategory([FromBody] CategoryForPosting category)
+        public IActionResult PostCategory([FromBody] Category category)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var newCategory = new Category {
-                CategoryId = Guid.NewGuid(),
-                Name = category.Name,
-                Type = category.Type,
-                ParentCategoryId = category.ParentCategoryId
-            };
+            if (category.CategoryId == null || category.CategoryId == Guid.Empty) category.CategoryId = Guid.NewGuid();
+            _categoryRepo.Insert(category);
 
-            _context.Categories.Add(newCategory);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCategory", new { id = newCategory.CategoryId }, newCategory);
+            return CreatedAtAction("PostCategory", new { id = category.CategoryId }, category);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
+        public IActionResult DeleteCategory([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var category = await _context.Categories.FindAsync(id);
+            var category = _categoryRepo.Delete(id);
             if (category == null)
             {
                 return NotFound();
             }
 
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
-
             return Ok(category);
-        }
-
-        private bool CategoryExists(Guid id)
-        {
-            return _context.Categories.Any(e => e.CategoryId == id);
         }
     }
 }

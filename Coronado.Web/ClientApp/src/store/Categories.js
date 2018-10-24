@@ -58,9 +58,6 @@ export const actionCreators = {
     dispatch({type: receiveUpdatedCategoryType, updatedCategory});
   },
   saveNewCategory: (category) => async (dispatch) => {
-    const newIdResponse = await fetch('api/Accounts/newId');
-    const newId = await newIdResponse.json();
-    category.category = newId;
     const response = await fetch('/api/Categories', {
       method: 'POST',
       headers: {

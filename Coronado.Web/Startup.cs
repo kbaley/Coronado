@@ -42,6 +42,7 @@ namespace Coronado.Web
 
             var connectionString = Configuration["ConnectionStrings:DefaultConnection"];
             services.AddTransient<ITransactionRepository, TransactionRepository>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(connectionString));
             services.AddDefaultIdentity<IdentityUser>()

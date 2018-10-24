@@ -79,7 +79,7 @@ class CategoryForm extends Component {
               <Col sm={5}>
                 <FormControl componentClass="select" name="parentCategory" value={this.state.category.parentCategoryId}
                     onChange={this.handleChangeParent}>
-                  <option>None</option>
+                  <option key="0" value="">None</option>
                   {this.props.categories ? this.props.categories.map(c => 
                   (c.categoryId !== this.state.category.categoryId) &&
                   <option key={c.categoryId} value={c.categoryId}>{c.name}</option>

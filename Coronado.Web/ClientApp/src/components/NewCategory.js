@@ -42,7 +42,9 @@ class NewCategory extends Component {
   }
   render() {
     return (<span>
+        <a onClick={this.showForm}>
         <NewIcon onClick={this.showForm} className="new-category" />
+        </a>
         <CategoryForm show={this.state.show} onClose={this.handleClose} onSave={this.saveCategory}
           categories={this.props.categories} />
       </span>);
