@@ -23,7 +23,7 @@ import EditAccount from './EditAccount';
   componentDidUpdate(prevProps, prevState) {
     if (this.state.loading) {
       this.props.requestTransactions(this.props.match.params.accountId);
-      this.setState(...this.state, {loading:false});
+      this.setState({loading:false});
     }
   }
 

@@ -32,7 +32,7 @@ class AccountNavList extends Component {
           Mousetrap.bind('g ' + (i+1), this.goToAccount);
         }
       }
-      this.setState(...this.state, {isLoading: false});
+      this.setState({isLoading: false});
     }
   }
 
