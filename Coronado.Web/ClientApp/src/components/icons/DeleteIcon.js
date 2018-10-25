@@ -6,8 +6,6 @@ import './Icon.css';
 export function DeleteIcon(props) {
   const classes = `delete-icon icon ${props.className}`
   return (
-    <a onClick={props.onDelete} style={{color: "black"}}>
-    <Glyphicon glyph='remove-sign' className={classes} />
-    </a>
+    <Glyphicon glyph='remove-sign' className={classes} onClick={props.onDelete} />
   );
 }

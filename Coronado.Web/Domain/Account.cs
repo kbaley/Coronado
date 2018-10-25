@@ -46,9 +46,11 @@ namespace Coronado.Web.Domain
 
         public string Vendor { get; set; }
 
-        public IList<Transaction> Transactions {get;set;} = new List<Transaction>();
-
         public string AccountType { get; set; }
+
+        public decimal? MortgagePayment { get; set; }
+        
+        public string MortgageType { get; set; }
 
     }
 }

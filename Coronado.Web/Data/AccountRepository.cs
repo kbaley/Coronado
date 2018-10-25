@@ -66,8 +66,8 @@ FROM accounts a"
         {
             using (var conn = Connection) {
                 conn.Execute(
-@"INSERT INTO accounts (account_id, name, currency, vendor, account_type)
-VALUES (@AccountId, @Name, @Currency, @Vendor, @AccountType)", account);
+@"INSERT INTO accounts (account_id, name, currency, vendor, account_type, mortgage_payment, mortgage_type)
+VALUES (@AccountId, @Name, @Currency, @Vendor, @AccountType, @MortgagePayment, @MortgageType)", account);
             }
         }
 
@@ -76,7 +76,8 @@ VALUES (@AccountId, @Name, @Currency, @Vendor, @AccountType)", account);
             using (var conn = Connection) {
                 conn.Execute(
 @"UPDATE accounts
-SET name = @Name, currency = @Currency, vendor = @Vendor, account_type = @AccountType
+SET name = @Name, currency = @Currency, vendor = @Vendor, account_type = @AccountType,
+    mortgage_payment = @MortgagePayment, mortgage_type = @MortgageType
 WHERE account_id = @AccountId", account);
             }
         }

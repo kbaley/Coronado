@@ -14,6 +14,8 @@ namespace Coronado.Web.Models
         public string Currency { get; set; }
         public string Vendor { get; set; }
         public string AccountType { get; set; }
+        public decimal? MortgagePayment { get; set; }
+        public string MortgageType { get; set; }
     }
 
     public class AccountWithTransactions

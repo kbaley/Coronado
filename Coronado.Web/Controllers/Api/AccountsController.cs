@@ -74,7 +74,9 @@ namespace Coronado.Web.Controllers.Api
                 Name = account.Name,
                 Currency = account.Currency,
                 Vendor = account.Vendor,
-                AccountType = account.AccountType
+                AccountType = account.AccountType,
+                MortgagePayment = account.MortgagePayment,
+                MortgageType = account.MortgageType
             };
             _accountRepo.Insert(newAccount);
 

@@ -6,8 +6,6 @@ import './Icon.css';
 export function CheckIcon(props) {
   const classes = `check-icon icon ${props.className}`
   return (
-    <a onClick={props.onClick} style={{color:"black"}}>
-    <Glyphicon glyph='ok' className={classes} />
-    </a>
+    <Glyphicon glyph='ok' className={classes} onClick={props.onClick} />
   );
 }

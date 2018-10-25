@@ -9,7 +9,6 @@ import { withRouter } from 'react-router-dom';
 import './AccountNavList.css'
 import { CurrencyFormat } from './CurrencyFormat';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import NewAccount from './NewAccount';
 
 class AccountNavList extends Component {
   displayName = AccountNavList.name;
@@ -69,10 +68,6 @@ class AccountNavList extends Component {
   render() {
     return (
       <Nav>
-        <NavItem>
-          Accounts
-          <NewAccount />
-        </NavItem>
         {this.props.isNavListLoading ? "loading..." : 
         this.props.accounts.map(account =>
           <LinkContainer to={'/account/' + account.accountId} key={account.accountId}>
