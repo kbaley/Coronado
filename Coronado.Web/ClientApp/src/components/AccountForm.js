@@ -28,8 +28,8 @@ export class AccountForm extends Component {
                 currency: this.props.account.currency || '',
                 accountType: this.props.account.accountType || '',
                 accountId: this.props.account.accountId,
-                mortgageType: this.props.account.mortgageType,
-                mortgagePayment: this.props.account.mortgagePayment
+                mortgageType: this.props.account.mortgageType || '',
+                mortgagePayment: this.props.account.mortgagePayment || ''
             }
         }
     }
@@ -106,22 +106,25 @@ export class AccountForm extends Component {
               <FormControl type="text" name="currency" value={this.state.account.currency} onChange={this.handleChange} />
             </Col>
           </FormGroup>
-          <FormGroup>
-            <Col componentClass={ControlLabel} sm={3}>Monthly Payment</Col>
-            <Col sm={3}>
-              <FormControl type="text" name="mortgagePayment" value={this.state.account.mortgagePayment} onChange={this.handleChange} />
-            </Col>
-
-          </FormGroup>
-          <FormGroup>
-            <Col componentClass={ControlLabel} sm={3}>Mortgage Type</Col>
-            <Col sm={9}>
-              <ToggleButtonGroup type="radio" value={this.state.account.mortgageType} onChange={this.handleChangeMortgageType} name="mortgageType">
-                <ToggleButton value={'fixedPayment'}>Fixed Payment</ToggleButton>
-                <ToggleButton value={'fixedPrincipal'}>Fixed Principal</ToggleButton>
-              </ToggleButtonGroup>
-            </Col>
-          </FormGroup>
+          {this.state.account.accountType === "Mortgage" &&
+          <React.Fragment>
+            <FormGroup>
+              <Col componentClass={ControlLabel} sm={3}>Monthly Payment</Col>
+              <Col sm={3}>
+                <FormControl type="text" name="mortgagePayment" value={this.state.account.mortgagePayment} onChange={this.handleChange} />
+              </Col>
+            </FormGroup>
+            <FormGroup>
+              <Col componentClass={ControlLabel} sm={3}>Mortgage Type</Col>
+              <Col sm={9}>
+                <ToggleButtonGroup type="radio" value={this.state.account.mortgageType} onChange={this.handleChangeMortgageType} name="mortgageType">
+                  <ToggleButton value={'fixedPayment'}>Fixed Payment</ToggleButton>
+                  <ToggleButton value={'fixedPrincipal'}>Fixed Principal</ToggleButton>
+                </ToggleButtonGroup>
+              </Col>
+            </FormGroup>
+          </React.Fragment>  
+          }
         </Form>
       </Modal.Body>
       <Modal.Footer>

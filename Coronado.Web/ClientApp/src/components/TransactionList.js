@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import TransactionRow from './TransactionRow';
 import './TransactionList.css';
 import { NewTransactionRow } from './NewTransactionRow';
-import { each } from 'lodash';
+import { each, filter } from 'lodash';
 
 class TransactionList extends Component {
   displayName = TransactionList.name;
@@ -30,6 +30,10 @@ class TransactionList extends Component {
     each(this.props.accounts, a => {
       categories.push({categoryId: 'TRF:' + a.accountId, name: 'TRANSFER: ' + a.name});
     });
+    var mortgages = filter(this.props.accounts, a => a.accountType === "Mortgage");
+    each(mortgages, a => {
+      categories.push({categoryId: 'MRG:' + a.accountId, name: 'MORTGAGE: ' + a.name});
+    })
 
     this.setState({categories});    
   }
@@ -60,7 +64,7 @@ class TransactionList extends Component {
         <NewTransactionRow 
           onSave={this.saveTransaction} 
           categories={this.state.categories}
-          accountId={this.props.accountId} />
+          account={this.props.account} />
         {this.props.transactions ? this.props.transactions.map(trx => 
         <TransactionRow key={trx.transactionId} transaction={trx} categories={this.state.categories}
           onDelete={() => this.deleteTransaction(trx.transactionId)} />

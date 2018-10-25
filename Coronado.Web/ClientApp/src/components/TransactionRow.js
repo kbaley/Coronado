@@ -43,9 +43,7 @@ class TransactionRow extends Component {
   }
 
   cancelEditing() {
-    this.setState({
-      isEditing: false
-    });
+    this.setState({isEditing: false});
     Mousetrap.unbind('esc');
   }
 
@@ -71,10 +69,7 @@ class TransactionRow extends Component {
 
   updateTransaction() {
     this.props.updateTransaction(this.state.trx);
-    this.setState(...this.state, 
-      {
-        isEditing: false
-      });
+    this.setState({isEditing: false});
 
   }
 

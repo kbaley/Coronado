@@ -57,6 +57,7 @@ import EditAccount from './EditAccount';
             <AccountHeader account={account} />
             <TransactionList 
               transactions={this.getSelectedAccount().transactions} 
+              account={this.getSelectedAccount()}
               categories={this.props.categories}
               accountId={this.props.match.params.accountId}/>
           </div>

@@ -18,7 +18,7 @@ export class NewTransactionRow extends Component {
         transactionDate: new Date().toLocaleDateString(), 
         vendor: '', 
         description: '',
-        accountId: props.accountId,
+        accountId: props.account.accountId,
         credit: '',
         debit: ''
       },
@@ -57,13 +57,25 @@ export class NewTransactionRow extends Component {
     var selectedCategory = find(this.props.categories, c => c.categoryId===categoryId);
     var transactionType = "Transaction";
     var relatedAccountId = '';
+    var debit = this.state.trx.debit;
     if (categoryId.substring(0,4) === "TRF:") {
       transactionType = "Transfer";
       relatedAccountId = categoryId.substring(4);
       categoryId = '';
     }
+    if (categoryId.substring(0,4) === "MRG:") {
+      transactionType = "Mortgage";
+      relatedAccountId = categoryId.substring(4);
+      categoryId = '';
+      console.log(this.state.trx);
+      
+      if (this.props.account.mortgageType === "fixedPrincipal")
+      {
+        debit = this.props.account.mortgagePayment || '';
+      }
+    }
     this.setState( {
-      trx: {...this.state.trx, categoryId, relatedAccountId },
+      trx: {...this.state.trx, categoryId, relatedAccountId, debit },
       transactionType,
       selectedCategory});
   }
