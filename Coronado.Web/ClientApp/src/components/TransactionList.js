@@ -64,6 +64,7 @@ class TransactionList extends Component {
         <NewTransactionRow 
           onSave={this.saveTransaction} 
           categories={this.state.categories}
+          mortgageAccounts={this.props.mortgageAccounts}
           account={this.props.account} />
         {this.props.transactions ? this.props.transactions.map(trx => 
         <TransactionRow key={trx.transactionId} transaction={trx} categories={this.state.categories}

@@ -11,6 +11,7 @@ export class NewTransactionRow extends Component {
     this.handleChangeCategory = this.handleChangeCategory.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleChangeField = this.handleChangeField.bind(this); 
+    this.handleChangeDebit = this.handleChangeDebit.bind(this);
     this.setFocus = this.setFocus.bind(this);
 
     this.state = {
@@ -24,7 +25,9 @@ export class NewTransactionRow extends Component {
       },
       selectedCategory: {},
       categories: [],
-      transactionType: "Transaction"
+      transactionType: "Transaction",
+      mortgageType: '',
+      mortgagePayment: ''
     }
   }
 
@@ -53,10 +56,21 @@ export class NewTransactionRow extends Component {
     }
   }
 
+  handleChangeDebit(e) {
+    var credit = '';
+    var debit = e.target.value;
+    if (this.state.transactionType === "Mortgage" && this.state.mortgageType === 'fixedPayment' && debit !== '') {
+      credit = this.state.mortgagePayment - Number(debit);
+    } 
+    this.setState({trx: { ...this.state.trx, debit, credit}});
+  }
+
   handleChangeCategory(categoryId) {
     var selectedCategory = find(this.props.categories, c => c.categoryId===categoryId);
     var transactionType = "Transaction";
     var relatedAccountId = '';
+    var mortgageType = '';
+    var mortgagePayment = '';
     var debit = this.state.trx.debit;
     if (categoryId.substring(0,4) === "TRF:") {
       transactionType = "Transfer";
@@ -66,17 +80,17 @@ export class NewTransactionRow extends Component {
     if (categoryId.substring(0,4) === "MRG:") {
       transactionType = "Mortgage";
       relatedAccountId = categoryId.substring(4);
+      var relatedAccount = find(this.props.mortgageAccounts, a => a.accountId === relatedAccountId);
       categoryId = '';
-      console.log(this.state.trx);
-      
-      if (this.props.account.mortgageType === "fixedPrincipal")
-      {
-        debit = this.props.account.mortgagePayment || '';
-      }
+      debit = relatedAccount.mortgagePayment || '';
+      mortgageType = relatedAccount.mortgageType;
+      mortgagePayment = relatedAccount.mortgagePayment;
     }
     this.setState( {
       trx: {...this.state.trx, categoryId, relatedAccountId, debit },
       transactionType,
+      mortgageType,
+      mortgagePayment,
       selectedCategory});
   }
 
@@ -103,7 +117,7 @@ export class NewTransactionRow extends Component {
         </td>
         <td><input type="text" name="description" value={this.state.trx.description} onChange={this.handleChangeField} /></td>
         <td><input type="text" name="debit" value={this.state.trx.debit} 
-          onChange={this.handleChangeField} onKeyPress={this.handleKeyPress} /></td>
+          onChange={this.handleChangeDebit} onKeyPress={this.handleKeyPress} /></td>
         <td><input type="text" name="credit" value={this.state.trx.credit} 
           onChange={this.handleChangeField} onKeyPress={this.handleKeyPress} /></td>
           <td></td>

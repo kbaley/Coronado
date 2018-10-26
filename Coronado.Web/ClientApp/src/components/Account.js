@@ -7,6 +7,7 @@ import TransactionList from './TransactionList';
 import { find } from 'lodash';
 import './Account.css';
 import EditAccount from './EditAccount';
+import { filter } from "lodash";
 
  class Account extends Component {
   displayName = Account.name;
@@ -44,6 +45,10 @@ import EditAccount from './EditAccount';
     return account;
   }
 
+  getMortgageAccounts() {
+    return filter(this.props.accounts, a => a.accountType === "Mortgage");
+  }
+
   render() {
     var account = this.getSelectedAccount();
     return (
@@ -56,10 +61,11 @@ import EditAccount from './EditAccount';
             </div>
             <AccountHeader account={account} />
             <TransactionList 
-              transactions={this.getSelectedAccount().transactions} 
+              transactions={account.transactions} 
+              mortgageAccounts={this.getMortgageAccounts()}
               account={this.getSelectedAccount()}
               categories={this.props.categories}
-              accountId={this.props.match.params.accountId}/>
+            />
           </div>
         )}
       </div>
