@@ -1,4 +1,5 @@
 ﻿import { info } from 'react-notification-system-redux';
+import { each } from 'lodash';
 
 const requestCategoriesType = 'REQUEST_CATEGORIES';
 const receiveCategoriesType = 'RECEIVE_CATEGORIES';
@@ -30,6 +31,7 @@ export const actionCreators = {
     const categories = await response.json();
 
     dispatch({ type: receiveCategoriesType, categories });
+    dispatch({ type: 'SOME_SPECIAL_ACTION', categories });
   },
   deleteCategory: (categoryId, categoryName) => async (dispatch, getState) => {
 
@@ -71,6 +73,22 @@ export const actionCreators = {
     dispatch({ type: receiveNewCategoryType, newCategory });
   }
 };
+
+export const specialReducer = (categoryState, action, accountState) => {
+
+  if (action.type === 'SOME_SPECIAL_ACTION') {
+    var categories = action.categories;
+    each(accountState.accounts, a => {
+      categories.push({categoryId: 'TRF:' + a.accountId, name: 'TRANSFER: ' + a.name});
+    });
+    
+    return {
+      ...categoryState,
+      categoryDisplay: categories
+    }
+  }
+
+}
 
 export const reducer = (state, action) => {
   state = state || initialState;
@@ -127,7 +145,7 @@ export const reducer = (state, action) => {
         ? Object.assign({}, action.updatedCategory)
         : c )
     }
-  }
 
+  }
   return state;
 };

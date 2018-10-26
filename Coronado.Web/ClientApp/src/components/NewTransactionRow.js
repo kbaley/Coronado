@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { CheckIcon } from './icons/CheckIcon';
 import * as Mousetrap from 'mousetrap';
 import { CategorySelect } from './CategorySelect';
-import { find } from 'lodash';
+import { find, filter } from 'lodash';
 
 export class NewTransactionRow extends Component {
   constructor(props) {
@@ -103,6 +103,7 @@ export class NewTransactionRow extends Component {
     );
   }
   render() {
+    
     return (
       <tr key="new-transaction">
         <td>
@@ -113,7 +114,7 @@ export class NewTransactionRow extends Component {
         <td><input type="text" name="vendor" value={this.state.trx.vendor} onChange={this.handleChangeField} /></td>
         <td>
           <CategorySelect selectedCategory={this.state.selectedCategory}
-            onCategoryChanged={this.handleChangeCategory} categories={this.props.categories} />
+            onCategoryChanged={this.handleChangeCategory} categories={filter(this.props.categories, c => c.categoryId !== 'TRF:' + this.state.trx.accountId)} />
         </td>
         <td><input type="text" name="description" value={this.state.trx.description} onChange={this.handleChangeField} /></td>
         <td><input type="text" name="debit" value={this.state.trx.debit} 

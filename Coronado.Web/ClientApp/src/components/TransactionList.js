@@ -47,6 +47,7 @@ class TransactionList extends Component {
   }
 
   render() {
+    
     return (<table className='table transactionList'>
       <thead>
         <tr>
@@ -63,7 +64,7 @@ class TransactionList extends Component {
       <tbody>
         <NewTransactionRow 
           onSave={this.saveTransaction} 
-          categories={this.state.categories}
+          categories={this.props.categoryDisplay}
           mortgageAccounts={this.props.mortgageAccounts}
           account={this.props.account} />
         {this.props.transactions ? this.props.transactions.map(trx => 
