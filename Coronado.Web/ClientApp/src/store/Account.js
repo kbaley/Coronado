@@ -231,7 +231,6 @@ export const reducer = (state, action) => {
         : a);
     accounts = accounts.map( a => some(transactionsForOtherAccounts, t => t.accountId === a.accountId) 
       ? { ...a,
-        transactions: computeRunningTotal(a.transactions.concat(transactionsForOtherAccounts)),
         currentBalance: a.currentBalance - sumBy(transactionsForCurrentAccount, t => (t.credit - t.debit))
        }
       : a)
