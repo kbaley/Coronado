@@ -71,6 +71,7 @@ export class NewTransactionRow extends Component {
     var relatedAccountId = '';
     var mortgageType = '';
     var mortgagePayment = '';
+    var categoryDisplay = selectedCategory.name;
     var debit = this.state.trx.debit;
     if (categoryId.substring(0,4) === "TRF:") {
       transactionType = "Transfer";
@@ -87,7 +88,7 @@ export class NewTransactionRow extends Component {
       mortgagePayment = relatedAccount.mortgagePayment;
     }
     this.setState( {
-      trx: {...this.state.trx, categoryId, relatedAccountId, debit },
+      trx: {...this.state.trx, categoryId, relatedAccountId, debit, categoryDisplay },
       transactionType,
       mortgageType,
       mortgagePayment,

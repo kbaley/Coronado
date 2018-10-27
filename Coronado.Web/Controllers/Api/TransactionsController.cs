@@ -108,6 +108,7 @@ namespace Coronado.Web.Controllers.Api
                             TransactionDate = newTransaction.TransactionDate,
                             AccountId = newTransaction.AccountId,
                             CategoryId = category.CategoryId,
+                            CategoryDisplay = category.Name,
                             Description = bankFeeDescription,
                             Vendor = account.Vendor,
                             Amount = 0 - amount,
