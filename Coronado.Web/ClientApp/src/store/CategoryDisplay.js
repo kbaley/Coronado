@@ -15,6 +15,11 @@ export const reducer = (state, action) => {
     each(action.accounts, a => {
       categories.push({categoryId: 'TRF:' + a.accountId, name: 'TRANSFER: ' + a.name});
     });
+    each(action.accounts, a => {
+      if (a.accountType === "Mortgage") {
+        categories.push({categoryId: 'MRG:' + a.accountId, name: 'MORTGAGE: ' + a.name});
+      }
+    });
     return {
       ...state,
       categoryDisplay: categories
