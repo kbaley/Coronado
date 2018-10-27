@@ -76,24 +76,13 @@ export const actionCreators = {
 
 export const specialReducer = (categoryState, action, accountState) => {
 
-  if (action.type === 'SOME_SPECIAL_ACTION') {
-    var categories = action.categories;
-    each(accountState.accounts, a => {
-      categories.push({categoryId: 'TRF:' + a.accountId, name: 'TRANSFER: ' + a.name});
-    });
-    
-    return {
-      ...categoryState,
-      categoryDisplay: categories
-    }
-  }
-
 }
 
 export const reducer = (state, action) => {
   state = state || initialState;
 
   if (action.type === requestCategoriesType) {
+    
     return {
       ...state,
       isLoading: true
@@ -101,6 +90,7 @@ export const reducer = (state, action) => {
   }
 
   if (action.type === receiveCategoriesType) {
+    console.log(action.accounts);
     return {
       ...state,
       categories: action.categories,
@@ -147,5 +137,17 @@ export const reducer = (state, action) => {
     }
 
   }
+  if (action.type === 'SOME_SPECIAL_ACTION') {
+    var categories = action.categories.slice();
+    each(action.accounts, a => {
+      categories.push({categoryId: 'TRF:' + a.accountId, name: 'TRANSFER: ' + a.name});
+    });
+    
+    return {
+      ...state,
+      categoryDisplay: categories
+    }
+  }
+
   return state;
 };

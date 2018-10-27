@@ -34,7 +34,7 @@ class CategoryForm extends Component {
 
   saveCategory() {
     this.props.onSave(this.state.category);
-    this.setState(...this.state, {category: {name: '', type: '', parentCategoryId: ''} });
+    this.setState({category: {name: '', type: '', parentCategoryId: ''} });
     this.props.onClose();
   }
 

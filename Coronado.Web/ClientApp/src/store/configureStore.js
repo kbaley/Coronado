@@ -4,14 +4,8 @@ import { routerReducer, routerMiddleware } from 'react-router-redux';
 import {reducer as notifications} from 'react-notification-system-redux';
 import * as Account from './Account';
 import * as Categories from './Categories';
-import CategoryForm from '../components/CategoryForm';
 
 export default function configureStore(history, initialState) {
-  const reducers = {
-    account: Account.reducer,
-    categories: Categories.reducer
-  };
-
   const middleware = [
     thunk,
     routerMiddleware(history)
@@ -25,31 +19,13 @@ export default function configureStore(history, initialState) {
   }
 
   initialState = initialState || { };
-  const combinedReducer = combineReducers({
-    ...reducers,
-    routing: routerReducer,
-    notifications
-  });
-
-  function crossSlideReducer(state, action) {
-    switch (action.type) {
-      case 'SOME_SPECIAL_ACTION': {
-         
-        return {
-          ...state,
-          account: Account.reducer(state.account, action),
-          categories: Categories.specialReducer(state.categories, action, state.account)
-        }
-      }
-      default:
-        return state
-    }
-  }
-
   function rootReducer(state, action) {
-    const intermediateState = combinedReducer(state, action);
-    const finalState = crossSlideReducer(intermediateState, action);
-    return finalState;
+    return {
+      account: Account.reducer(state.account, action),
+      categories: Categories.reducer(state.categories, {...action, accounts: state.account ? state.account.accounts : null}),
+      router: routerReducer(state.router, action),
+      notifications: notifications(state.notifications, action)
+    }
   }
 
   return createStore(
