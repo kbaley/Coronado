@@ -1,5 +1,4 @@
 ﻿import { info } from 'react-notification-system-redux';
-import { each } from 'lodash';
 
 const requestCategoriesType = 'REQUEST_CATEGORIES';
 const receiveCategoriesType = 'RECEIVE_CATEGORIES';
@@ -90,7 +89,6 @@ export const reducer = (state, action) => {
   }
 
   if (action.type === receiveCategoriesType) {
-    console.log(action.accounts);
     return {
       ...state,
       categories: action.categories,
@@ -136,17 +134,6 @@ export const reducer = (state, action) => {
         : c )
     }
 
-  }
-  if (action.type === 'SOME_SPECIAL_ACTION') {
-    var categories = action.categories.slice();
-    each(action.accounts, a => {
-      categories.push({categoryId: 'TRF:' + a.accountId, name: 'TRANSFER: ' + a.name});
-    });
-    
-    return {
-      ...state,
-      categoryDisplay: categories
-    }
   }
 
   return state;

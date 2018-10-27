@@ -36,7 +36,7 @@ class TransactionRow extends Component {
   startEditing() {
     this.setState({
         isEditing: true,
-        selectedCategory: find(this.props.categories, 
+        selectedCategory: find(this.props.categoryDisplay, 
           c => c.categoryId === this.props.transaction.categoryId),
     });
     Mousetrap.bind('esc', this.cancelEditing);
@@ -93,7 +93,7 @@ class TransactionRow extends Component {
                 value={this.state.trx.vendor} onKeyPress={this.handleKeyPress} />
         </td>
         <td>
-            <CategorySelect selectedCategory={this.state.selectedCategory} categories={this.props.categories}
+            <CategorySelect selectedCategory={this.state.selectedCategory} categories={this.props.categoryDisplay}
               onCategoryChanged={this.handleChangeCategory} />
         </td>
         <td>
@@ -128,6 +128,6 @@ class TransactionRow extends Component {
 }
 
 export default connect(
-  state => state.account,
+  state => { return { ...state.account, ...state.categoryDisplay } },
   dispatch => bindActionCreators(actionCreators, dispatch)
 )(TransactionRow);

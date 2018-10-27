@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import TransactionRow from './TransactionRow';
 import './TransactionList.css';
 import { NewTransactionRow } from './NewTransactionRow';
-import { each, filter } from 'lodash';
 
 class TransactionList extends Component {
   displayName = TransactionList.name;
@@ -23,21 +22,6 @@ class TransactionList extends Component {
       this.props.requestCategories();
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.categories.length === this.props.categories.length) return;
-
-    var categories = this.props.categories.slice();
-    each(this.props.accounts, a => {
-      categories.push({categoryId: 'TRF:' + a.accountId, name: 'TRANSFER: ' + a.name});
-    });
-    var mortgages = filter(this.props.accounts, a => a.accountType === "Mortgage");
-    each(mortgages, a => {
-      categories.push({categoryId: 'MRG:' + a.accountId, name: 'MORTGAGE: ' + a.name});
-    })
-
-    this.setState({categories});    
-  }
-
   deleteTransaction(transactionId) {
       this.props.deleteTransaction(transactionId);
   }
@@ -47,7 +31,7 @@ class TransactionList extends Component {
   }
 
   render() {
-    
+        
     return (<table className='table transactionList'>
       <thead>
         <tr>
@@ -77,6 +61,6 @@ class TransactionList extends Component {
 }
 
 export default connect(
-  state => { return { ...state.account, ...state.categories } },
+  state => { return { ...state.account, ...state.categories, ...state.categoryDisplay } },
   dispatch => bindActionCreators({ ...actionCreators, ...categoryActionCreators }, dispatch)
 )(TransactionList);

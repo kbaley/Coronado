@@ -1,9 +1,10 @@
-﻿import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
+﻿import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { routerReducer, routerMiddleware } from 'react-router-redux';
 import {reducer as notifications} from 'react-notification-system-redux';
 import * as Account from './Account';
 import * as Categories from './Categories';
+import * as CategoryDisplay from './CategoryDisplay';
 
 export default function configureStore(history, initialState) {
   const middleware = [
@@ -22,7 +23,8 @@ export default function configureStore(history, initialState) {
   function rootReducer(state, action) {
     return {
       account: Account.reducer(state.account, action),
-      categories: Categories.reducer(state.categories, {...action, accounts: state.account ? state.account.accounts : null}),
+      categories: Categories.reducer(state.categories, action),
+      categoryDisplay: CategoryDisplay.reducer(state.categoryDisplay, {...action, accounts: state.account ? state.account.accounts : null}),
       router: routerReducer(state.router, action),
       notifications: notifications(state.notifications, action)
     }
