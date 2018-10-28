@@ -21,7 +21,6 @@ class NewCategory extends Component {
 
   componentDidMount() {
       Mousetrap.bind('n c', this.showForm);
-      this.props.requestCategories();
   }
 
   componentWillUnmount() {

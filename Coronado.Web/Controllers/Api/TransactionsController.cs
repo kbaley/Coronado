@@ -77,7 +77,7 @@ namespace Coronado.Web.Controllers.Api
                 transaction.CategoryId = _categoryRepo.GetAll().Single(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase))).CategoryId;
             }
 
-            var bankFeeTransactions = GetBankFeeTransactions(transaction);
+            var bankFeeTransactions = TransactionHelpers.GetBankFeeTransactions(transaction, _categoryRepo, _accountRepo);
             transactions.Add(transaction);
             transactions.AddRange(bankFeeTransactions);
             foreach(var trx in transactions) {
@@ -87,41 +87,6 @@ namespace Coronado.Web.Controllers.Api
             return CreatedAtAction("PostTransaction", new { id = transaction.TransactionId }, transactions);
         }
 
-        private IEnumerable<TransactionForDisplay> GetBankFeeTransactions(TransactionForDisplay newTransaction) {
-            var transactions = new List<TransactionForDisplay>();
-            var description = newTransaction.Description;
-
-            var category = _categoryRepo.GetAll().Single(c => c.Name.Equals("bank fees", StringComparison.CurrentCultureIgnoreCase));
-            var account = _accountRepo.Get(newTransaction.AccountId.Value);
-            if (description.Contains("bf:", StringComparison.CurrentCultureIgnoreCase)) {
-                newTransaction.Description = description.Substring(0, description.IndexOf("bf:", StringComparison.CurrentCultureIgnoreCase));
-                var parsed = description.Substring(description.IndexOf("bf:", 0, StringComparison.CurrentCultureIgnoreCase));
-                while (parsed.StartsWith("bf:", StringComparison.CurrentCultureIgnoreCase)) {
-                    var next = parsed.IndexOf("bf:", 1, StringComparison.CurrentCultureIgnoreCase);
-                    if (next == -1) next = parsed.Length;
-                    var transactionData = (parsed.Substring(3, next - 3)).Trim().Split(" ");
-                    Decimal amount;
-                    if (decimal.TryParse(transactionData[0], out amount)) {
-                        var bankFeeDescription = string.Join(" ", transactionData.Skip(1).ToArray());
-                        var transaction = new TransactionForDisplay {
-                            TransactionId = Guid.NewGuid(),
-                            TransactionDate = newTransaction.TransactionDate,
-                            AccountId = newTransaction.AccountId,
-                            CategoryId = category.CategoryId,
-                            CategoryDisplay = category.Name,
-                            Description = bankFeeDescription,
-                            Vendor = account.Vendor,
-                            Amount = 0 - amount,
-                            Debit = amount,
-                            EnteredDate = newTransaction.EnteredDate
-                        };
-                        transactions.Add(transaction);
-                    }
-                    parsed = parsed.Substring(next);
-                } 
-            }
-            return transactions;
-        }
     }
 
     public class UrlQuery

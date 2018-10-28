@@ -80,7 +80,7 @@ namespace Coronado.Web.Controllers.Api
             };
             _accountRepo.Insert(newAccount);
 
-            var category = _categoryRepo.GetAll().Single(c => c.Name.Equals("Starting Balance", StringComparison.CurrentCultureIgnoreCase));
+            var category = TransactionHelpers.GetOrCreateCategory("Starting Balance", _categoryRepo);
             var transaction = new TransactionForDisplay
             {
                 AccountId = newAccount.AccountId,

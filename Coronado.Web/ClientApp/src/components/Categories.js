@@ -13,6 +13,7 @@ class Categories extends Component {
   }
 
   render() {
+    
     return (
       <div>
         {this.props.isLoading ? <p><em>Loading...</em></p> : (
