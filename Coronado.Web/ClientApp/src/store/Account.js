@@ -23,6 +23,9 @@ const initialState = {
   accountTypes: []
 };
 
+///////////////////////
+// Private functions //
+///////////////////////
 async function deleteAccountForReal(accountId, dispatch, deletedAccounts) {
   if (deletedAccounts.some(a => a.accountId === accountId)) {
     const response = await fetch('/api/Accounts/' + accountId, {
@@ -53,6 +56,9 @@ function computeBalance(transactions, newTransactions) {
   return total;
 }
 
+///////////////////////
+//      Actions      //
+///////////////////////
 export const actionCreators = {
 
   requestTransactions: (accountId) => async (dispatch) => {
@@ -94,6 +100,7 @@ export const actionCreators = {
 
     var url = "/api/Transactions";
     if (transactionType === "Transfer") url = "/api/Transfers"
+    if (transactionType === "Mortgage") url = "/api/Mortgages"
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -178,6 +185,9 @@ export const actionCreators = {
   }
 };
 
+///////////////////////
+//      Reducer      //
+///////////////////////
 export const reducer = (state, action) => {
   state = state || initialState;
 
