@@ -49,7 +49,7 @@ export class AccountForm extends Component {
     this.props.onSave(this.state.account);
     if (this.state.newAccount)
     {
-      this.setState(...this.state, { account: { ...this.state.account, name: '', startingBalance: 0, currency: 'USD', vendor: '' } });
+      this.setState({ account: { ...this.state.account, name: '', startingBalance: 0, currency: 'USD', vendor: '' } });
     }
     this.props.onClose();
   }

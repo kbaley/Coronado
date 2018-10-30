@@ -20,7 +20,7 @@ namespace Coronado.Web.Data
         {
             _config = config;
             _logger = logger;
-            _connectionString = config.GetValue<string>("ConnectionStrings:DefaultConnection");
+            _connectionString = config.GetConnectionString("defaultConnection");
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
         }
 

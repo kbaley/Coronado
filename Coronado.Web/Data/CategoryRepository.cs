@@ -17,7 +17,7 @@ namespace Coronado.Web.Data
         public CategoryRepository(IConfiguration config)
         {
             _config = config;
-            _connectionString = config.GetValue<string>("ConnectionStrings:DefaultConnection");
+            _connectionString = config.GetConnectionString("DefaultConnection");
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
         }
 
