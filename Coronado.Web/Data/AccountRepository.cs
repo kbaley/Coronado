@@ -28,6 +28,8 @@ namespace Coronado.Web.Data
         {
             get
             {
+                var telemetry = new Microsoft.ApplicationInsights.TelemetryClient();
+                telemetry.TrackTrace("MOO CONNECTING: " + _connectionString);
                 _logger.LogWarning("MOO CONNECTION STRING: " + _connectionString);
                 return new NpgsqlConnection(_connectionString);
             }
@@ -58,8 +60,7 @@ WHERE account_id=@accountId", new {accountId}
 
         public IEnumerable<Account> GetAll()
         {
-            System.Diagnostics.Trace.TraceError("PSQL MOO STRING: " + _connectionString);
-            Console.WriteLine("MY MOO STRING: " + _connectionString);
+            _logger.LogDebug("PSQL MOO STRING: " + _connectionString);
             using (var conn = Connection) {
                 return conn.Query<Account>(
 @"SELECT a.*, (SELECT SUM(amount) FROM transactions WHERE account_id = a.account_id) as current_balance
