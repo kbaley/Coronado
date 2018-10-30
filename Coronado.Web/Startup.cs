@@ -41,6 +41,7 @@ namespace Coronado.Web
             });
 
             var connectionString = Configuration["ConnectionStrings:DefaultConnection"];
+            System.Diagnostics.Trace.TraceInformation("Connection string: " + connectionString);
             services.AddTransient<ITransactionRepository, TransactionRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IAccountRepository, AccountRepository>();
