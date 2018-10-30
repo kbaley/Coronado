@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Coronado.Web.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Dapper;
 using System.Data;
 using Npgsql;
@@ -13,10 +14,12 @@ namespace Coronado.Web.Data
     public class AccountRepository : IAccountRepository
     {
         private readonly IConfiguration _config;
+        private readonly ILogger<AccountRepository> _logger;
         private readonly string _connectionString;
-        public AccountRepository(IConfiguration config)
+        public AccountRepository(IConfiguration config, ILogger<AccountRepository> logger)
         {
             _config = config;
+            _logger = logger;
             _connectionString = config.GetValue<string>("ConnectionStrings:DefaultConnection");
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
         }
@@ -25,6 +28,7 @@ namespace Coronado.Web.Data
         {
             get
             {
+                _logger.LogWarning("MOO CONNECTION STRING: " + _connectionString);
                 return new NpgsqlConnection(_connectionString);
             }
         }

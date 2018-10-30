@@ -8,6 +8,7 @@ using Coronado.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Coronado.Web.Controllers;
+using Microsoft.Extensions.Logging;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -18,13 +19,15 @@ namespace Coronado.Web.Controllers.Api
         private readonly IAccountRepository _accountRepo;
         private readonly ITransactionRepository _transactionRepo;
         private readonly ICategoryRepository _categoryRepo;
+        private readonly ILogger<AccountsController> _logger;
 
         public AccountsController(ApplicationDbContext context, IAccountRepository accountRepo, 
-            ITransactionRepository transactionRepo, ICategoryRepository categoryRepo)
+            ITransactionRepository transactionRepo, ICategoryRepository categoryRepo, ILogger<AccountsController> logger)
         {
             _accountRepo = accountRepo;
             _transactionRepo = transactionRepo;
             _categoryRepo = categoryRepo;
+            _logger = logger;
         }
 
         [HttpGet("newId")]
@@ -37,6 +40,7 @@ namespace Coronado.Web.Controllers.Api
         [HttpGet]
         public IEnumerable<Account> GetAccounts()
         {
+            _logger.LogWarning("Getting all the moo accounts");
             return _accountRepo.GetAll();
         }
 
