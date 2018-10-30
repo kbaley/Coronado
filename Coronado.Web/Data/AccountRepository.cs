@@ -28,8 +28,6 @@ namespace Coronado.Web.Data
         {
             get
             {
-                var telemetry = new Microsoft.ApplicationInsights.TelemetryClient();
-                telemetry.TrackTrace("MOO CONNECTING: " + _connectionString);
                 _logger.LogWarning("MOO CONNECTION STRING: " + _connectionString);
                 return new NpgsqlConnection(_connectionString);
             }
