@@ -1,16 +1,10 @@
-﻿import { each } from "lodash";
+import { RECEIVE_CATEGORIES} from "../constants/categoryActionTypes";
+import { each } from "lodash";
 
-const receiveCategoriesType = 'RECEIVE_CATEGORIES';
-const initialState = { categoryDisplay: []};
+export const categoryDisplayReducer = (state = { }, action) => {
 
-export const actionCreators = {
-};
+  if (action.type === RECEIVE_CATEGORIES) {
 
-export const reducer = (state, action) => {
-  state = state || initialState;
-
-  if (action.type === receiveCategoriesType) {
-    
     var categories = action.categories.slice();
     each(action.accounts, a => {
       categories.push({categoryId: 'TRF:' + a.accountId, name: 'TRANSFER: ' + a.name});
