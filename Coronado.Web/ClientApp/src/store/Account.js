@@ -19,9 +19,10 @@ const initialState = {
   isAccountLoading: true, 
   isNavListLoading: true, 
   accounts: [], 
-  deletedAccounts: [], 
   accountTypes: []
 };
+
+let deletedAccounts = [];
 
 ///////////////////////
 // Private functions //
@@ -129,7 +130,7 @@ export const actionCreators = {
       message: 'Account ' + accountName + ' deleted',
       position: 'bl',
       autoDismiss: 10,
-      onRemove: () => { deleteAccountForReal(accountId, dispatch, getState().account.deletedAccounts) },
+      onRemove: () => { deleteAccountForReal(accountId, dispatch, deletedAccounts) },
       action: {
         label: 'Undo',
         callback: () => {dispatch({type: undoDeleteAccountType, accountId })}
@@ -302,18 +303,19 @@ export const reducer = (state, action) => {
   }
 
   if (action.type === deleteAccountType) {
+    deletedAccounts = deletedAccounts.concat(state.accounts.filter(el => el.accountId === action.accountId));
     return {
       ...state,
-      deletedAccounts: state.deletedAccounts.concat(state.accounts.filter(el => el.accountId === action.accountId)),
       accounts: state.accounts.filter(el => el.accountId !== action.accountId )
     }
   }
 
   if (action.type === undoDeleteAccountType) {
+    var undeletedAccount = deletedAccounts.filter(a => a.accountId === action.accountId);
+    deletedAccounts = deletedAccounts.filter(el => el.accountId !== action.accountId);
     return {
       ...state,
-      accounts: state.accounts.concat(state.deletedAccounts.filter(el => el.accountId === action.accountId)),
-      deletedAccounts: state.deletedAccounts.filter(el => el.accountId !== action.accountId)
+      accounts: state.accounts.concat(undeletedAccount),
     }
   }
 

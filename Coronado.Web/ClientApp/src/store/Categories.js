@@ -73,10 +73,6 @@ export const actionCreators = {
   }
 };
 
-export const specialReducer = (categoryState, action, accountState) => {
-
-}
-
 export const reducer = (state, action) => {
   state = state || initialState;
 
