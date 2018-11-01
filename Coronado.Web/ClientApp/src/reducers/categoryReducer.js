@@ -1,0 +1,50 @@
+import initialState from './initialState';
+import * as actions from "../constants/categoryActionTypes.js";
+
+let deletedCategories = [];
+
+export const categoryReducer = (state = initialState.category, action) => {
+  switch (action.type) {
+    case actions.REQUEST_CATEGORIES:
+      return {
+        ...state,
+        isLoading: true
+      };
+    case actions.RECEIVE_CATEGORIES:
+      return {
+        ...state,
+        categories: action.categories,
+        isLoading: false
+      };
+    case actions.DELETE_CATEGORY:
+      deletedCategories = state.deletedCategories.concat(state.categories.filter(el => el.categoryId === action.categoryId));
+      return {
+        ...state,
+        categories: state.categories.filter(el => el.categoryId !== action.categoryId )
+      };
+    case actions.UNDO_DELETE_CATEGORY:
+      var deletedCategory = deletedCategories.filter(c => c.categoryId === action.categoryId);
+      deletedCategories = state.deletedCategories.filter(el => el.categoryId !== action.categoryId);
+      return {
+        ...state,
+        categories: state.categories.concat(deletedCategory)
+      }
+    case actions.REMOVE_DELETED_CATEGORY:
+      deletedCategories = deletedCategories.filter(el => el.categoryId !== action.categoryId);
+      return state;
+    case actions.RECEIVE_NEW_CATEGORY:
+      return {
+        ...state,
+        categories: state.categories.concat(action.newCategory)
+      }
+    case actions.RECEIVE_UPDATED_CATEGORY:
+      return {
+        ...state,
+        categories: state.categories.map( c => c.categoryId === action.updatedCategory.categoryId
+          ? Object.assign({}, action.updatedCategory)
+          : c )
+      }
+    default:
+      return state;
+  }
+};

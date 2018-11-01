@@ -29,6 +29,7 @@ import { filter } from "lodash";
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
+    // Reload if the account ID changes
     if (nextProps.match.params.accountId !== prevState.prevAccountId) {
       return {
         prevAccountId: nextProps.match.params.accountId,
@@ -63,7 +64,7 @@ import { filter } from "lodash";
             <TransactionList 
               transactions={account.transactions} 
               mortgageAccounts={this.getMortgageAccounts()}
-              account={this.getSelectedAccount()}
+              account={account}
               categories={this.props.categories}
             />
           </div>
