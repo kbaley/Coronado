@@ -1,26 +1,6 @@
 ﻿import { info } from 'react-notification-system-redux';
 import { push } from 'react-router-redux';
-import { filter, orderBy, forEachRight, sumBy, find, some } from 'lodash'; 
-const requestAccountsType = 'REQUEST_ACCOUNT_LIST';
-const selectAccountType = 'SELECT_ACCOUNT';
-const receiveAccountsType = 'RECEIVE_ACCOUNT_LIST';
-const receiveNewAccountType = 'RECEIVE_NEW_ACCOUNT';
-const receiveUpdatedAccountType = 'UPDATE_ACCOUNT';
-const deleteAccountType = 'DELETE_ACCOUNT';
-const deleteTransactionType = 'DELETE_TRANSACTION';
-const updateTransactionType = 'UPDATE_TRANSACTION';
-const receiveNewTransactionType = 'RECEIVE_NEW_TRANSACTION';
-const requestTransactionsType = 'REQUEST_TRANSACTIONS';
-const receiveTransactionsType = 'RECEIVE_TRANSACTIONS';
-const undoDeleteAccountType = 'UNDO_DELETE_ACCOUNT';
-const removeDeletedAccountType = 'REMOVE_DELETED_ACCOUNT';
-const receiveAccountTypesType = 'RECEIVE_ACCOUNT_TYPES';
-const initialState = { 
-  isAccountLoading: true, 
-  isNavListLoading: true, 
-  accounts: [], 
-  accountTypes: []
-};
+import * as actions from "../constants/accountActionTypes.js";
 
 let deletedAccounts = [];
 
@@ -28,6 +8,7 @@ let deletedAccounts = [];
 // Private functions //
 ///////////////////////
 async function deleteAccountForReal(accountId, dispatch, deletedAccounts) {
+  debugger;
   if (deletedAccounts.some(a => a.accountId === accountId)) {
     const response = await fetch('/api/Accounts/' + accountId, {
       method: 'DELETE',
@@ -37,7 +18,7 @@ async function deleteAccountForReal(accountId, dispatch, deletedAccounts) {
       }
     });
     await response.json();
-    dispatch({type: removeDeletedAccountType, accountId});
+    dispatch({type: actions.REMOVE_DELETED_ACCOUNT, accountId});
   }
 }
 
@@ -47,12 +28,12 @@ async function deleteAccountForReal(accountId, dispatch, deletedAccounts) {
 export const actionCreators = {
 
   requestTransactions: (accountId) => async (dispatch) => {
-    dispatch({ type: requestTransactionsType });
-    dispatch({ type: selectAccountType, accountId} );
+    dispatch({ type: actions.REQUEST_TRANSACTIONS });
+    dispatch({ type: actions.SELECT_ACCOUNT, accountId} );
     const response = await fetch('api/Transactions/?accountId=' + accountId);
     const transactions = await response.json();
 
-    dispatch({ type: receiveTransactionsType, transactions, accountId });
+    dispatch({ type: actions.RECEIVE_TRANSACTIONS, transactions, accountId });
   },
 
   deleteTransaction: (transactionId) => async (dispatch) => {
@@ -64,7 +45,7 @@ export const actionCreators = {
       }
     });
     await response.json();
-    dispatch( { type: deleteTransactionType, transactionId } );
+    dispatch( { type: actions.DELETE_TRANSACTION, transactionId } );
   },
 
   updateTransaction: (transaction) => async (dispatch) => {
@@ -78,7 +59,7 @@ export const actionCreators = {
       body: JSON.stringify(transaction)
     });
     const updatedTransaction = await response.json();
-    dispatch({ type: updateTransactionType, updatedTransaction });
+    dispatch({ type: actions.UPDATE_TRANSACTION, updatedTransaction });
   },
 
   saveTransaction: (transaction, transactionType) => async (dispatch) => {
@@ -96,16 +77,16 @@ export const actionCreators = {
     });
     const newTransaction = await response.json();
 
-    dispatch({ type: receiveNewTransactionType, newTransaction });
+    dispatch({ type: actions.RECEIVE_NEW_TRANSACTION, newTransaction });
   },
 
   requestAccountList: () => async (dispatch, getState) => {
-    dispatch({ type: requestAccountsType });
+    dispatch({ type: actions.REQUEST_ACCOUNT_LIST });
     const url = "api/Accounts";
     const response = await fetch(url);
     const accounts = await response.json();
 
-    dispatch({ type: receiveAccountsType, accounts });
+    dispatch({ type: actions.RECEIVE_ACCOUNT_LIST, accounts });
   },
 
   deleteAccount: (accountId, accountName) => async (dispatch, getState) => {
@@ -117,10 +98,10 @@ export const actionCreators = {
       onRemove: () => { deleteAccountForReal(accountId, dispatch, deletedAccounts) },
       action: {
         label: 'Undo',
-        callback: () => {dispatch({type: undoDeleteAccountType, accountId })}
+        callback: () => {dispatch({type: actions.UNDO_DELETE_ACCOUNT, accountId })}
       }
     };
-    dispatch( { type: deleteAccountType, accountId } );
+    dispatch( { type: actions.DELETE_ACCOUNT, accountId } );
     dispatch(info(notificationOpts));
     if (getState().account.accounts.length > 0)
       dispatch(push('/account/' + getState().account.accounts[0].accountId));
@@ -139,7 +120,7 @@ export const actionCreators = {
     });
     const updatedAccount = await response.json();
 
-    dispatch({type: receiveUpdatedAccountType, updatedAccount});
+    dispatch({type: actions.UPDATE_ACCOUNT, updatedAccount});
   },
 
   saveNewAccount: (account) => async (dispatch) => {
@@ -156,7 +137,7 @@ export const actionCreators = {
     });
     const newAccount = await response.json();
 
-    dispatch({ type: receiveNewAccountType, newAccount });
+    dispatch({ type: actions.RECEIVE_NEW_ACCOUNT, newAccount });
     dispatch(push('/account/' + newAccount.accountId));
   },
 
@@ -166,7 +147,7 @@ export const actionCreators = {
     const response = await fetch('api/AccountTypes');
     const accountTypes = await response.json();
 
-    dispatch({ type: receiveAccountTypesType, accountTypes });
+    dispatch({ type: actions.RECEIVE_ACCOUNT_TYPES, accountTypes });
   }
 };
 

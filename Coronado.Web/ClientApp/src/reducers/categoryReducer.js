@@ -1,7 +1,6 @@
 import initialState from './initialState';
 import * as actions from "../constants/categoryActionTypes.js";
-
-let deletedCategories = [];
+import { concat, find, cloneDeep } from 'lodash';
 
 export const categoryReducer = (state = initialState.category, action) => {
   switch (action.type) {
@@ -17,33 +16,33 @@ export const categoryReducer = (state = initialState.category, action) => {
         isLoading: false
       };
     case actions.DELETE_CATEGORY:
-      deletedCategories = state.deletedCategories.concat(state.categories.filter(el => el.categoryId === action.categoryId));
       return {
         ...state,
-        categories: state.categories.filter(el => el.categoryId !== action.categoryId )
+        categories: cloneDeep(state.categories.filter(c => c.categoryId !== action.categoryId)),
+        deletedCategories: cloneDeep(concat(state.deletedCategories, find(state.categories, c => c.categoryId === action.categoryId)))
       };
     case actions.UNDO_DELETE_CATEGORY:
-      var deletedCategory = deletedCategories.filter(c => c.categoryId === action.categoryId);
-      deletedCategories = state.deletedCategories.filter(el => el.categoryId !== action.categoryId);
+      var deletedCategory = state.deletedCategories.filter(c => c.categoryId === action.categoryId);
       return {
         ...state,
-        categories: state.categories.concat(deletedCategory)
-      }
+        categories: cloneDeep(state.categories.concat(deletedCategory)),
+        deletedCategories: cloneDeep(state.deletedCategories.filter(el => el.categoryId !== action.categoryId))
+      };
     case actions.REMOVE_DELETED_CATEGORY:
-      deletedCategories = deletedCategories.filter(el => el.categoryId !== action.categoryId);
       return state;
     case actions.RECEIVE_NEW_CATEGORY:
       return {
         ...state,
-        categories: state.categories.concat(action.newCategory)
-      }
+        categories: cloneDeep(state.categories.concat(action.newCategory)),
+        deletedCategories: cloneDeep(state.deletedCategories.filter(el => el.categoryId !== action.categoryId))
+      };
     case actions.RECEIVE_UPDATED_CATEGORY:
       return {
         ...state,
         categories: state.categories.map( c => c.categoryId === action.updatedCategory.categoryId
           ? Object.assign({}, action.updatedCategory)
           : c )
-      }
+      };
     default:
       return state;
   }

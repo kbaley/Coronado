@@ -26,6 +26,7 @@ class TransactionRow extends Component {
         selectedCategory: { },
         trx: {...props.transaction, 
             vendor: props.transaction.vendor || '',
+            description: props.transaction.description || '',
             transactionDate: new Date(props.transaction.transactionDate).toLocaleDateString(),
             categoryId: props.transaction.categoryId,
             debit: props.transaction.debit ? Number(props.transaction.debit).toFixed(2) : '',

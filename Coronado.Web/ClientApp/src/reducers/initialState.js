@@ -1,6 +1,8 @@
 export default {
   category: {
-    categories: [], isLoading: true
+    categories: [], 
+    isLoading: true,
+    deletedCategories: []
   },
   account: {
     isAccountLoading: true,

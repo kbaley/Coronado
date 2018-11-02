@@ -23,7 +23,7 @@ class CategoryList extends Component {
   }
 
   deleteCategory(categoryId, categoryName) {
-    this.props.deleteCategory(categoryId, categoryName);
+    this.props.actions.deleteCategory(categoryId, categoryName);
   }
 
   startEditing(category) {
@@ -35,13 +35,13 @@ class CategoryList extends Component {
   }
 
   saveCategory(category) {
-    this.props.updateCategory(category);
+    this.props.actions.updateCategory(category);
   }
 
   getCategoryName(categoryId) {
     if (!categoryId || categoryId === '') return '';
 
-    var category = find(this.props.categoryState.categories, c => c.categoryId === categoryId);
+    var category = find(this.props.categories, c => c.categoryId === categoryId);
     return category ? category.name : '';
   }
   
@@ -57,7 +57,7 @@ class CategoryList extends Component {
       </thead>
       <tbody>
         <CategoryForm show={this.state.show} onClose={this.handleClose} category={this.state.selectedCategory} onSave={this.saveCategory} />
-        {this.props.categoryState.categories.map(cat => <tr key={cat.categoryId}>
+        {this.props.categories.map(cat => <tr key={cat.categoryId}>
           <td>
             <EditIcon onStartEditing={() => this.startEditing(cat)} />
             <DeleteIcon onDelete={() => this.deleteCategory(cat.categoryId, cat.name)} />
@@ -71,7 +71,20 @@ class CategoryList extends Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    categories: state.categories.categories,
+    notifications: state.notifications
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actionCreators, dispatch)
+  }
+}
+
 export default connect(
-    state => ({categoryState: state.categories, notifications: state.notifications}),
-    dispatch => bindActionCreators(actionCreators, dispatch)
+  mapStateToProps,
+  mapDispatchToProps,
 )(CategoryList);

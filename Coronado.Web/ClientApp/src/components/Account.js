@@ -18,12 +18,12 @@ import { filter } from "lodash";
   }
 
   componentDidMount() {
-    this.props.requestTransactions(this.props.match.params.accountId);
+    this.props.actions.requestTransactions(this.props.match.params.accountId);
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.loading) {
-      this.props.requestTransactions(this.props.match.params.accountId);
+      this.props.actions.requestTransactions(this.props.match.params.accountId);
       this.setState({loading:false});
     }
   }
@@ -80,7 +80,20 @@ function AccountHeader(props) {
     </h1>
 }
 
+function mapStateToProps(state) {
+   return {
+     isAccountLoading: state.account.isAccountLoading,
+     accounts: state.account.accounts
+   }
+}
+
+function mapDispatchToProps(dispatch) {
+   return {
+     actions: bindActionCreators(actionCreators, dispatch)
+   }
+}
+
 export default connect(
-  state => state.account,
-  dispatch => bindActionCreators(actionCreators, dispatch)
+  mapStateToProps,
+  mapDispatchToProps
 )(Account);

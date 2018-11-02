@@ -1,13 +1,5 @@
 ﻿import { info } from 'react-notification-system-redux';
-
-const requestCategoriesType = 'REQUEST_CATEGORIES';
-const receiveCategoriesType = 'RECEIVE_CATEGORIES';
-const deleteCategoryType = 'DELETE_CATEGORY';
-const receiveNewCategoryType = 'RECEIVE_NEW_CATEGORY';
-const undoDeleteCategoryType = 'UNDO_DELETE_CATEGORY';
-const removeDeletedCategoryType = 'REMOVE_DELETED_CATEGORY';
-const receiveUpdatedCategoryType = 'RECEIVE_UPDATED_CATEGORY';
-const initialState = { categories: [], isLoading: true, deletedCategories: []};
+import * as actions from "../constants/categoryActionTypes.js";
 
 async function deleteCategoryForReal(categoryId, dispatch, deletedCategories) {
   if (deletedCategories.some(c => c.categoryId === categoryId)) {
@@ -18,7 +10,7 @@ async function deleteCategoryForReal(categoryId, dispatch, deletedCategories) {
         'Content-Type': 'application/json'
       }
     });
-    dispatch({type: removeDeletedCategoryType, categoryId: categoryId});
+    dispatch({type: actions.REMOVE_DELETED_CATEGORY, categoryId: categoryId});
   }
 }
 
@@ -26,11 +18,11 @@ export const actionCreators = {
   requestCategories: () => async (dispatch, getState) => {
     
     if (getState().categories.categories.length > 0) return null;
-    dispatch({ type: requestCategoriesType });
+    dispatch({ type: actions.REQUEST_CATEGORIES });
     const response = await fetch('api/Categories');
     const categories = await response.json();
 
-    dispatch({ type: receiveCategoriesType, categories });
+    dispatch({ type: actions.RECEIVE_CATEGORIES, categories });
   },
   deleteCategory: (categoryId, categoryName) => async (dispatch, getState) => {
 
@@ -40,10 +32,10 @@ export const actionCreators = {
       onRemove: () => { deleteCategoryForReal(categoryId, dispatch, getState().categories.deletedCategories) },
       action: {
         label: 'Undo',
-        callback: () => {dispatch({type: undoDeleteCategoryType, categoryId: categoryId })}
+        callback: () => {dispatch({type: actions.UNDO_DELETE_CATEGORY, categoryId: categoryId })}
       }
     };
-    dispatch( { type: deleteCategoryType, categoryId: categoryId } );
+    dispatch( { type: actions.DELETE_CATEGORY, categoryId: categoryId } );
     dispatch(info(notificationOpts));
   },
   updateCategory: (category) => async (dispatch) => {
@@ -56,7 +48,7 @@ export const actionCreators = {
       body: JSON.stringify(category)
     });
     const updatedCategory = await response.json();
-    dispatch({type: receiveUpdatedCategoryType, updatedCategory});
+    dispatch({type: actions.RECEIVE_UPDATED_CATEGORY, updatedCategory});
   },
   saveNewCategory: (category) => async (dispatch) => {
     const response = await fetch('/api/Categories', {
@@ -69,7 +61,7 @@ export const actionCreators = {
     });
     const newCategory = await response.json();
 
-    dispatch({ type: receiveNewCategoryType, newCategory });
+    dispatch({ type: actions.RECEIVE_NEW_CATEGORY, newCategory });
   }
 };
 

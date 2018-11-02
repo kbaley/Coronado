@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import { Button,Modal,Form,FormControl,FormGroup,ControlLabel,Col } from 'react-bootstrap';
-import { actionCreators } from '../store/Categories';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 
 class CategoryForm extends Component {
   displayName = CategoryForm.name;
@@ -97,7 +94,4 @@ class CategoryForm extends Component {
   };
 }
 
-export default connect(
-  state => state.categories,
-  dispatch => bindActionCreators(actionCreators, dispatch)
-)(CategoryForm);
+export default CategoryForm;

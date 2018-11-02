@@ -86,19 +86,13 @@ export const accountReducer = (state = initialState.account, action) => {
       };
 
     case actions.UPDATE_TRANSACTION:
-      var account = find(state.accounts, a => a.accountId === state.selectedAccount);
-      var transactions = computeRunningTotal(account.transactions.map(t =>
+      var account = Object.assign({}, find(state.accounts, a => a.accountId === state.selectedAccount));
+      account.transactions = computeRunningTotal(account.transactions.map(t =>
         t.transactionId === action.updatedTransaction.transactionId ? action.updatedTransaction : t));
+      account.currentBalance = computeBalance(account.transactions);
       return {
         ...state,
-        accounts: state.accounts.map(a => a.accountId === state.selectedAccount
-          ? {
-            ...a,
-            transactions: computeRunningTotal(a.transactions.map(t =>
-              t.transactionId === action.updatedTransaction.transactionId ? action.updatedTransaction : t)),
-            currentBalance: computeBalance(transactions)
-          }
-          : a)
+        accounts: state.accounts.map(a => a.accountId === state.selectedAccount ? account : a)
       }
 
     case actions.REQUEST_ACCOUNT_LIST:
@@ -155,7 +149,7 @@ export const accountReducer = (state = initialState.account, action) => {
         ...state,
         accountTypes: action.accountTypes
       }
+    default:
+      return state;
   }
-
-  return state;
 };
