@@ -2,8 +2,6 @@ import initialState from './initialState';
 import { filter, orderBy, forEachRight, sumBy, find, some } from 'lodash'; 
 import * as actions from "../constants/accountActionTypes.js";
 
-let deletedAccounts = [];
-
 function computeRunningTotal(transactions) {
   var total = 0;
   var sorted = orderBy(transactions, ['transactionDate', 'enteredDate'], ['desc', 'desc']);
@@ -23,7 +21,7 @@ function computeBalance(transactions, newTransactions) {
 export const accountReducer = (state = initialState.account, action) => {
 
   switch (action.type) {
-
+    
     case actions.REQUEST_TRANSACTIONS:
 
       return {
@@ -130,18 +128,18 @@ export const accountReducer = (state = initialState.account, action) => {
       }
 
     case actions.DELETE_ACCOUNT:
-      deletedAccounts = deletedAccounts.concat(state.accounts.filter(el => el.accountId === action.accountId));
       return {
         ...state,
-        accounts: state.accounts.filter(el => el.accountId !== action.accountId)
+        accounts: state.accounts.filter(el => el.accountId !== action.accountId),
+        deletedAccounts: state.deletedAccounts.concat(state.accounts.filter(el => el.accountId === action.accountId))
       }
 
     case actions.UNDO_DELETE_ACCOUNT:
-      var undeletedAccount = deletedAccounts.filter(a => a.accountId === action.accountId);
-      deletedAccounts = deletedAccounts.filter(el => el.accountId !== action.accountId);
+      var undeletedAccount = state.deletedAccounts.filter(a => a.accountId === action.accountId);
       return {
         ...state,
         accounts: state.accounts.concat(undeletedAccount),
+        deletedAccounts: state.deletedAccounts.filter(el => el.accountId !== action.accountId)
       }
 
     case actions.RECEIVE_ACCOUNT_TYPES:

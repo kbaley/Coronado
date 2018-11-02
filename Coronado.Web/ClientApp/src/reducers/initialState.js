@@ -8,7 +8,8 @@ export default {
     isAccountLoading: true,
     isNavListLoading: true,
     accounts: [],
-    accountTypes: []
+    accountTypes: [],
+    deletedAccounts: []
   }
 }
 

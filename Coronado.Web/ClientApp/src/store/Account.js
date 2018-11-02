@@ -2,13 +2,10 @@
 import { push } from 'react-router-redux';
 import * as actions from "../constants/accountActionTypes.js";
 
-let deletedAccounts = [];
-
 ///////////////////////
 // Private functions //
 ///////////////////////
 async function deleteAccountForReal(accountId, dispatch, deletedAccounts) {
-  debugger;
   if (deletedAccounts.some(a => a.accountId === accountId)) {
     const response = await fetch('/api/Accounts/' + accountId, {
       method: 'DELETE',
@@ -95,7 +92,7 @@ export const actionCreators = {
       message: 'Account ' + accountName + ' deleted',
       position: 'bl',
       autoDismiss: 10,
-      onRemove: () => { deleteAccountForReal(accountId, dispatch, deletedAccounts) },
+      onRemove: () => { deleteAccountForReal(accountId, dispatch, getState().account.deletedAccounts) },
       action: {
         label: 'Undo',
         callback: () => {dispatch({type: actions.UNDO_DELETE_ACCOUNT, accountId })}

@@ -9,7 +9,7 @@ class Categories extends Component {
   displayName = Categories.name;
 
   componentDidMount() {
-    this.props.requestCategories();
+    this.props.actions.requestCategories();
   }
 
   render() {
@@ -30,7 +30,20 @@ class Categories extends Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    categories: state.categories.categories,
+    isLoading: state.categories.isLoading
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actionCreators, dispatch)
+  }
+}
+
 export default connect(
-  state => state.categories,
-  dispatch => bindActionCreators(actionCreators, dispatch)
+  mapStateToProps,
+  mapDispatchToProps
 )(Categories);

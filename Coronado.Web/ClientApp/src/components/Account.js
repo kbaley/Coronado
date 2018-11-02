@@ -15,6 +15,8 @@ import { filter } from "lodash";
   constructor(props) {
     super(props);
     this.state = { loading: true };
+    
+    this.deleteAccount = this.deleteAccount.bind(this);
   }
 
   componentDidMount() {
@@ -38,6 +40,11 @@ import { filter } from "lodash";
     }
     return null;
   }
+  
+  deleteAccount() {
+    var account = this.getSelectedAccount();
+    this.props.actions.deleteAccount(account.accountId, account.name);
+  }
 
   getSelectedAccount() {
     if (!this.props.accounts) return { name: '', transactions: []}
@@ -58,7 +65,7 @@ import { filter } from "lodash";
           <div>
             <div style={{float: "right", width: "100px"}}>
               <EditAccount account={account} />
-              <DeleteAccount accountId={account.accountId} accountName={account.name} />
+              <DeleteAccount onDelete={this.deleteAccount} />
             </div>
             <AccountHeader account={account} />
             <TransactionList 

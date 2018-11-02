@@ -20,7 +20,7 @@ class AccountNavList extends Component {
   }
 
   componentDidMount() {
-    this.props.requestAccountList();
+    this.props.actions.requestAccountList();
   }
 
   componentDidUpdate() {
@@ -89,9 +89,22 @@ class AccountNavList extends Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    accounts: state.account.accounts,
+    isNavListLoading: state.account.isNavListLoading
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actionCreators, dispatch)
+  }
+}
+
 export default withRouter(connect(
-  state => state.account,
-  dispatch => bindActionCreators(actionCreators, dispatch),
+  mapStateToProps,
+  mapDispatchToProps,
   null,
   {pure:false}
 )(AccountNavList));
