@@ -19,10 +19,6 @@ class AccountNavList extends Component {
     this.state = { isLoading: true };
   }
 
-  componentDidMount() {
-    this.props.actions.requestAccountList();
-  }
-
   componentDidUpdate() {
 
     if (this.state.isLoading && this.props.accounts && this.props.accounts.length > 0) {

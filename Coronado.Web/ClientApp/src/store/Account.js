@@ -77,15 +77,6 @@ export const actionCreators = {
     dispatch({ type: actions.RECEIVE_NEW_TRANSACTION, newTransaction });
   },
 
-  requestAccountList: () => async (dispatch, getState) => {
-    dispatch({ type: actions.REQUEST_ACCOUNT_LIST });
-    const url = "api/Accounts";
-    const response = await fetch(url);
-    const accounts = await response.json();
-
-    dispatch({ type: actions.RECEIVE_ACCOUNT_LIST, accounts });
-  },
-
   deleteAccount: (accountId, accountName) => async (dispatch, getState) => {
 
     const notificationOpts = {
