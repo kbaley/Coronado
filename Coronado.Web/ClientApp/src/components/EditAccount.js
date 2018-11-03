@@ -39,6 +39,6 @@ class EditAccount extends Component {
 }
 
 export default connect(
-  state => state.account,
+  state => state.accountState,
   dispatch => bindActionCreators(actionCreators, dispatch)
 )(EditAccount);

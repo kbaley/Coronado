@@ -6,9 +6,9 @@ import { routerReducer } from 'react-router-redux';
 
 function rootReducer(state, action) {
   return {
-    account: accountReducer(state.account, action),
+    accountState: accountReducer(state.accountState, action),
     categories: categoryReducer(state.categories, action),
-    categoryDisplay: categoryDisplayReducer(state.categoryDisplay, {...action, accounts: state.account ? state.account.accounts : null}),
+    categoryDisplay: categoryDisplayReducer(state.categoryDisplay, {...action, accounts: state.accountState ? state.accountState.accounts : null}),
     router: routerReducer(state.router, action),
     notifications: notifications(state.notifications, action)
   }

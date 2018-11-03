@@ -4,7 +4,7 @@ export default {
     isLoading: true,
     deletedCategories: []
   },
-  account: {
+  accountState: {
     isAccountLoading: true,
     isNavListLoading: true,
     accounts: [],

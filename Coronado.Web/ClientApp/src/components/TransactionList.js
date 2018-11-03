@@ -61,6 +61,6 @@ class TransactionList extends Component {
 }
 
 export default connect(
-  state => { return { ...state.account, ...state.categories, ...state.categoryDisplay } },
+  state => { return { ...state.accountState, ...state.categories, ...state.categoryDisplay } },
   dispatch => bindActionCreators({ ...actionCreators, ...categoryActionCreators }, dispatch)
 )(TransactionList);

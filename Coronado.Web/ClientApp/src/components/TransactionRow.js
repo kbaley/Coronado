@@ -129,6 +129,6 @@ class TransactionRow extends Component {
 }
 
 export default connect(
-  state => { return { ...state.account, ...state.categoryDisplay } },
+  state => { return { ...state.accountState, ...state.categoryDisplay } },
   dispatch => bindActionCreators(actionCreators, dispatch)
 )(TransactionRow);

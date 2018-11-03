@@ -89,8 +89,8 @@ function AccountHeader(props) {
 
 function mapStateToProps(state) {
    return {
-     isAccountLoading: state.account.isAccountLoading,
-     accounts: state.account.accounts
+     isAccountLoading: state.accountState.isAccountLoading,
+     accounts: state.accountState.accounts
    }
 }
 

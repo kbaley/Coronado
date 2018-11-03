@@ -18,7 +18,7 @@ function computeBalance(transactions, newTransactions) {
   return total;
 }
 
-export const accountReducer = (state = initialState.account, action) => {
+export const accountReducer = (state = initialState.accountState, action) => {
 
   switch (action.type) {
     

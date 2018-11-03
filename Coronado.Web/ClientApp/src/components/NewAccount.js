@@ -51,6 +51,6 @@ class NewAccount extends Component {
 }
 
 export default connect(
-  state => state.account,
+  state => state.accountState,
   dispatch => bindActionCreators(actionCreators, dispatch)
 )(NewAccount);
