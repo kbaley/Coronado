@@ -1,5 +1,5 @@
 export default {
-  category: {
+  categoryState: {
     categories: [], 
     isLoading: true,
     deletedCategories: []

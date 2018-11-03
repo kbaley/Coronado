@@ -49,6 +49,6 @@ class NewCategory extends Component {
 }
 
 export default connect(
-  state => state.categories,
+  state => state.categoryState,
   dispatch => bindActionCreators(actionCreators, dispatch)
 )(NewCategory);

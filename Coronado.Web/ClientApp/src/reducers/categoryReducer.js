@@ -2,7 +2,7 @@ import initialState from './initialState';
 import * as actions from "../constants/categoryActionTypes.js";
 import { concat, find, cloneDeep } from 'lodash';
 
-export const categoryReducer = (state = initialState.category, action) => {
+export const categoryReducer = (state = initialState.categoryState, action) => {
   switch (action.type) {
     case actions.REQUEST_CATEGORIES:
       return {
