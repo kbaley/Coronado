@@ -1,22 +1,49 @@
 import { RECEIVE_CATEGORIES} from "../constants/categoryActionTypes";
+import { RECEIVE_ACCOUNT_LIST } from "../constants/accountActionTypes";
 import { each } from "lodash";
 
-export const categoryDisplayReducer = (state = { }, action) => {
+function getCategoryDisplay(categoryList, accounts) {
 
-  if (action.type === RECEIVE_CATEGORIES) {
-
-    var categories = action.categories.slice();
-    each(action.accounts, a => {
+    var categories = categoryList.slice();
+    each(accounts, a => {
       categories.push({categoryId: 'TRF:' + a.accountId, name: 'TRANSFER: ' + a.name});
     });
-    each(action.accounts, a => {
+    each(accounts, a => {
       if (a.accountType === "Mortgage") {
         categories.push({categoryId: 'MRG:' + a.accountId, name: 'MORTGAGE: ' + a.name});
       }
     });
+    return categories;
+}
+
+export const categoryDisplayReducer = (state = { accountsLoaded: false, categoriesLoaded: false }, action) => {
+
+  
+  if (action.type === RECEIVE_ACCOUNT_LIST) {
+    if (state.categoriesLoaded) {
+      return {
+        ...state,
+        accountsLoaded: true,
+        categoryDisplay: getCategoryDisplay(action.savedCategories, action.accounts)
+      }
+    }
     return {
       ...state,
-      categoryDisplay: categories
+      accountsLoaded: true
+    }
+  }
+
+  if (action.type === RECEIVE_CATEGORIES) {
+    if (state.accountsLoaded) {
+      return {
+        ...state,
+        categoriesLoaded: true,
+        categoryDisplay: getCategoryDisplay(action.categories, action.savedAccounts)
+      }
+    }
+    return {
+      ...state,
+      categoriesLoaded: true
     }
   }
 

@@ -8,7 +8,9 @@ function rootReducer(state, action) {
   return {
     accountState: accountReducer(state.accountState, action),
     categoryState: categoryReducer(state.categoryState, action),
-    categoryDisplay: categoryDisplayReducer(state.categoryDisplay, {...action, accounts: state.accountState ? state.accountState.accounts : null}),
+    categoryDisplay: categoryDisplayReducer(state.categoryDisplay, 
+      {...action, savedAccounts: state.accountState ? state.accountState.accounts : null,
+        savedCategories: state.categoryState ? state.categoryState.categories : null }),
     router: routerReducer(state.router, action),
     notifications: notifications(state.notifications, action)
   }
