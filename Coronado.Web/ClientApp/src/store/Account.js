@@ -83,7 +83,7 @@ export const actionCreators = {
       message: 'Account ' + accountName + ' deleted',
       position: 'bl',
       autoDismiss: 10,
-      onRemove: () => { deleteAccountForReal(accountId, dispatch, getState().account.deletedAccounts) },
+      onRemove: () => { deleteAccountForReal(accountId, dispatch, getState().accountState.deletedAccounts) },
       action: {
         label: 'Undo',
         callback: () => {dispatch({type: actions.UNDO_DELETE_ACCOUNT, accountId })}
@@ -91,8 +91,8 @@ export const actionCreators = {
     };
     dispatch( { type: actions.DELETE_ACCOUNT, accountId } );
     dispatch(info(notificationOpts));
-    if (getState().account.accounts.length > 0)
-      dispatch(push('/account/' + getState().account.accounts[0].accountId));
+    if (getState().accountState.accounts.length > 0)
+      dispatch(push('/account/' + getState().accountState.accounts[0].accountId));
     else
       dispatch(push('/'));
   },
@@ -130,7 +130,7 @@ export const actionCreators = {
   },
 
   requestAccountTypes: () => async (dispatch, getState) => {
-    if (getState().account.accountTypes.length > 0) return null;
+    if (getState().accountState.accountTypes.length > 0) return null;
 
     const response = await fetch('api/AccountTypes');
     const accountTypes = await response.json();

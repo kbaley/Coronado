@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import { AccountForm } from './AccountForm';
-import { actionCreators } from '../store/Account';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import { EditIcon } from './icons/EditIcon';
 import './EditAccount.css';
 
@@ -11,18 +8,13 @@ class EditAccount extends Component {
     super(props);
     this.showForm = this.showForm.bind(this);
     this.hideForm = this.hideForm.bind(this);
-    this.saveAccount = this.saveAccount.bind(this);
     this.state = { show: false };
   }
   showForm() {
     this.setState({ show: true });
-    this.props.requestAccountTypes();
   }
   hideForm() {
     this.setState({ show: false });
-  }
-  saveAccount(account) {
-    this.props.updateAccount(account);
   }
   render() {
     return (<span>
@@ -31,14 +23,11 @@ class EditAccount extends Component {
         show={this.state.show} 
         onClose={this.hideForm} 
         account={this.props.account} 
-        onSave={this.saveAccount}
+        onSave={this.props.onUpdate}
         accountTypes={this.props.accountTypes}
       />
     </span>);
   }
 }
 
-export default connect(
-  state => state.accountState,
-  dispatch => bindActionCreators(actionCreators, dispatch)
-)(EditAccount);
+export default EditAccount;

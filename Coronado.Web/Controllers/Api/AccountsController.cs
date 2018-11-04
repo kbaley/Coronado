@@ -87,6 +87,7 @@ namespace Coronado.Web.Controllers.Api
             var category = TransactionHelpers.GetOrCreateCategory("Starting Balance", _categoryRepo);
             var transaction = new TransactionForDisplay
             {
+                TransactionId = Guid.NewGuid(),
                 AccountId = newAccount.AccountId,
                 Amount = account.StartingBalance,
                 TransactionDate = account.StartDate,

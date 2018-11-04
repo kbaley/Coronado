@@ -17,10 +17,12 @@ import { filter } from "lodash";
     this.state = { loading: true };
     
     this.deleteAccount = this.deleteAccount.bind(this);
+    this.updateAccount = this.updateAccount.bind(this);
   }
 
   componentDidMount() {
     this.props.actions.requestTransactions(this.props.match.params.accountId);
+    this.props.actions.requestAccountTypes();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -45,6 +47,10 @@ import { filter } from "lodash";
     var account = this.getSelectedAccount();
     this.props.actions.deleteAccount(account.accountId, account.name);
   }
+  
+  updateAccount(account) {
+    this.props.actions.updateAccount(account);
+  }
 
   getSelectedAccount() {
     if (!this.props.accounts) return { name: '', transactions: []}
@@ -64,7 +70,7 @@ import { filter } from "lodash";
         {this.props.isAccountLoading ? <p><em>Loading...</em></p> : (
           <div>
             <div style={{float: "right", width: "100px"}}>
-              <EditAccount account={account} />
+              <EditAccount account={account} onUpdate={this.updateAccount} />
               <DeleteAccount onDelete={this.deleteAccount} />
             </div>
             <AccountHeader account={account} />

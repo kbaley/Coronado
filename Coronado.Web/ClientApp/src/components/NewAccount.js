@@ -27,7 +27,7 @@ class NewAccount extends Component {
 
   newAccount() {
     this.setState({ show: true });
-    this.props.requestAccountTypes();
+    this.props.actions.requestAccountTypes();
     return false;
   }
 
@@ -36,7 +36,7 @@ class NewAccount extends Component {
   }
 
   saveNewAccount(account) {
-    this.props.saveNewAccount(account);
+    this.props.actions.saveNewAccount(account);
   }
 
   render() {
@@ -50,7 +50,19 @@ class NewAccount extends Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    accountTypes: state.accountState.accountTypes
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actionCreators, dispatch)
+  }
+}
+
 export default connect(
-  state => state.accountState,
-  dispatch => bindActionCreators(actionCreators, dispatch)
+  mapStateToProps,
+  mapDispatchToProps
 )(NewAccount);
