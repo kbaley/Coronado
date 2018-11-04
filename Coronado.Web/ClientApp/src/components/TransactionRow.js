@@ -94,7 +94,11 @@ class TransactionRow extends Component {
                 value={this.state.trx.vendor} onKeyPress={this.handleKeyPress} />
         </td>
         <td>
-            <CategorySelect selectedCategory={this.state.selectedCategory} categories={this.props.categoryDisplay}
+            <CategorySelect 
+              selectedCategory={this.state.selectedCategory} 
+              categories={this.props.categories}
+              accounts={this.props.accounts}
+              selectedAccount={trx.accountId}
               onCategoryChanged={this.handleChangeCategory} />
         </td>
         <td>
@@ -130,7 +134,8 @@ class TransactionRow extends Component {
 
 function mapStateToProps(state) {
   return { 
-    categoryDisplay: state.categoryDisplay.categoryDisplay
+    categories: state.categoryState.categories,
+    accounts: state.accountState.accounts
   }
 }
 

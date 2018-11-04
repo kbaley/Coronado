@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import { CheckIcon } from './icons/CheckIcon';
 import * as Mousetrap from 'mousetrap';
 import { CategorySelect } from './CategorySelect';
-import { find, filter } from 'lodash';
+import { find } from 'lodash';
+import { bindActionCreators } from 'redux';
+import { actionCreators } from '../store/Account';
+import { connect } from 'react-redux';
 
-export class NewTransactionRow extends Component {
+class NewTransactionRow extends Component {
   constructor(props) {
     super(props);
     this.saveTransaction = this.saveTransaction.bind(this);
@@ -81,7 +84,7 @@ export class NewTransactionRow extends Component {
     if (categoryId.substring(0,4) === "MRG:") {
       transactionType = "Mortgage";
       relatedAccountId = categoryId.substring(4);
-      var relatedAccount = find(this.props.mortgageAccounts, a => a.accountId === relatedAccountId);
+      var relatedAccount = find(this.props.accounts, a => a.accountId === relatedAccountId);
       categoryId = '';
       debit = relatedAccount.mortgagePayment || '';
       mortgageType = relatedAccount.mortgageType;
@@ -96,7 +99,7 @@ export class NewTransactionRow extends Component {
   }
 
   saveTransaction() {
-    this.props.onSave(this.state.trx, this.state.transactionType);
+    this.props.actions.saveTransaction(this.state.trx, this.state.transactionType);
     this.setState( 
       { trx: { ...this.state.trx, vendor: '', description: '', debit: '', credit: '', relatedAccountId: '' }, 
         selectedCategory: { }
@@ -114,8 +117,12 @@ export class NewTransactionRow extends Component {
           value={this.state.trx.transactionDate} onChange={this.handleChangeField}/></td>
         <td><input type="text" name="vendor" value={this.state.trx.vendor} onChange={this.handleChangeField} /></td>
         <td>
-          <CategorySelect selectedCategory={this.state.selectedCategory}
-            onCategoryChanged={this.handleChangeCategory} categories={filter(this.props.categories, c => c.categoryId !== 'TRF:' + this.state.trx.accountId)} />
+          <CategorySelect 
+            selectedCategory={this.state.selectedCategory}
+            onCategoryChanged={this.handleChangeCategory} 
+            selectedAccount={this.state.trx.accountId}
+            accounts={this.props.accounts}
+            categories={this.props.categories} />
         </td>
         <td><input type="text" name="description" value={this.state.trx.description} onChange={this.handleChangeField} /></td>
         <td><input type="text" name="debit" value={this.state.trx.debit} 
@@ -127,3 +134,21 @@ export class NewTransactionRow extends Component {
     )
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    accounts: state.accountState.accounts,
+    categories: state.categoryState.categories  
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actionCreators, dispatch)
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NewTransactionRow);

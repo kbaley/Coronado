@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import TransactionRow from './TransactionRow';
 import './TransactionList.css';
-import { NewTransactionRow } from './NewTransactionRow';
+import NewTransactionRow from './NewTransactionRow';
 
 class TransactionList extends Component {
   displayName = TransactionList.name;
@@ -41,9 +41,6 @@ class TransactionList extends Component {
       </thead>
       <tbody>
         <NewTransactionRow 
-          onSave={this.saveTransaction} 
-          categories={this.props.categoryDisplay}
-          mortgageAccounts={this.props.mortgageAccounts}
           account={this.props.account} />
         {this.props.transactions ? this.props.transactions.map(trx => 
         <TransactionRow key={trx.transactionId} transaction={trx} 
@@ -56,7 +53,8 @@ class TransactionList extends Component {
 
 function mapStateToProps(state) {
   return {
-    categoryDisplay: state.categoryDisplay.categoryDisplay
+    categories: state.categoryState.categories,
+    accounts: state.accountState.accounts
   }
 }
 
