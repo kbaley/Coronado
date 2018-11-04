@@ -8,10 +8,6 @@ import NewCategory from './NewCategory';
 class Categories extends Component {
   displayName = Categories.name;
 
-  componentDidMount() {
-    this.props.actions.requestCategories();
-  }
-
   render() {
     
     return (

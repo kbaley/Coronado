@@ -15,7 +15,7 @@ class TransactionList extends Component {
     this.state = {
     }
   }
-
+  
   deleteTransaction(transactionId) {
       this.props.actions.deleteTransaction(transactionId);
   }

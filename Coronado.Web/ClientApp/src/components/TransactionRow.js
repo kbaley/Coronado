@@ -69,7 +69,7 @@ class TransactionRow extends Component {
   }
 
   updateTransaction() {
-    this.props.updateTransaction(this.state.trx);
+    this.props.actions.updateTransaction(this.state.trx);
     this.setState({isEditing: false});
 
   }
@@ -128,7 +128,19 @@ class TransactionRow extends Component {
   }
 }
 
+function mapStateToProps(state) {
+  return { 
+    categoryDisplay: state.categoryDisplay.categoryDisplay
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actionCreators, dispatch)
+  }
+}
+
 export default connect(
-  state => { return { ...state.accountState, ...state.categoryDisplay } },
-  dispatch => bindActionCreators(actionCreators, dispatch)
+  mapStateToProps,
+  mapDispatchToProps
 )(TransactionRow);

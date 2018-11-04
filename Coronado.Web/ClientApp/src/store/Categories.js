@@ -15,15 +15,6 @@ async function deleteCategoryForReal(categoryId, dispatch, deletedCategories) {
 }
 
 export const actionCreators = {
-  requestCategories: () => async (dispatch, getState) => {
-    
-    if (getState().categoryState.categories.length > 0) return null;
-    dispatch({ type: actions.REQUEST_CATEGORIES });
-    const response = await fetch('api/Categories');
-    const categories = await response.json();
-
-    dispatch({ type: actions.RECEIVE_CATEGORIES, categories });
-  },
   deleteCategory: (categoryId, categoryName) => async (dispatch, getState) => {
 
     const notificationOpts = {
