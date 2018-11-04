@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { each } from 'lodash';
+import { each, find } from 'lodash';
 
 export class CategorySelect extends Component {
   constructor(props) {
@@ -13,7 +13,7 @@ export class CategorySelect extends Component {
   }
 
   handleChangeCategory(selectedOption) {
-    this.props.onCategoryChanged(selectedOption.categoryId);
+    this.props.onCategoryChanged(selectedOption);
   }
 
   getOptions() {
@@ -45,8 +45,9 @@ export class CategorySelect extends Component {
       })
     };
     const options = this.getOptions();
+    
     return (
-      <Select value={this.props.selectedCategory} 
+      <Select value={find(options, o => o.categoryId === this.props.selectedCategory)} 
         onChange={this.handleChangeCategory} 
         getOptionLabel={o => o.name}
         getOptionValue={o => o.categoryId}

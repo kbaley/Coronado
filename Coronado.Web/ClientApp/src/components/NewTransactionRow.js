@@ -68,8 +68,8 @@ class NewTransactionRow extends Component {
     this.setState({trx: { ...this.state.trx, debit, credit}});
   }
 
-  handleChangeCategory(categoryId) {
-    var selectedCategory = find(this.props.categories, c => c.categoryId===categoryId);
+  handleChangeCategory(selectedCategory) {
+    let categoryId = selectedCategory.categoryId;
     var transactionType = "Transaction";
     var relatedAccountId = '';
     var mortgageType = '';

@@ -37,8 +37,7 @@ class TransactionRow extends Component {
   startEditing() {
     this.setState({
         isEditing: true,
-        selectedCategory: find(this.props.categoryDisplay, 
-          c => c.categoryId === this.props.transaction.categoryId),
+        selectedCategory: this.props.transaction.categoryId,
     });
     Mousetrap.bind('esc', this.cancelEditing);
   }
