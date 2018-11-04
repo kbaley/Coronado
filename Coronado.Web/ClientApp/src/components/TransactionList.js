@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { actionCreators } from '../store/Account';
-import { actionCreators as categoryActionCreators } from '../store/Categories';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import TransactionRow from './TransactionRow';
@@ -14,20 +13,15 @@ class TransactionList extends Component {
     this.deleteTransaction = this.deleteTransaction.bind(this);
     this.saveTransaction = this.saveTransaction.bind(this);
     this.state = {
-      categories: []
     }
   }
 
-  componentDidMount() {
-      this.props.requestCategories();
-  }
-
   deleteTransaction(transactionId) {
-      this.props.deleteTransaction(transactionId);
+      this.props.actions.deleteTransaction(transactionId);
   }
 
   saveTransaction(trx, transactionType) {
-    this.props.saveTransaction(trx, transactionType);
+    this.props.actions.saveTransaction(trx, transactionType);
   }
 
   render() {
@@ -52,7 +46,7 @@ class TransactionList extends Component {
           mortgageAccounts={this.props.mortgageAccounts}
           account={this.props.account} />
         {this.props.transactions ? this.props.transactions.map(trx => 
-        <TransactionRow key={trx.transactionId} transaction={trx} categories={this.state.categories}
+        <TransactionRow key={trx.transactionId} transaction={trx} 
           onDelete={() => this.deleteTransaction(trx.transactionId)} />
         ) : <tr/>}
       </tbody>
@@ -60,7 +54,19 @@ class TransactionList extends Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    categoryDisplay: state.categoryDisplay.categoryDisplay
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actionCreators, dispatch)
+  }
+}
+
 export default connect(
-  state => { return { ...state.accountState, ...state.categoryState, ...state.categoryDisplay } },
-  dispatch => bindActionCreators({ ...actionCreators, ...categoryActionCreators }, dispatch)
+  mapStateToProps,
+  mapDispatchToProps
 )(TransactionList);

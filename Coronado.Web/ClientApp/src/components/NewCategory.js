@@ -33,7 +33,7 @@ class NewCategory extends Component {
   }
 
   saveCategory(category) {
-    this.props.saveNewCategory(category);
+    this.props.actions.saveNewCategory(category);
   }
 
   handleClose() {
@@ -48,7 +48,19 @@ class NewCategory extends Component {
   };
 }
 
+function mapStateToProps(state) {
+  return {
+    categories: state.categoryState.categories
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actionCreators, dispatch)
+  }
+}
+
 export default connect(
-  state => state.categoryState,
-  dispatch => bindActionCreators(actionCreators, dispatch)
+  mapStateToProps,
+  mapDispatchToProps
 )(NewCategory);
