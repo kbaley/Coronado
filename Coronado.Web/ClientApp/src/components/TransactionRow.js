@@ -7,7 +7,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { CategorySelect } from './CategorySelect';
 import './TransactionRow.css';
-import { find } from 'lodash';
 import { CheckIcon } from './icons/CheckIcon';
 import { CancelIcon } from './icons/CancelIcon';
 import { MoneyInput } from './MoneyInput';
