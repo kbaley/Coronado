@@ -7,7 +7,7 @@ import { ConnectedRouter } from 'react-router-redux';
 import { createBrowserHistory } from 'history';
 import configureStore from './store/configureStore';
 import App from './App';
-import {loadAccounts} from './actions/accountActions';
+import {loadAccounts, loadAccountTypes} from './actions/accountActions';
 import {loadCategories} from './actions/categoryActions';
 import registerServiceWorker from './registerServiceWorker';
 
@@ -20,6 +20,7 @@ const initialState = window.initialReduxState;
 const store = configureStore(history, initialState);
 store.dispatch(loadAccounts());
 store.dispatch(loadCategories());
+store.dispatch(loadAccountTypes());
 
 const rootElement = document.getElementById('root');
 

@@ -22,7 +22,6 @@ import { filter } from "lodash";
 
   componentDidMount() {
     this.props.actions.requestTransactions(this.props.match.params.accountId);
-    this.props.actions.requestAccountTypes();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -70,7 +69,7 @@ import { filter } from "lodash";
         {this.props.isAccountLoading ? <p><em>Loading...</em></p> : (
           <div>
             <div style={{float: "right", width: "100px"}}>
-              <EditAccount account={account} onUpdate={this.updateAccount} />
+              <EditAccount account={account} onUpdate={this.updateAccount} accountTypes={this.props.accountTypes} />
               <DeleteAccount onDelete={this.deleteAccount} />
             </div>
             <AccountHeader account={account} />
@@ -96,7 +95,8 @@ function AccountHeader(props) {
 function mapStateToProps(state) {
    return {
      isAccountLoading: state.accountState.isAccountLoading,
-     accounts: state.accountState.accounts
+     accounts: state.accountState.accounts,
+     accountTypes: state.accountState.accountTypes
    }
 }
 

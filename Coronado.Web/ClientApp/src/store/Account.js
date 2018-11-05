@@ -128,14 +128,5 @@ export const actionCreators = {
     dispatch({ type: actions.RECEIVE_NEW_ACCOUNT, newAccount });
     dispatch(push('/account/' + newAccount.accountId));
   },
-
-  requestAccountTypes: () => async (dispatch, getState) => {
-    if (getState().accountState.accountTypes.length > 0) return null;
-
-    const response = await fetch('api/AccountTypes');
-    const accountTypes = await response.json();
-
-    dispatch({ type: actions.RECEIVE_ACCOUNT_TYPES, accountTypes });
-  }
 };
 

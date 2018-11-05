@@ -27,7 +27,6 @@ class NewAccount extends Component {
 
   newAccount() {
     this.setState({ show: true });
-    this.props.actions.requestAccountTypes();
     return false;
   }
 
