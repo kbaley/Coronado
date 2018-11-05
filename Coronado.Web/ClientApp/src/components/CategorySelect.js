@@ -45,7 +45,6 @@ export class CategorySelect extends Component {
       })
     };
     const options = this.getOptions();
-    
     return (
       <Select value={find(options, o => o.categoryId === this.props.selectedCategory)} 
         onChange={this.handleChangeCategory} 

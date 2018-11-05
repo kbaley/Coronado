@@ -59,11 +59,10 @@ class TransactionRow extends Component {
     this.setState( { trx: {...this.state.trx, [name]: e.target.value } } );
   }
 
-  handleChangeCategory(categoryId) {
-    var selectedCategory = find(this.props.categories, c => c.categoryId===categoryId);
+  handleChangeCategory(category) {
     this.setState( {
-      trx: {...this.state.trx, categoryId },
-      selectedCategory
+      trx: {...this.state.trx, categoryId: category.categoryId },
+      selectedCategory: category.categoryId
     });
   }
 
