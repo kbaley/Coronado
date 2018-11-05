@@ -28,8 +28,6 @@ export const categoryReducer = (state = initialState.categoryState, action) => {
         categories: cloneDeep(state.categories.concat(deletedCategory)),
         deletedCategories: cloneDeep(state.deletedCategories.filter(el => el.categoryId !== action.categoryId))
       };
-    case actions.REMOVE_DELETED_CATEGORY:
-      return state;
     case actions.RECEIVE_NEW_CATEGORY:
       return {
         ...state,

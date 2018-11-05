@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { actionCreators } from '../store/Categories';
+import * as categoryActions from '../actions/categoryActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
@@ -56,7 +56,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(actionCreators, dispatch)
+    actions: bindActionCreators(categoryActions, dispatch)
   }
 }
 
