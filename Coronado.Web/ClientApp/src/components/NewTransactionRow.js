@@ -4,7 +4,7 @@ import * as Mousetrap from 'mousetrap';
 import { CategorySelect } from './CategorySelect';
 import { find } from 'lodash';
 import { bindActionCreators } from 'redux';
-import { actionCreators } from '../store/Account';
+import * as accountActions from '../actions/accountActions';
 import { connect } from 'react-redux';
 
 class NewTransactionRow extends Component {
@@ -144,7 +144,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(actionCreators, dispatch)
+    actions: bindActionCreators(accountActions, dispatch)
   }
 }
 

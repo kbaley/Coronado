@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { DeleteIcon } from './icons/DeleteIcon';
 import { EditIcon } from './icons/EditIcon';
 import { DecimalFormat, MoneyFormat } from './DecimalFormat';
-import { actionCreators } from '../store/Account';
+import * as accountActions from '../actions/accountActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { CategorySelect } from './CategorySelect';
@@ -138,7 +138,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(actionCreators, dispatch)
+    actions: bindActionCreators(accountActions, dispatch)
   }
 }
 

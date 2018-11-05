@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import DeleteAccount from './DeleteAccount';
-import { actionCreators } from '../store/Account';
+import * as accountActions from '../actions/accountActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import TransactionList from './TransactionList';
@@ -102,7 +102,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
    return {
-     actions: bindActionCreators(actionCreators, dispatch)
+     actions: bindActionCreators(accountActions, dispatch)
    }
 }
 

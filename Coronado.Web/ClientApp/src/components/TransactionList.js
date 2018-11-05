@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { actionCreators } from '../store/Account';
+import * as accountActions from '../actions/accountActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import TransactionRow from './TransactionRow';
@@ -60,7 +60,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(actionCreators, dispatch)
+    actions: bindActionCreators(accountActions, dispatch)
   }
 }
 
