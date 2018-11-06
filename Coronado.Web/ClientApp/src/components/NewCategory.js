@@ -33,7 +33,7 @@ class NewCategory extends Component {
   }
 
   saveCategory(category) {
-    this.props.actions.saveNewCategory(category);
+    this.props.actions.createCategory(category);
   }
 
   handleClose() {

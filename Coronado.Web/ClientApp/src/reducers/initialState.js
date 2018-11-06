@@ -1,7 +1,6 @@
 export default {
   categoryState: {
     categories: [], 
-    isLoading: true,
     deletedCategories: []
   },
   accountState: {

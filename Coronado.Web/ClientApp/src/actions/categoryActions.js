@@ -1,27 +1,30 @@
 import * as types from '../constants/categoryActionTypes';
 import { info } from 'react-notification-system-redux';
+import CategoryApi from '../api/categoryApi';
+
+export function loadCategoriesSuccess(categories) {
+  return {type: types.LOAD_CATEGORIES_SUCCESS, categories};
+}
+
+export function updateCategorySuccess(category) {
+  return {type: types.UPDATE_CATEGORY_SUCCESS, category};
+}
+
+export function createCategorySuccess(category) {
+  return {type: types.CREATE_CATEGORY_SUCCESS, category};
+}
 
 export const loadCategories = () => {
-  return async function(dispatch) {
-    const url = "api/Categories";
-    const response = await fetch(url);
-    const categories = await response.json();
-    dispatch({ type: types.RECEIVE_CATEGORIES, categories });
+  return async (dispatch) => {
+    const categories = await CategoryApi.getAllCategories();
+    dispatch(loadCategoriesSuccess(categories));
   };
 }
 
 export const updateCategory = (category) => {
-  return async function(dispatch) {
-    const response = await fetch('/api/Categories/' + category.categoryId, {
-      method: 'PUT',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(category)
-    });
-    const updatedCategory = await response.json();
-    dispatch({type: types.RECEIVE_UPDATED_CATEGORY, updatedCategory});
+  return async (dispatch) => {
+    const updatedCategory = await CategoryApi.updateCategory(category);
+    dispatch(updateCategorySuccess(updatedCategory));
   }
 }
 
@@ -29,8 +32,8 @@ export const deleteCategory = (categoryId, categoryName) => {
   return async function(dispatch, getState) {
     const notificationOpts = {
       message: 'Category ' + categoryName + ' deleted',
-      position: 'bl',
-      onRemove: () => { deleteCategoryForReal(categoryId, dispatch, getState().categoryState.deletedCategories) },
+      position: 'br',
+      onRemove: () => { deleteCategoryForReal(categoryId, getState().categoryState.deletedCategories) },
       action: {
         label: 'Undo',
         callback: () => {dispatch({type: types.UNDO_DELETE_CATEGORY, categoryId: categoryId })}
@@ -41,23 +44,14 @@ export const deleteCategory = (categoryId, categoryName) => {
   }
 }
 
-export const saveNewCategory = (category) => {
+export const createCategory = (category) => {
   return async (dispatch) => {
-    const response = await fetch('/api/Categories', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(category)
-    });
-    const newCategory = await response.json();
-
-    dispatch({ type: types.RECEIVE_NEW_CATEGORY, newCategory });
+    const newCategory = await CategoryApi.createCategory(category);
+    dispatch(createCategorySuccess(newCategory));
   }
 }
 
-async function deleteCategoryForReal(categoryId, dispatch, deletedCategories) {
+async function deleteCategoryForReal(categoryId, deletedCategories) {
   if (deletedCategories.some(c => c.categoryId === categoryId)) {
     await fetch('/api/Categories/' + categoryId, {
       method: 'DELETE',

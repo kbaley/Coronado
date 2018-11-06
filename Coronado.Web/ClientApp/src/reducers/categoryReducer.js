@@ -4,16 +4,10 @@ import { concat, find, cloneDeep } from 'lodash';
 
 export const categoryReducer = (state = initialState.categoryState, action) => {
   switch (action.type) {
-    case actions.REQUEST_CATEGORIES:
+    case actions.LOAD_CATEGORIES_SUCCESS:
       return {
         ...state,
-        isLoading: true
-      };
-    case actions.RECEIVE_CATEGORIES:
-      return {
-        ...state,
-        categories: action.categories,
-        isLoading: false
+        categories: action.categories
       };
     case actions.DELETE_CATEGORY:
       return {
@@ -28,17 +22,16 @@ export const categoryReducer = (state = initialState.categoryState, action) => {
         categories: cloneDeep(state.categories.concat(deletedCategory)),
         deletedCategories: cloneDeep(state.deletedCategories.filter(el => el.categoryId !== action.categoryId))
       };
-    case actions.RECEIVE_NEW_CATEGORY:
+    case actions.CREATE_CATEGORY_SUCCESS:
       return {
         ...state,
-        categories: cloneDeep(state.categories.concat(action.newCategory)),
-        deletedCategories: cloneDeep(state.deletedCategories.filter(el => el.categoryId !== action.categoryId))
+        categories: cloneDeep(state.categories.concat(action.category)),
       };
-    case actions.RECEIVE_UPDATED_CATEGORY:
+    case actions.UPDATE_CATEGORY_SUCCESS:
       return {
         ...state,
-        categories: state.categories.map( c => c.categoryId === action.updatedCategory.categoryId
-          ? Object.assign({}, action.updatedCategory)
+        categories: state.categories.map( c => c.categoryId === action.category.categoryId
+          ? Object.assign({}, action.category)
           : c )
       };
     default:

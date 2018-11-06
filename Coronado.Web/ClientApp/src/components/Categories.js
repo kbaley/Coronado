@@ -10,15 +10,11 @@ class Categories extends Component {
     
     return (
       <div>
-        {this.props.isLoading ? <p><em>Loading...</em></p> : (
-          <div>
-            <h1>
-              Categories
-              <NewCategory />
-            </h1>
-            <CategoryList categories={this.props.categories} />
-          </div>
-        )}
+        <h1>
+          Categories
+          <NewCategory />
+        </h1>
+        <CategoryList categories={this.props.categories} />
       </div>
     );
   }
@@ -27,7 +23,6 @@ class Categories extends Component {
 function mapStateToProps(state) {
   return {
     categories: state.categoryState.categories,
-    isLoading: state.categoryState.isLoading
   }
 }
 
