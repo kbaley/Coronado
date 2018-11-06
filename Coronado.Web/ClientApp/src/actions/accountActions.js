@@ -89,7 +89,7 @@ export const deleteAccount = (accountId, accountName) => {
       message: 'Account ' + accountName + ' deleted',
       position: 'bl',
       autoDismiss: 10,
-      onRemove: () => { deleteAccountForReal(accountId, dispatch, getState().accountState.deletedAccounts) },
+      onRemove: () => { deleteAccountForReal(accountId, dispatch, getState().deletedAccounts) },
       action: {
         label: 'Undo',
         callback: () => {dispatch({type: types.UNDO_DELETE_ACCOUNT, accountId })}
