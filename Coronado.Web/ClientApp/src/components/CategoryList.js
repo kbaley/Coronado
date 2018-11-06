@@ -73,7 +73,7 @@ class CategoryList extends Component {
 
 function mapStateToProps(state) {
   return {
-    categories: state.categoryState.categories,
+    categories: state.categories,
     notifications: state.notifications
   }
 }

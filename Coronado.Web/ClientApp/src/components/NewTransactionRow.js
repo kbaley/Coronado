@@ -138,7 +138,7 @@ class NewTransactionRow extends Component {
 function mapStateToProps(state) {
   return {
     accounts: state.accountState.accounts,
-    categories: state.categoryState.categories  
+    categories: state.categories  
   }
 }
 
