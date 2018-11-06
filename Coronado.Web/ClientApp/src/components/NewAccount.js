@@ -35,7 +35,7 @@ class NewAccount extends Component {
   }
 
   saveNewAccount(account) {
-    this.props.actions.saveNewAccount(account);
+    this.props.actions.createAccount(account);
   }
 
   render() {

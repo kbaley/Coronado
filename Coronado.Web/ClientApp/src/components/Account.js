@@ -21,12 +21,12 @@ import { filter } from "lodash";
   }
 
   componentDidMount() {
-    this.props.actions.requestTransactions(this.props.match.params.accountId);
+    this.props.actions.loadTransactions(this.props.match.params.accountId);
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.loading) {
-      this.props.actions.requestTransactions(this.props.match.params.accountId);
+      this.props.actions.loadTransactions(this.props.match.params.accountId);
       this.setState({loading:false});
     }
   }

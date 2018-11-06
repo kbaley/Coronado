@@ -22,7 +22,7 @@ export const accountReducer = (state = initialState.accountState, action) => {
 
   switch (action.type) {
     
-    case actions.REQUEST_TRANSACTIONS:
+    case actions.LOAD_TRANSACTIONS:
 
       return {
         ...state,
@@ -35,7 +35,7 @@ export const accountReducer = (state = initialState.accountState, action) => {
         selectedAccount: action.accountId
       };
 
-    case actions.RECEIVE_TRANSACTIONS:
+    case actions.LOAD_TRANSACTIONS_SUCCESS:
       const transactions = computeRunningTotal(action.transactions);
       return {
         ...state,
@@ -62,7 +62,7 @@ export const accountReducer = (state = initialState.accountState, action) => {
           : a)
       }
 
-    case actions.RECEIVE_NEW_TRANSACTION:
+    case actions.CREATE_TRANSACTION_SUCCESS:
       var transactionsForCurrentAccount = filter(action.newTransaction, t => t.accountId === state.selectedAccount);
       var transactionsForOtherAccounts = filter(action.newTransaction, t => t.accountId !== state.selectedAccount);
       var accounts = state.accounts.map((a) => a.accountId === state.selectedAccount
@@ -83,7 +83,7 @@ export const accountReducer = (state = initialState.accountState, action) => {
         accounts: accounts
       };
 
-    case actions.UPDATE_TRANSACTION:
+    case actions.UPDATE_TRANSACTION_SUCCESS:
       var account = Object.assign({}, find(state.accounts, a => a.accountId === state.selectedAccount));
       account.transactions = computeRunningTotal(account.transactions.map(t =>
         t.transactionId === action.updatedTransaction.transactionId ? action.updatedTransaction : t));
@@ -93,19 +93,19 @@ export const accountReducer = (state = initialState.accountState, action) => {
         accounts: state.accounts.map(a => a.accountId === state.selectedAccount ? account : a)
       }
 
-    case actions.RECEIVE_ACCOUNT_LIST:
+    case actions.LOAD_ACCOUNTS_SUCCESS:
       return {
         ...state,
         accounts: action.accounts,
       };
 
-    case actions.RECEIVE_NEW_ACCOUNT:
+    case actions.CREATE_ACCOUNT_SUCCESS:
       return {
         ...state,
         accounts: state.accounts.concat(action.newAccount)
       };
 
-    case actions.UPDATE_ACCOUNT:
+    case actions.UPDATE_ACCOUNT_SUCCESS:
       return {
         ...state,
         selectedAccount: action.updatedAccount.accountId,
@@ -135,7 +135,7 @@ export const accountReducer = (state = initialState.accountState, action) => {
         deletedAccounts: state.deletedAccounts.filter(el => el.accountId !== action.accountId)
       }
 
-    case actions.RECEIVE_ACCOUNT_TYPES:
+    case actions.LOAD_ACCOUNT_TYPES_SUCCESS:
       return {
         ...state,
         accountTypes: action.accountTypes

@@ -1,34 +1,66 @@
 import * as types from '../constants/accountActionTypes';
 import { info } from 'react-notification-system-redux';
 import { push } from 'react-router-redux';
+import AccountApi from '../api/accountApi';
+
+export function loadAccountsSuccess(accounts) {
+  return { type: types.LOAD_ACCOUNTS_SUCCESS, accounts };
+}
+
+export function loadTransactionsSuccess(transactions, accountId) {
+  return { type: types.LOAD_TRANSACTIONS_SUCCESS, transactions, accountId };
+}
+
+export function selectAccount(accountId) {
+  return { type: types.SELECT_ACCOUNT, accountId };
+}
+
+export function requestTransactions() {
+  return { type: types.LOAD_TRANSACTIONS };
+}
+
+export function loadAccountTypesSuccess(accountTypes) {
+  return { type: types.LOAD_ACCOUNT_TYPES_SUCCESS, accountTypes };
+}
+
+export function updateTransactionSuccess(updatedTransaction) {
+  return { type: types.UPDATE_TRANSACTION_SUCCESS, updatedTransaction };
+}
+
+export function createTransactionSuccess(newTransaction) {
+  return { type: types.CREATE_TRANSACTION_SUCCESS, newTransaction };
+}
+
+export function updateAccountSuccess(updatedAccount) {
+  return { type: types.UPDATE_ACCOUNT_SUCCESS, updatedAccount };
+}
+
+function createAccountSuccess(newAccount) {
+  return { type: types.CREATE_ACCOUNT_SUCCESS, newAccount };
+}
 
 export const loadAccounts = () => {
   return async function(dispatch) {
-    const url = "api/Accounts";
-    const response = await fetch(url);
-    const accounts = await response.json();
-    dispatch({ type: types.RECEIVE_ACCOUNT_LIST, accounts });
+    const accounts = await AccountApi.getAllAccounts();
+    dispatch(loadAccountsSuccess(accounts));
   };
 }
 
 export const loadAccountTypes = () => {
   return async function(dispatch, getState) {
     if (getState().accountState.accountTypes.length > 0) return null;
-    const url = "api/AccountTypes";
-    const response = await fetch(url);
-    const accountTypes = await response.json();
-    dispatch({ type: types.RECEIVE_ACCOUNT_TYPES, accountTypes });
+    const accountTypes = await AccountApi.getAccountTypes();
+    dispatch(loadAccountTypesSuccess(accountTypes));
   };
 }
 
-export const requestTransactions = (accountId) => {
+export const loadTransactions = (accountId) => {
   return async (dispatch) => {
-    dispatch({ type: types.REQUEST_TRANSACTIONS });
-    dispatch({ type: types.SELECT_ACCOUNT, accountId} );
-    const response = await fetch('api/Transactions/?accountId=' + accountId);
-    const transactions = await response.json();
+    dispatch(requestTransactions());
+    dispatch(selectAccount(accountId) );
+    const transactions = await AccountApi.getTransactions(accountId);
 
-    dispatch({ type: types.RECEIVE_TRANSACTIONS, transactions, accountId });
+    dispatch(loadTransactionsSuccess(transactions, accountId));
   }
 }
 
@@ -49,36 +81,17 @@ export const deleteTransaction = (transactionId) => {
 export const updateTransaction = (transaction) => {
   return async (dispatch) => {
 
-    const response = await fetch('/api/Transactions/' + transaction.transactionId, {
-      method: 'PUT',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(transaction)
-    });
-    const updatedTransaction = await response.json();
-    dispatch({ type: types.UPDATE_TRANSACTION, updatedTransaction });
+    const updatedTransaction = await AccountApi.updateTransaction(transaction);
+    dispatch(updateTransactionSuccess(updatedTransaction));
   }
 }
 
-export const saveTransaction = (transaction, transactionType) => {
+export const createTransaction = (transaction, transactionType) => {
   return async (dispatch) => {
 
-    var url = "/api/Transactions";
-    if (transactionType === "Transfer") url = "/api/Transfers"
-    if (transactionType === "Mortgage") url = "/api/Mortgages"
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(transaction)
-    });
-    const newTransaction = await response.json();
+    const newTransaction = await AccountApi.createTransaction(transaction, transactionType);
 
-    dispatch({ type: types.RECEIVE_NEW_TRANSACTION, newTransaction });
+    dispatch(createTransactionSuccess(newTransaction));
   }
 }
 
@@ -106,36 +119,17 @@ export const deleteAccount = (accountId, accountName) => {
 
 export const updateAccount = (account) => {
   return async (dispatch) => {
-    const response = await fetch('api/Accounts/' + account.accountId, {
-      method: 'PUT',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(account)
-    });
-    const updatedAccount = await response.json();
+    const updatedAccount = await AccountApi.updateAccount(account);
 
-    dispatch({type: types.UPDATE_ACCOUNT, updatedAccount});
+    dispatch(updateAccountSuccess(updatedAccount));
   }
 }
 
-export const saveNewAccount = (account) => {
+export const createAccount = (account) => {
   return async (dispatch) => {
-    const newIdResponse = await fetch('api/Accounts/newId');
-    const newId = await newIdResponse.json();
-    account.accountId = newId;
-    const response = await fetch('/api/Accounts', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(account)
-    });
-    const newAccount = await response.json();
+    const newAccount = await AccountApi.createAccount(account);
 
-    dispatch({ type: types.RECEIVE_NEW_ACCOUNT, newAccount });
+    dispatch(createAccountSuccess(newAccount));
     dispatch(push('/account/' + newAccount.accountId));
   }
 }

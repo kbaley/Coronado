@@ -11,17 +11,12 @@ class TransactionList extends Component {
   constructor(props) {
     super(props);
     this.deleteTransaction = this.deleteTransaction.bind(this);
-    this.saveTransaction = this.saveTransaction.bind(this);
     this.state = {
     }
   }
   
   deleteTransaction(transactionId) {
       this.props.actions.deleteTransaction(transactionId);
-  }
-
-  saveTransaction(trx, transactionType) {
-    this.props.actions.saveTransaction(trx, transactionType);
   }
 
   render() {

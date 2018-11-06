@@ -99,7 +99,7 @@ class NewTransactionRow extends Component {
   }
 
   saveTransaction() {
-    this.props.actions.saveTransaction(this.state.trx, this.state.transactionType);
+    this.props.actions.createTransaction(this.state.trx, this.state.transactionType);
     this.setState( 
       { trx: { ...this.state.trx, vendor: '', description: '', debit: '', credit: '', relatedAccountId: '' }, 
         selectedCategory: { }
