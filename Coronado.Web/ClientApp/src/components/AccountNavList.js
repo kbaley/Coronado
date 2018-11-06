@@ -64,7 +64,7 @@ class AccountNavList extends Component {
   render() {
     return (
       <Nav>
-        {this.props.isNavListLoading ? "loading..." : 
+        {this.props.accounts.length === 0 ? "loading..." : 
         this.props.accounts.map(account =>
           <LinkContainer to={'/account/' + account.accountId} key={account.accountId}>
             <NavItem>
@@ -87,8 +87,7 @@ class AccountNavList extends Component {
 
 function mapStateToProps(state) {
   return {
-    accounts: state.accountState.accounts,
-    isNavListLoading: state.accountState.isNavListLoading
+    accounts: state.accountState.accounts
   }
 }
 

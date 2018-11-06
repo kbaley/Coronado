@@ -93,17 +93,10 @@ export const accountReducer = (state = initialState.accountState, action) => {
         accounts: state.accounts.map(a => a.accountId === state.selectedAccount ? account : a)
       }
 
-    case actions.REQUEST_ACCOUNT_LIST:
-      return {
-        ...state,
-        isNavListLoading: true
-      };
-
     case actions.RECEIVE_ACCOUNT_LIST:
       return {
         ...state,
         accounts: action.accounts,
-        isNavListLoading: false
       };
 
     case actions.RECEIVE_NEW_ACCOUNT:
