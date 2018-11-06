@@ -33,7 +33,7 @@ export const deleteCategory = (categoryId, categoryName) => {
     const notificationOpts = {
       message: 'Category ' + categoryName + ' deleted',
       position: 'br',
-      onRemove: () => { deleteCategoryForReal(categoryId, getState().categoryState.deletedCategories) },
+      onRemove: () => { deleteCategoryForReal(categoryId, getState().deletedCategories) },
       action: {
         label: 'Undo',
         callback: () => {dispatch({type: types.UNDO_DELETE_CATEGORY, categoryId: categoryId })}

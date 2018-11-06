@@ -32,6 +32,7 @@ namespace Coronado.Web.Data
         public Category Delete(Guid categoryId)
         {
             using (var conn = Connection) {
+                conn.Execute("UPDATE transactions SET category_id = NULL WHERE category_id=@categoryId", new {categoryId});
                 var category = conn.QuerySingle<Category>("SELECT * FROM categories WHERE category_id=@categoryId", new {categoryId});
                 conn.Execute("DELETE FROM categories WHERE category_id=@categoryId", new {categoryId});
                 return category;

@@ -42,8 +42,8 @@ namespace Coronado.Web.Data
                     // Related transaction exists; delete it first (after clearing the FK relationship)
                     conn.Execute("UPDATE transactions SET related_transaction_id = null WHERE transaction_id = @TransactionId", 
                         new {transactionId});
-                    conn.Execute("DELETE FROM transactions WHERE transaction_id = @TransactionId",
-                        new { TransactionId = relatedTransactionId });
+                    conn.Execute("DELETE FROM transactions WHERE related_transaction_id = @TransactionId",
+                        new { transactionId });
                 }
                 conn.Execute("DELETE FROM transactions WHERE transaction_id = @TransactionId", new {transactionId});
                 trx.Commit();
