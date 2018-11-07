@@ -74,7 +74,7 @@ import { filter } from "lodash";
             </div>
             <AccountHeader account={account} />
             <TransactionList 
-              transactions={account.transactions} 
+              transactions={this.props.transactions} 
               mortgageAccounts={this.getMortgageAccounts()}
               account={account}
               categories={this.props.categories}
@@ -96,7 +96,8 @@ function mapStateToProps(state) {
    return {
      isAccountLoading: state.accountState.isAccountLoading,
      accounts: state.accountState.accounts,
-     accountTypes: state.accountState.accountTypes
+     accountTypes: state.accountState.accountTypes,
+     transactions: state.transactions
    }
 }
 

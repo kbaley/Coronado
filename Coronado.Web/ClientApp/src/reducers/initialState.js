@@ -8,6 +8,7 @@ export default {
     deletedAccounts: []
   },
   deletedAccounts: [],
-  ajaxCallsInProgress: 0
+  ajaxCallsInProgress: 0,
+  transactions: []
 }
 
