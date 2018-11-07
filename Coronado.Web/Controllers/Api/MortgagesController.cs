@@ -78,8 +78,9 @@ namespace Coronado.Web.Controllers.Api
                 _transactionRepo.Insert(trx);
             }
 
+            var accountBalances = _accountRepo.GetAccountBalances();
             return CreatedAtAction("PostTransfer", 
-                new { id = transaction.TransactionId }, transactions);
+                new { id = transaction.TransactionId }, new {transactions, accountBalances});
         }
     }
 }

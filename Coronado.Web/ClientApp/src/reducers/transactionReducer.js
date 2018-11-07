@@ -25,7 +25,7 @@ export const transactionReducer = (state = initialState.transactions, action, se
       return computeRunningTotal(filter(state, t => {return t.transactionId !== action.transaction.transactionId}));
 
     case actions.CREATE_TRANSACTION_SUCCESS:
-      transactions = concat(cloneDeep(state), cloneDeep(action.newTransaction.filter(t => t.accountId === selectedAccount)));
+      transactions = concat(cloneDeep(state), cloneDeep(action.transactions.filter(t => t.accountId === selectedAccount)));
       
       return computeRunningTotal(transactions)
 

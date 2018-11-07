@@ -42,6 +42,18 @@ class NewTransactionRow extends Component {
     Mousetrap.unbind('n t');
   }
 
+  componentDidUpdate() {
+    if (this.props.account && this.props.account.accountId !== this.state.trx.accountId) {
+      this.setState({
+        trx: {
+          ...this.state.trx,
+          accountId: this.props.account.accountId
+        }
+      })
+    }
+  }
+  
+
   setFocus(e) {
     e.preventDefault();
     this.refs["inputDate"].focus();
@@ -107,7 +119,6 @@ class NewTransactionRow extends Component {
     );
   }
   render() {
-    
     return (
       <tr key="new-transaction">
         <td>

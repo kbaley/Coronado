@@ -7,4 +7,6 @@ export const selectedAccountReducer = (state = initialState.selectedAccount, act
     return action.accountId;
   }
 
+  return state;
+
 };

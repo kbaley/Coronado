@@ -1,5 +1,5 @@
 import initialState from './initialState';
-import { sumBy, cloneDeep, find } from 'lodash'; 
+import { cloneDeep, find, each } from 'lodash'; 
 import * as actions from "../constants/accountActionTypes.js";
 import * as transactionActions from "../constants/transactionActionTypes";
 
@@ -33,39 +33,19 @@ export const accountReducer = (state = initialState.accounts, action, deletedAcc
       ];
 
     case transactionActions.CREATE_TRANSACTION_SUCCESS:
-      return {
-        ...state,
-        accounts: state.accounts.map(a => {
-          return {
-            ...a,
-            currentBalance: a.currentBalance + sumBy(action.newTransaction, t => t.accountId === a.accountId ? t.amount : 0)
-          }
-        })
-      }
-
     case transactionActions.UPDATE_TRANSACTION_SUCCESS:
-      return {
-        ...state,
-        accounts: state.accounts.map(a => {
-          return {
-            ...a,
-            currentBalance: a.currentBalance + (action.transaction.accountId === a.accountId ? (action.transaction.amount - action.originalAmount) : 0)
-          }
-        })
-      }
-    
     case transactionActions.DELETE_TRANSACTION_SUCCESS:
-      return {
-        ...state,
-        accounts: state.accounts.map(a => {
-          return {
-            ...a,
-            currentBalance: a.currentBalance - (action.transaction.accountId === a.accountId ? action.transaction.amount : 0)
-          }
-        })
-      }
+      return setAccountBalances(state, action.accountBalances);
       
     default:
       return state;
   }
 };
+
+
+function setAccountBalances(state, accountBalances) {
+
+  let accounts = cloneDeep(state);
+  each(accountBalances, ab => find(accounts, a => a.accountId === ab.accountId).currentBalance = ab.currentBalance );
+  return accounts;
+}

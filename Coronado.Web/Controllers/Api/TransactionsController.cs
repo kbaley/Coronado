@@ -45,7 +45,7 @@ namespace Coronado.Web.Controllers.Api
             var transaction = _transactionRepo.Get(id);
             _transactionRepo.Delete(id);
 
-            return Ok(transaction);
+            return Ok(new {transaction, accountBalances = _accountRepo.GetAccountBalances()});
         }
 
         [HttpPut("{id}")]
@@ -61,7 +61,7 @@ namespace Coronado.Web.Controllers.Api
             transaction.SetAmount();
             _transactionRepo.Update(transaction);
 
-            return Ok(new {transaction, originalAmount});
+            return Ok(new {transaction, originalAmount, accountBalances = _accountRepo.GetAccountBalances()});
         }
 
         [HttpPost]
@@ -85,7 +85,9 @@ namespace Coronado.Web.Controllers.Api
                 _transactionRepo.Insert(trx);
             }
 
-            return CreatedAtAction("PostTransaction", new { id = transaction.TransactionId }, transactions);
+            var accountBalances = _accountRepo.GetAccountBalances().Select(a => new {a.AccountId, a.CurrentBalance});
+
+            return CreatedAtAction("PostTransaction", new { id = transaction.TransactionId }, new {transactions, accountBalances});
         }
 
     }

@@ -65,6 +65,17 @@ FROM accounts a"
             }
         }
 
+        public IEnumerable<Account> GetAccountBalances() {
+
+            using (var conn = Connection) {
+                return conn.Query<Account>(
+@"SELECT account_id, sum(amount) as current_balance
+FROM Transactions
+GROUP BY account_id"
+);
+            }
+        }
+
         public void Insert(Account account)
         {
             using (var conn = Connection) {

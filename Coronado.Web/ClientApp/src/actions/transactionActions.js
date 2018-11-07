@@ -14,12 +14,12 @@ export function updateTransactionSuccess(updatedTransactionModel) {
   return { type: types.UPDATE_TRANSACTION_SUCCESS, ...updatedTransactionModel };
 }
 
-export function createTransactionSuccess(newTransaction) {
-  return { type: types.CREATE_TRANSACTION_SUCCESS, newTransaction };
+export function createTransactionSuccess(newTransactionModel) {
+  return { type: types.CREATE_TRANSACTION_SUCCESS, ...newTransactionModel };
 }
 
-export function deleteTransactionSuccess(transaction) {
-  return { type: types.DELETE_TRANSACTION_SUCCESS, transaction };
+export function deleteTransactionSuccess(deleteTransactionModel) {
+  return { type: types.DELETE_TRANSACTION_SUCCESS, ...deleteTransactionModel };
 }
 
 export const loadTransactions = (accountId) => {
