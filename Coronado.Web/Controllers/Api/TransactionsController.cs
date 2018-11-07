@@ -57,10 +57,11 @@ namespace Coronado.Web.Controllers.Api
                 return BadRequest();
             }
 
+            var originalAmount = _transactionRepo.Get(transaction.TransactionId).Amount;
             transaction.SetAmount();
             _transactionRepo.Update(transaction);
 
-            return Ok(transaction);
+            return Ok(new {transaction, originalAmount});
         }
 
         [HttpPost]

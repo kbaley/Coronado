@@ -23,8 +23,8 @@ export function loadAccountTypesSuccess(accountTypes) {
   return { type: types.LOAD_ACCOUNT_TYPES_SUCCESS, accountTypes };
 }
 
-export function updateTransactionSuccess(updatedTransaction) {
-  return { type: types.UPDATE_TRANSACTION_SUCCESS, updatedTransaction };
+export function updateTransactionSuccess(updatedTransactionModel) {
+  return { type: types.UPDATE_TRANSACTION_SUCCESS, ...updatedTransactionModel };
 }
 
 export function createTransactionSuccess(newTransaction) {
@@ -37,6 +37,10 @@ export function updateAccountSuccess(updatedAccount) {
 
 function createAccountSuccess(newAccount) {
   return { type: types.CREATE_ACCOUNT_SUCCESS, newAccount };
+}
+
+export function deleteTransactionSuccess(transaction) {
+  return { type: types.DELETE_TRANSACTION_SUCCESS, transaction };
 }
 
 export const loadAccounts = () => {
@@ -73,16 +77,16 @@ export const deleteTransaction = (transactionId) => {
         'Content-Type': 'application/json'
       }
     });
-    await response.json();
-    dispatch( { type: types.DELETE_TRANSACTION, transactionId } );
+    const transaction = await response.json();
+    dispatch( deleteTransactionSuccess(transaction) );
   }
 }
 
 export const updateTransaction = (transaction) => {
   return async (dispatch) => {
 
-    const updatedTransaction = await AccountApi.updateTransaction(transaction);
-    dispatch(updateTransactionSuccess(updatedTransaction));
+    const updatedTransactionModel = await AccountApi.updateTransaction(transaction);
+    dispatch(updateTransactionSuccess(updatedTransactionModel));
   }
 }
 

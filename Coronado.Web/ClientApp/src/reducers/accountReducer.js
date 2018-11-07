@@ -2,18 +2,10 @@ import initialState from './initialState';
 import { sumBy } from 'lodash'; 
 import * as actions from "../constants/accountActionTypes.js";
 
-function computeBalance(transactions, newTransactions) {
-  var total = sumBy(transactions, (t) => { return (t.credit - t.debit); });
-  if (newTransactions) total += sumBy(newTransactions, t => { return (t.credit - t.debit); });
-  return total;
-}
-
 export const accountReducer = (state = initialState.accountState, action) => {
 
   switch (action.type) {
-    
     case actions.LOAD_TRANSACTIONS:
-
       return {
         ...state,
         isAccountLoading: true
@@ -58,17 +50,6 @@ export const accountReducer = (state = initialState.accountState, action) => {
           : a)
       }
 
-    case actions.CREATE_TRANSACTION_SUCCESS:
-      return {
-        ...state,
-        accounts: state.accounts.map(a => {
-          return {
-            ...a,
-            currentBalance: a.currentBalance + sumBy(action.newTransaction, t => t.accountId === a.accountId ? t.amount : 0)
-          }
-        })
-      }
-
     case actions.DELETE_ACCOUNT:
       return {
         ...state,
@@ -83,6 +64,39 @@ export const accountReducer = (state = initialState.accountState, action) => {
         accounts: state.accounts.concat(undeletedAccount),
         deletedAccounts: state.deletedAccounts.filter(el => el.accountId !== action.accountId)
       }
+
+    case actions.CREATE_TRANSACTION_SUCCESS:
+      return {
+        ...state,
+        accounts: state.accounts.map(a => {
+          return {
+            ...a,
+            currentBalance: a.currentBalance + sumBy(action.newTransaction, t => t.accountId === a.accountId ? t.amount : 0)
+          }
+        })
+      }
+
+    case actions.UPDATE_TRANSACTION_SUCCESS:
+      return {
+        ...state,
+        accounts: state.accounts.map(a => {
+          return {
+            ...a,
+            currentBalance: a.currentBalance + (action.transaction.accountId === a.accountId ? (action.transaction.amount - action.originalAmount) : 0)
+          }
+        })
+      }
+    
+      case actions.DELETE_TRANSACTION_SUCCESS:
+        return {
+          ...state,
+          accounts: state.accounts.map(a => {
+            return {
+              ...a,
+              currentBalance: a.currentBalance - (action.transaction.accountId === a.accountId ? action.transaction.amount : 0)
+            }
+          })
+        }
 
     case actions.LOAD_ACCOUNT_TYPES_SUCCESS:
       return {
