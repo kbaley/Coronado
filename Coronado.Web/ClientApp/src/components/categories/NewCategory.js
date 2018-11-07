@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import * as categoryActions from '../actions/categoryActions';
+import * as categoryActions from '../../actions/categoryActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
 import CategoryForm from './CategoryForm';
-import { NewIcon } from './icons/NewIcon';
+import { NewIcon } from '../icons/NewIcon';
 import './NewCategory.css';
 
 class NewCategory extends Component {

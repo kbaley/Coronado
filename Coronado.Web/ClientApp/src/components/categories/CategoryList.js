@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import * as categoryActions from '../actions/categoryActions';
+import * as categoryActions from '../../actions/categoryActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import CategoryForm from './CategoryForm';

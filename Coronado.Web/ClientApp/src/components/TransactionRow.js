@@ -5,7 +5,7 @@ import { DecimalFormat, MoneyFormat } from './DecimalFormat';
 import * as transactionActions from '../actions/transactionActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { CategorySelect } from './CategorySelect';
+import { CategorySelect } from './categories/CategorySelect';
 import './TransactionRow.css';
 import { CheckIcon } from './icons/CheckIcon';
 import { CancelIcon } from './icons/CancelIcon';

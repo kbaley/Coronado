@@ -1,6 +1,6 @@
 import React from 'react';
-import { DeleteIcon } from './icons/DeleteIcon';
-import { EditIcon } from './icons/EditIcon';
+import { DeleteIcon } from '../icons/DeleteIcon';
+import { EditIcon } from '../icons/EditIcon';
 
 export function CategoryRow({category, onEdit, onDelete, parent}) {
   return (
