@@ -1,11 +1,12 @@
 import initialState from './initialState';
 import { sumBy } from 'lodash'; 
 import * as actions from "../constants/accountActionTypes.js";
+import * as transactionActions from "../constants/transactionActionTypes";
 
 export const accountReducer = (state = initialState.accountState, action) => {
 
   switch (action.type) {
-    case actions.LOAD_TRANSACTIONS:
+    case transactionActions.LOAD_TRANSACTIONS:
       return {
         ...state,
         isAccountLoading: true
@@ -17,7 +18,7 @@ export const accountReducer = (state = initialState.accountState, action) => {
         selectedAccount: action.accountId
       };
 
-    case actions.LOAD_TRANSACTIONS_SUCCESS:
+    case transactionActions.LOAD_TRANSACTIONS_SUCCESS:
       return {
         ...state,
         isAccountLoading: false
@@ -65,7 +66,7 @@ export const accountReducer = (state = initialState.accountState, action) => {
         deletedAccounts: state.deletedAccounts.filter(el => el.accountId !== action.accountId)
       }
 
-    case actions.CREATE_TRANSACTION_SUCCESS:
+    case transactionActions.CREATE_TRANSACTION_SUCCESS:
       return {
         ...state,
         accounts: state.accounts.map(a => {
@@ -76,7 +77,7 @@ export const accountReducer = (state = initialState.accountState, action) => {
         })
       }
 
-    case actions.UPDATE_TRANSACTION_SUCCESS:
+    case transactionActions.UPDATE_TRANSACTION_SUCCESS:
       return {
         ...state,
         accounts: state.accounts.map(a => {
@@ -87,7 +88,7 @@ export const accountReducer = (state = initialState.accountState, action) => {
         })
       }
     
-      case actions.DELETE_TRANSACTION_SUCCESS:
+      case transactionActions.DELETE_TRANSACTION_SUCCESS:
         return {
           ...state,
           accounts: state.accounts.map(a => {

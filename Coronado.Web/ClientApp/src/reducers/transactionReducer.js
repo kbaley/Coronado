@@ -1,6 +1,6 @@
 import initialState from './initialState';
 import { cloneDeep, concat, filter, orderBy, forEachRight } from 'lodash'; 
-import * as actions from "../constants/accountActionTypes.js";
+import * as actions from "../constants/transactionActionTypes.js";
 
 function computeRunningTotal(transactions) {
   var total = 0;
