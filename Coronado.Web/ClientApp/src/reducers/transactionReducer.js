@@ -1,5 +1,5 @@
 import initialState from './initialState';
-import { cloneDeep, concat, filter, orderBy, forEachRight, each } from 'lodash'; 
+import { cloneDeep, concat, filter, orderBy, forEachRight } from 'lodash'; 
 import * as actions from "../constants/accountActionTypes.js";
 
 function computeRunningTotal(transactions) {
@@ -12,7 +12,7 @@ function computeRunningTotal(transactions) {
   return sorted;
 }
 
-export const transactionReducer = (state = initialState.transactions, action) => {
+export const transactionReducer = (state = initialState.transactions, action, selectedAccount) => {
 
   let transactions;
   switch (action.type) {
@@ -25,8 +25,8 @@ export const transactionReducer = (state = initialState.transactions, action) =>
       return computeRunningTotal(filter(state, (t) => {return t.transactionId !== action.transactionId}));
 
     case actions.CREATE_TRANSACTION_SUCCESS:
-      transactions = cloneDeep(state);
-      transactions = each(action.newTransaction, t => { concat(transactions, Object.assign({}, t))});
+      transactions = concat(cloneDeep(state), cloneDeep(action.newTransaction.filter(t => t.accountId === selectedAccount)));
+      
       return computeRunningTotal(transactions)
 
     case actions.UPDATE_TRANSACTION_SUCCESS:

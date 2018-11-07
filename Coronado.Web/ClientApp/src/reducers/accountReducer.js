@@ -58,6 +58,17 @@ export const accountReducer = (state = initialState.accountState, action) => {
           : a)
       }
 
+    case actions.CREATE_TRANSACTION_SUCCESS:
+      return {
+        ...state,
+        accounts: state.accounts.map(a => {
+          return {
+            ...a,
+            currentBalance: a.currentBalance + sumBy(action.newTransaction, t => t.accountId === a.accountId ? t.amount : 0)
+          }
+        })
+      }
+
     case actions.DELETE_ACCOUNT:
       return {
         ...state,

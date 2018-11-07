@@ -12,7 +12,7 @@ function rootReducer(state, action) {
     deletedAccounts: deletedAccountReducer(state.deletedAccounts, action, state.accountState ? state.accountState.accounts : []),
     categories: categoryReducer(state.categories, action, state.deletedCategories || []),
     deletedCategories: deletedCategoryReducer(state.deletedCategories, action, state.categories || []),
-    transactions: transactionReducer(state.transactions, action),
+    transactions: transactionReducer(state.transactions, action, state.accountState ? state.accountState.selectedAccount : []),
     router: routerReducer(state.router, action),
     notifications: notifications(state.notifications, action)
   }
