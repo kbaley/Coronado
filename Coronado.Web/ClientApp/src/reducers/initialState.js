@@ -1,9 +1,8 @@
 export default {
   categories: [],
   deletedCategories: [],
-  accountState: {
-    accounts: []
-  },
+  accounts: [],
+  selectedAccount: '',
   accountTypes: [],
   deletedAccounts: [],
   ajaxCallsInProgress: 0,

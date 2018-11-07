@@ -49,7 +49,7 @@ class TransactionList extends Component {
 function mapStateToProps(state) {
   return {
     categories: state.categories,
-    accounts: state.accountState.accounts,
+    accounts: state.accounts,
     transactions: state.transactions
   }
 }

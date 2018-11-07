@@ -19,32 +19,39 @@ export class AccountForm extends Component {
         mortgagePayment: '',
         startDate: new Date().toLocaleDateString() }
     };
-    if (this.props.account) {
-        this.state = {
-            newAccount: false,
-            account: { 
-                name: this.props.account.name,
-                vendor: this.props.account.vendor || '',
-                currency: this.props.account.currency || '',
-                accountType: this.props.account.accountType || '',
-                accountId: this.props.account.accountId,
-                mortgageType: this.props.account.mortgageType || '',
-                mortgagePayment: this.props.account.mortgagePayment || ''
-            }
+  }
+
+  componentDidUpdate() {
+    if (this.props.account && this.props.account.accountId !== this.state.account.accountId) {
+      this.setState({
+        newAccount: false,
+        account: { 
+          accountId: this.props.account.accountId,
+          name: this.props.account.name,
+          vendor: this.props.account.vendor || '',
+          currency: this.props.account.currency || '',
+          accountType: this.props.account.accountType || '',
+          mortgageType: this.props.account.mortgageType || '',
+          mortgagePayment: this.props.account.mortgagePayment || ''
         }
+      });
     }
   }
+  
 
   handleChange(e) {
     var name = e.target.name;
     this.setState({ account: { ...this.state.account, [name]: e.target.value } });
   }
+
   handleChangeType(e) {
     this.setState({ account: { ...this.state.account, accountType: e.target.value } });
   }
+
   handleChangeMortgageType(e) {
     this.setState({ account: { ...this.state.account, mortgageType: e } } );
   }
+
   onSave() {
     this.props.onSave(this.state.account);
     if (this.state.newAccount)

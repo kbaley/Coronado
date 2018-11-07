@@ -1,5 +1,5 @@
 import * as types from '../constants/transactionActionTypes';
-import * as accountTypes from '../constants/accountActionTypes';
+import * as selectedAccountTypes from "../constants/selectAccountActionTypes";
 import TransactionApi from '../api/transactionApi';
 
 export function loadTransactionsSuccess(transactions, accountId) {
@@ -7,7 +7,7 @@ export function loadTransactionsSuccess(transactions, accountId) {
 }
 
 export function selectAccount(accountId) {
-  return { type: accountTypes.SELECT_ACCOUNT, accountId };
+  return { type: selectedAccountTypes.SELECT_ACCOUNT, accountId };
 }
 
 export function updateTransactionSuccess(updatedTransactionModel) {

@@ -1,57 +1,36 @@
 import initialState from './initialState';
-import { sumBy } from 'lodash'; 
+import { sumBy, cloneDeep, find } from 'lodash'; 
 import * as actions from "../constants/accountActionTypes.js";
 import * as transactionActions from "../constants/transactionActionTypes";
 
-export const accountReducer = (state = initialState.accountState, action, deletedAccounts) => {
+export const accountReducer = (state = initialState.accounts, action, deletedAccounts) => {
 
   switch (action.type) {
 
-    case actions.SELECT_ACCOUNT:
-      return {
-        ...state,
-        selectedAccount: action.accountId
-      };
-
     case actions.LOAD_ACCOUNTS_SUCCESS:
-      return {
-        ...state,
-        accounts: action.accounts,
-      };
+      return action.accounts;
 
     case actions.CREATE_ACCOUNT_SUCCESS:
-      return {
+      return [
         ...state,
-        accounts: state.accounts.concat(action.newAccount)
-      };
+        Object.assign({}, action.newAccount),
+      ];
 
     case actions.UPDATE_ACCOUNT_SUCCESS:
-      return {
-        ...state,
-        selectedAccount: action.updatedAccount.accountId,
-        accounts: state.accounts.map(a => a.accountId === action.updatedAccount.accountId
-          ? {
-            ...a,
-            name: action.updatedAccount.name,
-            vendor: action.updatedAccount.vendor,
-            accountType: action.updatedAccount.accountType,
-            currency: action.updatedAccount.currency
-          }
-          : a)
-      }
+      return [
+        ...state.filter(a => a.accountId !== action.updatedAccount.accountId),
+        Object.assign({}, action.updatedAccount)
+      ];
 
     case actions.DELETE_ACCOUNT:
-      return {
-        ...state,
-        accounts: state.accounts.filter(el => el.accountId !== action.accountId),
-      }
+      return cloneDeep(state.filter(a => a.accountId !== action.accountId));
 
     case actions.UNDO_DELETE_ACCOUNT:
-      var undeletedAccount = deletedAccounts.filter(a => a.accountId === action.accountId);
-      return {
+      const deletedAccount = find(deletedAccounts, a => a.accountId === action.accountId);
+      return [
         ...state,
-        accounts: state.accounts.concat(undeletedAccount),
-      }
+        Object.assign({}, deletedAccount)
+      ];
 
     case transactionActions.CREATE_TRANSACTION_SUCCESS:
       return {

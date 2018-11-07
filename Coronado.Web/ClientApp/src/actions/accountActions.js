@@ -37,8 +37,8 @@ export const deleteAccount = (accountId, accountName) => {
     };
     dispatch( { type: types.DELETE_ACCOUNT, accountId } );
     dispatch(info(notificationOpts));
-    if (getState().accountState.accounts.length > 0)
-      dispatch(push('/account/' + getState().accountState.accounts[0].accountId));
+    if (getState().accounts.length > 0)
+      dispatch(push('/account/' + getState().accounts[0].accountId));
     else
       dispatch(push('/'));
   }

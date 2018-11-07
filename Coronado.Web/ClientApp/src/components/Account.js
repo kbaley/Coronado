@@ -64,7 +64,8 @@ import { filter } from "lodash";
   }
 
   render() {
-    var account = this.getSelectedAccount();
+    const account = this.getSelectedAccount();
+    
     return (
       <div>
         <div style={{float: "right", width: "100px"}}>
@@ -91,7 +92,7 @@ function AccountHeader(props) {
 
 function mapStateToProps(state) {
    return {
-     accounts: state.accountState.accounts,
+     accounts: state.accounts,
      accountTypes: state.accountTypes,
      transactions: state.transactions
    }

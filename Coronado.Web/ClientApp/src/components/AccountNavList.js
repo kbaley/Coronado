@@ -87,7 +87,7 @@ class AccountNavList extends Component {
 
 function mapStateToProps(state) {
   return {
-    accounts: state.accountState.accounts
+    accounts: state.accounts
   }
 }
 
