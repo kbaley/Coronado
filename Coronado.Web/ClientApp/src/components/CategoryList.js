@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import * as categoryActions from '../actions/categoryActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { DeleteIcon } from './icons/DeleteIcon';
-import { EditIcon } from './icons/EditIcon';
 import CategoryForm from './CategoryForm';
 import './CategoryList.css';
 import { find } from 'lodash';
+import { CategoryRow } from './CategoryRow';
 
 class CategoryList extends Component {
   constructor(props) {
@@ -46,7 +45,8 @@ class CategoryList extends Component {
   }
   
   render() {
-    return (<table className='table category-list'>
+    return (
+    <table className='table category-list'>
       <thead>
         <tr>
           <th></th>
@@ -56,18 +56,23 @@ class CategoryList extends Component {
         </tr>
       </thead>
       <tbody>
-        <CategoryForm show={this.state.show} onClose={this.handleClose} category={this.state.selectedCategory} onSave={this.saveCategory} />
-        {this.props.categories.map(cat => <tr key={cat.categoryId}>
-          <td>
-            <EditIcon onStartEditing={() => this.startEditing(cat)} />
-            <DeleteIcon onDelete={() => this.deleteCategory(cat.categoryId, cat.name)} />
-          </td>
-          <td>{cat.name}</td>
-          <td>{cat.type}</td>
-          <td>{this.getCategoryName(cat.parentCategoryId)}</td>
-        </tr>)}
+        <CategoryForm 
+          show={this.state.show} 
+          onClose={this.handleClose} 
+          category={this.state.selectedCategory} 
+          categories={this.props.categories}
+          onSave={this.saveCategory} />
+        {this.props.categories.map(cat => 
+        <CategoryRow 
+          key={cat.categoryId} 
+          parent={this.getCategoryName(cat.parentCategoryId)}
+          category={cat} 
+          onEdit={() => this.startEditing(cat)} 
+          onDelete={()=>this.deleteCategory(cat.categoryId, cat.name)} />
+        )}
       </tbody>
-    </table>);
+    </table>
+    );
   }
 }
 
