@@ -3,7 +3,7 @@ import { sumBy } from 'lodash';
 import * as actions from "../constants/accountActionTypes.js";
 import * as transactionActions from "../constants/transactionActionTypes";
 
-export const accountReducer = (state = initialState.accountState, action) => {
+export const accountReducer = (state = initialState.accountState, action, deletedAccounts) => {
 
   switch (action.type) {
     case transactionActions.LOAD_TRANSACTIONS:
@@ -55,15 +55,13 @@ export const accountReducer = (state = initialState.accountState, action) => {
       return {
         ...state,
         accounts: state.accounts.filter(el => el.accountId !== action.accountId),
-        deletedAccounts: state.deletedAccounts.concat(state.accounts.filter(el => el.accountId === action.accountId))
       }
 
     case actions.UNDO_DELETE_ACCOUNT:
-      var undeletedAccount = state.deletedAccounts.filter(a => a.accountId === action.accountId);
+      var undeletedAccount = deletedAccounts.filter(a => a.accountId === action.accountId);
       return {
         ...state,
         accounts: state.accounts.concat(undeletedAccount),
-        deletedAccounts: state.deletedAccounts.filter(el => el.accountId !== action.accountId)
       }
 
     case transactionActions.CREATE_TRANSACTION_SUCCESS:

@@ -3,9 +3,7 @@ export default {
   deletedCategories: [],
   accountState: {
     isAccountLoading: true,
-    accounts: [],
-    accountTypes: [],
-    deletedAccounts: []
+    accounts: []
   },
   accountTypes: [],
   deletedAccounts: [],

@@ -9,7 +9,7 @@ import { routerReducer } from 'react-router-redux';
 
 function rootReducer(state, action) {
   return {
-    accountState: accountReducer(state.accountState, action),
+    accountState: accountReducer(state.accountState, action, state.deletedAccounts || []),
     deletedAccounts: deletedAccountReducer(state.deletedAccounts, action, state.accountState ? state.accountState.accounts : []),
     categories: categoryReducer(state.categories, action, state.deletedCategories || []),
     deletedCategories: deletedCategoryReducer(state.deletedCategories, action, state.categories || []),
