@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { DeleteIcon } from './icons/DeleteIcon';
 import { EditIcon } from './icons/EditIcon';
-import { DecimalFormat, MoneyFormat } from './DecimalFormat';
+import { DecimalFormat, MoneyFormat } from './common/DecimalFormat';
 import * as transactionActions from '../actions/transactionActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -9,7 +9,7 @@ import { CategorySelect } from './categories/CategorySelect';
 import './TransactionRow.css';
 import { CheckIcon } from './icons/CheckIcon';
 import { CancelIcon } from './icons/CancelIcon';
-import { MoneyInput } from './MoneyInput';
+import { MoneyInput } from './common/MoneyInput';
 import * as Mousetrap from 'mousetrap';
 
 class TransactionRow extends Component {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Col, Grid, Row } from 'react-bootstrap';
 import NavMenu from './NavMenu';
 import NotificationsComponent from './Notifications';
-import { ShortcutHelper } from './ShortcutHelper';
+import { ShortcutHelper } from './common/ShortcutHelper';
 
 export default props => (
   <Grid fluid>

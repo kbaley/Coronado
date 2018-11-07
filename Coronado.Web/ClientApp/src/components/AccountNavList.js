@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
 import { withRouter } from 'react-router-dom';
 import './AccountNavList.css'
-import { CurrencyFormat } from './CurrencyFormat';
+import { CurrencyFormat } from './common/CurrencyFormat';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class AccountNavList extends Component {
