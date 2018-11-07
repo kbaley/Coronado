@@ -1,6 +1,6 @@
 import * as types from '../constants/transactionActionTypes';
 import * as accountTypes from '../constants/accountActionTypes';
-import AccountApi from '../api/accountApi';
+import TransactionApi from '../api/transactionApi';
 
 export function loadTransactionsSuccess(transactions, accountId) {
   return { type: types.LOAD_TRANSACTIONS_SUCCESS, transactions, accountId };
@@ -30,7 +30,7 @@ export const loadTransactions = (accountId) => {
   return async (dispatch) => {
     dispatch(requestTransactions());
     dispatch(selectAccount(accountId) );
-    const transactions = await AccountApi.getTransactions(accountId);
+    const transactions = await TransactionApi.getTransactions(accountId);
 
     dispatch(loadTransactionsSuccess(transactions, accountId));
   }
@@ -53,7 +53,7 @@ export const deleteTransaction = (transactionId) => {
 export const updateTransaction = (transaction) => {
   return async (dispatch) => {
 
-    const updatedTransactionModel = await AccountApi.updateTransaction(transaction);
+    const updatedTransactionModel = await TransactionApi.updateTransaction(transaction);
     dispatch(updateTransactionSuccess(updatedTransactionModel));
   }
 }
@@ -61,7 +61,7 @@ export const updateTransaction = (transaction) => {
 export const createTransaction = (transaction, transactionType) => {
   return async (dispatch) => {
 
-    const newTransaction = await AccountApi.createTransaction(transaction, transactionType);
+    const newTransaction = await TransactionApi.createTransaction(transaction, transactionType);
 
     dispatch(createTransactionSuccess(newTransaction));
   }
