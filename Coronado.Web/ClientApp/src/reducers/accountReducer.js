@@ -44,8 +44,10 @@ export const accountReducer = (state = initialState.accounts, action, deletedAcc
 
 
 function setAccountBalances(state, accountBalances) {
-
   let accounts = cloneDeep(state);
-  each(accountBalances, ab => find(accounts, a => a.accountId === ab.accountId).currentBalance = ab.currentBalance );
+  each(accounts, a => {
+    const accountBalance = find(accountBalances, ab => ab.accountId === a.accountId);
+    a.currentBalance = accountBalance ? accountBalance.currentBalance : 0;
+  });
   return accounts;
 }
