@@ -51,7 +51,7 @@ class NewAccount extends Component {
 
 function mapStateToProps(state) {
   return {
-    accountTypes: state.accountState.accountTypes
+    accountTypes: state.accountTypes
   }
 }
 

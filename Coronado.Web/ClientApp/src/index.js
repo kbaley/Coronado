@@ -7,7 +7,8 @@ import { ConnectedRouter } from 'react-router-redux';
 import { createBrowserHistory } from 'history';
 import configureStore from './store/configureStore';
 import App from './App';
-import {loadAccounts, loadAccountTypes} from './actions/accountActions';
+import {loadAccounts} from './actions/accountActions';
+import {loadAccountTypes} from './actions/accountTypeActions';
 import {loadCategories} from './actions/categoryActions';
 import registerServiceWorker from './registerServiceWorker';
 

@@ -7,6 +7,7 @@ export default {
     accountTypes: [],
     deletedAccounts: []
   },
+  accountTypes: [],
   deletedAccounts: [],
   ajaxCallsInProgress: 0,
   transactions: []

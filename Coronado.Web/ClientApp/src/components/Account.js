@@ -97,7 +97,7 @@ function mapStateToProps(state) {
    return {
      isAccountLoading: state.accountState.isAccountLoading,
      accounts: state.accountState.accounts,
-     accountTypes: state.accountState.accountTypes,
+     accountTypes: state.accountTypes,
      transactions: state.transactions
    }
 }

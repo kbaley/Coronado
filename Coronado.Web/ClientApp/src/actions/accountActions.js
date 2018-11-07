@@ -7,10 +7,6 @@ export function loadAccountsSuccess(accounts) {
   return { type: types.LOAD_ACCOUNTS_SUCCESS, accounts };
 }
 
-export function loadAccountTypesSuccess(accountTypes) {
-  return { type: types.LOAD_ACCOUNT_TYPES_SUCCESS, accountTypes };
-}
-
 export function updateAccountSuccess(updatedAccount) {
   return { type: types.UPDATE_ACCOUNT_SUCCESS, updatedAccount };
 }
@@ -23,14 +19,6 @@ export const loadAccounts = () => {
   return async function(dispatch) {
     const accounts = await AccountApi.getAllAccounts();
     dispatch(loadAccountsSuccess(accounts));
-  };
-}
-
-export const loadAccountTypes = () => {
-  return async function(dispatch, getState) {
-    if (getState().accountState.accountTypes.length > 0) return null;
-    const accountTypes = await AccountApi.getAccountTypes();
-    dispatch(loadAccountTypesSuccess(accountTypes));
   };
 }
 

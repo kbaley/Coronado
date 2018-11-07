@@ -88,22 +88,17 @@ export const accountReducer = (state = initialState.accountState, action) => {
         })
       }
     
-      case transactionActions.DELETE_TRANSACTION_SUCCESS:
-        return {
-          ...state,
-          accounts: state.accounts.map(a => {
-            return {
-              ...a,
-              currentBalance: a.currentBalance - (action.transaction.accountId === a.accountId ? action.transaction.amount : 0)
-            }
-          })
-        }
-
-    case actions.LOAD_ACCOUNT_TYPES_SUCCESS:
+    case transactionActions.DELETE_TRANSACTION_SUCCESS:
       return {
         ...state,
-        accountTypes: action.accountTypes
+        accounts: state.accounts.map(a => {
+          return {
+            ...a,
+            currentBalance: a.currentBalance - (action.transaction.accountId === a.accountId ? action.transaction.amount : 0)
+          }
+        })
       }
+      
     default:
       return state;
   }

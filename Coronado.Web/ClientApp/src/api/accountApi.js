@@ -4,13 +4,8 @@ class AccountApi {
     return response.json();
   }
 
-  static async getAccountTypes() {
-    const response = await fetch("/api/AccountTypes");
-    return response.json();
-  }
-
   static async updateAccount(account) {
-    const response = await fetch('api/Accounts/' + account.accountId, {
+    const response = await fetch(this.baseUrl + account.accountId, {
       method: 'PUT',
       headers: {
         'Accept': 'application/json',
@@ -22,7 +17,7 @@ class AccountApi {
   }
 
   static async createAccount(account) {
-    const response = await fetch('/api/Accounts', {
+    const response = await fetch(this.baseUrl, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -34,5 +29,5 @@ class AccountApi {
   }
 }
 
-AccountApi.baseUrl = "/api/Accounts"
+AccountApi.baseUrl = "/api/Accounts/"
 export default AccountApi;
