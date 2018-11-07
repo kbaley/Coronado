@@ -6,22 +6,11 @@ import * as transactionActions from "../constants/transactionActionTypes";
 export const accountReducer = (state = initialState.accountState, action, deletedAccounts) => {
 
   switch (action.type) {
-    case transactionActions.LOAD_TRANSACTIONS:
-      return {
-        ...state,
-        isAccountLoading: true
-      };
 
     case actions.SELECT_ACCOUNT:
       return {
         ...state,
         selectedAccount: action.accountId
-      };
-
-    case transactionActions.LOAD_TRANSACTIONS_SUCCESS:
-      return {
-        ...state,
-        isAccountLoading: false
       };
 
     case actions.LOAD_ACCOUNTS_SUCCESS:

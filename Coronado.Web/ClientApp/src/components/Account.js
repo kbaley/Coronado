@@ -67,21 +67,17 @@ import { filter } from "lodash";
     var account = this.getSelectedAccount();
     return (
       <div>
-        {this.props.isAccountLoading ? <p><em>Loading...</em></p> : (
-          <div>
-            <div style={{float: "right", width: "100px"}}>
-              <EditAccount account={account} onUpdate={this.updateAccount} accountTypes={this.props.accountTypes} />
-              <DeleteAccount onDelete={this.deleteAccount} />
-            </div>
-            <AccountHeader account={account} />
-            <TransactionList 
-              transactions={this.props.transactions} 
-              mortgageAccounts={this.getMortgageAccounts()}
-              account={account}
-              categories={this.props.categories}
-            />
-          </div>
-        )}
+        <div style={{float: "right", width: "100px"}}>
+          <EditAccount account={account} onUpdate={this.updateAccount} accountTypes={this.props.accountTypes} />
+          <DeleteAccount onDelete={this.deleteAccount} />
+        </div>
+        <AccountHeader account={account} />
+        <TransactionList 
+          transactions={this.props.transactions} 
+          mortgageAccounts={this.getMortgageAccounts()}
+          account={account}
+          categories={this.props.categories}
+        />
       </div>
     );
   }
@@ -95,7 +91,6 @@ function AccountHeader(props) {
 
 function mapStateToProps(state) {
    return {
-     isAccountLoading: state.accountState.isAccountLoading,
      accounts: state.accountState.accounts,
      accountTypes: state.accountTypes,
      transactions: state.transactions

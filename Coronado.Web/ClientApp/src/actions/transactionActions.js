@@ -10,10 +10,6 @@ export function selectAccount(accountId) {
   return { type: accountTypes.SELECT_ACCOUNT, accountId };
 }
 
-export function requestTransactions() {
-  return { type: types.LOAD_TRANSACTIONS };
-}
-
 export function updateTransactionSuccess(updatedTransactionModel) {
   return { type: types.UPDATE_TRANSACTION_SUCCESS, ...updatedTransactionModel };
 }
@@ -28,7 +24,6 @@ export function deleteTransactionSuccess(transaction) {
 
 export const loadTransactions = (accountId) => {
   return async (dispatch) => {
-    dispatch(requestTransactions());
     dispatch(selectAccount(accountId) );
     const transactions = await TransactionApi.getTransactions(accountId);
 
