@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { CheckIcon } from './icons/CheckIcon';
 import * as Mousetrap from 'mousetrap';
-import { CategorySelect } from './categories/CategorySelect';
+import { CategorySelect } from './common/CategorySelect';
 import { find } from 'lodash';
 import { bindActionCreators } from 'redux';
 import * as transactionActions from '../actions/transactionActions';
