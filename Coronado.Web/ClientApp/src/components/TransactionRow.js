@@ -11,6 +11,7 @@ import { CheckIcon } from './icons/CheckIcon';
 import { CancelIcon } from './icons/CancelIcon';
 import { MoneyInput } from './common/MoneyInput';
 import * as Mousetrap from 'mousetrap';
+import { getCategoriesForDropdown } from "../selectors/selectors.js";
 
 class TransactionRow extends Component {
   constructor(props) {
@@ -94,7 +95,6 @@ class TransactionRow extends Component {
             <CategorySelect 
               selectedCategory={this.state.selectedCategory} 
               categories={this.props.categories}
-              accounts={this.props.accounts}
               selectedAccount={trx.accountId}
               onCategoryChanged={this.handleChangeCategory} />
         </td>
@@ -131,8 +131,7 @@ class TransactionRow extends Component {
 
 function mapStateToProps(state) {
   return { 
-    categories: state.categories,
-    accounts: state.accounts
+    categories: getCategoriesForDropdown(state.categories, state.accounts)
   }
 }
 

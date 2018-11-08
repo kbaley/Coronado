@@ -25,7 +25,7 @@ import { filter } from "lodash";
     this.props.actions.loadTransactions(this.props.match.params.accountId);
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate() {
     if (this.state.loading) {
       this.props.actions.loadTransactions(this.props.match.params.accountId);
       this.setState({loading:false});

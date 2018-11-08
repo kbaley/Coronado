@@ -6,6 +6,7 @@ import { find } from 'lodash';
 import { bindActionCreators } from 'redux';
 import * as transactionActions from '../actions/transactionActions';
 import { connect } from 'react-redux';
+import { getCategoriesForDropdown } from "../selectors/selectors";
 
 class NewTransactionRow extends Component {
   constructor(props) {
@@ -148,8 +149,7 @@ class NewTransactionRow extends Component {
 
 function mapStateToProps(state) {
   return {
-    accounts: state.accounts,
-    categories: state.categories  
+    categories: getCategoriesForDropdown(state.categories, state.accounts)
   }
 }
 
