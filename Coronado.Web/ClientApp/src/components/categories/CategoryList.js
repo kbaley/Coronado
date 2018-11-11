@@ -6,6 +6,7 @@ import CategoryForm from './CategoryForm';
 import './CategoryList.css';
 import { find } from 'lodash';
 import { CategoryRow } from './CategoryRow';
+import Spinner from '../common/Spinner';
 
 class CategoryList extends Component {
   constructor(props) {
@@ -62,7 +63,8 @@ class CategoryList extends Component {
           category={this.state.selectedCategory} 
           categories={this.props.categories}
           onSave={this.saveCategory} />
-        {this.props.categories.map(cat => 
+        { this.props.isLoading ? <tr><td colspan="5"><Spinner /></td></tr> :
+          this.props.categories.map(cat => 
         <CategoryRow 
           key={cat.categoryId} 
           parent={this.getCategoryName(cat.parentCategoryId)}
@@ -79,7 +81,8 @@ class CategoryList extends Component {
 function mapStateToProps(state) {
   return {
     categories: state.categories,
-    notifications: state.notifications
+    notifications: state.notifications,
+    isLoading: state.loading.categories
   }
 }
 

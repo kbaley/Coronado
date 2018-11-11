@@ -6,6 +6,10 @@ export function loadCategoriesSuccess(categories) {
   return {type: types.LOAD_CATEGORIES_SUCCESS, categories};
 }
 
+export function loadCategoriesAction() {
+  return {type: types.LOAD_CATEGORIES};
+}
+
 export function updateCategorySuccess(category) {
   return {type: types.UPDATE_CATEGORY_SUCCESS, category};
 }
@@ -16,6 +20,7 @@ export function createCategorySuccess(category) {
 
 export const loadCategories = () => {
   return async (dispatch) => {
+    dispatch(loadCategoriesAction());
     const categories = await CategoryApi.getAllCategories();
     dispatch(loadCategoriesSuccess(categories));
   };

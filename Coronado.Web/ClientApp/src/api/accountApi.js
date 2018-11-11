@@ -1,10 +1,5 @@
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
 class AccountApi {
   static async getAllAccounts() {
-    await sleep(3000);
     const response = await fetch(this.baseUrl);
     return response.json();
   }
