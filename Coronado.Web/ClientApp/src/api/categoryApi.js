@@ -1,5 +1,10 @@
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
 class CategoryApi {
   static async getAllCategories() {
+    await sleep(5000);
     const response = await fetch("api/Categories");
     return response.json();
   }

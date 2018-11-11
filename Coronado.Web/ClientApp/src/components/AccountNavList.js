@@ -9,6 +9,7 @@ import { withRouter } from 'react-router-dom';
 import './AccountNavList.css'
 import { CurrencyFormat } from './common/CurrencyFormat';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Spinner from './common/Spinner';
 
 class AccountNavList extends Component {
   displayName = AccountNavList.name;
@@ -64,7 +65,7 @@ class AccountNavList extends Component {
   render() {
     return (
       <Nav>
-        {this.props.accounts.length === 0 ? "loading..." : 
+        {this.props.isLoadingData ? <Spinner /> : 
         this.props.accounts.map(account =>
           <LinkContainer to={'/account/' + account.accountId} key={account.accountId}>
             <NavItem>
@@ -87,7 +88,8 @@ class AccountNavList extends Component {
 
 function mapStateToProps(state) {
   return {
-    accounts: state.accounts
+    accounts: state.accounts,
+    isLoadingData: state.loading ? state.loading.accounts : true
   }
 }
 

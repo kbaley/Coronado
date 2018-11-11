@@ -15,8 +15,13 @@ function createAccountSuccess(newAccount) {
   return { type: types.CREATE_ACCOUNT_SUCCESS, newAccount };
 }
 
+function loadAccountsAction() {
+  return { type: types.LOAD_ACCOUNTS }
+}
+
 export const loadAccounts = () => {
   return async function(dispatch) {
+    dispatch(loadAccountsAction());
     const accounts = await AccountApi.getAllAccounts();
     dispatch(loadAccountsSuccess(accounts));
   };

@@ -5,6 +5,7 @@ import { deletedAccountReducer } from "./deletedAccountReducer";
 import { transactionReducer } from "./transactionReducer";
 import { accountTypeReducer } from "./accountTypeReducer";
 import { selectedAccountReducer } from "./selectedAccountReducer";
+import { ajaxStatusReducer } from "./ajaxStatusReducer";
 import {reducer as notifications} from 'react-notification-system-redux';
 import { routerReducer } from 'react-router-redux';
 
@@ -18,6 +19,7 @@ function rootReducer(state, action) {
     transactions: transactionReducer(state.transactions, action, state.selectedAccount || ''),
     accountTypes: accountTypeReducer(state.accountTypes, action),
     router: routerReducer(state.router, action),
+    loading: ajaxStatusReducer(state.loading, action),
     notifications: notifications(state.notifications, action)
   }
 }

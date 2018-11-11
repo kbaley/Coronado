@@ -1,17 +1,18 @@
-import * as types from '../constants/ajaxStatusActionTypes';
+import * as types from '../constants/accountActionTypes';
 import initialState from './initialState';
 
-function actionTypeEndsInSuccess(type) {
-  return type.substring(type.length - 8) == '_SUCCESS';
-}
-
-export default function ajaxStatusReducer(state = initialState.ajaxCallsInProgress, action) {
-  if (action.type === types.BEGIN_AJAX_CALL) {
-    return state + 1;
-  } else if (action.type == actionTypeEndsInSuccess(action.type)) {
-    return state - 1;
+export const ajaxStatusReducer = (state = initialState.loading, action) => {
+  if (action.type === types.LOAD_ACCOUNTS) {
+    return {
+      ...state,
+      accounts: true
+    }
+  } else if (action.type === types.LOAD_ACCOUNTS_SUCCESS) {
+    return {
+      ...state,
+      accounts: false
+    };
   }
-
 
   return state;
 }
