@@ -11,7 +11,10 @@ describe('accountTypeActions tests', () => {
     const dispatch = jest.fn();
     const getState = jest.fn();
     getState.mockReturnValue({accountTypes: [{accountTypeId: "123", name: "type 1"}]});
+
+    // ACT
     await loadAccountTypes()(dispatch, getState);
+
     expect(dispatch).not.toHaveBeenCalled();
     expect(getState).toHaveBeenCalled();
   }); 
@@ -22,7 +25,10 @@ describe('accountTypeActions tests', () => {
     const dispatch = jest.fn();
     const getState = jest.fn();
     getState.mockReturnValue({accountTypes: []});
+
+    // ACT
     await loadAccountTypes()(dispatch, getState);
+
     expect(dispatch).toHaveBeenCalled();
     expect(fetch.mock.calls.length).toBe(1);
     expect(dispatch).toBeCalledWith({type: LOAD_ACCOUNT_TYPES_SUCCESS, accountTypes: returnedAccountTypes});
