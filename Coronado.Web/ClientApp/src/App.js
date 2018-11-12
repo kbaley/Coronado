@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import Home from './components/Home';
 import Account from './components/Account';
 import Categories from './components/categories/Categories';
+import InvoicesPage from './components/invoices/InvoicesPage';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPiggyBank, faCreditCard, faHome, faHandHoldingUsd, 
   faDollarSign, faCar, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons'
@@ -15,5 +16,6 @@ export default () => (
     <Route exact path='/' component={Home} />
     <Route path='/account/:accountId' render={props => <Account {...props} />} />
     <Route exact path='/categories' component={Categories} />
+    <Route exact path='/invoices' component={InvoicesPage} />
   </Layout>
 );

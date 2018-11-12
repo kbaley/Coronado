@@ -4,6 +4,7 @@ import { Navbar, Nav } from 'react-bootstrap';
 import AccountNavList from './AccountNavList';
 import './NavMenu.css';
 import CategoriesMenu from './categories/CategoriesMenu';
+import InvoicesMenu from './invoices/InvoicesMenu';
 import NewAccount from './NewAccount';
 
 export default props => (
@@ -23,6 +24,9 @@ export default props => (
     <Navbar.Collapse>
       <Nav>
         <CategoriesMenu />
+      </Nav>
+      <Nav>
+        <InvoicesMenu />
       </Nav>
     </Navbar.Collapse>
   </Navbar>
