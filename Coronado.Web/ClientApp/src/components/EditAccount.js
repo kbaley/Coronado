@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { AccountForm } from './AccountForm';
 import { EditIcon } from './icons/EditIcon';
 import './EditAccount.css';
@@ -17,7 +17,8 @@ class EditAccount extends Component {
     this.setState({ show: false });
   }
   render() {
-    return (<span>
+    return (
+    <Fragment>
       <EditIcon className="edit-account" onStartEditing={this.showForm} />
       <AccountForm 
         show={this.state.show} 
@@ -26,7 +27,8 @@ class EditAccount extends Component {
         onSave={this.props.onUpdate}
         accountTypes={this.props.accountTypes}
       />
-    </span>);
+    </Fragment>
+    );
   }
 }
 

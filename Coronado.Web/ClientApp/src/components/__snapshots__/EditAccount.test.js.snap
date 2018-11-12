@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EditAccount tests should render an EditIcon 1`] = `
+<span
+  className="edit-icon icon edit-account glyphicon glyphicon-pencil"
+  onClick={[Function]}
+/>
+`;
