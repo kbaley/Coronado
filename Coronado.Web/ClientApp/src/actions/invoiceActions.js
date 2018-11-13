@@ -1,69 +1,18 @@
-import * as types from '../constants/categoryActionTypes';
-import { info } from 'react-notification-system-redux';
-import CategoryApi from '../api/categoryApi';
+import * as types from '../constants/invoiceActionTypes';
+import InvoiceApi from '../api/invoiceApi';
 
-export function loadCategoriesSuccess(categories) {
-  return {type: types.LOAD_CATEGORIES_SUCCESS, categories};
+export function loadInvoicesSuccess(invoices) {
+  return {type: types.LOAD_INVOICES_SUCCESS, invoices};
 }
 
-export function loadCategoriesAction() {
-  return {type: types.LOAD_CATEGORIES};
+export function loadInvoicesAction() {
+  return {type: types.LOAD_INVOICES};
 }
 
-export function updateCategorySuccess(category) {
-  return {type: types.UPDATE_CATEGORY_SUCCESS, category};
-}
-
-export function createCategorySuccess(category) {
-  return {type: types.CREATE_CATEGORY_SUCCESS, category};
-}
-
-export const loadCategories = () => {
+export const loadInvoices = () => {
   return async (dispatch) => {
-    dispatch(loadCategoriesAction());
-    const categories = await CategoryApi.getAllCategories();
-    dispatch(loadCategoriesSuccess(categories));
+    dispatch(loadInvoicesAction());
+    const invoices = await InvoiceApi.getAllInvoices();
+    dispatch(loadInvoicesSuccess(invoices));
   };
-}
-
-export const updateCategory = (category) => {
-  return async (dispatch) => {
-    const updatedCategory = await CategoryApi.updateCategory(category);
-    dispatch(updateCategorySuccess(updatedCategory));
-  }
-}
-
-export const deleteCategory = (categoryId, categoryName) => {
-  return async function(dispatch, getState) {
-    const notificationOpts = {
-      message: 'Category ' + categoryName + ' deleted',
-      position: 'br',
-      onRemove: () => { deleteCategoryForReal(categoryId, getState().deletedCategories) },
-      action: {
-        label: 'Undo',
-        callback: () => {dispatch({type: types.UNDO_DELETE_CATEGORY, categoryId: categoryId })}
-      }
-    };
-    dispatch( { type: types.DELETE_CATEGORY, categoryId: categoryId } );
-    dispatch(info(notificationOpts));
-  }
-}
-
-export const createCategory = (category) => {
-  return async (dispatch) => {
-    const newCategory = await CategoryApi.createCategory(category);
-    dispatch(createCategorySuccess(newCategory));
-  }
-}
-
-async function deleteCategoryForReal(categoryId, deletedCategories) {
-  if (deletedCategories.some(c => c.categoryId === categoryId)) {
-    await fetch('/api/Categories/' + categoryId, {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
-  }
 }

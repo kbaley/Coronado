@@ -6,7 +6,7 @@ import * as Mousetrap from 'mousetrap';
 import { NewIcon } from '../icons/NewIcon';
 import './NewInvoice.css';
 
-class NewInvoice extends Component {
+export class NewInvoice extends Component {
   constructor(props) {
     super(props);
     this.showForm = this.showForm.bind(this);

@@ -4,8 +4,7 @@ import { NavItem, Glyphicon } from 'react-bootstrap';
 import * as Mousetrap from 'mousetrap';
 import { withRouter } from 'react-router-dom';
 
-
-class InvoicesMenu extends Component {
+export class InvoicesMenu extends Component {
   constructor(props) {
     super(props);
     this.goToInvoices = this.goToInvoices.bind(this);
@@ -13,19 +12,23 @@ class InvoicesMenu extends Component {
   }
 
   componentDidMount() {
-      Mousetrap.bind('g i', this.goToInvoices);
+    Mousetrap.bind('g', this.goToInvoices);
   }
 
   goToInvoices() {
+    console.log("moo");
+    
     this.props.history.push('/invoices');
   }
 
   render() {
-    return (<LinkContainer to={'/invoices'}>
+    return (
+    <LinkContainer to={'/invoices'}>
       <NavItem>
         <Glyphicon glyph='list-alt' /> Invoices
       </NavItem>
-    </LinkContainer>);
+    </LinkContainer>
+    );
   }
 }
 

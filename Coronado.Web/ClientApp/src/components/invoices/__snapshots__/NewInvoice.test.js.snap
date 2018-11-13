@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NewInvoice tests should render properly 1`] = `
+<span>
+  <span
+    className="new-icon icon new-invoice glyphicon glyphicon-plus-sign"
+    onClick={[Function]}
+  />
+</span>
+`;
