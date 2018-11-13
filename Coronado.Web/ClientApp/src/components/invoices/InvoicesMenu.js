@@ -16,8 +16,6 @@ export class InvoicesMenu extends Component {
   }
 
   goToInvoices() {
-    console.log("moo");
-    
     this.props.history.push('/invoices');
   }
 
