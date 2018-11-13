@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
 import { NewIcon } from '../icons/NewIcon';
 import './NewInvoice.css';
+import InvoiceForm from './InvoiceForm';
 
 export class NewInvoice extends Component {
   constructor(props) {
@@ -35,6 +36,7 @@ export class NewInvoice extends Component {
   render() {
     return (<span>
         <NewIcon onClick={this.showForm} className="new-invoice"/>
+        <InvoiceForm show={this.state.show} onClose={this.handleClose} onSave={this.saveCategory} />
       </span>);
   };
 }
