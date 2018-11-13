@@ -8,7 +8,7 @@ import * as transactionActions from '../actions/transactionActions';
 import { connect } from 'react-redux';
 import { getCategoriesForDropdown } from "../selectors/selectors";
 
-class NewTransactionRow extends Component {
+export class NewTransactionRow extends Component {
   constructor(props) {
     super(props);
     this.saveTransaction = this.saveTransaction.bind(this);
@@ -82,6 +82,8 @@ class NewTransactionRow extends Component {
   }
 
   handleChangeCategory(selectedCategory) {
+    console.log("Changing category");
+    
     let categoryId = selectedCategory.categoryId;
     var transactionType = "Transaction";
     var relatedAccountId = '';
@@ -133,7 +135,6 @@ class NewTransactionRow extends Component {
             selectedCategory={this.state.selectedCategory}
             onCategoryChanged={this.handleChangeCategory} 
             selectedAccount={this.state.trx.accountId}
-            accounts={this.props.accounts}
             categories={this.props.categories} />
         </td>
         <td><input type="text" name="description" value={this.state.trx.description} onChange={this.handleChangeField} /></td>
@@ -149,7 +150,8 @@ class NewTransactionRow extends Component {
 
 function mapStateToProps(state) {
   return {
-    categories: getCategoriesForDropdown(state.categories, state.accounts)
+    categories: getCategoriesForDropdown(state.categories, state.accounts),
+    accounts: state.accounts
   }
 }
 
