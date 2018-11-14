@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import NewInvoice from './NewInvoice';
 
 export class InvoicesPage extends Component {
@@ -14,12 +13,4 @@ export class InvoicesPage extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    invoices: state.invoices,
-  }
-}
-
-export default connect(
-  mapStateToProps,
-)(InvoicesPage);
+export default InvoicesPage;
