@@ -1,8 +1,12 @@
 import React from 'react';
-import { NewTransactionRow } from './NewTransactionRow';
+import ConnectedNewTransactionRow, { NewTransactionRow } from './NewTransactionRow';
 import {shallow} from 'enzyme';
 import { CheckIcon } from "./icons/CheckIcon";
 import { CategorySelect } from './common/CategorySelect';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+
+const mockStore = configureMockStore([thunk]);
 
 describe('NewTransactionRow tests', () => {
   it('should save when button clicked', () => {
@@ -17,6 +21,10 @@ describe('NewTransactionRow tests', () => {
     expect(saveTransaction).toHaveBeenCalled();
   });
 
+  it('should map dispatch to props', () => {
+
+  });
+
   it('should update the transaction when the category is changed', () => {
     
     const account = { accountId: 'accountId'}
@@ -29,4 +37,21 @@ describe('NewTransactionRow tests', () => {
     expect(wrapper.state().trx.categoryDisplay).toBe(selectedCategory.name);
 
   });
+
+  it('should update the props from state', () => {
+    
+    // ARRANGE
+    const accounts = [{accountId: "moo", name: "account-name"}, {accountId: "mortgage1", name: "my mortgage", accountType: "Mortgage"}];
+    const categories = [{categoryId: "cat1", name: "cat-name"}];
+    const store = mockStore({accounts, categories});
+    
+    // ACT
+    const wrapper = shallow(<ConnectedNewTransactionRow store={store} />);
+    
+    // ASSERT
+    expect(wrapper.props().accounts).toHaveLength(2);
+    expect(wrapper.props().accounts).toBe(accounts);
+    expect(wrapper.props().categories).toHaveLength(4);
+  });
+
 });

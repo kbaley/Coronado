@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { CheckIcon } from './icons/CheckIcon';
 import * as Mousetrap from 'mousetrap';
 import { CategorySelect } from './common/CategorySelect';
@@ -82,8 +82,6 @@ export class NewTransactionRow extends Component {
   }
 
   handleChangeCategory(selectedCategory) {
-    console.log("Changing category");
-    
     let categoryId = selectedCategory.categoryId;
     var transactionType = "Transaction";
     var relatedAccountId = '';
@@ -155,7 +153,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(transactionActions, dispatch)
   }
