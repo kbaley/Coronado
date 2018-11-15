@@ -9,7 +9,6 @@ class CustomerForm extends Component {
     this.handleChangeField = this.handleChangeField.bind(this);
     this.state = {
       newCustomer: true,
-      isLoading: true,
       customer: {name: ''}
     };
   }
@@ -18,7 +17,7 @@ class CustomerForm extends Component {
     if (this.props.customer && this.props.customer.customerId && this.props.customer.customerId !== this.state.customer.customerId ) {
       this.setState({
         newCustomer: false,
-        customer: {}
+        customer: {customerId: this.props.customer.customerId, name: this.props.customer.name}
       });
     }
   }

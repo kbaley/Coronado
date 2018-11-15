@@ -15,6 +15,18 @@ class CustomerApi {
     });
     return response.json();
   }
+
+  static async updateCustomer(customer) {
+    const response = await fetch('/api/Customers/' + customer.customerId, {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(customer)
+    });
+    return response.json();
+  }
 }
 
 export default CustomerApi;

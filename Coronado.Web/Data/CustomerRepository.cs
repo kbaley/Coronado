@@ -33,7 +33,7 @@ namespace Coronado.Web.Data
         {
             using (var conn = Connection) {
                 var customer = conn.QuerySingle<Customer>("SELECT * FROM customers WHERE customer_id=@customerId", new {customerId});
-                conn.Execute("DELETE FROM customers WHERE customerId=@customerId", new {customerId});
+                conn.Execute("DELETE FROM customers WHERE customer_id=@customerId", new {customerId});
                 return customer;
             }    
         }

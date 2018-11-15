@@ -21,7 +21,7 @@ function rootReducer(state, action) {
     deletedCustomers: deletedCustomerReducer(state.deletedCustomers, action, state.customers || []),
     transactions: transactionReducer(state.transactions, action, state.selectedAccount || ''),
     accountTypes: accountTypeReducer(state.accountTypes, action),
-    customers: customerReducer(state.customers, action),
+    customers: customerReducer(state.customers, action, state.deletedCustomers || []),
     router: routerReducer(state.router, action),
     loading: ajaxStatusReducer(state.loading, action),
     notifications: notifications(state.notifications, action)

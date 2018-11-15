@@ -5,6 +5,7 @@ export default {
   selectedAccount: '',
   accountTypes: [],
   deletedAccounts: [],
+  deletedCustomers: [],
   ajaxCallsInProgress: 0,
   transactions: [],
   customers: [],

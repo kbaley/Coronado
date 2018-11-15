@@ -63,7 +63,7 @@ class CategoryList extends Component {
           category={this.state.selectedCategory} 
           categories={this.props.categories}
           onSave={this.saveCategory} />
-        { this.props.isLoading ? <tr><td colspan="5"><Spinner /></td></tr> :
+        { this.props.isLoading ? <tr><td colSpan="5"><Spinner /></td></tr> :
           this.props.categories.map(cat => 
         <CategoryRow 
           key={cat.categoryId} 

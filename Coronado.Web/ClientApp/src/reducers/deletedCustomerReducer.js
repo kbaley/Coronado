@@ -2,7 +2,7 @@ import initialState from './initialState';
 import * as actions from "../constants/customerActionTypes.js";
 import { cloneDeep, find } from 'lodash';
 
-export const deletedCustomerReducer = (state = initialState.deletedCustomer, action, customers) => {
+export const deletedCustomerReducer = (state = initialState.deletedCustomers, action, customers) => {
   switch (action.type) {
     case actions.DELETE_CUSTOMER:
       return [

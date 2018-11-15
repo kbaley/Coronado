@@ -10,7 +10,6 @@ class CategoryForm extends Component {
     this.handleChangeParent = this.handleChangeParent.bind(this);
     this.state = {
       newCategory: true,
-      isLoading: true,
       category: {name: '', type: '', parentCategoryId: ''}
     };
   }

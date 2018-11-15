@@ -12,6 +12,7 @@ export const customerReducer = (state = initialState.customers, action, deletedC
       
     case actions.UNDO_DELETE_CUSTOMER:
       const deletedCustomer = find(deletedCustomers, c => c.customerId === action.customerId);
+      
       return [
         ...state,
         Object.assign({}, deletedCustomer)
