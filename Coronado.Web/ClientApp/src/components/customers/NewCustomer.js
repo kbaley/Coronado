@@ -36,15 +36,9 @@ export class NewCustomer extends Component {
   render() {
     return (<span>
         <NewIcon onClick={this.showForm} className="new-customer"/>
-        <CustomerForm show={this.state.show} onClose={this.handleClose} onSave={this.props.actions.saveCustomer} />
+        <CustomerForm show={this.state.show} onClose={this.handleClose} onSave={this.props.actions.createCustomer} />
       </span>);
   };
-}
-
-function mapStateToProps(state) {
-  return {
-    customers: state.customers
-  }
 }
 
 function mapDispatchToProps(dispatch) {
@@ -54,6 +48,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(NewCustomer);

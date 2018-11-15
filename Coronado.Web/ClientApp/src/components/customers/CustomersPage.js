@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import NewCustomer from './NewCustomer';
+import CustomerList from './CustomerList';
+import { connect } from 'react-redux';
 
 export class CustomersPage extends Component {
   render() {
@@ -8,9 +10,18 @@ export class CustomersPage extends Component {
         <h1>
           Customers <NewCustomer />
         </h1>
+        <CustomerList customers={this.props.customers} />
       </div>
     );
   }
 }
 
-export default CustomersPage;
+function mapStateToProps(state) {
+  return {
+    customers: state.customers,
+  }
+}
+
+export default connect(
+  mapStateToProps
+)(CustomersPage);

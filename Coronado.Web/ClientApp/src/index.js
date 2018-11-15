@@ -10,6 +10,7 @@ import App from './App';
 import {loadAccounts} from './actions/accountActions';
 import {loadAccountTypes} from './actions/accountTypeActions';
 import {loadCategories} from './actions/categoryActions';
+import {loadCustomers} from './actions/customerActions';
 import registerServiceWorker from './registerServiceWorker';
 
 // Create browser history to use in the Redux store
@@ -22,6 +23,7 @@ const store = configureStore(history, initialState);
 store.dispatch(loadAccounts());
 store.dispatch(loadCategories());
 store.dispatch(loadAccountTypes());
+store.dispatch(loadCustomers());
 
 const rootElement = document.getElementById('root');
 

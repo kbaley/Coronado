@@ -1,8 +1,8 @@
 import * as types from '../constants/customerActionTypes';
 import CustomerApi from '../api/customerApi';
 
-export function loadCustomersSuccess(invoices) {
-  return {type: types.LOAD_CUSTOMERS_SUCCESS, invoices};
+export function loadCustomersSuccess(customers) {
+  return {type: types.LOAD_CUSTOMERS_SUCCESS, customers};
 }
 
 export function loadCustomersAction() {

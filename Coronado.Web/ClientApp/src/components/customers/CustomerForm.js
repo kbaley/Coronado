@@ -10,7 +10,7 @@ class CustomerForm extends Component {
     this.state = {
       newCustomer: true,
       isLoading: true,
-      customer: {}
+      customer: {name: ''}
     };
   }
 

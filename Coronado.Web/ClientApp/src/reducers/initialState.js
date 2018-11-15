@@ -11,7 +11,8 @@ export default {
   loading: {
     accounts: false,
     categories: false,
-    transactions: false
+    transactions: false,
+    customers: false
   }
 }
 
