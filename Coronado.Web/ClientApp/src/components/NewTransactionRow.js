@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { CheckIcon } from './icons/CheckIcon';
 import * as Mousetrap from 'mousetrap';
 import { CategorySelect } from './common/CategorySelect';

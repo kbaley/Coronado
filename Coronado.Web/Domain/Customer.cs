@@ -4,18 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Coronado.Web.Domain
 {
-  [Table("categories")]
-    public class Category
+  [Table("customers")]
+    public class Customer
     {
         [Key]
-        public Guid CategoryId {get;set;}
-
+        public Guid CustomerId {get;set;}    
+        
         [Required]
         public string Name { get; set; }
-
-        [Required]
-        public string Type { get; set; }
-
-        public Guid? ParentCategoryId { get;set; }
     }
 }

@@ -7,6 +7,7 @@ export default {
   deletedAccounts: [],
   ajaxCallsInProgress: 0,
   transactions: [],
+  customers: [],
   loading: {
     accounts: false,
     categories: false,

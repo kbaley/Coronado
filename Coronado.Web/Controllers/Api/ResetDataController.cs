@@ -26,6 +26,7 @@ namespace Coronado.Web.Controllers.Api
             _context.Database.ExecuteSqlCommand("TRUNCATE TABLE transactions");
             _context.Database.ExecuteSqlCommand("TRUNCATE TABLE accounts CASCADE");
             _context.Database.ExecuteSqlCommand("TRUNCATE TABLE categories CASCADE");
+            _context.Database.ExecuteSqlCommand("TRUNCATE TABLE customers CASCADE");
 
         }
 
