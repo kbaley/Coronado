@@ -36,14 +36,15 @@ export class NewInvoice extends Component {
   render() {
     return (<span>
         <NewIcon onClick={this.showForm} className="new-invoice"/>
-        <InvoiceForm show={this.state.show} onClose={this.handleClose} onSave={this.saveCategory} />
+        <InvoiceForm show={this.state.show} onClose={this.handleClose} onSave={this.saveCategory} customers={this.props.customers} />
       </span>);
   };
 }
 
 function mapStateToProps(state) {
   return {
-    invoices: state.invoices
+    invoices: state.invoices,
+    customers: state.customers
   }
 }
 

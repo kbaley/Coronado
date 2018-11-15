@@ -3,15 +3,16 @@ import { Button,Modal,Form,FormControl,FormGroup,ControlLabel,Col } from 'react-
 
 class CategoryForm extends Component {
   displayName = CategoryForm.name;
+  initialState = {
+    newCategory: true,
+    category: { name: '', type: '', parentCategoryId: '' }
+  }
   constructor(props) {
     super(props);
     this.saveCategory = this.saveCategory.bind(this);   
     this.handleChangeField = this.handleChangeField.bind(this);
     this.handleChangeParent = this.handleChangeParent.bind(this);
-    this.state = {
-      newCategory: true,
-      category: {name: '', type: '', parentCategoryId: ''}
-    };
+    this.state = Object.assign({}, this.initialState);
   }
 
   componentDidUpdate() {
@@ -30,7 +31,7 @@ class CategoryForm extends Component {
 
   saveCategory() {
     this.props.onSave(this.state.category);
-    this.setState({category: {name: '', type: '', parentCategoryId: ''} });
+    this.setState(Object.assign({}, this.initialState));
     this.props.onClose();
   }
 
