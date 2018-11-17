@@ -1,10 +1,12 @@
 import React from 'react';
 import './InvoiceLineItems.css';
 import { CurrencyFormat } from "../common/CurrencyFormat";
+import { NewIcon } from '../icons/NewIcon';
+import { DeleteIcon } from '../icons/DeleteIcon';
 
-const InvoiceLineItems = ({ lineItems, onLineItemChanged }) => {
+const InvoiceLineItems = ({ lineItems, onLineItemChanged, onNewItemAdded, onLineItemDeleted }) => {
   return (
-    <table>
+    <table className="line-items">
       <thead>
         <tr>
           <th>Description</th>
@@ -36,7 +38,12 @@ const InvoiceLineItems = ({ lineItems, onLineItemChanged }) => {
                 onChange={(e) => onLineItemChanged(index, e.target.name, e.target.value)} />
             </td>
             <td><CurrencyFormat value={li.quantity && li.unitAmount ? (li.quantity * li.unitAmount ) : 0} /></td>
-            <td></td>
+            <td>
+              <NewIcon onClick={onNewItemAdded} />
+              {lineItems.length > 1 &&
+              <DeleteIcon onDelete={() => onLineItemDeleted(index)} />
+              }
+            </td>
           </tr>
         )}
       </tbody>

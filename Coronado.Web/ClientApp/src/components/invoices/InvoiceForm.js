@@ -1,18 +1,26 @@
 import React, { Component } from 'react';
 import { Button, Modal, Form, FormControl, FormGroup, ControlLabel, Col } from 'react-bootstrap';
 import InvoiceLineItems from "./InvoiceLineItems";
+import { filter } from "lodash";
 
 class InvoiceForm extends Component {
   displayName = InvoiceForm.name;
+  blankLineItem = {
+    description: '',
+    quantity: '',
+    unitAmount: ''
+  }
   initialState = {
       newInvoice: true,
-      invoice: { date: new Date().toLocaleDateString(), invoiceNumber: '', lineItems: [{description: '', quantity: '', unitAmount: ''}] }
+      invoice: { date: new Date().toLocaleDateString(), invoiceNumber: '', lineItems: [Object.assign({}, this.blankLineItem)] }
     };
   constructor(props) {
     super(props);
     this.saveInvoice = this.saveInvoice.bind(this);
     this.handleChangeField = this.handleChangeField.bind(this);
     this.handleLineItemChanged = this.handleLineItemChanged.bind(this);
+    this.handleLineItemAdded = this.handleLineItemAdded.bind(this);
+    this.handleLineItemDeleted = this.handleLineItemDeleted.bind(this);
     this.state = Object.assign({}, this.initialState);
   }
 
@@ -33,8 +41,6 @@ class InvoiceForm extends Component {
 
   handleChangeField(e) {
     var name = e.target.name;
-    console.log(this.state);
-    
     this.setState({ invoice: { ...this.state.invoice, [name]: e.target.value } });
   }
 
@@ -42,6 +48,32 @@ class InvoiceForm extends Component {
     const lineItems = this.state.invoice.lineItems;
     lineItems[index][field] = value;
     this.setState({...this.state, invoice: {...this.state.invoice, lineItems}});
+  }
+
+  handleLineItemAdded() {
+    const lineItems = this.state.invoice.lineItems;
+    this.setState(
+      {...this.state, 
+        invoice: {
+          ...this.state.invoice, 
+          lineItems: [...lineItems, Object.assign({}, this.blankLineItem)]
+        }
+      }
+    );
+  }
+
+  handleLineItemDeleted(index) {
+    console.log(index);
+    
+    const lineItems = this.state.invoice.lineItems;
+    this.setState(
+      {...this.state, 
+        invoice: {
+          ...this.state.invoice, 
+          lineItems: filter(lineItems, (item, itemIndex) => { return itemIndex !== index; })
+        }
+      }
+    );
   }
 
   render() {
@@ -54,7 +86,7 @@ class InvoiceForm extends Component {
           <Form horizontal>
             <FormGroup>
               <Col componentClass={ControlLabel} sm={3}>Number</Col>
-              <Col sm={5}>
+              <Col sm={2}>
                 <FormControl autoFocus
                   type="text"
                   name="invoiceNumber"
@@ -65,7 +97,7 @@ class InvoiceForm extends Component {
             </FormGroup>
             <FormGroup>
               <Col componentClass={ControlLabel} sm={3}>Date</Col>
-              <Col sm={5}>
+              <Col sm={2}>
                 <FormControl
                   type="text"
                   name="name" ref="inputName"
@@ -89,7 +121,12 @@ class InvoiceForm extends Component {
             <FormGroup>
               <Col componentClass={ControlLabel} sm={3}>Line items</Col>
               <Col sm={9}>
-                <InvoiceLineItems lineItems={this.state.invoice.lineItems} onLineItemChanged={this.handleLineItemChanged} />
+                <InvoiceLineItems 
+                  lineItems={this.state.invoice.lineItems} 
+                  onLineItemChanged={this.handleLineItemChanged} 
+                  onNewItemAdded={this.handleLineItemAdded}
+                  onLineItemDeleted={this.handleLineItemDeleted}
+                  />
               </Col>
             </FormGroup>
           </Form>

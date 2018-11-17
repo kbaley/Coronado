@@ -1,22 +1,22 @@
-﻿input {
+﻿.line-items input {
     width: 65px;
     text-align: right;
 }
 
-td, th {
+.line-items td, th {
     padding: 2px;
 }
 
-td:nth-child(1) > input {
+.line-items td:nth-child(1) > input {
   width: 250px;
   text-align: left;
 }
 
-td:nth-child(4), th:nth-child(4) {
+.line-items td:nth-child(4), th:nth-child(4) {
     text-align: right;
     width:100px;
 }
 
-th {
+.line-items th {
     text-align: center;
 }
