@@ -10,7 +10,7 @@ using Coronado.Web.Domain;
 
 namespace Coronado.Web.Data
 {
-    public class CustomerRepository : ICustomerRepository
+  public class CustomerRepository : ICustomerRepository
     {
         private readonly IConfiguration _config;
         private readonly string _connectionString;
