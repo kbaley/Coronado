@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 
 namespace Coronado.Web.Data
 {
@@ -11,5 +12,13 @@ namespace Coronado.Web.Data
             var startUnderscores = Regex.Match(input, @"^_+");
             return startUnderscores + Regex.Replace(input, @"([a-z0-9])([A-Z])", "$1_$2").ToLower();
         } 
+    }
+
+    public static class GuidExtensions
+    {
+        public static Guid GetId(this Guid id) 
+        {
+            return id == null || id == Guid.Empty ? Guid.NewGuid() : id;
+        }
     }
 }

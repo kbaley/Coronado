@@ -63,14 +63,12 @@ class InvoiceForm extends Component {
   }
 
   handleLineItemDeleted(index) {
-    console.log(index);
-    
     const lineItems = this.state.invoice.lineItems;
     this.setState(
       {...this.state, 
         invoice: {
           ...this.state.invoice, 
-          lineItems: filter(lineItems, (item, itemIndex) => { return itemIndex !== index; })
+          lineItems: filter(lineItems, (_, itemIndex) => { return itemIndex !== index; })
         }
       }
     );

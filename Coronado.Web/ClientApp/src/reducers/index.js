@@ -1,7 +1,9 @@
 import { categoryReducer } from "./categoryReducer";
+import { invoiceReducer } from "./invoiceReducer";
 import { customerReducer } from "./customerReducer";
 import { accountReducer } from "./accountReducer";
 import { deletedCategoryReducer } from "./deletedCategoryReducer";
+import { deletedInvoiceReducer } from "./deletedInvoiceReducer";
 import { deletedCustomerReducer } from "./deletedCustomerReducer";
 import { deletedAccountReducer } from "./deletedAccountReducer";
 import { transactionReducer } from "./transactionReducer";
@@ -17,8 +19,10 @@ function rootReducer(state, action) {
     selectedAccount: selectedAccountReducer(state.selectedAccount, action),
     deletedAccounts: deletedAccountReducer(state.deletedAccounts, action, state.accounts ? state.accounts : []),
     categories: categoryReducer(state.categories, action, state.deletedCategories || []),
+    invoices: invoiceReducer(state.invoices, action, state.deletedInvoices || []),
     deletedCategories: deletedCategoryReducer(state.deletedCategories, action, state.categories || []),
     deletedCustomers: deletedCustomerReducer(state.deletedCustomers, action, state.customers || []),
+    deletedInvoices: deletedInvoiceReducer(state.deletedInvoices, action, state.invoices || []),
     transactions: transactionReducer(state.transactions, action, state.selectedAccount || ''),
     accountTypes: accountTypeReducer(state.accountTypes, action),
     customers: customerReducer(state.customers, action, state.deletedCustomers || []),

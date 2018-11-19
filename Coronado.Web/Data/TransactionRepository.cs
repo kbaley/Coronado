@@ -52,7 +52,6 @@ namespace Coronado.Web.Data
 
         public void Update(TransactionForDisplay transaction) {
             using (var conn = Connection) {
-                conn.Open();
                 conn.Execute(
 @"UPDATE transactions
     SET account_id = @AccountId, vendor = @Vendor, description = @Description, is_reconciled = @IsReconciled, 
@@ -64,7 +63,6 @@ namespace Coronado.Web.Data
 
         public void Insert(TransactionForDisplay transaction) {
             using (var conn = Connection) {
-                conn.Open();
                 conn.Execute(
 @"INSERT INTO transactions (transaction_id, account_id, vendor, description, is_reconciled, transaction_date, category_id,
     entered_date, amount, related_transaction_id)
@@ -77,7 +75,6 @@ namespace Coronado.Web.Data
         {
             using (IDbConnection dbConnection = Connection)
             {
-                dbConnection.Open();
                 var transactions = dbConnection.Query<TransactionForDisplay>(
 @"SELECT t.*, a.name as AccountName, c.name as CategoryName, a1.account_id as RelatedAccountId, a1.name as RelatedAccountName
 FROM transactions t
@@ -108,7 +105,6 @@ WHERE t.account_id=@AccountId;", new { AccountId = accountId });
         {
             using (IDbConnection dbConnection = Connection)
             {
-                dbConnection.Open();
                 var transaction = dbConnection.QuerySingle<TransactionForDisplay>(
 @"SELECT t.*, a.name as AccountName, c.name as CategoryName, a1.account_id as RelatedAccountId, a1.name as RelatedAccountName
 FROM transactions t

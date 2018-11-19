@@ -10,6 +10,6 @@ namespace Coronado.Web.Models
         public Guid CustomerId { get; set; }
         public IEnumerable<InvoiceLineItemsForPosting> LineItems { get; set; }
         public string CustomerName { get; set; }
-        public string Number { get; set; }
+        public string InvoiceNumber { get; set; }
     }
 }

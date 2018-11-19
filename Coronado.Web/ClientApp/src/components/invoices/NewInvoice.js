@@ -12,6 +12,7 @@ export class NewInvoice extends Component {
     super(props);
     this.showForm = this.showForm.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.saveInvoice = this.saveInvoice.bind(this);
     this.state = { show: false, 
         invoice: {name: '', type: ''}
     };
@@ -33,10 +34,15 @@ export class NewInvoice extends Component {
   handleClose() {
     this.setState({show:false});
   }
+
+  saveInvoice(invoice) {
+    this.props.actions.createInvoice(invoice);
+  }
+
   render() {
     return (<span>
         <NewIcon onClick={this.showForm} className="new-invoice"/>
-        <InvoiceForm show={this.state.show} onClose={this.handleClose} onSave={this.saveCategory} customers={this.props.customers} />
+        <InvoiceForm show={this.state.show} onClose={this.handleClose} onSave={this.saveInvoice} customers={this.props.customers} />
       </span>);
   };
 }
