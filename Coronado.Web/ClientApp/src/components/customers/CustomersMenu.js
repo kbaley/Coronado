@@ -12,8 +12,13 @@ export class CustomersMenu extends Component {
   }
 
   componentDidMount() {
-    Mousetrap.bind('g', this.goToInvoices);
+    Mousetrap.bind('g u', this.goToCustomers);
   }
+
+  componentWillUnmount() {
+    Mousetrap.unbind('g u');
+  }
+  
 
   goToCustomers() {
     this.props.history.push('/customers');

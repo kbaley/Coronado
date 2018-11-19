@@ -12,8 +12,13 @@ export class InvoicesMenu extends Component {
   }
 
   componentDidMount() {
-    Mousetrap.bind('g', this.goToInvoices);
+    Mousetrap.bind('g i', this.goToInvoices);
   }
+
+  componentWillUnmount() {
+    Mousetrap.unbind('g i');
+  }
+  
 
   goToInvoices() {
     this.props.history.push('/invoices');
