@@ -11,6 +11,7 @@ import {loadAccounts} from './actions/accountActions';
 import {loadAccountTypes} from './actions/accountTypeActions';
 import {loadCategories} from './actions/categoryActions';
 import {loadCustomers} from './actions/customerActions';
+import { loadInvoices } from "./actions/invoiceActions";
 import registerServiceWorker from './registerServiceWorker';
 
 // Create browser history to use in the Redux store
@@ -24,6 +25,7 @@ store.dispatch(loadAccounts());
 store.dispatch(loadCategories());
 store.dispatch(loadAccountTypes());
 store.dispatch(loadCustomers());
+store.dispatch(loadInvoices());
 
 const rootElement = document.getElementById('root');
 

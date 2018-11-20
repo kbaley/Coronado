@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import NewInvoice from './NewInvoice';
+import { connect } from 'react-redux';
+import InvoiceList from "./InvoiceList";
 
 export class InvoicesPage extends Component {
   render() {
@@ -8,9 +10,18 @@ export class InvoicesPage extends Component {
         <h1>
           Invoices <NewInvoice />
         </h1>
+        <InvoiceList invoices={this.props.invoices} />
       </div>
     );
   }
 }
 
-export default InvoicesPage;
+function mapStateToProps(state) {
+  return {
+    invoices: state.invoices,
+  }
+}
+
+export default connect(
+  mapStateToProps
+)(InvoicesPage);

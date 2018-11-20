@@ -15,7 +15,8 @@ export default {
     accounts: false,
     categories: false,
     transactions: false,
-    customers: false
+    customers: false,
+    invoices: true
   }
 }
 

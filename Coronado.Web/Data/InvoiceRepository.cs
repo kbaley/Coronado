@@ -34,7 +34,9 @@ namespace Coronado.Web.Data
 
     public IEnumerable<InvoiceForPosting> GetAll()
     {
-      throw new NotImplementedException();
+      using (var conn = Connection) {
+        return conn.Query<InvoiceForPosting>("SELECT * FROM invoices");
+      }
     }
 
     public void Insert(InvoiceForPosting invoice)

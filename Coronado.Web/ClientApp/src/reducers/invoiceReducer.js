@@ -5,7 +5,7 @@ import { cloneDeep, find } from 'lodash';
 export const invoiceReducer = (state = initialState.invoices, action, deletedInvoices) => {
   switch (action.type) {
     case actions.LOAD_INVOICES_SUCCESS:
-      return action.categories;
+      return action.invoices;
       
     case actions.DELETE_INVOICE:
       return cloneDeep(state.filter(c => c.invoiceId !== action.invoiceId));
