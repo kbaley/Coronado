@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Coronado.Web.Models;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
@@ -27,17 +28,41 @@ namespace Coronado.Web.Data
       }
     }
 
-    public InvoiceForPosting Delete(Guid customerId)
-    {
-      throw new NotImplementedException();
-    }
-
     public IEnumerable<InvoiceForPosting> GetAll()
     {
-      using (var conn = Connection) {
+      using (var conn = Connection)
+      {
         return conn.Query<InvoiceForPosting>(@"SELECT i.*, c.name as customer_name,
         (SELECT sum(ili.quantity * ili.unit_amount) FROM invoice_line_items ili WHERE ili.invoice_id = i.invoice_id) as balance
         FROM invoices i inner join customers c on i.customer_id = c.customer_id");
+      }
+    }
+
+    public InvoiceForPosting Delete(Guid invoiceId)
+    {
+      using (var conn = Connection)
+      {
+        conn.Open();
+        using (var trx = conn.BeginTransaction())
+        {
+          try
+          {
+            var invoice = GetAll().Single(i => i.InvoiceId == invoiceId);
+            conn.Execute("DELETE FROM invoice_line_items WHERE invoice_id = @invoiceId", new {invoiceId}, trx);
+            conn.Execute("DELETE FROM invoices WHERE invoice_id = @invoiceId", new {invoiceId}, trx);
+            return invoice;
+          }
+          catch (System.Exception)
+          {
+            trx.Rollback();
+            conn.Close();
+            throw;
+          }
+          finally {
+            trx.Commit();
+            conn.Close();
+          }
+        }
       }
     }
 
@@ -74,12 +99,13 @@ namespace Coronado.Web.Data
               );
             }
             trx.Commit();
+            conn.Close();
           }
-          catch (Exception e)
+          catch
           {
             trx.Rollback();
             conn.Close();
-            throw e;
+            throw;
           }
         }
       }
