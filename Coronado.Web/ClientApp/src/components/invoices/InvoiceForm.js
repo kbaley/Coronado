@@ -32,6 +32,7 @@ class InvoiceForm extends Component {
           invoiceId: this.props.invoice.invoiceId,
           invoiceNumber: this.props.invoice.invoiceNumber,
           customerId: this.props.invoice.customerId,
+          lineItems: this.props.invoice.lineItems,
           date: new Date(this.props.invoice.date).toLocaleDateString()
         }
       });

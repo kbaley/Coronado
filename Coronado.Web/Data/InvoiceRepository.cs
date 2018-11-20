@@ -47,11 +47,11 @@ namespace Coronado.Web.Data
           }
 
           invoiceEntry.LineItems.Add(lineItem);
+          invoiceEntry.Balance = invoiceEntry.LineItems.Sum(li => li.Quantity * li.UnitAmount);
           return invoiceEntry;
         },
         splitOn: "invoice_id")
         .Distinct();
-
         return invoices;
       }
     }
@@ -146,7 +146,8 @@ namespace Coronado.Web.Data
         using (var trx = conn.BeginTransaction()) {
           try
           {
-            var existingLineItems = conn.Query<InvoiceLineItemsForPosting>(@"SELECT * FROM invoice_line_items
+            var existingLineItems = conn.Query<InvoiceLineItemsForPosting>(
+              @"SELECT invoice_line_item_id as line_item_id, quantity, unit_amount, description FROM invoice_line_items
             WHERE invoice_id = @InvoiceId", new {InvoiceId = invoice.InvoiceId});
             var newLineItems = invoice.LineItems.Where(li => existingLineItems.All(li2 => li2.LineItemId != li.LineItemId));
             var removedLineItems = existingLineItems.Where(li => invoice.LineItems.All(li2 => li2.LineItemId != li.LineItemId));
@@ -154,7 +155,7 @@ namespace Coronado.Web.Data
             foreach (var item in newLineItems)
             {
               conn.Execute(@"INSERT INTO invoice_line_items (invoice_line_item_id, invoice_id, quantity, unit_amount, description)
-              VALUES (@InvoiceLineItemId, @InvoiceId, @Quantity, @UnitAmount, @Description", 
+              VALUES (@InvoiceLineItemId, @InvoiceId, @Quantity, @UnitAmount, @Description)", 
               new {InvoiceLineItemId = Guid.NewGuid(), InvoiceId = invoice.InvoiceId, Quantity = item.Quantity, 
                 UnitAmount = item.UnitAmount, Description = item.Description}, trx);
             }
@@ -175,6 +176,7 @@ namespace Coronado.Web.Data
           catch 
           {
             trx.Rollback();
+            throw;
           }
           finally
           {
