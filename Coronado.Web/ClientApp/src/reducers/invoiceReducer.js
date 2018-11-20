@@ -1,6 +1,6 @@
 import initialState from './initialState';
 import * as actions from "../constants/invoiceActionTypes";
-import { cloneDeep, find } from 'lodash';
+import { cloneDeep, find, sumBy } from 'lodash';
 
 export const invoiceReducer = (state = initialState.invoices, action, deletedInvoices) => {
   switch (action.type) {
@@ -30,6 +30,7 @@ export const invoiceReducer = (state = initialState.invoices, action, deletedInv
       ];
       
     case actions.UPDATE_INVOICE_SUCCESS:
+      action.invoice.balance = sumBy(action.invoice.lineItems, i => (i.quantity * i.unitAmount));
       return [
         ...state.filter(c => c.invoiceId !== action.invoice.invoiceId),
         Object.assign({}, action.invoice)
