@@ -6,6 +6,12 @@ export const invoiceReducer = (state = initialState.invoices, action, deletedInv
   switch (action.type) {
     case actions.LOAD_INVOICES_SUCCESS:
       return action.invoices;
+
+    case actions.LOAD_INVOICE_SUCCESS:
+      return [
+        ...state.filter(c => c.invoiceId !== action.invoice.invoiceId),
+        Object.assign({}, action.invoice)
+      ];
       
     case actions.DELETE_INVOICE:
       return cloneDeep(state.filter(c => c.invoiceId !== action.invoiceId));

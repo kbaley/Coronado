@@ -14,12 +14,34 @@ export function createInvoiceSuccess() {
   return {type: types.CREATE_INVOICE_SUCCESS};
 }
 
+export function updateInvoiceSuccess(invoice) {
+  return {type: types.UPDATE_INVOICE_SUCCESS, invoice};
+}
+
+export function loadInvoiceSuccess(invoice) {
+  return {type: types.LOAD_INVOICE_SUCCESS, invoice};
+}
+
 export const loadInvoices = () => {
   return async (dispatch) => {
     dispatch(loadInvoicesAction());
     const invoices = await InvoiceApi.getAllInvoices();
     dispatch(loadInvoicesSuccess(invoices));
   };
+}
+
+export const loadInvoice = (invoiceId) => {
+  return async (dispatch) => {
+    const invoice = await InvoiceApi.getInvoice(invoiceId);
+    dispatch(loadInvoiceSuccess(invoice));
+  }
+}
+
+export const updateInvoice = (invoice) => {
+  return async (dispatch) => {
+    const updatedInvoice = await InvoiceApi.updateInvoice(invoice);
+    dispatch(updateInvoiceSuccess(updatedInvoice));
+  }
 }
 
 export const createInvoice = (invoice) => {

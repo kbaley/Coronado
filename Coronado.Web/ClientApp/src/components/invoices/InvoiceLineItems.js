@@ -17,7 +17,7 @@ const InvoiceLineItems = ({ lineItems, onLineItemChanged, onNewItemAdded, onLine
         </tr>
       </thead>
       <tbody>
-        {lineItems.map((li, index) =>
+        {lineItems && lineItems.map((li, index) =>
           <tr key={index}>
             <td>
               <input type="text"

@@ -25,6 +25,8 @@ class InvoiceList extends Component {
   }
 
   startEditing(invoice) {
+    invoice = this.props.invoices.filter(i => i.invoiceId === invoice.invoiceId)[0];
+    
     this.setState({show:true, selectedInvoice: invoice});
   }
 
@@ -54,6 +56,7 @@ class InvoiceList extends Component {
           onClose={this.handleClose} 
           invoice={this.state.selectedInvoice} 
           invoices={this.props.invoices}
+          customers={this.props.customers}
           onSave={this.saveInvoice} />
         { this.props.isLoading ? <tr><td colSpan="4"><Spinner /></td></tr> :
           this.props.invoices.map(invoice => 
@@ -73,6 +76,7 @@ function mapStateToProps(state) {
   return {
     invoices: state.invoices,
     notifications: state.notifications,
+    customers: state.customers,
     isLoading: state.loading.invoices
   }
 }

@@ -30,12 +30,6 @@ namespace Coronado.Web.Controllers.Api
             _logger = logger;
         }
 
-        [HttpGet("newId")]
-        public Guid GetNewId()
-        {
-            return Guid.NewGuid();
-        }
-
         // GET: api/Accounts
         [HttpGet]
         public IEnumerable<Account> GetAccounts()

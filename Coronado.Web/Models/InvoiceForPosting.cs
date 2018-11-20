@@ -8,7 +8,7 @@ namespace Coronado.Web.Models
     public Guid InvoiceId { get; set; }
     public DateTime Date { get; set; }
     public Guid CustomerId { get; set; }
-    public IEnumerable<InvoiceLineItemsForPosting> LineItems { get; set; }
+    public List<InvoiceLineItemsForPosting> LineItems { get; set; }
     public string CustomerName { get; set; }
     public string InvoiceNumber { get; set; }
 

@@ -22,10 +22,15 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpGet]
-        public IEnumerable<InvoiceForPosting> GetInvoice([FromQuery] UrlQuery query )
+        public IEnumerable<InvoiceForPosting> GetInvoices([FromQuery] UrlQuery query )
         {
             var invoices = _invoiceRepo.GetAll();
             return invoices;
+        }
+
+        [HttpGet("{id}")]
+        public InvoiceForPosting GetInvoice([FromRoute] Guid id) {
+            return _invoiceRepo.Get(id);
         }
 
         [HttpPut("{id}")]

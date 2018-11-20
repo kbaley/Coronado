@@ -28,7 +28,12 @@ class InvoiceForm extends Component {
     if (this.props.invoice && this.props.invoice.invoiceId && this.props.invoice.invoiceId !== this.state.invoice.invoiceId) {
       this.setState({
         newInvoice: false,
-        invoice: {}
+        invoice: {
+          invoiceId: this.props.invoice.invoiceId,
+          invoiceNumber: this.props.invoice.invoiceNumber,
+          customerId: this.props.invoice.customerId,
+          date: new Date(this.props.invoice.date).toLocaleDateString()
+        }
       });
     }
   }
