@@ -83,28 +83,33 @@ export class NewTransactionRow extends Component {
 
   handleChangeCategory(selectedCategory) {
     let categoryId = selectedCategory.categoryId;
-    var transactionType = "Transaction";
-    var relatedAccountId = '';
-    var mortgageType = '';
-    var mortgagePayment = '';
-    var categoryDisplay = selectedCategory.name;
-    var debit = this.state.trx.debit;
+    let transactionType = "Transaction";
+    let mortgageType = '';
+    let mortgagePayment = '';
+    let categoryDisplay = selectedCategory.name;
+    let debit = this.state.trx.debit;
+    let credit = this.state.trx.credit;
     if (categoryId.substring(0,4) === "TRF:") {
       transactionType = "Transfer";
-      relatedAccountId = categoryId.substring(4);
       categoryId = '';
     }
     if (categoryId.substring(0,4) === "MRG:") {
       transactionType = "Mortgage";
-      relatedAccountId = categoryId.substring(4);
-      var relatedAccount = find(this.props.accounts, a => a.accountId === relatedAccountId);
+      const relatedAccountId = categoryId.substring(4);
+      const relatedAccount = find(this.props.accounts, a => a.accountId === relatedAccountId);
       categoryId = '';
       debit = relatedAccount.mortgagePayment || '';
       mortgageType = relatedAccount.mortgageType;
       mortgagePayment = relatedAccount.mortgagePayment;
     }
+    if (categoryId.substring(0,4) === "PMT:") {
+      transactionType = "Payment";
+      
+      categoryId = selectedCategory.invoiceId;
+      credit = selectedCategory.balance;
+    }
     this.setState( {
-      trx: {...this.state.trx, categoryId, relatedAccountId, debit, categoryDisplay },
+      trx: {...this.state.trx, categoryId, debit, credit, categoryDisplay },
       transactionType,
       mortgageType,
       mortgagePayment,
@@ -114,7 +119,7 @@ export class NewTransactionRow extends Component {
   saveTransaction() {
     this.props.actions.createTransaction(this.state.trx, this.state.transactionType);
     this.setState( 
-      { trx: { ...this.state.trx, vendor: '', description: '', debit: '', credit: '', relatedAccountId: '' }, 
+      { trx: { ...this.state.trx, vendor: '', description: '', debit: '', credit: '' }, 
         selectedCategory: { }
       }
     );
@@ -148,7 +153,7 @@ export class NewTransactionRow extends Component {
 
 function mapStateToProps(state) {
   return {
-    categories: getCategoriesForDropdown(state.categories, state.accounts),
+    categories: getCategoriesForDropdown(state.categories, state.accounts, state.invoices),
     accounts: state.accounts
   }
 }

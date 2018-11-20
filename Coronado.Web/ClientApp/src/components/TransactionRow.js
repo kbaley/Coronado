@@ -131,7 +131,7 @@ class TransactionRow extends Component {
 
 function mapStateToProps(state) {
   return { 
-    categories: getCategoriesForDropdown(state.categories, state.accounts)
+    categories: getCategoriesForDropdown(state.categories, state.accounts, state.invoices)
   }
 }
 

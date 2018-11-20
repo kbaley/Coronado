@@ -22,6 +22,7 @@ class AccountApi {
     var url = "/api/Transactions";
     if (transactionType === "Transfer") url = "/api/Transfers"
     if (transactionType === "Mortgage") url = "/api/Mortgages"
+    if (transactionType === "Payment") url = "/api/Payments"
     const response = await fetch(url, {
       method: 'POST',
       headers: {
