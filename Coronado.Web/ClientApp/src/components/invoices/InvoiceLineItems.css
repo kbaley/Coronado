@@ -3,7 +3,7 @@
     text-align: right;
 }
 
-.line-items td, th {
+.line-items td, .line-items th {
     padding: 2px;
 }
 
@@ -12,7 +12,7 @@
   text-align: left;
 }
 
-.line-items td:nth-child(4), th:nth-child(4) {
+.line-items td:nth-child(4), .line-items th:nth-child(4) {
     text-align: right;
     width:100px;
 }

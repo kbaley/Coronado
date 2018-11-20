@@ -1,3 +1,7 @@
 ﻿.invoice-list th:first-child {
     width:80px;
 }
+
+.invoice-list th:last-child {
+    text-align: right;
+}

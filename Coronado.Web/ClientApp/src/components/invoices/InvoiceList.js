@@ -42,7 +42,10 @@ class InvoiceList extends Component {
       <thead>
         <tr>
           <th></th>
-          <th>Name</th>
+          <th>Number</th>
+          <th>Date</th>
+          <th>Customer</th>
+          <th>Balance</th>
         </tr>
       </thead>
       <tbody>
@@ -52,7 +55,7 @@ class InvoiceList extends Component {
           invoice={this.state.selectedInvoice} 
           invoices={this.props.invoices}
           onSave={this.saveInvoice} />
-        { this.props.isLoading ? <tr><td colSpan="2"><Spinner /></td></tr> :
+        { this.props.isLoading ? <tr><td colSpan="4"><Spinner /></td></tr> :
           this.props.invoices.map(invoice => 
         <InvoiceRow 
           key={invoice.invoiceId} 

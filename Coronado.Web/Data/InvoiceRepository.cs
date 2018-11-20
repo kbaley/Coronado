@@ -35,7 +35,9 @@ namespace Coronado.Web.Data
     public IEnumerable<InvoiceForPosting> GetAll()
     {
       using (var conn = Connection) {
-        return conn.Query<InvoiceForPosting>("SELECT * FROM invoices");
+        return conn.Query<InvoiceForPosting>(@"SELECT i.*, c.name as customer_name,
+        (SELECT sum(ili.quantity * ili.unit_amount) FROM invoice_line_items ili WHERE ili.invoice_id = i.invoice_id) as balance
+        FROM invoices i inner join customers c on i.customer_id = c.customer_id");
       }
     }
 
