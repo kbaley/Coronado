@@ -56,7 +56,7 @@ namespace Coronado.Web.Data
 @"UPDATE transactions
     SET account_id = @AccountId, vendor = @Vendor, description = @Description, is_reconciled = @IsReconciled, 
     transaction_date = @TransactionDate, category_id = @CategoryId, amount = @Amount, 
-    related_transaction_id = @RelatedTransactionId
+    related_transaction_id = @RelatedTransactionId, invoice_id = @InvoiceId
     WHERE transaction_id = @TransactionId", transaction);
             }
         }
@@ -65,9 +65,9 @@ namespace Coronado.Web.Data
             using (var conn = Connection) {
                 conn.Execute(
 @"INSERT INTO transactions (transaction_id, account_id, vendor, description, is_reconciled, transaction_date, category_id,
-    entered_date, amount, related_transaction_id)
+    entered_date, amount, related_transaction_id, invoice_id)
     VALUES (@TransactionId, @AccountId, @Vendor, @Description, @IsReconciled, @TransactionDate, @CategoryId,
-    @EnteredDate, @Amount, @RelatedTransactionId)
+    @EnteredDate, @Amount, @RelatedTransactionId, @InvoiceId)
 ", transaction );
             }
         }
@@ -76,7 +76,8 @@ namespace Coronado.Web.Data
             using (IDbConnection dbConnection = Connection)
             {
                 var transactions = dbConnection.Query<TransactionForDisplay>(
-@"SELECT t.*, a.name as AccountName, c.name as CategoryName, a1.account_id as RelatedAccountId, a1.name as RelatedAccountName
+@"SELECT t.*, a.name as AccountName, c.name as CategoryName, a1.account_id as RelatedAccountId, a1.name as RelatedAccountName,
+    i.invoice_number
 FROM transactions t
 LEFT JOIN accounts a
 ON t.account_id = a.account_id
@@ -86,13 +87,17 @@ LEFT JOIN transactions t1
 ON t.related_transaction_id = t1.transaction_id
 LEFT JOIN accounts a1
 ON t1.account_id = a1.account_id
+LEFT JOIN invoices i
+ON t.invoice_id = i.invoice_id
 WHERE t.account_id=@AccountId;", new { AccountId = accountId });
                 foreach (var transaction in transactions)
                 {
                     transaction.SetDebitAndCredit();
                     if (transaction.RelatedTransactionId.HasValue) 
                     {
-                        transaction.CategoryDisplay = "TRF: " + transaction.RelatedAccountName;
+                        transaction.CategoryDisplay = "TRANSFER: " + transaction.RelatedAccountName;
+                    } else if (transaction.InvoiceId.HasValue) {
+                        transaction.CategoryDisplay = "PAYMENT: " + transaction.InvoiceNumber;
                     } else {
                         transaction.CategoryDisplay = transaction.CategoryName;
                     }

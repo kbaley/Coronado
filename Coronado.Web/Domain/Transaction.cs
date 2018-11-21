@@ -23,5 +23,7 @@ namespace Coronado.Web.Domain
 
         public Guid? RelatedTransactionId { get; set; }
         public Transaction RelatedTransaction { get; set; }
+        public Guid? InvoiceId { get; set; }
+        public Invoice Invoice { get; set; }
     }
 }

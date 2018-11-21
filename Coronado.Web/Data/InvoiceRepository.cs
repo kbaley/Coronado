@@ -64,6 +64,7 @@ namespace Coronado.Web.Data
           WHERE invoice_id = @InvoiceId", new {invoiceId}).ToList();
         }
       }
+      invoice.Balance = invoice.LineItems.Sum(li => li.Quantity * li.UnitAmount);
 
       return invoice;
     }

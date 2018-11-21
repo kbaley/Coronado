@@ -25,7 +25,8 @@ export class NewTransactionRow extends Component {
         description: '',
         accountId: props.account.accountId,
         credit: '',
-        debit: ''
+        debit: '',
+        invoiceId: ''
       },
       selectedCategory: {},
       categories: [],
@@ -86,6 +87,7 @@ export class NewTransactionRow extends Component {
     let transactionType = "Transaction";
     let mortgageType = '';
     let mortgagePayment = '';
+    let invoiceId = '';
     let categoryDisplay = selectedCategory.name;
     let debit = this.state.trx.debit;
     let credit = this.state.trx.credit;
@@ -105,11 +107,12 @@ export class NewTransactionRow extends Component {
     if (categoryId.substring(0,4) === "PMT:") {
       transactionType = "Payment";
       
-      categoryId = selectedCategory.invoiceId;
+      invoiceId = selectedCategory.invoiceId;
+      categoryId = '';
       credit = selectedCategory.balance;
     }
     this.setState( {
-      trx: {...this.state.trx, categoryId, debit, credit, categoryDisplay },
+      trx: {...this.state.trx, categoryId, debit, credit, categoryDisplay, invoiceId },
       transactionType,
       mortgageType,
       mortgagePayment,
@@ -119,7 +122,7 @@ export class NewTransactionRow extends Component {
   saveTransaction() {
     this.props.actions.createTransaction(this.state.trx, this.state.transactionType);
     this.setState( 
-      { trx: { ...this.state.trx, vendor: '', description: '', debit: '', credit: '' }, 
+      { trx: { ...this.state.trx, vendor: '', description: '', debit: '', credit: '', invoiceId: '' }, 
         selectedCategory: { }
       }
     );

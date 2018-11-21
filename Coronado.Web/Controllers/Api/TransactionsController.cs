@@ -17,13 +17,15 @@ namespace Coronado.Web.Controllers.Api
         private readonly ITransactionRepository _transactionRepo;
         private readonly IAccountRepository _accountRepo;
         private readonly ICategoryRepository _categoryRepo;
+        private readonly IInvoiceRepository _invoiceRepo;
 
         public TransactionsController(ApplicationDbContext context, ITransactionRepository transactionRepo,
-            IAccountRepository accountRepo, ICategoryRepository categoryRepo)
+            IAccountRepository accountRepo, ICategoryRepository categoryRepo, IInvoiceRepository invoiceRepo)
         {
             _transactionRepo = transactionRepo;
             _accountRepo = accountRepo;
             _categoryRepo = categoryRepo;
+            _invoiceRepo = invoiceRepo;
         }
 
         // GET: api/Transactions
@@ -74,7 +76,7 @@ namespace Coronado.Web.Controllers.Api
             }
             transaction.SetAmount();
             transaction.EnteredDate = DateTime.Now;
-            if (transaction.CategoryId == null) {
+            if (transaction.CategoryId == null && !string.IsNullOrWhiteSpace(transaction.CategoryName)) {
                 transaction.CategoryId = _categoryRepo.GetAll().Single(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase))).CategoryId;
             }
 
@@ -86,8 +88,12 @@ namespace Coronado.Web.Controllers.Api
             }
 
             var accountBalances = _accountRepo.GetAccountBalances().Select(a => new {a.AccountId, a.CurrentBalance});
+            InvoiceForPosting invoice = null;
+            if (transaction.InvoiceId.HasValue) {
+                invoice = _invoiceRepo.Get(transaction.InvoiceId.Value);
+            }
 
-            return CreatedAtAction("PostTransaction", new { id = transaction.TransactionId }, new {transactions, accountBalances});
+            return CreatedAtAction("PostTransaction", new { id = transaction.TransactionId }, new {transactions, accountBalances, invoice});
         }
 
     }
