@@ -33,23 +33,41 @@ namespace Coronado.Web.Data
       using (var conn = Connection)
       {
         conn.Open();
-        var trx = conn.BeginTransaction();
-
-        // Check for a related transaction
-        var relatedTransactionId = conn.ExecuteScalar<Guid>(
-@"SELECT related_transaction_id
+        using (var trx = conn.BeginTransaction())
+        {
+          try
+          {
+            // Check for a related transaction
+            var transaction = conn.QuerySingle<TransactionForDisplay>(
+    @"SELECT invoice_id, related_transaction_id
     FROM transactions
     WHERE transaction_id = @TransactionId", new { transactionId });
-        if (relatedTransactionId != null && relatedTransactionId != Guid.Empty)
-        {
-          // Related transaction exists; delete it first (after clearing the FK relationship)
-          conn.Execute("UPDATE transactions SET related_transaction_id = null WHERE transaction_id = @TransactionId",
-              new { transactionId });
-          conn.Execute("DELETE FROM transactions WHERE related_transaction_id = @TransactionId",
-              new { transactionId });
+            var relatedTransactionId = transaction.RelatedTransactionId;
+            if (relatedTransactionId != null && relatedTransactionId != Guid.Empty)
+            {
+              // Related transaction exists; delete it first (after clearing the FK relationship)
+              conn.Execute("UPDATE transactions SET related_transaction_id = null WHERE transaction_id = @TransactionId",
+                  new { transactionId });
+              conn.Execute("DELETE FROM transactions WHERE related_transaction_id = @TransactionId",
+                  new { transactionId });
+            }
+            conn.Execute("DELETE FROM transactions WHERE transaction_id = @TransactionId", new { transactionId });
+            if (transaction.InvoiceId.HasValue)
+            {
+              UpdateInvoice(transaction.InvoiceId.Value, conn, trx);
+            }
+            trx.Commit();
+          }
+          catch
+          {
+            trx.Rollback();
+            throw;
+          }
+          finally
+          {
+            conn.Close();
+          }
         }
-        conn.Execute("DELETE FROM transactions WHERE transaction_id = @TransactionId", new { transactionId });
-        trx.Commit();
       }
     }
 
@@ -57,13 +75,46 @@ namespace Coronado.Web.Data
     {
       using (var conn = Connection)
       {
-        conn.Execute(
-@"UPDATE transactions
-    SET account_id = @AccountId, vendor = @Vendor, description = @Description, is_reconciled = @IsReconciled, 
-    transaction_date = @TransactionDate, category_id = @CategoryId, amount = @Amount, 
-    related_transaction_id = @RelatedTransactionId, invoice_id = @InvoiceId
-    WHERE transaction_id = @TransactionId", transaction);
+        conn.Open();
+        using (var trx = conn.BeginTransaction())
+        {
+          try
+          {
+            conn.Execute(
+                @"UPDATE transactions
+                SET account_id = @AccountId, vendor = @Vendor, description = @Description, is_reconciled = @IsReconciled, 
+                transaction_date = @TransactionDate, category_id = @CategoryId, amount = @Amount, 
+                related_transaction_id = @RelatedTransactionId, invoice_id = @InvoiceId
+                WHERE transaction_id = @TransactionId", transaction);
+            if (transaction.InvoiceId.HasValue)
+            {
+              UpdateInvoice(transaction.InvoiceId.Value, conn, trx);
+            }
+            trx.Commit();
+          }
+          catch
+          {
+            trx.Rollback();
+          }
+          finally
+          {
+            conn.Close();
+          }
+
+        }
       }
+    }
+
+    private void UpdateInvoice(Guid invoiceId, IDbConnection conn, IDbTransaction trx)
+    {
+      conn.Execute(
+          @"UPDATE invoices
+            SET balance = (SELECT SUM(line_items) FROM (
+                SELECT quantity * unit_amount as line_items FROM invoice_line_items
+                WHERE invoice_id = @InvoiceId
+                UNION
+                SELECT SUM(-amount) FROM transactions WHERE invoice_id = @InvoiceId) items)",
+          new { InvoiceId = invoiceId }, trx);
     }
 
     public void Insert(TransactionForDisplay transaction)
@@ -73,25 +124,32 @@ namespace Coronado.Web.Data
         conn.Open();
         using (var trx = conn.BeginTransaction())
         {
-            try {
-                conn.Execute(
-                @"INSERT INTO transactions (transaction_id, account_id, vendor, description, is_reconciled, transaction_date, category_id,
+          try
+          {
+            conn.Execute(
+            @"INSERT INTO transactions (transaction_id, account_id, vendor, description, is_reconciled, transaction_date, category_id,
                     entered_date, amount, related_transaction_id, invoice_id)
                     VALUES (@TransactionId, @AccountId, @Vendor, @Description, @IsReconciled, @TransactionDate, @CategoryId,
                     @EnteredDate, @Amount, @RelatedTransactionId, @InvoiceId)
                 ", transaction, trx);
-                if (transaction.InvoiceId.HasValue) {
-
-                }
-                trx.Commit();
+            if (transaction.InvoiceId.HasValue)
+            {
+              UpdateInvoice(transaction.InvoiceId.Value, conn, trx);
+              // conn.Execute(@"UPDATE invoices
+              // SET balance = balance - @Amount WHERE invoice_id = @InvoiceId", 
+              // new {Amount = transaction.Amount, InvoiceId = transaction.InvoiceId.Value}, trx);
             }
-            catch {
-                trx.Rollback();
-                throw;
-            }
-            finally {
-                conn.Close();
-            }
+            trx.Commit();
+          }
+          catch
+          {
+            trx.Rollback();
+            throw;
+          }
+          finally
+          {
+            conn.Close();
+          }
         }
       }
     }
