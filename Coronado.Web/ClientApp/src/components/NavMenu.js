@@ -24,12 +24,8 @@ export default props => (
     </Navbar.Collapse>
     <Navbar.Collapse>
       <Nav>
-        <CategoriesMenu />
-      </Nav>
-      <Nav>
         <InvoicesMenu />
-      </Nav>
-      <Nav>
+        <CategoriesMenu />
         <CustomersMenu />
       </Nav>
     </Navbar.Collapse>
