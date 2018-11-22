@@ -91,13 +91,15 @@ export class NewTransactionRow extends Component {
     let categoryDisplay = selectedCategory.name;
     let debit = this.state.trx.debit;
     let credit = this.state.trx.credit;
+    let relatedAccountId = '';
     if (categoryId.substring(0,4) === "TRF:") {
       transactionType = "Transfer";
+      relatedAccountId = categoryId.substring(4);
       categoryId = '';
     }
     if (categoryId.substring(0,4) === "MRG:") {
       transactionType = "Mortgage";
-      const relatedAccountId = categoryId.substring(4);
+      relatedAccountId = categoryId.substring(4);
       const relatedAccount = find(this.props.accounts, a => a.accountId === relatedAccountId);
       categoryId = '';
       debit = relatedAccount.mortgagePayment || '';
@@ -112,7 +114,7 @@ export class NewTransactionRow extends Component {
       credit = selectedCategory.balance;
     }
     this.setState( {
-      trx: {...this.state.trx, categoryId, debit, credit, categoryDisplay, invoiceId },
+      trx: {...this.state.trx, categoryId, debit, credit, categoryDisplay, invoiceId, relatedAccountId },
       transactionType,
       mortgageType,
       mortgagePayment,
