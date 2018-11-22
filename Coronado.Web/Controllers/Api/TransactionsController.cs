@@ -46,8 +46,12 @@ namespace Coronado.Web.Controllers.Api
 
             var transaction = _transactionRepo.Get(id);
             _transactionRepo.Delete(id);
+            InvoiceForPosting invoice = null;
+            if (transaction.InvoiceId.HasValue) {
+                invoice = _invoiceRepo.Get(transaction.InvoiceId.Value);
+            }
 
-            return Ok(new {transaction, accountBalances = _accountRepo.GetAccountBalances()});
+            return Ok(new {transaction, accountBalances = _accountRepo.GetAccountBalances(), invoice});
         }
 
         [HttpPut("{id}")]
@@ -62,8 +66,12 @@ namespace Coronado.Web.Controllers.Api
             var originalAmount = _transactionRepo.Get(transaction.TransactionId).Amount;
             transaction.SetAmount();
             _transactionRepo.Update(transaction);
+            InvoiceForPosting invoice = null;
+            if (transaction.InvoiceId.HasValue) {
+                invoice = _invoiceRepo.Get(transaction.InvoiceId.Value);
+            }
 
-            return Ok(new {transaction, originalAmount, accountBalances = _accountRepo.GetAccountBalances()});
+            return Ok(new {transaction, originalAmount, accountBalances = _accountRepo.GetAccountBalances(), invoice});
         }
 
         [HttpPost]

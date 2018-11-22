@@ -39,7 +39,7 @@ namespace Coronado.Web.Data
           {
             // Check for a related transaction
             var transaction = conn.QuerySingle<TransactionForDisplay>(
-    @"SELECT invoice_id, related_transaction_id
+    @"SELECT invoice_id, related_transaction_id, amount
     FROM transactions
     WHERE transaction_id = @TransactionId", new { transactionId });
             var relatedTransactionId = transaction.RelatedTransactionId;
@@ -47,13 +47,16 @@ namespace Coronado.Web.Data
             {
               // Related transaction exists; delete it first (after clearing the FK relationship)
               conn.Execute("UPDATE transactions SET related_transaction_id = null WHERE transaction_id = @TransactionId",
-                  new { transactionId });
+                  new { transactionId }, trx);
               conn.Execute("DELETE FROM transactions WHERE related_transaction_id = @TransactionId",
-                  new { transactionId });
+                  new { transactionId }, trx);
             }
-            conn.Execute("DELETE FROM transactions WHERE transaction_id = @TransactionId", new { transactionId });
+            conn.Execute("DELETE FROM transactions WHERE transaction_id = @TransactionId", new { transactionId }, trx);
             if (transaction.InvoiceId.HasValue)
             {
+              // Isolation level doesn't allow use of `UpdateInvoice`
+              // conn.Execute("UPDATE invoices SET balance = balance + @Amount WHERE invoice_id = @InvoiceId",
+              //   new { Amount = transaction.Amount, InvoiceId = transaction.InvoiceId.Value}, trx);
               UpdateInvoice(transaction.InvoiceId.Value, conn, trx);
             }
             trx.Commit();

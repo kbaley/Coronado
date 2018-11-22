@@ -1,5 +1,6 @@
 import initialState from './initialState';
 import * as actions from "../constants/invoiceActionTypes";
+import * as transactionActions from "../constants/transactionActionTypes";
 import { cloneDeep, find, sumBy } from 'lodash';
 
 export const invoiceReducer = (state = initialState.invoices, action, deletedInvoices) => {
@@ -31,6 +32,17 @@ export const invoiceReducer = (state = initialState.invoices, action, deletedInv
       
     case actions.UPDATE_INVOICE_SUCCESS:
       action.invoice.balance = sumBy(action.invoice.lineItems, i => (i.quantity * i.unitAmount));
+      return [
+        ...state.filter(c => c.invoiceId !== action.invoice.invoiceId),
+        Object.assign({}, action.invoice)
+      ];
+
+    case transactionActions.CREATE_TRANSACTION_SUCCESS:
+    case transactionActions.UPDATE_TRANSACTION_SUCCESS:
+    case transactionActions.DELETE_TRANSACTION_SUCCESS:
+      console.log(action.invoice);
+      
+      if (!action.invoice) return state;
       return [
         ...state.filter(c => c.invoiceId !== action.invoice.invoiceId),
         Object.assign({}, action.invoice)
