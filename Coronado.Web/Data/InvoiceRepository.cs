@@ -47,7 +47,6 @@ namespace Coronado.Web.Data
           }
 
           invoiceEntry.LineItems.Add(lineItem);
-          invoiceEntry.Balance = invoiceEntry.LineItems.Sum(li => li.Quantity * li.UnitAmount);
           return invoiceEntry;
         },
         splitOn: "invoice_id")
@@ -64,7 +63,6 @@ namespace Coronado.Web.Data
           WHERE invoice_id = @InvoiceId", new {invoiceId}).ToList();
         }
       }
-      invoice.Balance = invoice.LineItems.Sum(li => li.Quantity * li.UnitAmount);
 
       return invoice;
     }
@@ -108,9 +106,17 @@ namespace Coronado.Web.Data
 
           try
           {
+            var balance = invoice.LineItems.Sum(li => li.Quantity * li.UnitAmount);
             conn.Execute(
-              @"INSERT INTO invoices (invoice_id, date, customer_id, invoice_number) VALUES
-             (@InvoiceId, @Date, @CustomerId, @InvoiceNumber)", invoice, trx);
+              @"INSERT INTO invoices (invoice_id, date, customer_id, invoice_number, balance) VALUES
+              (@InvoiceId, @Date, @CustomerId, @InvoiceNumber, @Balance)", 
+              new {
+                InvoiceId = invoice.InvoiceId,
+                Date = invoice.Date,
+                CustomerId = invoice.CustomerId,
+                InvoiceNumber = invoice.InvoiceNumber,
+                Balance = balance
+              }, trx);
             foreach (var item in invoice.LineItems)
             {
               item.LineItemId = item.LineItemId.GetId();
@@ -131,11 +137,11 @@ namespace Coronado.Web.Data
             trx.Commit();
             conn.Close();
           }
-          catch
+          catch (Exception e)
           {
             trx.Rollback();
             conn.Close();
-            throw;
+            throw e;
           }
         }
       }
@@ -150,6 +156,8 @@ namespace Coronado.Web.Data
             var existingLineItems = conn.Query<InvoiceLineItemsForPosting>(
               @"SELECT invoice_line_item_id as line_item_id, quantity, unit_amount, description FROM invoice_line_items
             WHERE invoice_id = @InvoiceId", new {InvoiceId = invoice.InvoiceId});
+            var oldBalance = existingLineItems.Sum(li => (li.Quantity * li.UnitAmount));
+            var newBalance = invoice.LineItems.Sum(li => li.Quantity * li.UnitAmount);
             var newLineItems = invoice.LineItems.Where(li => existingLineItems.All(li2 => li2.LineItemId != li.LineItemId));
             var removedLineItems = existingLineItems.Where(li => invoice.LineItems.All(li2 => li2.LineItemId != li.LineItemId));
             var updatedLineItems = invoice.LineItems.Where(li => existingLineItems.Any(li2 => li2.LineItemId == li.LineItemId));
@@ -171,6 +179,10 @@ namespace Coronado.Web.Data
                 SET quantity = @Quantity, unit_amount = @UnitAmount, description = @Description
                 WHERE invoice_line_item_id = @LineItemId", item, trx);
             }
+
+            conn.Execute(@"UPDATE invoices
+            SET date = @Date, customer_id = @CustomerId, invoice_number = @InvoiceNumber, balance = balance - " + oldBalance + " + " + newBalance,
+            invoice, trx);
 
              trx.Commit(); 
           }

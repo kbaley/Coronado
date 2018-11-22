@@ -21,6 +21,7 @@ namespace Coronado.Web.Domain
     public Customer Customer { get; set; }
 
     public IEnumerable<InvoiceLineItem> LineItems { get; set; }
+    public decimal Balance { get; set; }
   }
 
 }
