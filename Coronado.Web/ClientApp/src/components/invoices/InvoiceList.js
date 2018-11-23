@@ -60,7 +60,7 @@ class InvoiceList extends Component {
           onSave={this.saveInvoice} />
         { this.props.isLoading ? <tr><td colSpan="4"><Spinner /></td></tr> :
           this.props.invoices.map(invoice => 
-        <InvoiceRow 
+        invoice.balance > 0 && <InvoiceRow 
           key={invoice.invoiceId} 
           invoice={invoice} 
           onEdit={() => this.startEditing(invoice)} 

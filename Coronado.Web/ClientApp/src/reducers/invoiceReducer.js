@@ -40,8 +40,6 @@ export const invoiceReducer = (state = initialState.invoices, action, deletedInv
     case transactionActions.CREATE_TRANSACTION_SUCCESS:
     case transactionActions.UPDATE_TRANSACTION_SUCCESS:
     case transactionActions.DELETE_TRANSACTION_SUCCESS:
-      console.log(action.invoice);
-      
       if (!action.invoice) return state;
       return [
         ...state.filter(c => c.invoiceId !== action.invoice.invoiceId),
