@@ -14,6 +14,7 @@ class InvoiceList extends Component {
     this.startEditing = this.startEditing.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.saveInvoice = this.saveInvoice.bind(this);
+    this.downloadInvoice = this.downloadInvoice.bind(this);
     this.state = {
       show: false,
       selectedInvoice: {}
@@ -36,6 +37,10 @@ class InvoiceList extends Component {
 
   saveInvoice(invoice) {
     this.props.actions.updateInvoice(invoice);
+  }
+
+  downloadInvoice(invoiceId) {
+
   }
   
   render() {
@@ -64,6 +69,7 @@ class InvoiceList extends Component {
           key={invoice.invoiceId} 
           invoice={invoice} 
           onEdit={() => this.startEditing(invoice)} 
+          onDownload={() => this.downloadInvoice(invoice.invoiceId)}
           onDelete={()=>this.deleteInvoice(invoice.invoiceId, invoice.invoiceNumber)} />
         )}
       </tbody>
