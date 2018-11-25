@@ -10,6 +10,9 @@ export function CustomerRow({customer, onEdit, onDelete}) {
         <DeleteIcon onDelete={onDelete} />
       </td>
       <td>{customer.name}</td>
+      <td>{customer.streetAddress}</td>
+      <td>{customer.city}</td>
+      <td>{customer.region}</td>
     </tr>
   );
 }

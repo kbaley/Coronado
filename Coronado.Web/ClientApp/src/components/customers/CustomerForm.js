@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button,Modal,Form,FormControl,FormGroup,ControlLabel,Col } from 'react-bootstrap';
+import TextField from "../common/TextField";
 
 class CustomerForm extends Component {
   displayName = CustomerForm.name;
@@ -9,7 +10,7 @@ class CustomerForm extends Component {
     this.handleChangeField = this.handleChangeField.bind(this);
     this.state = {
       newCustomer: true,
-      customer: {name: ''}
+      customer: {name: '', streetAddress: '', city: '', region: ''}
     };
   }
 
@@ -17,14 +18,20 @@ class CustomerForm extends Component {
     if (this.props.customer && this.props.customer.customerId && this.props.customer.customerId !== this.state.customer.customerId ) {
       this.setState({
         newCustomer: false,
-        customer: {customerId: this.props.customer.customerId, name: this.props.customer.name}
+        customer: {
+          customerId: this.props.customer.customerId, 
+          name: this.props.customer.name,
+          streetAddress: this.props.customer.streetAddress || '',
+          city: this.props.customer.city || '',
+          region: this.props.customer.region || ''
+        }
       });
     }
   }
 
   saveCustomer() {
     this.props.onSave(this.state.customer);
-    this.setState({customer: {name: ''} });
+    this.setState({customer: {name: '', streetAddress: '', city: '', region: ''} });
     this.props.onClose();
   }
 
@@ -52,6 +59,24 @@ class CustomerForm extends Component {
             />
               </Col>
             </FormGroup>
+            <TextField
+              label="Street Address"
+              name="streetAddress"
+              value={this.state.customer.streetAddress}
+              onChange={this.handleChangeField}
+            />
+            <TextField width={4}
+              label="City"
+              name="city"
+              value={this.state.customer.city}
+              onChange={this.handleChangeField}
+            />
+            <TextField width={4}
+              label="Region"
+              name="region"
+              value={this.state.customer.region}
+              onChange={this.handleChangeField}
+            />
           </Form>
         </Modal.Body>
         <Modal.Footer>

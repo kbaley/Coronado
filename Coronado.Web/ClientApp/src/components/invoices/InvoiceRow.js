@@ -2,7 +2,6 @@ import React from 'react';
 import { DeleteIcon } from '../icons/DeleteIcon';
 import { EditIcon } from '../icons/EditIcon';
 import { CurrencyFormat } from '../common/CurrencyFormat';
-import { Glyphicon } from 'react-bootstrap';
 import { Icon } from '../icons/Icon';
 
 export function InvoiceRow({invoice, onEdit, onDelete, onDownload}) {

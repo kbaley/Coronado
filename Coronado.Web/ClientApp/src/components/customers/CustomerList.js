@@ -52,6 +52,9 @@ class CustomerList extends Component {
         <tr>
           <th></th>
           <th>Name</th>
+          <th>Street Address</th>
+          <th>City</th>
+          <th>Region</th>
         </tr>
       </thead>
       <tbody>

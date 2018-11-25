@@ -78,7 +78,7 @@
       <div><b># {{InvoiceNumber}}</b></div>
       <div style="margin-top:2em;">
         Balance Due<br/>
-        <span style="font-size: 22px;">${{Balance}}</span>
+        <span style="font-size: 22px;">{{Balance}}</span>
       </div>
     </div>
 
@@ -88,8 +88,8 @@
     <p>&nbsp;</p>
     <div style="width: 400px; float: left">
       Bill To<br/>
-      <b>{{ClientName}}</b><br/>
-      {{ClientAddress}}
+      <b>{{CustomerName}}</b><br/>
+      {{CustomerAddress}}
     </div>
     <div style="width: 400px; float: right; text-align: right;">
       <table class="invoice-table">
@@ -134,12 +134,12 @@
         <tr class="summary-row">
           <td colspan="2"></td>
           <td colspan="2" style="text-align: right; padding-right: 100px"><b>Total</b></td>
-          <td>${{Balance}}</td>
+          <td>{{Balance}}</td>
         </tr>
         <tr class="summary-row">
           <td colspan="2"></td>
           <td colspan="2" style="text-align: right; padding-right: 100px; background-color: #eeeeee;"><b>Balance Due</b></td>
-          <td style="background-color: #eeeeee;">${{Balance}}</td>
+          <td style="background-color: #eeeeee;">{{Balance}}</td>
         </tr>
     </table>
   </body>
