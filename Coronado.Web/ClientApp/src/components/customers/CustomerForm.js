@@ -10,7 +10,7 @@ class CustomerForm extends Component {
     this.handleChangeField = this.handleChangeField.bind(this);
     this.state = {
       newCustomer: true,
-      customer: {name: '', streetAddress: '', city: '', region: ''}
+      customer: {name: '', streetAddress: '', city: '', region: '', email: ''}
     };
   }
 
@@ -23,7 +23,8 @@ class CustomerForm extends Component {
           name: this.props.customer.name,
           streetAddress: this.props.customer.streetAddress || '',
           city: this.props.customer.city || '',
-          region: this.props.customer.region || ''
+          region: this.props.customer.region || '',
+          email: this.props.customer.email || ''
         }
       });
     }
@@ -31,7 +32,7 @@ class CustomerForm extends Component {
 
   saveCustomer() {
     this.props.onSave(this.state.customer);
-    this.setState({customer: {name: '', streetAddress: '', city: '', region: ''} });
+    this.setState({customer: {name: '', streetAddress: '', city: '', region: '', email: ''} });
     this.props.onClose();
   }
 
@@ -59,6 +60,12 @@ class CustomerForm extends Component {
             />
               </Col>
             </FormGroup>
+            <TextField width={4}
+              label="Email"
+              name="email"
+              value={this.state.customer.email}
+              onChange={this.handleChangeField}
+            />
             <TextField
               label="Street Address"
               name="streetAddress"

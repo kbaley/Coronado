@@ -15,6 +15,7 @@ namespace Coronado.Web.Domain
     public string StreetAddress { get; set; }
     public string City { get; set; }
     public string Region { get; set; }
+    public string Email { get; set; }
 
     public string Address { get {
       var address = string.IsNullOrWhiteSpace(StreetAddress) ? "" : StreetAddress + "\n";

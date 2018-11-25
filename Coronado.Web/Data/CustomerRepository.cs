@@ -49,8 +49,8 @@ namespace Coronado.Web.Data
         {
             using (var conn = Connection) {
                 conn.Execute(
-@"INSERT INTO customers (customer_id, name, street_address, city, region)
-VALUES (@CustomerId, @Name, @StreetAddress, @City, @Region)", customer);
+@"INSERT INTO customers (customer_id, name, street_address, city, region, email)
+VALUES (@CustomerId, @Name, @StreetAddress, @City, @Region, @Email)", customer);
             }
         }
 
@@ -59,7 +59,7 @@ VALUES (@CustomerId, @Name, @StreetAddress, @City, @Region)", customer);
             using (var conn = Connection) {
                 conn.Execute(
 @"UPDATE customers
-SET name = @Name, street_address=@StreetAddress, city=@City, region=@Region
+SET name = @Name, street_address=@StreetAddress, city=@City, region=@Region, email=@Email
 WHERE customer_id = @CustomerId", customer);
             }
         }
