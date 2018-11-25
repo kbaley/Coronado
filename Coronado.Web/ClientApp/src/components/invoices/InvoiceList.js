@@ -40,7 +40,7 @@ class InvoiceList extends Component {
   }
 
   downloadInvoice(invoiceId) {
-
+    window.open("/invoice/GeneratePDF?invoiceId=" + invoiceId);
   }
   
   render() {

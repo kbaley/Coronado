@@ -35,13 +35,14 @@ namespace Coronado.Web.Controllers
 
       using (var client = new WebClient())
       {
+        var invoice = _invoiceRepo.Get(invoiceId);
         var options = new NameValueCollection();
         options.Add("apikey", apiKey);
-        options.Add("value", GetInvoiceHtml(_invoiceRepo.Get(invoiceId)));
+        options.Add("value", GetInvoiceHtml(invoice));
 
         var ms = new MemoryStream(client.UploadValues("http://api.html2pdfrocket.com/pdf", options));
 
-        HttpContext.Response.Headers.Add("content-disposition", "attachment; filename=moo.pdf");
+        HttpContext.Response.Headers.Add("content-disposition", $"attachment; filename=Invoice {invoice.InvoiceNumber}.pdf");
         return new FileStreamResult(ms, "text/html");
       }
     }
