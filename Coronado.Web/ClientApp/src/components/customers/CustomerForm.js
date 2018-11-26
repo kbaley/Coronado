@@ -60,7 +60,7 @@ class CustomerForm extends Component {
             />
               </Col>
             </FormGroup>
-            <TextField width={4}
+            <TextField width={6}
               label="Email"
               name="email"
               value={this.state.customer.email}

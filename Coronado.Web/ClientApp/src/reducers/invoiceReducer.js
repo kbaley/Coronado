@@ -36,7 +36,6 @@ export const invoiceReducer = (state = initialState.invoices, action, deletedInv
         ...state.filter(c => c.invoiceId !== action.invoice.invoiceId),
         Object.assign({}, action.invoice)
       ];
-
     case transactionActions.CREATE_TRANSACTION_SUCCESS:
     case transactionActions.UPDATE_TRANSACTION_SUCCESS:
     case transactionActions.DELETE_TRANSACTION_SUCCESS:

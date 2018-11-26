@@ -22,6 +22,10 @@ export function loadInvoiceSuccess(invoice) {
   return {type: types.LOAD_INVOICE_SUCCESS, invoice};
 }
 
+export function emailInvoiceSuccess(invoice) {
+  return {type: types.EMAIL_INVOICE_SUCCESS, invoice};
+}
+
 export const loadInvoices = () => {
   return async (dispatch) => {
     dispatch(loadInvoicesAction());
@@ -48,6 +52,18 @@ export const createInvoice = (invoice) => {
   return async (dispatch) => {
     const newInvoice = await InvoiceApi.createInvoice(invoice);
     dispatch(createInvoiceSuccess(newInvoice));
+  }
+}
+
+export const emailInvoice = (invoiceId) => {
+  return async (dispatch) => {
+    const invoice = await InvoiceApi.emailInvoice(invoiceId);
+    const notificationOpts = {
+      message: 'Invoice ' + invoice.invoiceNumber + ' sent to ' + invoice.customerEmail,
+      position: 'br'
+    };
+    dispatch(emailInvoiceSuccess(invoice));
+    dispatch(info(notificationOpts));
   }
 }
 

@@ -1,14 +1,18 @@
 using System;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using Coronado.Web.Data;
 using Coronado.Web.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace Coronado.Web.Controllers
 {
@@ -19,14 +23,16 @@ namespace Coronado.Web.Controllers
     private readonly IConfiguration _config;
     private readonly IInvoiceRepository _invoiceRepo;
     private readonly ILogger _logger;
+    private readonly ICustomerRepository _customerRepo;
 
     public InvoiceController(IHostingEnvironment hostingEnvironment, IConfiguration config,
-      IInvoiceRepository invoiceRepo, ILogger<InvoiceController> logger)
+      IInvoiceRepository invoiceRepo, ILogger<InvoiceController> logger, ICustomerRepository customerRepo)
     {
       _hostingEnvironment = hostingEnvironment;
       _config = config;
       _invoiceRepo = invoiceRepo;
       _logger = logger;
+      _customerRepo = customerRepo;
     }
 
     public IActionResult GeneratePDF(Guid invoiceId)
@@ -85,6 +91,51 @@ namespace Coronado.Web.Controllers
       var value = GetInvoiceHtml(invoice);
       var ms = new MemoryStream(Encoding.UTF8.GetBytes(value));
       return new FileStreamResult(ms, "text/html");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> SendEmail(Guid invoiceId)
+    {
+      var invoice = _invoiceRepo.Get(invoiceId);
+      await SendInvoice(invoice).ConfigureAwait(false);
+
+      return Ok(invoice);
+    }
+
+    private async Task SendInvoice(InvoiceForPosting invoice)
+    {
+
+      var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
+      var client = new SendGridClient(apiKey);
+      var from = new EmailAddress("kyle@baley.org", "Kyle Baley");
+      var to = new EmailAddress(invoice.CustomerEmail, invoice.CustomerName);
+      var subject = $"Invoice {invoice.InvoiceNumber} from Kyle Baley Consulting Ltd.";
+      var cc = new EmailAddress("kyle@baley.org", "Kyle Baley");
+
+      var htmlContent = $"Invoice {invoice.InvoiceNumber} for {invoice.Balance.ToString("C")} from Kyle Baley Consulting Ltd is attached";
+      var plainTextContent = htmlContent;
+      var msg = new SendGridMessage
+      {
+        From = from,
+        Subject = subject,
+        PlainTextContent = plainTextContent,
+        HtmlContent = htmlContent
+      };
+      msg.AddTo(to);
+      // msg.AddCc(cc);
+      var attachment = new Attachment();
+      using (var webClient = new WebClient())
+      {
+        var pdfApiKey = _config.GetValue<string>("Html2PdfRocketKey");
+        var options = new NameValueCollection();
+        options.Add("apikey", pdfApiKey);
+        options.Add("value", GetInvoiceHtml(invoice));
+
+        var attachmentContent = webClient.UploadValues("http://api.html2pdfrocket.com/pdf", options);
+        var file = Convert.ToBase64String(attachmentContent);
+        msg.AddAttachment($"Invoice {invoice.InvoiceNumber}.pdf", file);
+      }
+      var response = await client.SendEmailAsync(msg);
     }
   }
 }

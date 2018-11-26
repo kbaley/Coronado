@@ -35,7 +35,7 @@ namespace Coronado.Web.Data
         var invoiceDictionary = new Dictionary<Guid, InvoiceForPosting>();
         var invoices = conn.Query<InvoiceForPosting, InvoiceLineItemsForPosting, InvoiceForPosting>(
         @"SELECT i.*, c.name as customer_name, c.street_address as customer_street_address, c.city as customer_city, c.region as customer_region,
-          ili.invoice_id, ili.invoice_line_item_id as line_item_id, ili.quantity, ili.unit_amount, ili.description
+          c.email as customer_email, ili.invoice_id, ili.invoice_line_item_id as line_item_id, ili.quantity, ili.unit_amount, ili.description
         FROM invoices i inner join customers c on i.customer_id = c.customer_id
         INNER JOIN invoice_line_items as ili ON i.invoice_id = ili.invoice_id",
         (invoice, lineItem) => {

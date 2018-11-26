@@ -32,6 +32,17 @@ class InvoiceApi {
     });
     return response.json();
   }
+
+  static async emailInvoice(invoiceId) {
+    const response = await fetch('/Invoice/SendEmail?invoiceId=' + invoiceId, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
+    return response.json();
+  }
 }
 
 export default InvoiceApi;
