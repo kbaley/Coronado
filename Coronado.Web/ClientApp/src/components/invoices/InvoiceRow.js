@@ -4,18 +4,19 @@ import { EditIcon } from '../icons/EditIcon';
 import { CurrencyFormat } from '../common/CurrencyFormat';
 import { Icon } from '../icons/Icon';
 
-export function InvoiceRow({invoice, onEdit, onDelete, onDownload, onEmail}) {
+export function InvoiceRow({invoice, onEdit, onDelete, onDownload, onEmail, onPreview}) {
   return (
     <tr>
       <td>
         <EditIcon onStartEditing={onEdit} />
         <DeleteIcon onDelete={onDelete} />
-        <Icon onClick={onDownload} glyph="download-alt" />
-        <Icon onClick={onEmail} glyph="envelope" />
+        <Icon onClick={onDownload} glyph="download-alt" title="Download" />
+        <Icon onClick={onEmail} glyph="envelope" title="Email" />
+        <Icon onClick={onPreview} glyph="new-window" title="Preview" />
       </td>
       <td>{invoice.invoiceNumber}</td>
       <td>{new Date(invoice.date).toLocaleDateString()}</td>
-      <td>{invoice.customerName}</td>
+      <td>{invoice.customerName} ({invoice.customerEmail})</td>
       <td><CurrencyFormat value={invoice.balance} /></td>
     </tr>
   );

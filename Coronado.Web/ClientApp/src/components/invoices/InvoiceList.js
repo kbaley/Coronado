@@ -16,6 +16,7 @@ class InvoiceList extends Component {
     this.saveInvoice = this.saveInvoice.bind(this);
     this.downloadInvoice = this.downloadInvoice.bind(this);
     this.emailInvoice = this.emailInvoice.bind(this);
+    this.previewInvoice = this.previewInvoice.bind(this);
     this.state = {
       show: false,
       selectedInvoice: {}
@@ -47,6 +48,10 @@ class InvoiceList extends Component {
   emailInvoice(invoiceId) {
     this.props.actions.emailInvoice(invoiceId);
   }
+
+  previewInvoice(invoiceId) {
+    window.open("/invoice/GenerateHTML?invoiceId=" + invoiceId);
+  }
   
   render() {
     return (
@@ -76,6 +81,7 @@ class InvoiceList extends Component {
           onEdit={() => this.startEditing(invoice)} 
           onDownload={() => this.downloadInvoice(invoice.invoiceId)}
           onEmail={() => this.emailInvoice(invoice.invoiceId)}
+          onPreview={() => this.previewInvoice(invoice.invoiceId)}
           onDelete={()=>this.deleteInvoice(invoice.invoiceId, invoice.invoiceNumber)} />
         )}
       </tbody>

@@ -5,6 +5,6 @@ import './Icon.css';
 export function Icon(props) {
   const classes = `icon ${props.className}`
   return (
-    <Glyphicon glyph={props.glyph} className={classes} onClick={props.onClick}/>
+    <Glyphicon glyph={props.glyph} className={classes} onClick={props.onClick} title={props.title || ""}/>
   );
 }

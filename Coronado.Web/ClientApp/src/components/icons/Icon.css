@@ -3,7 +3,7 @@
     cursor: pointer;
     font-size: var(--icon-font-size);
     vertical-align: middle;
-    padding: 4px;
+    padding: 4px 6px;
     border: 1px solid transparent;
 }
 
