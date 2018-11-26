@@ -69,6 +69,7 @@ Of course, bank fee transactions can also be added manually as regular transacti
 - investments
 - currency conversion (e.g. automatic creation of transactions at the end of the month)
 - transaction tagging (e.g. `spring 2018 vacation` or `rental expense`)
+- console app to enter certain things (e.g. transactions) quickly from the command line
 - QIF import (maybe export)
 - nested categories
 - net worth report
@@ -77,3 +78,7 @@ Of course, bank fee transactions can also be added manually as regular transacti
 - income vs. expenses report
 - simple what-if mortgage analysis (e.g. effect of extra payment, effect of increased regular payments)
 - possibly budgeting but not likely since I'm so bad at it
+
+## Tech
+
+ASP.NET Core in the back, React in the front
