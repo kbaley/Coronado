@@ -4,7 +4,7 @@ using Coronado.Web.Domain;
 
 namespace Coronado.Web.Data
 {
-    public interface ICategoryRepository
+  public interface ICategoryRepository
     {
         IEnumerable<Category> GetAll();
         void Update(Category category);

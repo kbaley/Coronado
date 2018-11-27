@@ -11,13 +11,19 @@ namespace Coronado.Web.Controllers.Api
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountTypesController : ControllerBase
+    public class VendorsController : ControllerBase
     {
+        private readonly IVendorRepository _vendorRepo;
+
+        public VendorsController(IVendorRepository vendorRepo)
+        {
+            _vendorRepo = vendorRepo;
+        }
 
         [HttpGet]
-        public IEnumerable<string> GetAccountTypes( )
+        public IEnumerable<Vendor> GetVendors( )
         {
-            return AccountType.GetAccountTypes();
+            return _vendorRepo.GetAll();
         }
     }
 }

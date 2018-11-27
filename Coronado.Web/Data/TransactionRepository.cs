@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Dapper;
 using System.Data;
 using Npgsql;
+using Coronado.Web.Domain;
 
 namespace Coronado.Web.Data
 {
@@ -93,6 +94,9 @@ namespace Coronado.Web.Data
             {
               UpdateInvoice(transaction.InvoiceId.Value, conn, trx);
             }
+            if (transaction.CategoryId.HasValue) {
+              UpdateVendor(transaction.Vendor, transaction.CategoryId.Value, conn, trx);
+            }
             trx.Commit();
           }
           catch
@@ -120,6 +124,20 @@ namespace Coronado.Web.Data
           new { InvoiceId = invoiceId }, trx);
     }
 
+    private void UpdateVendor(string vendorName, Guid categoryId, IDbConnection conn, IDbTransaction trx)
+    {
+      if (string.IsNullOrWhiteSpace(vendorName)) return;
+      var vendor = conn.QuerySingleOrDefault<Vendor>("SELECT * from vendors WHERE name=@vendorName", new {vendorName}, trx);
+      if (vendor == null) {
+        conn.Execute(@"INSERT INTO vendors (vendor_id, name, last_transaction_category_id)
+          VALUES (@VendorId, @VendorName, @CategoryId)", new {VendorId = Guid.NewGuid(), vendorName, categoryId}, trx);
+      } else {
+        conn.Execute(@"UPDATE vendors
+          SET last_transaction_category_id = @categoryId
+          WHERE vendor_id = @VendorId", new {VendorId = vendor.VendorId, categoryId}, trx);
+      }
+    }
+
     public void Insert(TransactionForDisplay transaction)
     {
       using (var conn = Connection)
@@ -138,9 +156,9 @@ namespace Coronado.Web.Data
             if (transaction.InvoiceId.HasValue)
             {
               UpdateInvoice(transaction.InvoiceId.Value, conn, trx);
-              // conn.Execute(@"UPDATE invoices
-              // SET balance = balance - @Amount WHERE invoice_id = @InvoiceId", 
-              // new {Amount = transaction.Amount, InvoiceId = transaction.InvoiceId.Value}, trx);
+            }
+            if (transaction.CategoryId.HasValue) {
+              UpdateVendor(transaction.Vendor, transaction.CategoryId.Value, conn, trx);
             }
             trx.Commit();
           }
