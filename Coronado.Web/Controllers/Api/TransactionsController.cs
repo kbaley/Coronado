@@ -84,8 +84,17 @@ namespace Coronado.Web.Controllers.Api
             }
             transaction.SetAmount();
             transaction.EnteredDate = DateTime.Now;
-            if (transaction.CategoryId == null && !string.IsNullOrWhiteSpace(transaction.CategoryName)) {
-                transaction.CategoryId = _categoryRepo.GetAll().Single(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase))).CategoryId;
+            if (transaction.CategoryId.IsNullOrEmpty() && !string.IsNullOrWhiteSpace(transaction.CategoryName)) {
+                var category = _categoryRepo.GetAll().SingleOrDefault(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase)));
+                if (category == null) {
+                    category = new Category {
+                        CategoryId = Guid.NewGuid(),
+                        Name = transaction.CategoryName,
+                        Type = "Expenses"
+                    };
+                    _categoryRepo.Insert(category);
+                }
+                transaction.CategoryId = category.CategoryId;
             }
 
             var bankFeeTransactions = TransactionHelpers.GetBankFeeTransactions(transaction, _categoryRepo, _accountRepo);

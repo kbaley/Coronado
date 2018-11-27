@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
+import CreatableSelect from 'react-select/lib/Creatable';
 import { find } from 'lodash';
 
 export class CategorySelect extends Component {
@@ -11,8 +11,22 @@ export class CategorySelect extends Component {
     };
   }
 
-  handleChangeCategory(selectedOption) {
+  handleChangeCategory(selectedOption, actionMeta) {
+    console.log(actionMeta);
+    console.log(selectedOption);
+    
     this.props.onCategoryChanged(selectedOption);
+  }
+
+  // See https://github.com/JedWatson/react-select/issues/2630
+  isValidNewOption = (inputValue, selectValue, selectOptions) => {
+    if (
+      inputValue.trim().length === 0 ||
+      selectOptions.find(option => option.name === inputValue)
+    ) {
+      return false;
+    }
+    return true;
   }
 
   render() {
@@ -30,10 +44,17 @@ export class CategorySelect extends Component {
     };
     const options = this.props.categories.filter(c => c.accountId !== this.props.selectedAccount);
     return (
-      <Select value={find(options, o => o.categoryId === this.props.selectedCategory)} 
+      <CreatableSelect 
+        isClearable
+        value={find(options, o => o.categoryId === this.props.selectedCategory)} 
         onChange={this.handleChangeCategory} 
         getOptionLabel={o => o.name}
         getOptionValue={o => o.categoryId}
+        getNewOptionData={(inputValue, optionLabel) => ({
+          id: inputValue,
+          name: optionLabel,
+        })}
+        isValidNewOption={this.isValidNewOption}
         options={options} styles={customStyles} />);
   }
 }

@@ -83,6 +83,18 @@ export class NewTransactionRow extends Component {
   }
 
   handleChangeCategory(selectedCategory) {
+    if (selectedCategory === null) {
+      // Category cleared
+      this.setState( {
+        trx: {...this.state.trx, categoryId: '', categoryDisplay: '' },selectedCategory: { }});
+      return;
+    }
+    if (selectedCategory.id) {
+      // New category
+      this.setState( {
+        trx: {...this.state.trx, categoryId: '', categoryDisplay: selectedCategory.name, categoryName: selectedCategory.name }, selectedCategory});
+      return;
+    }
     let categoryId = selectedCategory.categoryId;
     let transactionType = "Transaction";
     let mortgageType = '';
@@ -122,9 +134,11 @@ export class NewTransactionRow extends Component {
   }
 
   saveTransaction() {
+    console.log(this.state.trx);
+    
     this.props.actions.createTransaction(this.state.trx, this.state.transactionType);
     this.setState( 
-      { trx: { ...this.state.trx, vendor: '', description: '', debit: '', credit: '', invoiceId: '' }, 
+      { trx: { ...this.state.trx, vendor: '', description: '', debit: '', credit: '', invoiceId: '', categoryId: '', categoryDisplay: '', relatedAccountId: '' }, 
         selectedCategory: { }
       }
     );
