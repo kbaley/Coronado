@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import * as transactionActions from '../actions/transactionActions';
 import { connect } from 'react-redux';
 import { getCategoriesForDropdown } from "../selectors/selectors";
+import VendorField from './common/VendorField';
 
 export class NewTransactionRow extends Component {
   constructor(props) {
@@ -14,14 +15,15 @@ export class NewTransactionRow extends Component {
     this.saveTransaction = this.saveTransaction.bind(this);
     this.handleChangeCategory = this.handleChangeCategory.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.handleChangeField = this.handleChangeField.bind(this); 
+    this.handleChangeField = this.handleChangeField.bind(this);
     this.handleChangeDebit = this.handleChangeDebit.bind(this);
+    this.handleChangeVendor = this.handleChangeVendor.bind(this);
     this.setFocus = this.setFocus.bind(this);
 
     this.state = {
       trx: {
-        transactionDate: new Date().toLocaleDateString(), 
-        vendor: '', 
+        transactionDate: new Date().toLocaleDateString(),
+        vendor: '',
         description: '',
         accountId: props.account.accountId,
         credit: '',
@@ -37,7 +39,7 @@ export class NewTransactionRow extends Component {
   }
 
   componentDidMount() {
-      Mousetrap.bind('n t', this.setFocus);
+    Mousetrap.bind('n t', this.setFocus);
   }
 
   componentWillUnmount() {
@@ -54,7 +56,7 @@ export class NewTransactionRow extends Component {
       })
     }
   }
-  
+
 
   setFocus(e) {
     if (e) e.preventDefault();
@@ -64,7 +66,7 @@ export class NewTransactionRow extends Component {
 
   handleChangeField(e) {
     var name = e.target.name;
-    this.setState( { trx: {...this.state.trx, [name]: e.target.value } } );
+    this.setState({ trx: { ...this.state.trx, [name]: e.target.value } });
   }
   handleKeyPress(e) {
     if (e.key === 'Enter') {
@@ -73,26 +75,32 @@ export class NewTransactionRow extends Component {
     }
   }
 
+  handleChangeVendor(vendor) {
+    this.setState({ trx: {...this.state.trx, vendor}});
+  }
+
   handleChangeDebit(e) {
     var credit = '';
     var debit = e.target.value;
     if (this.state.transactionType === "Mortgage" && this.state.mortgageType === 'fixedPayment' && debit !== '') {
       credit = this.state.mortgagePayment - Number(debit);
-    } 
-    this.setState({trx: { ...this.state.trx, debit, credit}});
+    }
+    this.setState({ trx: { ...this.state.trx, debit, credit } });
   }
 
   handleChangeCategory(selectedCategory) {
     if (selectedCategory === null) {
       // Category cleared
-      this.setState( {
-        trx: {...this.state.trx, categoryId: '', categoryDisplay: '' },selectedCategory: { }});
+      this.setState({
+        trx: { ...this.state.trx, categoryId: '', categoryDisplay: '' }, selectedCategory: {}
+      });
       return;
     }
     if (selectedCategory.id) {
       // New category
-      this.setState( {
-        trx: {...this.state.trx, categoryId: '', categoryDisplay: selectedCategory.name, categoryName: selectedCategory.name }, selectedCategory});
+      this.setState({
+        trx: { ...this.state.trx, categoryId: '', categoryDisplay: selectedCategory.name, categoryName: selectedCategory.name }, selectedCategory
+      });
       return;
     }
     let categoryId = selectedCategory.categoryId;
@@ -104,12 +112,12 @@ export class NewTransactionRow extends Component {
     let debit = this.state.trx.debit;
     let credit = this.state.trx.credit;
     let relatedAccountId = '';
-    if (categoryId.substring(0,4) === "TRF:") {
+    if (categoryId.substring(0, 4) === "TRF:") {
       transactionType = "Transfer";
       relatedAccountId = categoryId.substring(4);
       categoryId = '';
     }
-    if (categoryId.substring(0,4) === "MRG:") {
+    if (categoryId.substring(0, 4) === "MRG:") {
       transactionType = "Mortgage";
       relatedAccountId = categoryId.substring(4);
       const relatedAccount = find(this.props.accounts, a => a.accountId === relatedAccountId);
@@ -118,42 +126,45 @@ export class NewTransactionRow extends Component {
       mortgageType = relatedAccount.mortgageType;
       mortgagePayment = relatedAccount.mortgagePayment;
     }
-    if (categoryId.substring(0,4) === "PMT:") {
+    if (categoryId.substring(0, 4) === "PMT:") {
       transactionType = "Payment";
-      
+
       invoiceId = selectedCategory.invoiceId;
       categoryId = '';
       credit = selectedCategory.balance;
     }
-    this.setState( {
-      trx: {...this.state.trx, categoryId, debit, credit, categoryDisplay, invoiceId, relatedAccountId },
+    this.setState({
+      trx: { ...this.state.trx, categoryId, debit, credit, categoryDisplay, invoiceId, relatedAccountId },
       transactionType,
       mortgageType,
       mortgagePayment,
-      selectedCategory});
+      selectedCategory
+    });
   }
 
   saveTransaction() {
     this.props.actions.createTransaction(this.state.trx, this.state.transactionType);
-    
-    this.setState( 
-      { 
-        trx: 
-        { ...this.state.trx, 
-          vendor: '', 
-          description: '', 
-          debit: '', 
-          credit: '', 
-          invoiceId: '', 
-          categoryId: '', 
-          categoryDisplay: '', 
-          relatedAccountId: '' 
-        }, 
-        selectedCategory: {value: null}
+
+    this.setState(
+      {
+        trx:
+        {
+          ...this.state.trx,
+          vendor: '',
+          description: '',
+          debit: '',
+          credit: '',
+          invoiceId: '',
+          categoryId: '',
+          categoryDisplay: '',
+          relatedAccountId: ''
+        },
+        selectedCategory: { value: null }
       }
     );
     this.setFocus();
   }
+
   render() {
     return (
       <tr key="new-transaction">
@@ -161,21 +172,23 @@ export class NewTransactionRow extends Component {
           <CheckIcon onClick={this.saveTransaction} />
         </td>
         <td><input type="text" name="transactionDate" ref="inputDate"
-          value={this.state.trx.transactionDate} onChange={this.handleChangeField}/></td>
-        <td><input type="text" name="vendor" value={this.state.trx.vendor} onChange={this.handleChangeField} /></td>
+          value={this.state.trx.transactionDate} onChange={this.handleChangeField} /></td>
         <td>
-          <CategorySelect 
+          <VendorField vendors={this.props.vendors} value={this.state.trx.vendor} onVendorChanged={this.handleChangeVendor} />
+        </td>
+        <td>
+          <CategorySelect
             selectedCategory={this.state.selectedCategory}
-            onCategoryChanged={this.handleChangeCategory} 
+            onCategoryChanged={this.handleChangeCategory}
             selectedAccount={this.state.trx.accountId}
             categories={this.props.categories} />
         </td>
         <td><input type="text" name="description" value={this.state.trx.description} onChange={this.handleChangeField} /></td>
-        <td><input type="text" name="debit" value={this.state.trx.debit} 
+        <td><input type="text" name="debit" value={this.state.trx.debit}
           onChange={this.handleChangeDebit} onKeyPress={this.handleKeyPress} /></td>
-        <td><input type="text" name="credit" value={this.state.trx.credit} 
+        <td><input type="text" name="credit" value={this.state.trx.credit}
           onChange={this.handleChangeField} onKeyPress={this.handleKeyPress} /></td>
-          <td></td>
+        <td></td>
       </tr>
     )
   }
@@ -184,7 +197,8 @@ export class NewTransactionRow extends Component {
 function mapStateToProps(state) {
   return {
     categories: getCategoriesForDropdown(state.categories, state.accounts, state.invoices),
-    accounts: state.accounts
+    accounts: state.accounts,
+    vendors: state.vendors
   }
 }
 
