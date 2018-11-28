@@ -65,7 +65,7 @@ export class NewTransactionRow extends Component {
   }
 
   handleChangeField(e) {
-    var name = e.target.name;
+    const name = e.target.name;
     this.setState({ trx: { ...this.state.trx, [name]: e.target.value } });
   }
   handleKeyPress(e) {
@@ -75,13 +75,33 @@ export class NewTransactionRow extends Component {
     }
   }
 
-  handleChangeVendor(vendor) {
-    this.setState({ trx: {...this.state.trx, vendor}});
+  handleChangeVendor(vendorName) {
+    let categoryId = this.state.trx.categoryId;
+    let categoryDisplay = this.state.trx.categoryDisplay;
+    let selectedCategory = this.state.selectedCategory;
+    const vendor = this.props.vendors.find(v => v.name === vendorName);
+    if (vendor) {
+      const category = this.props.categories.find(c => c.categoryId === vendor.lastTransactionCategoryId);
+      if (category) {
+        categoryId = category.categoryId;
+        categoryDisplay = category.name;
+        selectedCategory = category;
+      }
+    }
+    this.setState({ 
+      trx: {
+        ...this.state.trx, 
+        vendor: vendorName,
+        categoryId,
+        categoryDisplay
+      },
+      selectedCategory
+    });
   }
 
   handleChangeDebit(e) {
-    var credit = '';
-    var debit = e.target.value;
+    let credit = '';
+    const debit = e.target.value;
     if (this.state.transactionType === "Mortgage" && this.state.mortgageType === 'fixedPayment' && debit !== '') {
       credit = this.state.mortgagePayment - Number(debit);
     }
