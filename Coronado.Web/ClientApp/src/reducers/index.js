@@ -1,6 +1,7 @@
 import { categoryReducer } from "./categoryReducer";
 import { invoiceReducer } from "./invoiceReducer";
 import { customerReducer } from "./customerReducer";
+import { vendorReducer } from "./vendorReducer";
 import { accountReducer } from "./accountReducer";
 import { deletedCategoryReducer } from "./deletedCategoryReducer";
 import { deletedInvoiceReducer } from "./deletedInvoiceReducer";
@@ -26,6 +27,7 @@ function rootReducer(state, action) {
     transactions: transactionReducer(state.transactions, action, state.selectedAccount || ''),
     accountTypes: accountTypeReducer(state.accountTypes, action),
     customers: customerReducer(state.customers, action, state.deletedCustomers || []),
+    vendors: vendorReducer(state.vendors, action),
     router: routerReducer(state.router, action),
     loading: ajaxStatusReducer(state.loading, action),
     notifications: notifications(state.notifications, action)

@@ -11,6 +11,7 @@ export default {
   ajaxCallsInProgress: 0,
   transactions: [],
   customers: [],
+  vendors: [],
   loading: {
     accounts: false,
     categories: false,
