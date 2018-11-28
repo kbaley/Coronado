@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import CreatableSelect from 'react-select/lib/Creatable';
-import { find } from 'lodash';
 
 export class CategorySelect extends Component {
   constructor(props) {
@@ -12,8 +11,6 @@ export class CategorySelect extends Component {
   }
 
   handleChangeCategory(selectedOption, actionMeta) {
-    console.log(actionMeta);
-    console.log(selectedOption);
     
     this.props.onCategoryChanged(selectedOption);
   }
@@ -45,8 +42,7 @@ export class CategorySelect extends Component {
     const options = this.props.categories.filter(c => c.accountId !== this.props.selectedAccount);
     return (
       <CreatableSelect 
-        isClearable
-        value={find(options, o => o.categoryId === this.props.selectedCategory)} 
+        value={this.props.selectedCategory}
         onChange={this.handleChangeCategory} 
         getOptionLabel={o => o.name}
         getOptionValue={o => o.categoryId}

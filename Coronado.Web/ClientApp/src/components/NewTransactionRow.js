@@ -57,7 +57,7 @@ export class NewTransactionRow extends Component {
   
 
   setFocus(e) {
-    e.preventDefault();
+    if (e) e.preventDefault();
     this.refs["inputDate"].focus();
     return false;
   }
@@ -134,14 +134,25 @@ export class NewTransactionRow extends Component {
   }
 
   saveTransaction() {
-    console.log(this.state.trx);
-    
     this.props.actions.createTransaction(this.state.trx, this.state.transactionType);
+    
     this.setState( 
-      { trx: { ...this.state.trx, vendor: '', description: '', debit: '', credit: '', invoiceId: '', categoryId: '', categoryDisplay: '', relatedAccountId: '' }, 
-        selectedCategory: { }
+      { 
+        trx: 
+        { ...this.state.trx, 
+          vendor: '', 
+          description: '', 
+          debit: '', 
+          credit: '', 
+          invoiceId: '', 
+          categoryId: '', 
+          categoryDisplay: '', 
+          relatedAccountId: '' 
+        }, 
+        selectedCategory: {value: null}
       }
     );
+    this.setFocus();
   }
   render() {
     return (
