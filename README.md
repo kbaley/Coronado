@@ -81,4 +81,10 @@ Of course, bank fee transactions can also be added manually as regular transacti
 
 ## Tech
 
-ASP.NET Core in the back, React in the front
+ASP.NET Core in the back, React in the front, PostgreSQL for the database
+
+Why PostgreSQL? I started this project at my brother's cabin in Manitoba, Canada. He had no internet and cell service was slow and, because my provider is in Panama, expensive. I didn't have SQL Server on the VM I normally do Windows development work and, since this a .NET Core app, I wasn't keen to work in the VM anyway. My host machine (macOS) had only PostgreSQL installed as a Docker container from some previous work I had done so I went with that.
+
+### Why Dapper _and_ Entity Framework?
+
+A few weeks in, I started hitting problems managing the interdependencies between my entities. Things like accounts having transactions which link to other accounts, etc. It's been a while since I've had to deal with a full ORM and I don't have the patience for it anymore so I switched to Dapper for the data access. But I like how EF handles the migrations so I've kept it around for that purpose only.

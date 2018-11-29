@@ -104,7 +104,7 @@ class InvoiceForm extends Component {
               <Col sm={2}>
                 <FormControl
                   type="text"
-                  name="name" ref="inputName"
+                  name="date" ref="inputName"
                   value={this.state.invoice.date}
                   onChange={this.handleChangeField}
                 />
