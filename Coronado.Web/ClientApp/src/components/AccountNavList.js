@@ -64,7 +64,7 @@ class AccountNavList extends Component {
 
   render() {
     return (
-      <Nav>
+      <Nav className="accountNav">
         {this.props.isLoadingData ? <Spinner /> : 
         this.props.accounts.map(account =>
           <LinkContainer to={'/account/' + account.accountId} key={account.accountId}>

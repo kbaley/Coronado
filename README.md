@@ -18,10 +18,11 @@ Plus I wanted to learn React.
   - `g c`: Go to categories page
   - `g u`: Go to customers page
   - `g i`: Go to invoices page
-  - `g [1-9]`: Go to account page
+  - `g [1-9]`: Go to account page (too bad for you if you have more than 9 accounts)
   - `n c`: New category (when on categories page)
   - `n u`: New customer (when on customers page)
   - `n i`: New invoice (when on invoices page)
+  - `n t`: New transaction (sets focus to the date field on an account detail page)
 
 ### Invoices
 

@@ -122,7 +122,7 @@ namespace Coronado.Web.Controllers
         HtmlContent = htmlContent
       };
       msg.AddTo(to);
-      // msg.AddCc(cc);
+      msg.AddCc(cc);
       var attachment = new Attachment();
       using (var webClient = new WebClient())
       {

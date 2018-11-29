@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
-import { NavItem, Glyphicon } from 'react-bootstrap';
+import { NavItem, Glyphicon, Row, Col } from 'react-bootstrap';
 import * as Mousetrap from 'mousetrap';
 import { withRouter } from 'react-router-dom';
+import { CurrencyFormat } from '../common/CurrencyFormat';
+import { connect } from 'react-redux';
+import { sumBy } from 'lodash';
 
 export class InvoicesMenu extends Component {
   constructor(props) {
     super(props);
     this.goToInvoices = this.goToInvoices.bind(this);
-    this.state = { isLoading: true };
   }
 
   componentDidMount() {
@@ -18,7 +20,7 @@ export class InvoicesMenu extends Component {
   componentWillUnmount() {
     Mousetrap.unbind('g i');
   }
-  
+
 
   goToInvoices() {
     this.props.history.push('/invoices');
@@ -26,13 +28,32 @@ export class InvoicesMenu extends Component {
 
   render() {
     return (
-    <LinkContainer to={'/invoices'}>
-      <NavItem>
-        <Glyphicon glyph='list-alt' /> Invoices
-      </NavItem>
-    </LinkContainer>
+      <LinkContainer to={'/invoices'}>
+        <NavItem>
+          <Row>
+            <Col sm={1}>
+              <Glyphicon glyph='list-alt' />
+            </Col>
+            <Col sm={6} style={{ overflow: "hidden", textOverflow: "ellipsis" }}>Invoices</Col>
+            <Col sm={4} style={{ textAlign: "right", fontSize: "13px" }}>
+              <CurrencyFormat value={sumBy(this.props.invoices, i => { return i.balance })} />
+            </Col>
+          </Row>
+        </NavItem>
+      </LinkContainer>
     );
   }
 }
 
-export default withRouter(InvoicesMenu);
+function mapStateToProps(state) {
+  return {
+    invoices: state.invoices
+  }
+}
+
+export default withRouter(connect(
+  mapStateToProps,
+  null,
+  null,
+  {pure:false}
+)(InvoicesMenu));
