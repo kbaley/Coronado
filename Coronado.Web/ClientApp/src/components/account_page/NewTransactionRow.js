@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { CheckIcon } from './icons/CheckIcon';
+import { CheckIcon } from '../icons/CheckIcon';
 import * as Mousetrap from 'mousetrap';
-import { CategorySelect } from './common/CategorySelect';
+import { CategorySelect } from '../common/CategorySelect';
 import { find } from 'lodash';
 import { bindActionCreators } from 'redux';
-import * as transactionActions from '../actions/transactionActions';
+import * as transactionActions from '../../actions/transactionActions';
 import { connect } from 'react-redux';
-import { getCategoriesForDropdown } from "../selectors/selectors";
-import VendorField from './common/VendorField';
+import { getCategoriesForDropdown } from "../../selectors/selectors";
+import VendorField from '../common/VendorField';
 
 export class NewTransactionRow extends Component {
   constructor(props) {

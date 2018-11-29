@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import DeleteAccount from './DeleteAccount';
-import * as accountActions from '../actions/accountActions';
-import * as transactionActions from '../actions/transactionActions';
+import * as accountActions from '../../actions/accountActions';
+import * as transactionActions from '../../actions/transactionActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import TransactionList from './TransactionList';

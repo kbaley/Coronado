@@ -1,10 +1,10 @@
 ﻿import React, { Component } from 'react';
-import * as accountActions from '../actions/accountActions'
+import * as accountActions from '../../actions/accountActions'
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
 import { AccountForm } from './AccountForm';
-import { NewIcon } from './icons/NewIcon';
+import { NewIcon } from '../icons/NewIcon';
 
 class NewAccount extends Component {
   displayName = NewAccount.name

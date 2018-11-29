@@ -6,7 +6,7 @@ import './NavMenu.css';
 import CategoriesMenu from './categories/CategoriesMenu';
 import InvoicesMenu from './invoices/InvoicesMenu';
 import CustomersMenu from './customers/CustomersMenu';
-import NewAccount from './NewAccount';
+import NewAccount from './account_page/NewAccount';
 
 export default props => (
   <Navbar inverse fixedTop fluid collapseOnSelect>

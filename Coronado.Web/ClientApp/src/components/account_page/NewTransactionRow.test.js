@@ -1,8 +1,8 @@
 import React from 'react';
 import ConnectedNewTransactionRow, { NewTransactionRow } from './NewTransactionRow';
 import {shallow} from 'enzyme';
-import { CheckIcon } from "./icons/CheckIcon";
-import { CategorySelect } from './common/CategorySelect';
+import { CheckIcon } from "../icons/CheckIcon";
+import { CategorySelect } from '../common/CategorySelect';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 

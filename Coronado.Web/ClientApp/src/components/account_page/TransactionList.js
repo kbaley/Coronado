@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import * as transactionActions from '../actions/transactionActions';
+import * as transactionActions from '../../actions/transactionActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import TransactionRow from './TransactionRow';

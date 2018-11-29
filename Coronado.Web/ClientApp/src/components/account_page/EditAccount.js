@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { AccountForm } from './AccountForm';
-import { EditIcon } from './icons/EditIcon';
+import { EditIcon } from '../icons/EditIcon';
 import './EditAccount.css';
 
 class EditAccount extends Component {
