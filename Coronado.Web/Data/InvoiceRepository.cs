@@ -182,7 +182,8 @@ namespace Coronado.Web.Data
             }
 
             conn.Execute(@"UPDATE invoices
-            SET date = @Date, customer_id = @CustomerId, invoice_number = @InvoiceNumber, balance = balance - " + oldBalance + " + " + newBalance,
+            SET date = @Date, customer_id = @CustomerId, invoice_number = @InvoiceNumber, balance = balance - " + oldBalance + " + " + newBalance +
+            " WHERE invoice_id=@InvoiceId",
             invoice, trx);
 
              trx.Commit(); 
