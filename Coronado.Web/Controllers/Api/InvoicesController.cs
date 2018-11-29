@@ -47,6 +47,7 @@ namespace Coronado.Web.Controllers.Api
             }
 
             _invoiceRepo.Update(invoice);
+            invoice = _invoiceRepo.Get(invoice.InvoiceId);
 
             return Ok(invoice);
         }
@@ -61,6 +62,7 @@ namespace Coronado.Web.Controllers.Api
 
             if (invoice.InvoiceId == null || invoice.InvoiceId == Guid.Empty) invoice.InvoiceId = Guid.NewGuid();
             _invoiceRepo.Insert(invoice);
+            invoice = _invoiceRepo.Get(invoice.InvoiceId);
 
             return CreatedAtAction("PostInvoice", new { id = invoice.InvoiceId }, invoice);
         }

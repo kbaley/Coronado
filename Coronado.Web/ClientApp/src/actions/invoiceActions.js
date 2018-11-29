@@ -10,8 +10,8 @@ export function loadInvoicesAction() {
   return {type: types.LOAD_INVOICES};
 }
 
-export function createInvoiceSuccess() {
-  return {type: types.CREATE_INVOICE_SUCCESS};
+export function createInvoiceSuccess(invoice) {
+  return {type: types.CREATE_INVOICE_SUCCESS, invoice};
 }
 
 export function updateInvoiceSuccess(invoice) {
