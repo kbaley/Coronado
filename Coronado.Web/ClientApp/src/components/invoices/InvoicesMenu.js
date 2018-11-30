@@ -34,8 +34,8 @@ export class InvoicesMenu extends Component {
             <Col sm={1}>
               <Glyphicon glyph='list-alt' />
             </Col>
-            <Col sm={6} style={{ overflow: "hidden", textOverflow: "ellipsis" }}>Invoices</Col>
-            <Col sm={4} style={{ textAlign: "right", fontSize: "13px" }}>
+            <Col sm={7} style={{ overflow: "hidden", textOverflow: "ellipsis" }}>Invoices</Col>
+            <Col sm={3} style={{ textAlign: "right", fontSize: "13px", padding: "0 13px 0 0" }}>
               <CurrencyFormat value={sumBy(this.props.invoices, i => { return i.balance })} />
             </Col>
           </Row>

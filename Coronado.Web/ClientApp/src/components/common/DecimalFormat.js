@@ -2,7 +2,7 @@ import React from 'react';
 import './DecimalFormat.css';
 
 function format(number) {
-  return number.toLocaleString('en', {minimumFractionDigits: 2});
+  return Number(number).toLocaleString('en', {minimumFractionDigits: 2});
 }
 
 export function DecimalFormat(props) {

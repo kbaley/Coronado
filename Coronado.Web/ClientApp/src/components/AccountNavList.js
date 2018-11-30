@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
 import { withRouter } from 'react-router-dom';
 import './AccountNavList.css'
-import { CurrencyFormat } from './common/CurrencyFormat';
+import { MoneyFormat } from './common/DecimalFormat';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Spinner from './common/Spinner';
 
@@ -75,7 +75,7 @@ class AccountNavList extends Component {
                 </Col>
                 <Col sm={6} style={{overflow: "hidden", textOverflow: "ellipsis"}}>{account.name}</Col>
                 <Col sm={4} style={{textAlign: "right"}}>
-                  <CurrencyFormat value={account.currentBalance} />
+                  <MoneyFormat amount={account.currentBalance} />
                 </Col>
               </Row>
             </NavItem>
