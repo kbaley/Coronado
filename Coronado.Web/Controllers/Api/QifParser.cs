@@ -84,6 +84,7 @@ namespace Coronado.Web.Controllers.Api
                 case 'L':
                   var category = line.Substring(1)
                     .Replace("Everyday Expenses:", "")
+                    .Replace("Rainy Day Funds:", "")
                     .Replace("Monthly Bills:", "");
                   trx.CategoryId = TransactionHelpers.GetOrCreateCategory(category, _categoryRepo).CategoryId;
                   break;
