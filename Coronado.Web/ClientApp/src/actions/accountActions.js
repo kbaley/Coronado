@@ -2,6 +2,7 @@ import * as types from '../constants/accountActionTypes';
 import { info } from 'react-notification-system-redux';
 import { push } from 'react-router-redux';
 import AccountApi from '../api/accountApi';
+import { loadTransactionsSuccess } from './transactionActions';
 
 export function loadAccountsSuccess(accounts) {
   return { type: types.LOAD_ACCOUNTS_SUCCESS, accounts };
@@ -63,6 +64,16 @@ export const createAccount = (account) => {
 
     dispatch(createAccountSuccess(newAccount));
     dispatch(push('/account/' + newAccount.accountId));
+  }
+}
+
+export const uploadQif = (accountId, file, fromDate) => {
+  return async (dispatch) => {
+    const transactions = await AccountApi.uploadQif(accountId, file, fromDate);
+    console.log(transactions);
+    
+
+    // dispatch(loadTransactionsSuccess(accountId, transactions));
   }
 }
 

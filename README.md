@@ -77,6 +77,7 @@ Of course, bank fee transactions can also be added manually as regular transacti
 - simple balance sheet
 - income report
 - income vs. expenses report
+- reimbursable expenses (mark expenses as reimbursable so they can be tracked if they have been paid)
 - simple what-if mortgage analysis (e.g. effect of extra payment, effect of increased regular payments)
 - possibly budgeting but not likely since I'm so bad at it
 

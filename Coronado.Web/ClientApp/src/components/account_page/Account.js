@@ -8,6 +8,7 @@ import TransactionList from './TransactionList';
 import { find } from 'lodash';
 import './Account.css';
 import EditAccount from './EditAccount';
+import UploadQif from './UploadQif';
 import { filter } from "lodash";
 
  class Account extends Component {
@@ -19,6 +20,7 @@ import { filter } from "lodash";
     
     this.deleteAccount = this.deleteAccount.bind(this);
     this.updateAccount = this.updateAccount.bind(this);
+    this.uploadQif = this.uploadQif.bind(this);
   }
 
   componentDidMount() {
@@ -63,12 +65,18 @@ import { filter } from "lodash";
     return filter(this.props.accounts, a => a.accountType === "Mortgage");
   }
 
+  uploadQif(file, fromDate) {
+    this.props.actions.uploadQif(this.getSelectedAccount().accountId, file, fromDate);
+    
+  }
+
   render() {
     const account = this.getSelectedAccount();
     
     return (
       <div>
-        <div style={{float: "right", width: "100px"}}>
+        <div style={{float: "right", width: "150px"}}>
+          <UploadQif account={account} onUpload={this.uploadQif} />
           <EditAccount account={account} onUpdate={this.updateAccount} accountTypes={this.props.accountTypes} />
           <DeleteAccount onDelete={this.deleteAccount} />
         </div>

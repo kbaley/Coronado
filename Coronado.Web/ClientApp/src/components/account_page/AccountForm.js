@@ -61,7 +61,8 @@ export class AccountForm extends Component {
     this.props.onClose();
   }
   render() {
-    return (<Modal show={this.props.show} onHide={this.props.onClose}>
+    return (
+    <Modal show={this.props.show} onHide={this.props.onClose}>
       <Modal.Header closeButton>
         <Modal.Title>New account</Modal.Title>
       </Modal.Header>

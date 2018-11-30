@@ -94,7 +94,8 @@ namespace Coronado.Web.Data
             {
               UpdateInvoice(transaction.InvoiceId.Value, conn, trx);
             }
-            if (transaction.CategoryId.HasValue) {
+            if (transaction.CategoryId.HasValue)
+            {
               UpdateVendor(transaction.Vendor, transaction.CategoryId.Value, conn, trx);
             }
             trx.Commit();
@@ -127,14 +128,59 @@ namespace Coronado.Web.Data
     private void UpdateVendor(string vendorName, Guid categoryId, IDbConnection conn, IDbTransaction trx)
     {
       if (string.IsNullOrWhiteSpace(vendorName)) return;
-      var vendor = conn.QuerySingleOrDefault<Vendor>("SELECT * from vendors WHERE name=@vendorName", new {vendorName}, trx);
-      if (vendor == null) {
+      var vendor = conn.QuerySingleOrDefault<Vendor>("SELECT * from vendors WHERE name=@vendorName", new { vendorName }, trx);
+      if (vendor == null)
+      {
         conn.Execute(@"INSERT INTO vendors (vendor_id, name, last_transaction_category_id)
-          VALUES (@VendorId, @VendorName, @CategoryId)", new {VendorId = Guid.NewGuid(), vendorName, categoryId}, trx);
-      } else {
+          VALUES (@VendorId, @VendorName, @CategoryId)", new { VendorId = Guid.NewGuid(), vendorName, categoryId }, trx);
+      }
+      else
+      {
         conn.Execute(@"UPDATE vendors
           SET last_transaction_category_id = @categoryId
-          WHERE vendor_id = @VendorId", new {VendorId = vendor.VendorId, categoryId}, trx);
+          WHERE vendor_id = @VendorId", new { VendorId = vendor.VendorId, categoryId }, trx);
+      }
+    }
+
+    public void Insert(IEnumerable<TransactionForDisplay> transactions)
+    {
+
+      using (var conn = Connection)
+      {
+        conn.Open();
+        using (var trx = conn.BeginTransaction())
+        {
+          try
+          {
+            foreach (var transaction in transactions)
+            {
+              conn.Execute(
+              @"INSERT INTO transactions (transaction_id, account_id, vendor, description, is_reconciled, transaction_date, category_id,
+                    entered_date, amount, related_transaction_id, invoice_id)
+                    VALUES (@TransactionId, @AccountId, @Vendor, @Description, @IsReconciled, @TransactionDate, @CategoryId,
+                    @EnteredDate, @Amount, @RelatedTransactionId, @InvoiceId)
+                ", transaction, trx);
+              if (transaction.InvoiceId.HasValue)
+              {
+                UpdateInvoice(transaction.InvoiceId.Value, conn, trx);
+              }
+              if (transaction.CategoryId.HasValue)
+              {
+                UpdateVendor(transaction.Vendor, transaction.CategoryId.Value, conn, trx);
+              }
+            }
+            trx.Commit();
+          }
+          catch
+          {
+            trx.Rollback();
+            throw;
+          }
+          finally
+          {
+            conn.Close();
+          }
+        }
       }
     }
 
@@ -157,7 +203,8 @@ namespace Coronado.Web.Data
             {
               UpdateInvoice(transaction.InvoiceId.Value, conn, trx);
             }
-            if (transaction.CategoryId.HasValue) {
+            if (transaction.CategoryId.HasValue)
+            {
               UpdateVendor(transaction.Vendor, transaction.CategoryId.Value, conn, trx);
             }
             trx.Commit();

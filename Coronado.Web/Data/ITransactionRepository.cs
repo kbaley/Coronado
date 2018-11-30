@@ -8,6 +8,7 @@ namespace Coronado.Web.Data
     {
         IEnumerable<TransactionForDisplay> GetByAccount(Guid accountId);
         void Insert(TransactionForDisplay transaction);
+        void Insert(IEnumerable<TransactionForDisplay> transactions);
         void Update(TransactionForDisplay transaction);
         void Delete(Guid transactionId);
         TransactionForDisplay Get(Guid transactionId);
