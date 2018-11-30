@@ -7,10 +7,10 @@ import { ShortcutHelper } from './common/ShortcutHelper';
 export default props => (
   <Grid fluid>
     <Row>
-      <Col sm={2}>
+      <Col sm={2} style={{"width": "20%"}}>
         <NavMenu />
       </Col>
-      <Col sm={10}>
+      <Col sm={10} style={{"width": "80%"}}>
         {props.children}
       </Col>
     </Row>

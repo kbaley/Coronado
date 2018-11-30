@@ -14,8 +14,9 @@
 @media (min-width: 768px) {
     /* On large screens, convert the nav menu to a vertical sidebar */
     .navbar {
+        overflow: auto;
         height: 100%;
-        width: calc(17% - 10px);
+        width: calc(20% - 0px);
     }
     .navbar {
         border-radius: 0;

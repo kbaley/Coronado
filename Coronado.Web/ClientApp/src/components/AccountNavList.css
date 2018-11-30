@@ -15,3 +15,9 @@
     margin-right: 5px;
     text-align: center;
 }
+
+@media (min-width: 768px) {
+.accountNav > li > A {
+    padding: 4px 16px !important;
+}
+}
