@@ -67,11 +67,13 @@ Of course, bank fee transactions can also be added manually as regular transacti
 
 ## Still to come
 
+- some form of scrolling mechanism for accounts with lots of transactions
 - investments
 - currency conversion (e.g. automatic creation of transactions at the end of the month)
 - transaction tagging (e.g. `spring 2018 vacation` or `rental expense`)
 - console app to enter certain things (e.g. transactions) quickly from the command line
-- QIF import (maybe export)
+- reconcile transactions for outdated banks with crappy online service (*cough* ScotiaBank *cough*)
+- ~QIF import~ (maybe export)
 - nested categories
 - net worth report
 - simple balance sheet
@@ -89,4 +91,4 @@ Why PostgreSQL? I started this project at my brother's cabin in Manitoba, Canada
 
 ### Why Dapper _and_ Entity Framework?
 
-A few weeks in, I started hitting problems managing the interdependencies between my entities. Things like accounts having transactions which link to other accounts, etc. It's been a while since I've had to deal with a full ORM and I don't have the patience for it anymore so I switched to Dapper for the data access. But I like how EF handles the migrations so I've kept it around for that purpose only.
+I started with only EF. A few weeks in, I started hitting problems managing the interdependencies between my entities. Things like accounts having transactions which link to other accounts, etc. It's been a while since I've had to deal with a full ORM and I don't have the patience for it anymore so I switched to Dapper for the data access. But I like how EF handles the migrations so I've kept it around for that purpose only.
