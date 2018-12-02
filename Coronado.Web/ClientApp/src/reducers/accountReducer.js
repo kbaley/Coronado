@@ -1,5 +1,5 @@
 import initialState from './initialState';
-import { cloneDeep, find, each } from 'lodash'; 
+import { cloneDeep, find, each, sortBy } from 'lodash'; 
 import * as actions from "../constants/accountActionTypes.js";
 import * as transactionActions from "../constants/transactionActionTypes";
 
@@ -8,29 +8,29 @@ export const accountReducer = (state = initialState.accounts, action, deletedAcc
   switch (action.type) {
 
     case actions.LOAD_ACCOUNTS_SUCCESS:
-      return action.accounts;
+      return sortBy(action.accounts, a => a.displayOrder);
 
     case actions.CREATE_ACCOUNT_SUCCESS:
-      return [
+      return sortBy([
         ...state,
         Object.assign({}, action.newAccount),
-      ];
+      ], a => a.displayOrder);
 
     case actions.UPDATE_ACCOUNT_SUCCESS:
-      return [
+      return sortBy([
         ...state.filter(a => a.accountId !== action.updatedAccount.accountId),
         Object.assign({}, action.updatedAccount)
-      ];
+      ], a => a.displayOrder);
 
     case actions.DELETE_ACCOUNT:
       return cloneDeep(state.filter(a => a.accountId !== action.accountId));
 
     case actions.UNDO_DELETE_ACCOUNT:
       const deletedAccount = find(deletedAccounts, a => a.accountId === action.accountId);
-      return [
+      return sortBy([
         ...state,
         Object.assign({}, deletedAccount)
-      ];
+      ], a => a.displayOrder);
 
     case transactionActions.CREATE_TRANSACTION_SUCCESS:
     case transactionActions.UPDATE_TRANSACTION_SUCCESS:

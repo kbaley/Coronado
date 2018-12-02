@@ -51,6 +51,7 @@ namespace Coronado.Web.Domain
         public decimal? MortgagePayment { get; set; }
         
         public string MortgageType { get; set; }
+        public int DisplayOrder { get; set; }
 
     }
 }
