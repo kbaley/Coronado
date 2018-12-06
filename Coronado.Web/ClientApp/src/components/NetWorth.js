@@ -14,8 +14,6 @@ class NetWorth extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log(state.accounts);
-  
   return {
     netWorth: sumBy(state.accounts, a => a.currentBalance)
   }

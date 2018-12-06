@@ -159,6 +159,7 @@ namespace Coronado.Web.Data
             WHERE invoice_id = @InvoiceId", new {InvoiceId = invoice.InvoiceId});
             var oldBalance = existingLineItems.Sum(li => (li.Quantity * li.UnitAmount));
             var newBalance = invoice.LineItems.Sum(li => li.Quantity * li.UnitAmount);
+            invoice.Balance = newBalance;
             var newLineItems = invoice.LineItems.Where(li => existingLineItems.All(li2 => li2.LineItemId != li.LineItemId));
             var removedLineItems = existingLineItems.Where(li => invoice.LineItems.All(li2 => li2.LineItemId != li.LineItemId));
             var updatedLineItems = invoice.LineItems.Where(li => existingLineItems.Any(li2 => li2.LineItemId == li.LineItemId));
@@ -181,9 +182,10 @@ namespace Coronado.Web.Data
                 WHERE invoice_line_item_id = @LineItemId", item, trx);
             }
 
+            // TODO: Incorporate payments
             conn.Execute(@"UPDATE invoices
-            SET date = @Date, customer_id = @CustomerId, invoice_number = @InvoiceNumber, balance = balance - " + oldBalance + " + " + newBalance +
-            " WHERE invoice_id=@InvoiceId",
+            SET date = @Date, customer_id = @CustomerId, invoice_number = @InvoiceNumber, balance = @Balance
+            WHERE invoice_id=@InvoiceId",
             invoice, trx);
 
              trx.Commit(); 
