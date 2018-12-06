@@ -56,4 +56,19 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
+    .navbar-brand a {
+        color: #9d9d9d;
+    }
+
+    .navbar-brand span:hover {
+        color: #9d9d9d;
+    }
+
+    .navbar-brand a:hover {
+        color: #ffffff;
+    }
+
+    .navbar-brand:hover {
+        color: #9d9d9d;
+    }
 }
