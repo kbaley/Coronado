@@ -13,10 +13,10 @@ export default {
   customers: [],
   vendors: [],
   loading: {
-    accounts: false,
-    categories: false,
+    accounts: true,
+    categories: true,
     transactions: false,
-    customers: false,
+    customers: true,
     invoices: true
   }
 }

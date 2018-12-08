@@ -1,4 +1,5 @@
 class AccountApi {
+
   static async getAllAccounts() {
     const response = await fetch(this.baseUrl);
     return response.json();

@@ -91,7 +91,7 @@ VALUES (@AccountId, @Name, @Currency, @Vendor, @AccountType, @MortgagePayment, @
                 conn.Execute(
 @"UPDATE accounts
 SET name = @Name, currency = @Currency, vendor = @Vendor, account_type = @AccountType,
-    mortgage_payment = @MortgagePayment, mortgage_type = @MortgageType
+    mortgage_payment = @MortgagePayment, mortgage_type = @MortgageType, display_order = @DisplayOrder
 WHERE account_id = @AccountId", account);
             }
         }

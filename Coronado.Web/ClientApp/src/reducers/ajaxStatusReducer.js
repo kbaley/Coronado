@@ -12,6 +12,7 @@ export const ajaxStatusReducer = (state = initialState.loading, action) => {
         invoices: true
       }
     case invoiceTypes.LOAD_INVOICES_SUCCESS:
+
       return {
         ...state,
         invoices: false
@@ -19,7 +20,7 @@ export const ajaxStatusReducer = (state = initialState.loading, action) => {
     case accountTypes.LOAD_ACCOUNTS:
       return {
         ...state,
-        accounts: true
+        accounts: false
       }
     case accountTypes.LOAD_ACCOUNTS_SUCCESS:
       return {
