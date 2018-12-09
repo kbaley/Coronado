@@ -7,10 +7,11 @@ import Categories from './components/categories/Categories';
 import InvoicesPage from './components/invoices/InvoicesPage';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPiggyBank, faCreditCard, faHome, faHandHoldingUsd, 
-  faDollarSign, faCar, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons'
+  faDollarSign, faCar, faMoneyBillWave, faChartLine } from '@fortawesome/free-solid-svg-icons'
 import CustomersPage from './components/customers/CustomersPage';
+import ReportsPage from "./components/reports_page/ReportsPage";
 
-library.add(faPiggyBank, faCreditCard, faHome, faHandHoldingUsd, faDollarSign, faCar, faMoneyBillWave);
+library.add(faPiggyBank, faCreditCard, faHome, faHandHoldingUsd, faDollarSign, faCar, faMoneyBillWave, faChartLine);
 
 export default () => (
   <Layout>
@@ -19,5 +20,6 @@ export default () => (
     <Route exact path='/categories' component={Categories} />
     <Route exact path='/invoices' component={InvoicesPage} />
     <Route exact path='/customers' component={CustomersPage} />
+    <Route exact path='/reports' component={ReportsPage} />
   </Layout>
 );
