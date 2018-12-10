@@ -289,6 +289,12 @@ WHERE t.transaction_id=@transactionId;", new { transactionId });
       }
     }
 
+    public decimal GetNetWorthFor(DateTime date) {
+        using (var conn = Connection) {
+            return conn.ExecuteScalar<decimal>("SELECT SUM(amount) FROM transactions WHERE transaction_date <= @date", new {date});
+        }
+    }
+
     public void InsertRelatedTransaction(TransactionForDisplay first, TransactionForDisplay second)
     {
       first.RelatedTransactionId = null;

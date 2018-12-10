@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Tabs, Tab } from 'react-bootstrap';
+import NetWorthReport from './NetWorthReport';
 
 class ReportsPage extends Component {
   constructor(props) {
@@ -25,6 +26,7 @@ class ReportsPage extends Component {
             id="reports-tab"
           >
             <Tab eventKey={1} title="Net worth over time">
+              <NetWorthReport />
             </Tab>           
             <Tab eventKey={2} title="Expenses by category">
               No report yet

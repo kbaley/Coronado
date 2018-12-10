@@ -12,7 +12,7 @@ namespace Coronado.Web.Data
         void Update(TransactionForDisplay transaction);
         void Delete(Guid transactionId);
         TransactionForDisplay Get(Guid transactionId);
-
         void InsertRelatedTransaction(TransactionForDisplay first, TransactionForDisplay second);
+        decimal GetNetWorthFor(DateTime date);
     }
 }
