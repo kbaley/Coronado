@@ -31,6 +31,9 @@ class ReportsPage extends Component {
             <Tab eventKey={2} title="Expenses by category">
               No report yet
             </Tab>           
+            <Tab eventKey={3} title="Income breakdown">
+              No report yet
+            </Tab>           
           </Tabs>
       </div>
     );
