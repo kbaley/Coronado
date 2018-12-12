@@ -6,6 +6,7 @@ import './NavMenu.css';
 import CategoriesMenu from './categories/CategoriesMenu';
 import InvoicesMenu from './invoices/InvoicesMenu';
 import CustomersMenu from './customers/CustomersMenu';
+import InvestmentsMenu from './investments_page/InvestmentsMenu';
 import ReportsMenu from './reports_page/ReportsMenu';
 import NewAccount from './account_page/NewAccount';
 import NetWorth from './NetWorth';
@@ -28,9 +29,10 @@ export default props => (
     <Navbar.Collapse>
       <Nav>
         <InvoicesMenu />
-        <CategoriesMenu />
-        <CustomersMenu />
         <ReportsMenu />
+        <CategoriesMenu />
+        <InvestmentsMenu />
+        <CustomersMenu />
       </Nav>
     </Navbar.Collapse>
   </Navbar>

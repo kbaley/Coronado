@@ -10,6 +10,7 @@ import { faPiggyBank, faCreditCard, faHome, faHandHoldingUsd,
   faDollarSign, faCar, faMoneyBillWave, faChartLine } from '@fortawesome/free-solid-svg-icons'
 import CustomersPage from './components/customers/CustomersPage';
 import ReportsPage from "./components/reports_page/ReportsPage";
+import InvestmentsPage from "./components/investments_page/InvestmentsPage";
 
 library.add(faPiggyBank, faCreditCard, faHome, faHandHoldingUsd, faDollarSign, faCar, faMoneyBillWave, faChartLine);
 
@@ -21,5 +22,6 @@ export default () => (
     <Route exact path='/invoices' component={InvoicesPage} />
     <Route exact path='/customers' component={CustomersPage} />
     <Route exact path='/reports' component={ReportsPage} />
+    <Route exact path='/investments' component={InvestmentsPage} />
   </Layout>
 );
