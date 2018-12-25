@@ -13,6 +13,7 @@ import {loadCategories} from './actions/categoryActions';
 import {loadCustomers} from './actions/customerActions';
 import { loadInvoices } from "./actions/invoiceActions";
 import { loadVendors } from "./actions/vendorActions";
+import { loadInvestments } from "./actions/investmentActions";
 import registerServiceWorker from './registerServiceWorker';
 
 // Create browser history to use in the Redux store
@@ -28,6 +29,7 @@ store.dispatch(loadAccountTypes());
 store.dispatch(loadCustomers());
 store.dispatch(loadInvoices());
 store.dispatch(loadVendors());
+store.dispatch(loadInvestments());
 
 const rootElement = document.getElementById('root');
 

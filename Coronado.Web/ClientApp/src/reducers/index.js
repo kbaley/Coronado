@@ -1,12 +1,14 @@
 import { categoryReducer } from "./categoryReducer";
 import { invoiceReducer } from "./invoiceReducer";
 import { customerReducer } from "./customerReducer";
+import { investmentReducer } from "./investmentReducer";
 import { vendorReducer } from "./vendorReducer";
 import { accountReducer } from "./accountReducer";
 import { deletedCategoryReducer } from "./deletedCategoryReducer";
 import { deletedInvoiceReducer } from "./deletedInvoiceReducer";
 import { deletedCustomerReducer } from "./deletedCustomerReducer";
 import { deletedAccountReducer } from "./deletedAccountReducer";
+import { deletedInvestmentReducer } from "./deletedInvestmentReducer";
 import { transactionReducer } from "./transactionReducer";
 import { accountTypeReducer } from "./accountTypeReducer";
 import { selectedAccountReducer } from "./selectedAccountReducer";
@@ -25,9 +27,11 @@ function rootReducer(state, action) {
     deletedCategories: deletedCategoryReducer(state.deletedCategories, action, state.categories || []),
     deletedCustomers: deletedCustomerReducer(state.deletedCustomers, action, state.customers || []),
     deletedInvoices: deletedInvoiceReducer(state.deletedInvoices, action, state.invoices || []),
+    deletedInvestments: deletedInvestmentReducer(state.deletedInvestments, action, state.investments || []),
     transactions: transactionReducer(state.transactions, action, state.selectedAccount || ''),
     accountTypes: accountTypeReducer(state.accountTypes, action),
     customers: customerReducer(state.customers, action, state.deletedCustomers || []),
+    investments: investmentReducer(state.investments, action, state.deletedInvestments || []),
     vendors: vendorReducer(state.vendors, action),
     reports: reportReducer(state.reports, action),
     router: routerReducer(state.router, action),

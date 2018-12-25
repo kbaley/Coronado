@@ -19,6 +19,7 @@ namespace Coronado.Web.Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Vendor> Vendors { get;set; }
+        public DbSet<Investment> Investments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

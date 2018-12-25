@@ -1,6 +1,7 @@
 import * as accountTypes from '../constants/accountActionTypes';
 import * as categoryTypes from '../constants/categoryActionTypes';
 import * as customerTypes from '../constants/customerActionTypes';
+import * as investmentTypes from '../constants/investmentActionTypes';
 import * as invoiceTypes from '../constants/invoiceActionTypes';
 import initialState from './initialState';
 
@@ -47,6 +48,16 @@ export const ajaxStatusReducer = (state = initialState.loading, action) => {
         ...state,
         customers: false
       };
+    case investmentTypes.LOAD_INVESTMENTS:
+      return {
+        ...state,
+        investments: true
+      };
+    case investmentTypes.LOAD_INVESTMENTS_SUCCESS:
+      return {
+        ...state,
+        investments: false
+      }
 
     default:
       return state;

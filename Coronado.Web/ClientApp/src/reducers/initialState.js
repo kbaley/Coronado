@@ -11,6 +11,7 @@ export default {
   ajaxCallsInProgress: 0,
   transactions: [],
   customers: [],
+  investments: [],
   vendors: [],
   reports: {
     netWorth: []
@@ -20,7 +21,8 @@ export default {
     categories: true,
     transactions: false,
     customers: true,
-    invoices: true
+    invoices: true,
+    investments: true
   }
 }
 

@@ -1,18 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import NewInvestment from "./NewInvestment";
+import InvestmentList from "./InvestmentList";
 
 class InvestmentsPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      key: 1
     }
   }
 
   render() {
     return (
       <div>
-        <h1>Investments</h1>
+        <h1>
+          Investments <NewInvestment />
+        </h1>
+        <InvestmentList investments={this.props.investments} />
       </div>
     );
   }
@@ -20,7 +24,7 @@ class InvestmentsPage extends Component {
 
 function mapStateToProps(state) {
   return {
-
+    investments: state.investments
   };
 }
 
