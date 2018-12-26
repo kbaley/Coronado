@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Coronado.Web.Domain
 {
+
     [Table("investments")]
     public class Investment
     {
@@ -14,6 +15,8 @@ namespace Coronado.Web.Domain
         public decimal Shares { get; set; }
         public decimal Price { get; set; }
         public string Url { get; set; }
+        public DateTime LastRetrieved { get; set; }
+        public string Currency { get; set; }
     }
 
 }

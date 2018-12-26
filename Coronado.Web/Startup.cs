@@ -49,6 +49,7 @@ namespace Coronado.Web
             services.AddTransient<IInvoiceRepository, InvoiceRepository>();
             services.AddTransient<IVendorRepository, VendorRepository>();
             services.AddTransient<IInvestmentRepository, InvestmentRepository>();
+            services.AddTransient<ICurrencyRepository, CurrencyRepository>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(connectionString));
             services.AddDefaultIdentity<IdentityUser>()

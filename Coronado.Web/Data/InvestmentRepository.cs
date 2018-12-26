@@ -49,8 +49,8 @@ namespace Coronado.Web.Data
         {
             using (var conn = Connection) {
                 conn.Execute(
-@"INSERT INTO investments (investment_id, name, symbol, shares, price, url)
-VALUES (@InvestmentId, @Name, @Symbol, @Shares, @Price, @Url)", investment);
+@"INSERT INTO investments (investment_id, name, symbol, shares, price, url, last_retrieved, currency)
+VALUES (@InvestmentId, @Name, @Symbol, @Shares, @Price, @Url, @LastRetrieved, @Currency)", investment);
             }
         }
 
@@ -59,7 +59,7 @@ VALUES (@InvestmentId, @Name, @Symbol, @Shares, @Price, @Url)", investment);
             using (var conn = Connection) {
                 conn.Execute(
 @"UPDATE investments
-SET name = @Name, symbol=@Symbol, shares=@Shares, price=@Price, Url=@url
+SET name = @Name, symbol=@Symbol, shares=@Shares, price=@Price, url=@Url, last_retrieved=@LastRetrieved, currency=@Currency
 WHERE investment_id = @InvestmentId", investment);
             }
         }

@@ -1,3 +1,6 @@
 ﻿.investment-list th:first-child {
     width:80px;
 }
+.investment-list th:last-child, .investment-list td:last-child {
+  text-align: right;
+}

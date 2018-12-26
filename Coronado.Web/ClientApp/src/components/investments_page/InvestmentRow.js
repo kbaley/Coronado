@@ -11,6 +11,7 @@ export function InvestmentRow({investment, onEdit, onDelete}) {
       </td>
       <td>{investment.name}</td>
       <td>{investment.symbol}</td>
+      <td>{investment.currency}</td>
       <td>{investment.shares}</td>
       <td>{investment.price}</td>
       <td>{investment.currentValue}</td>

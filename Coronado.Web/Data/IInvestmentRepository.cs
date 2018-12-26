@@ -4,6 +4,7 @@ using Coronado.Web.Domain;
 
 namespace Coronado.Web.Data
 {
+
     public interface IInvestmentRepository
     {
         IEnumerable<Investment> GetAll();

@@ -3,15 +3,17 @@ using System;
 using Coronado.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Coronado.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181226010835_InvestmentCurrency")]
+    partial class InvestmentCurrency
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,27 +81,9 @@ namespace Coronado.Web.Migrations
                     b.ToTable("categories");
 
                     b.HasData(
-                        new { CategoryId = new Guid("cf22c203-1388-45a8-81d1-3e7d48521fd9"), Name = "Starting Balance", Type = "Income" },
-                        new { CategoryId = new Guid("732205d4-e909-41da-9d77-b1b1f6e8dd6a"), Name = "Bank Fees", Type = "Expense" }
+                        new { CategoryId = new Guid("029786a7-4a65-47bd-aa0b-30b864326eba"), Name = "Starting Balance", Type = "Income" },
+                        new { CategoryId = new Guid("902f0ef0-aaee-45f3-8ad4-d12fbbd6c06c"), Name = "Bank Fees", Type = "Expense" }
                     );
-                });
-
-            modelBuilder.Entity("Coronado.Web.Domain.Currency", b =>
-                {
-                    b.Property<string>("Symbol")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("symbol");
-
-                    b.Property<DateTime>("LastRetrieved")
-                        .HasColumnName("last_retrieved");
-
-                    b.Property<decimal>("PriceInUsd")
-                        .HasColumnName("price_in_usd");
-
-                    b.HasKey("Symbol")
-                        .HasName("pk_currencies");
-
-                    b.ToTable("currencies");
                 });
 
             modelBuilder.Entity("Coronado.Web.Domain.Customer", b =>

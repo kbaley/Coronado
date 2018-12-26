@@ -10,7 +10,7 @@ class InvestmentForm extends Component {
     this.handleChangeField = this.handleChangeField.bind(this);
     this.state = {
       newInvestment: true,
-      investment: {name: '', symbol: '', shares: 0, price: 0, url: ''}
+      investment: {name: '', symbol: '', shares: 0, price: 0, url: '', currency: 'USD'}
     };
   }
 
@@ -25,6 +25,7 @@ class InvestmentForm extends Component {
           symbol: this.props.investment.symbol || '',
           shares: this.props.investment.shares || 0,
           price: this.props.investment.price || 0.00,
+          currency: this.props.investment.currency || 'USD',
           url: this.props.investment.url || ''
         }
       });
@@ -77,6 +78,12 @@ class InvestmentForm extends Component {
               label="Starting Price"
               name="price"
               value={this.state.investment.price}
+              onChange={this.handleChangeField}
+            />
+            <TextField width={4}
+              label="Currency"
+              name="currency"
+              value={this.state.investment.currency}
               onChange={this.handleChangeField}
             />
             <TextField width={4}

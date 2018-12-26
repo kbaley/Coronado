@@ -4,9 +4,10 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import InvestmentForm from './InvestmentForm';
 import './InvestmentList.css';
-import { find } from 'lodash';
+import { find, sumBy } from 'lodash';
 import { InvestmentRow } from './InvestmentRow';
 import Spinner from '../common/Spinner';
+import { CurrencyFormat } from "../common/CurrencyFormat";
 
 class InvestmentList extends Component {
   constructor(props) {
@@ -53,6 +54,7 @@ class InvestmentList extends Component {
           <th></th>
           <th>Name</th>
           <th>Symbol</th>
+          <th>Currency</th>
           <th>Shares</th>
           <th>Price</th>
           <th>Current Value</th>
@@ -74,6 +76,10 @@ class InvestmentList extends Component {
           onEdit={() => this.startEditing(i)} 
           onDelete={()=>this.deleteInvestment(i.investmentId, i.name)} />
         )}
+        <tr>
+          <td colspan="6" style={{textAlign: 'right', fontWeight: 'bold', paddingRight: '100px'}}>Total</td>
+          <td><CurrencyFormat value={sumBy(this.props.investments, i => (i.shares * i.price))} /></td>
+        </tr>
       </tbody>
     </table>
     );

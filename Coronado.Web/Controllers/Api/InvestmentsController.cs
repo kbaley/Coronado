@@ -7,6 +7,7 @@ using Coronado.Web.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Coronado.Web.Models;
+using HtmlAgilityPack;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -22,9 +23,25 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpGet]
-        public IEnumerable<Investment> GetInvestments([FromQuery] UrlQuery query )
+        public IEnumerable<Investment> GetInvestments([FromQuery] UrlQuery query)
         {
-            return _investmentRepo.GetAll();
+            var investments = _investmentRepo.GetAll();
+            foreach (var investment in investments)
+            {
+                if (investment.LastRetrieved < DateTime.Today && !string.IsNullOrWhiteSpace(investment.Symbol)) {
+                    var html = $"https://www.theglobeandmail.com/investing/markets/funds/{investment.Symbol}.CF/performance/";
+                    var web = new HtmlWeb();
+                    var htmlDoc = web.Load(html);
+                    var node = htmlDoc.DocumentNode.SelectSingleNode("//barchart-field[@name='lastPrice']");
+                    if (node != null && node.Attributes["value"] != null) {
+                        investment.Price = decimal.Parse(node.Attributes["value"].Value);
+                        investment.LastRetrieved = DateTime.Today;
+                        _investmentRepo.Update(investment);
+                    }
+                }
+            }
+
+            return investments.OrderBy(i => i.Name);
         }
 
         [HttpPut("{id}")]

@@ -1,11 +1,20 @@
 import initialState from './initialState';
 import * as actions from "../constants/investmentActionTypes";
-import { cloneDeep, find } from 'lodash';
+import { cloneDeep, find, forEach } from 'lodash';
+
+function computeBalance(investments) {
+  forEach(investments, i => i.currentValue = format(i.shares * i.price));
+  return investments;
+}
+
+function format(number) {
+  return Number(number).toLocaleString('en', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
 
 export const investmentReducer = (state = initialState.investments, action, deletedInvestments) => {
   switch (action.type) {
     case actions.LOAD_INVESTMENTS_SUCCESS:
-      return action.investments;
+      return computeBalance(action.investments);
       
     case actions.DELETE_INVESTMENT:
       return cloneDeep(state.filter(c => c.investmentId !== action.investmentId));
