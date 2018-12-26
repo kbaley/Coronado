@@ -1,4 +1,5 @@
 import * as types from '../constants/investmentActionTypes';
+import * as transactionTypes from '../constants/transactionActionTypes';
 import InvestmentApi from '../api/investmentApi';
 import { info } from 'react-notification-system-redux';
 
@@ -18,8 +19,8 @@ export function updateInvestmentSuccess(investment) {
   return {type: types.UPDATE_INVESTMENT_SUCCESS, investment};
 }
 
-export function makeCorrectingEntriesSuccess(transactions) {
-  return {type: types.MAKE_CORRECTING_ENTRIES_SUCCESS, transactions};
+export function makeCorrectingEntriesSuccess(correctingEntryModel) {
+  return {type: transactionTypes.CREATE_TRANSACTION_SUCCESS, ...correctingEntryModel};
 }
 
 export const loadInvestments = () => {
@@ -32,8 +33,31 @@ export const loadInvestments = () => {
 
 export const makeCorrectingEntries = () => {
   return async (dispatch) => {
-    const transactions = await InvestmentApi.makeCorrectingEntries();
-    dispatch(makeCorrectingEntriesSuccess(transactions));
+    const correctingEntryModel = await InvestmentApi.makeCorrectingEntries();
+    if (correctingEntryModel && correctingEntryModel !== "")
+    {
+
+      const notificationOpts = {
+        message: 'The entry to sync the investments with the investment account has been created',
+        position: 'br',
+        level: 'success',
+        autoDismiss: 5,
+        dismissible: 'click',
+        title: 'Adjusting entry created'
+      };
+      dispatch(info(notificationOpts));
+      dispatch(makeCorrectingEntriesSuccess(correctingEntryModel));
+    } else {
+      const notificationOpts = {
+        message: 'Either no entry is necessary or no investment account was found.',
+        position: 'br',
+        level: 'warning',
+        autoDismiss: 5,
+        dismissible: 'click',
+        title: 'No entry created'
+      };
+      dispatch(info(notificationOpts));
+    }
   }
 }
 

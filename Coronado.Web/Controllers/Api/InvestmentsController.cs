@@ -72,18 +72,24 @@ namespace Coronado.Web.Controllers.Api
 
             var difference = Math.Round(totalInUsd - bookBalance, 2);
             if (Math.Abs(difference) >= 1) {
+                var category = TransactionHelpers.GetOrCreateCategory("Gain/loss on investments", _categoryRepo);
                 var transaction = new TransactionForDisplay {
                     TransactionId = Guid.NewGuid(),
                     AccountId = investmentAccount.AccountId,
                     Amount = difference,
-                    CategoryId = TransactionHelpers.GetOrCreateCategory("Gain/loss on investments", _categoryRepo).CategoryId,
+                    CategoryId = category.CategoryId,
+                    CategoryName = category.Name,
+                    CategoryDisplay = category.Name,
                     TransactionDate = DateTime.Now,
                     EnteredDate = DateTime.Now,
                     Description = "Gain/loss"
                 };
+                transaction.SetDebitAndCredit();
                 _transactionRepo.Insert(transaction);
+                var accountBalances = _accountRepo.GetAccountBalances().Select(a => new { a.AccountId, a.CurrentBalance });
+                var transactions = new[] { transaction };
 
-                return CreatedAtAction("PostTransaction", new { id = transaction.TransactionId });
+                return CreatedAtAction("PostTransaction", new { id = transaction.TransactionId }, new { transactions, accountBalances } );
             } else {
                 return Ok();
             }

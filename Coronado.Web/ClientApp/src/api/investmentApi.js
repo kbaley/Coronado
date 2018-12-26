@@ -36,6 +36,7 @@ class InvestmentApi {
         'Content-Type': 'application/json'
       }
     });
+    if (response.status === 200) return "";
     return response.json();
   }
 }
