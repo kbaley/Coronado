@@ -12,6 +12,7 @@ export default {
   transactions: [],
   customers: [],
   investments: [],
+  currencies: [],
   vendors: [],
   reports: {
     netWorth: []

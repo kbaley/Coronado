@@ -16,6 +16,7 @@ import { ajaxStatusReducer } from "./ajaxStatusReducer";
 import {reducer as notifications} from 'react-notification-system-redux';
 import { reportReducer } from "./reportReducer";
 import { routerReducer } from 'react-router-redux';
+import { currencyReducer } from "./currencyReducer";
 
 function rootReducer(state, action) {
   return {
@@ -30,6 +31,7 @@ function rootReducer(state, action) {
     deletedInvestments: deletedInvestmentReducer(state.deletedInvestments, action, state.investments || []),
     transactions: transactionReducer(state.transactions, action, state.selectedAccount || ''),
     accountTypes: accountTypeReducer(state.accountTypes, action),
+    currencies: currencyReducer(state.currencies, action),
     customers: customerReducer(state.customers, action, state.deletedCustomers || []),
     investments: investmentReducer(state.investments, action, state.deletedInvestments || []),
     vendors: vendorReducer(state.vendors, action),
