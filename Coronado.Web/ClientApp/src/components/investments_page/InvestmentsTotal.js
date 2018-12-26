@@ -11,7 +11,7 @@ const InvestmentsTotal = ({investments, currencies}) => {
         <td><CurrencyFormat value={total} /></td>
       </tr>
       <tr>
-        <td colSpan="6" style={{textAlign: 'right', fontWeight: 'bold', paddingRight: '100px'}}>Total in USD</td>
+        <td colSpan="6" style={{textAlign: 'right', fontWeight: 'bold', paddingRight: '100px'}}>Total in USD ({Number(currencies['CAD']).toFixed(4)})</td>
         <td><CurrencyFormat value={total / currencies['CAD']} /></td>
       </tr>
     </React.Fragment>
