@@ -18,12 +18,23 @@ export function updateInvestmentSuccess(investment) {
   return {type: types.UPDATE_INVESTMENT_SUCCESS, investment};
 }
 
+export function makeCorrectingEntriesSuccess(transactions) {
+  return {type: types.MAKE_CORRECTING_ENTRIES_SUCCESS, transactions};
+}
+
 export const loadInvestments = () => {
   return async (dispatch) => {
     dispatch(loadInvestmentsAction());
     const investments = await InvestmentApi.getAllInvestments();
     dispatch(loadInvestmentsSuccess(investments));
   };
+}
+
+export const makeCorrectingEntries = () => {
+  return async (dispatch) => {
+    const transactions = await InvestmentApi.makeCorrectingEntries();
+    dispatch(makeCorrectingEntriesSuccess(transactions));
+  }
 }
 
 export const updateInvestment = (investment) => {

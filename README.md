@@ -64,6 +64,13 @@ This will add three transactions: the main one and two bank fees.
 
 Of course, bank fee transactions can also be added manually as regular transactions with a category of "Bank Fees".
 
+### Investments
+
+This section is more or less hard-coded to my current situation. It assumes all investments are in CAD and need to be converted to USD and that they can be looked up as mutual funds on globeandmail.com.
+
+Investment prices are screenscraped a maximum of once per day from https://www.theglobeandmail.com/investing/markets/funds/{symbol}.CF/performance/. Same with the current USD->CAD rate from https://api.exchangeratesapi.io/latest/?base=USD&symbols=CAD. This gives you a total in CAD and in USD. From there, correcting entries can be made to the first account marked as an investment type so bring it in sync with the current value for the purpose of net worth reporting.
+
+Currency and investment gain/loss are not reported separately in the correcting entry and Coronado does not store historical rates of investments or currency. I thought about this for a while and decided I didn't care about keeping the two concepts separate; Coronado tracks only the total value of investments in USD.
 
 ## Still to come
 

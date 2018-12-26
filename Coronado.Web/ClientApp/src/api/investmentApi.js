@@ -27,6 +27,17 @@ class InvestmentApi {
     });
     return response.json();
   }
+
+  static async makeCorrectingEntries() {
+    const response = await fetch('/api/Investments/MakeCorrectingEntries', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
+    return response.json();
+  }
 }
 
 export default InvestmentApi;

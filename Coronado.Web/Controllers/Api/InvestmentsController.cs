@@ -16,14 +16,24 @@ namespace Coronado.Web.Controllers.Api
     public class InvestmentsController : ControllerBase
     {
         private readonly IInvestmentRepository _investmentRepo;
+        private readonly ICurrencyRepository _currencyRepo;
+        private readonly IAccountRepository _accountRepo;
+        private readonly ITransactionRepository _transactionRepo;
+        private readonly ICategoryRepository _categoryRepo;
 
-        public InvestmentsController(ApplicationDbContext context, IInvestmentRepository investmentRepo)
+        public InvestmentsController(ApplicationDbContext context, IInvestmentRepository investmentRepo,
+            ICurrencyRepository currencyRepo, IAccountRepository accountRepo, ITransactionRepository transactionRepo,
+            ICategoryRepository categoryRepo)
         {
             _investmentRepo = investmentRepo;
+            _currencyRepo = currencyRepo;
+            _accountRepo = accountRepo;
+            _transactionRepo = transactionRepo;
+            _categoryRepo = categoryRepo;
         }
 
         [HttpGet]
-        public IEnumerable<Investment> GetInvestments([FromQuery] UrlQuery query)
+        public IEnumerable<Investment> GetInvestments()
         {
             var investments = _investmentRepo.GetAll();
             foreach (var investment in investments)
@@ -42,6 +52,41 @@ namespace Coronado.Web.Controllers.Api
             }
 
             return investments.OrderBy(i => i.Name);
+        }
+
+
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult MakeCorrectingEntries() {
+
+            var investments = GetInvestments();
+            var currencyController = new CurrenciesController(_currencyRepo);
+            var currency = currencyController.GetExchangeRateFor("CAD").GetAwaiter().GetResult();
+            var investmentsTotal = investments.Sum(i => i.Price * i.Shares);
+            var totalInUsd = investmentsTotal / currency;
+            var investmentAccount = _accountRepo.GetAll().FirstOrDefault(a => a.AccountType == "Investment");
+            if (investmentAccount == null)
+                return Ok();
+
+            var bookBalance = _transactionRepo.GetByAccount(investmentAccount.AccountId).Sum(i => i.Amount);
+
+            var difference = Math.Round(totalInUsd - bookBalance, 2);
+            if (Math.Abs(difference) >= 1) {
+                var transaction = new TransactionForDisplay {
+                    TransactionId = Guid.NewGuid(),
+                    AccountId = investmentAccount.AccountId,
+                    Amount = difference,
+                    CategoryId = TransactionHelpers.GetOrCreateCategory("Gain/loss on investments", _categoryRepo).CategoryId,
+                    TransactionDate = DateTime.Now,
+                    EnteredDate = DateTime.Now,
+                    Description = "Gain/loss"
+                };
+                _transactionRepo.Insert(transaction);
+
+                return CreatedAtAction("PostTransaction", new { id = transaction.TransactionId });
+            } else {
+                return Ok();
+            }
         }
 
         [HttpPut("{id}")]
