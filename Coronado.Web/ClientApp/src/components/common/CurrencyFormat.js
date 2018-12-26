@@ -4,8 +4,14 @@ import './CurrencyFormat.css';
 export function CurrencyFormat({value}) {
   return (
     <span className="currency">
-      {Number(value).toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 })}
+      {Currency(value)}
     </span>
+  );
+}
+
+export function Currency(value) {
+  return (
+    Number(value).toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 })
   );
 }
 

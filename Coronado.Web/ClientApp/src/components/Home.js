@@ -1,10 +1,56 @@
 import React from 'react';
+import { Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import { sumBy, filter } from 'lodash';
+import { Currency } from './common/CurrencyFormat';
 
-const Home = props => (
-  <div>
-    <h1>Coronado Financial App for Me</h1>
-  </div>
-);
+class Home extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      
+    }
+  }
 
-export default connect()(Home);
+  componentDidUpdate() {
+
+  }
+
+  render() {
+    console.log(this.props.accounts);
+    var bankAccounts = filter(this.props.accounts, a => a.accountType === 'Bank Account' || a.accountType === 'Cash');
+    var creditCards = filter(this.props.accounts, a => a.accountType === 'Credit Card');
+    var mortgages = filter(this.props.accounts, a => a.accountType === 'Mortgage');
+    var liquidAssets = sumBy(bankAccounts, a => a.currentBalance);
+    var ccTotal = sumBy(creditCards, c => c.currentBalance);
+    var mortgageTotal = sumBy(mortgages, m => m.currentBalance);
+    return (
+      <div>
+        <h1>Coronado Financial App for Me</h1>
+        <Row>
+          <Col sm={2}>
+            <h4>Liquid assets</h4>   
+            <h4>Credit cards</h4>
+            <h4>Mortgages</h4>
+          </Col>
+          <Col sm={2}>
+            <h4 style={{textAlign: "right"}}>{Currency(liquidAssets)}</h4>
+            <h4 style={{textAlign: "right"}}>{Currency(ccTotal)}</h4>
+            <h4 style={{textAlign: "right"}}>{Currency(mortgageTotal)}</h4>
+          </Col>
+          <Col sm={8}></Col>
+        </Row>
+      </div>
+  )}
+} 
+
+function mapStateToProps(state) {
+  return {
+    accounts: state.accounts,
+    isLoadingData: state.loading ? state.loading.accounts : true
+  }
+}
+
+export default connect(
+  mapStateToProps
+)(Home);
