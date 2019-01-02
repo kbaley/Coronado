@@ -96,6 +96,16 @@ ASP.NET Core in the back, React in the front, PostgreSQL for the database
 
 Why PostgreSQL? I started this project at my brother's cabin in Manitoba, Canada. He had no internet and cell service was slow and, because my provider is in Panama, expensive. I didn't have SQL Server on the VM I normally do Windows development work and, since this a .NET Core app, I wasn't keen to work in the VM anyway. My host machine (macOS) had only PostgreSQL installed as a Docker container from some previous work I had done so I went with that.
 
+The `sql-server` branch contains a version that works with SQL Server though the migrations are out of date. I did a test migration and it was pretty straight-forward:
+
+- Replace all `NpgsqlConnection` references in the repositories to `SqlConnection`
+- Update the `ApplicationDbContext` in `Startup.cs` to `UseSqlServer`
+- Delete existing migrations
+- Update connection string as necessary. Note that SQL Server uses `User Id` in the connection string whereas Postgres uses `UserId`
+- Run `dotnet ef migrations add InitialMigration` then `dotnet ef database update`
+
+To migrate data, use `pg_dump` with `--data-only` and --column-inserts` to get a SQL file with data inserts. It can be modified to work with SQL Server by removing all the Postgres stuff at the beginning, replacing `false` with `0`, replacing `true` with `1`, and removing foreign key constraints temporarily.
+
 ### Why Dapper _and_ Entity Framework?
 
 I started with only EF. A few weeks in, I started hitting problems managing the interdependencies between my entities. Things like accounts having transactions which link to other accounts, etc. It's been a while since I've had to deal with a full ORM and I don't have the patience for it anymore so I switched to Dapper for the data access. But I like how EF handles the migrations so I've kept it around for that purpose only.
