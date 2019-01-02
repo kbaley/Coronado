@@ -10,24 +10,9 @@ using Coronado.Web.Domain;
 
 namespace Coronado.Web.Data
 {
-  public class CustomerRepository : ICustomerRepository
+  public class CustomerRepository : BaseRepository, ICustomerRepository
     {
-        private readonly IConfiguration _config;
-        private readonly string _connectionString;
-        public CustomerRepository(IConfiguration config)
-        {
-            _config = config;
-            _connectionString = config.GetConnectionString("DefaultConnection");
-            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-        }
-
-        internal IDbConnection Connection
-        {
-            get
-            {
-                return new NpgsqlConnection(_connectionString);
-            }
-        }
+        public CustomerRepository(IConfiguration config) : base(config) { }
 
         public Customer Delete(Guid customerId)
         {

@@ -10,31 +10,16 @@ using Coronado.Web.Domain;
 
 namespace Coronado.Web.Data
 {
-  public class VendorRepository : IVendorRepository
-  {
-    private readonly IConfiguration _config;
-    private readonly string _connectionString;
-    public VendorRepository(IConfiguration config)
+    public class VendorRepository : BaseRepository, IVendorRepository
     {
-      _config = config;
-      _connectionString = config.GetConnectionString("DefaultConnection");
-      Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-    }
+        public VendorRepository(IConfiguration config) : base(config) { }
 
-    internal IDbConnection Connection
-    {
-      get
-      {
-        return new NpgsqlConnection(_connectionString);
-      }
+        public IEnumerable<Vendor> GetAll()
+        {
+            using (var conn = Connection)
+            {
+                return conn.Query<Vendor>("SELECT * FROM vendors");
+            }
+        }
     }
-
-    public IEnumerable<Vendor> GetAll()
-    {
-      using (var conn = Connection)
-      {
-        return conn.Query<Vendor>("SELECT * FROM vendors");
-      }
-    }
-  }
 }

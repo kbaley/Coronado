@@ -11,25 +11,12 @@ using Coronado.Web.Domain;
 
 namespace Coronado.Web.Data
 {
-    public class AccountRepository : IAccountRepository
+    public class AccountRepository : BaseRepository, IAccountRepository
     {
-        private readonly IConfiguration _config;
         private readonly ILogger<AccountRepository> _logger;
-        private readonly string _connectionString;
-        public AccountRepository(IConfiguration config, ILogger<AccountRepository> logger)
+        public AccountRepository(IConfiguration config, ILogger<AccountRepository> logger) : base(config)
         {
-            _config = config;
             _logger = logger;
-            _connectionString = config.GetConnectionString("defaultConnection");
-            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-        }
-
-        internal IDbConnection Connection
-        {
-            get
-            {
-                return new NpgsqlConnection(_connectionString);
-            }
         }
 
         public Account Delete(Guid accountId)

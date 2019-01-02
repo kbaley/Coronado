@@ -10,24 +10,9 @@ using Coronado.Web.Domain;
 
 namespace Coronado.Web.Data
 {
-  public class InvestmentRepository : IInvestmentRepository
+  public class InvestmentRepository : BaseRepository, IInvestmentRepository
     {
-        private readonly IConfiguration _config;
-        private readonly string _connectionString;
-        public InvestmentRepository(IConfiguration config)
-        {
-            _config = config;
-            _connectionString = config.GetConnectionString("DefaultConnection");
-            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-        }
-
-        internal IDbConnection Connection
-        {
-            get
-            {
-                return new NpgsqlConnection(_connectionString);
-            }
-        }
+        public InvestmentRepository(IConfiguration config) : base(config) { }
 
         public Investment Delete(Guid investmentId)
         {

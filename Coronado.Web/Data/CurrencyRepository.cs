@@ -10,24 +10,9 @@ using Coronado.Web.Domain;
 
 namespace Coronado.Web.Data
 {
-  public class CurrencyRepository : ICurrencyRepository
+  public class CurrencyRepository : BaseRepository, ICurrencyRepository
     {
-        private readonly IConfiguration _config;
-        private readonly string _connectionString;
-        public CurrencyRepository(IConfiguration config)
-        {
-            _config = config;
-            _connectionString = config.GetConnectionString("DefaultConnection");
-            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-        }
-
-        internal IDbConnection Connection
-        {
-            get
-            {
-                return new NpgsqlConnection(_connectionString);
-            }
-        }
+        public CurrencyRepository(IConfiguration config) : base(config) { }
 
         public Currency Get(string symbol)
         {

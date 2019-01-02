@@ -10,24 +10,9 @@ using Coronado.Web.Domain;
 
 namespace Coronado.Web.Data
 {
-  public class CategoryRepository : ICategoryRepository
+  public class CategoryRepository : BaseRepository, ICategoryRepository
   {
-    private readonly IConfiguration _config;
-    private readonly string _connectionString;
-    public CategoryRepository(IConfiguration config)
-    {
-      _config = config;
-      _connectionString = config.GetConnectionString("DefaultConnection");
-      Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-    }
-
-    internal IDbConnection Connection
-    {
-      get
-      {
-        return new NpgsqlConnection(_connectionString);
-      }
-    }
+    public CategoryRepository(IConfiguration config) : base(config) { }
 
     public Category Delete(Guid categoryId)
     {
