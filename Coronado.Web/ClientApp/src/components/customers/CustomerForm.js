@@ -31,7 +31,6 @@ class CustomerForm extends Component {
   }
 
   saveCustomer() {
-    console.log(this.props);
     this.props.onSave(this.state.customer);
     this.setState({customer: {name: '', streetAddress: '', city: '', region: '', email: ''} });
     this.props.onClose();
