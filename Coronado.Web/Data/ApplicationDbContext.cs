@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Coronado.Web.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -21,6 +21,7 @@ namespace Coronado.Web.Data
         public DbSet<Vendor> Vendors { get;set; }
         public DbSet<Investment> Investments { get; set; }
         public DbSet<Currency> Currencies { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

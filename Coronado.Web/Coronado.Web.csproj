@@ -16,6 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CryptoHelper" Version="3.0.2" />
     <PackageReference Include="dapper" Version="1.50.5" />
     <PackageReference Include="HtmlAgilityPack" Version="1.8.11" />
     <PackageReference Include="Microsoft.AspNetCore.App" />

@@ -36,7 +36,7 @@ class CategoryForm extends Component {
   }
 
   handleChangeField(e) {
-    var name = e.target.name;
+    const name = e.target.name;
     this.setState( { category: {...this.state.category, [name]: e.target.value } } );
   }
 
