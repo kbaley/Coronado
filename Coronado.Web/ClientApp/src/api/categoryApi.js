@@ -1,6 +1,19 @@
+import { authHeader } from './auth-header';
+import { logout } from "./authApi";
+
 class CategoryApi {
   static async getAllCategories() {
-    const response = await fetch("api/Categories");
+    const requestOptions = {
+      method: 'GET',
+      headers: authHeader()
+    }
+    const response = await fetch("api/Categories", requestOptions);
+    if (!response.ok) {
+      if (response.status === 401) {
+        logout();
+        return [];
+      }
+    }
     return response.json();
   }
 
@@ -8,6 +21,7 @@ class CategoryApi {
     const response = await fetch('/api/Categories/' + category.categoryId, {
       method: 'PUT',
       headers: {
+        ...authHeader(),
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
@@ -20,6 +34,7 @@ class CategoryApi {
     const response = await fetch('/api/Categories', {
       method: 'POST',
       headers: {
+        ...authHeader(),
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },

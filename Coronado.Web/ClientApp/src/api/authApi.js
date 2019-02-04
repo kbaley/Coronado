@@ -10,7 +10,11 @@ class AuthApi {
     });
     return response.json();
   }
+
 }
 
+export function logout() {
+  localStorage.removeItem('coronado-user');
+}
 
 export default AuthApi;

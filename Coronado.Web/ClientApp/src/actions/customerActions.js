@@ -1,6 +1,7 @@
 import * as types from '../constants/customerActionTypes';
 import CustomerApi from '../api/customerApi';
 import { info } from 'react-notification-system-redux';
+import { authHeader } from '../api/auth-header';
 
 export function loadCustomersSuccess(customers) {
   return {type: types.LOAD_CUSTOMERS_SUCCESS, customers};
@@ -61,6 +62,7 @@ async function deleteCustomerForReal(customerId, deletedCustomers) {
     await fetch('/api/Customers/' + customerId, {
       method: 'DELETE',
       headers: {
+        ...authHeader(),
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       }

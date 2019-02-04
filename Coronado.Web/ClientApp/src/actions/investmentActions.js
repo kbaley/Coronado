@@ -2,6 +2,7 @@ import * as types from '../constants/investmentActionTypes';
 import * as transactionTypes from '../constants/transactionActionTypes';
 import InvestmentApi from '../api/investmentApi';
 import { info } from 'react-notification-system-redux';
+import { authHeader } from '../api/auth-header';
 
 export function loadInvestmentsSuccess(investments) {
   return {type: types.LOAD_INVESTMENTS_SUCCESS, investments};
@@ -96,6 +97,7 @@ async function deleteInvestmentForReal(investmentId, deletedInvestments) {
     await fetch('/api/Investments/' + investmentId, {
       method: 'DELETE',
       headers: {
+        ...authHeader(),
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       }

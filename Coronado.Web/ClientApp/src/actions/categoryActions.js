@@ -1,6 +1,7 @@
 import * as types from '../constants/categoryActionTypes';
 import { info } from 'react-notification-system-redux';
 import CategoryApi from '../api/categoryApi';
+import { authHeader } from '../api/auth-header';
 
 export function loadCategoriesSuccess(categories) {
   return {type: types.LOAD_CATEGORIES_SUCCESS, categories};
@@ -61,6 +62,7 @@ async function deleteCategoryForReal(categoryId, deletedCategories) {
     await fetch('/api/Categories/' + categoryId, {
       method: 'DELETE',
       headers: {
+        ...authHeader(),
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       }

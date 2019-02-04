@@ -10,9 +10,11 @@ using Microsoft.EntityFrameworkCore;
 using Coronado.Web.Controllers;
 using Microsoft.Extensions.Logging;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Coronado.Web.Controllers.Api
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountsController : ControllerBase

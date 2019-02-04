@@ -4,6 +4,7 @@ import { push } from 'react-router-redux';
 import AccountApi from '../api/accountApi';
 import { sortBy } from 'lodash';
 import { arrayMove } from 'react-sortable-hoc';
+import { authHeader } from '../api/auth-header';
 
 export function loadAccountsSuccess(accounts) {
   return { type: types.LOAD_ACCOUNTS_SUCCESS, accounts };
@@ -98,6 +99,7 @@ async function deleteAccountForReal(accountId, dispatch, deletedAccounts) {
     const response = await fetch('/api/Accounts/' + accountId, {
       method: 'DELETE',
       headers: {
+        ...authHeader(),
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       }

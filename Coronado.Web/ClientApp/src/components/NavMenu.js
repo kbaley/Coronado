@@ -12,6 +12,7 @@ import NewAccount from './account_page/NewAccount';
 import NetWorth from './NetWorth';
 
 export default props => (
+  localStorage.getItem('coronado-user') &&
   <Navbar inverse fixedTop fluid collapseOnSelect>
     <Navbar.Header>
       <Navbar.Brand style={{ width: "100%", paddingRight: "0" }}>

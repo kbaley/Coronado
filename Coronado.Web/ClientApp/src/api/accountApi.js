@@ -1,7 +1,20 @@
+import { authHeader } from './auth-header';
+import { logout } from "./authApi";
+
 class AccountApi {
 
   static async getAllAccounts() {
-    const response = await fetch(this.baseUrl);
+    const requestOptions = {
+      method: 'GET',
+      headers: authHeader()
+    }
+    const response = await fetch(this.baseUrl, requestOptions);
+    if (!response.ok) {
+      if (response.status === 401) {
+        logout();
+        return [];
+      }
+    }
     return response.json();
   }
     

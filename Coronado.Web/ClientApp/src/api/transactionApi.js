@@ -1,7 +1,20 @@
+import { authHeader } from './auth-header';
+import { logout } from "./authApi";
+
 class AccountApi {
 
   static async getTransactions(accountId) {
-    const response = await fetch('api/Transactions/?accountId=' + accountId);
+    const requestOptions = {
+      method: 'GET',
+      headers: authHeader()
+    }
+    const response = await fetch('api/Transactions/?accountId=' + accountId, requestOptions);
+    if (!response.ok) {
+      if (response.status === 401) {
+        logout();
+        return [];
+      }
+    }
     return response.json();
   }
 
@@ -10,6 +23,7 @@ class AccountApi {
     const response = await fetch('/api/Transactions/' + transaction.transactionId, {
       method: 'PUT',
       headers: {
+        ...authHeader(),
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
@@ -25,6 +39,7 @@ class AccountApi {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
+        ...authHeader(),
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },

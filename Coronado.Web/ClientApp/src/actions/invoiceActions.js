@@ -1,6 +1,7 @@
 import * as types from '../constants/invoiceActionTypes';
 import InvoiceApi from '../api/invoiceApi';
 import { info } from 'react-notification-system-redux';
+import { authHeader } from '../api/auth-header';
 
 export function loadInvoicesSuccess(invoices) {
   return {type: types.LOAD_INVOICES_SUCCESS, invoices};
@@ -88,6 +89,7 @@ async function deleteInvoiceForReal(invoiceId, deletedInvoices) {
     await fetch('/api/Invoices/' + invoiceId, {
       method: 'DELETE',
       headers: {
+        ...authHeader(),
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       }

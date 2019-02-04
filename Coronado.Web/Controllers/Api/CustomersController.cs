@@ -7,9 +7,11 @@ using Coronado.Web.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Coronado.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Coronado.Web.Controllers.Api
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CustomersController : ControllerBase

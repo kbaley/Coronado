@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Coronado.Web
 {
@@ -53,12 +56,28 @@ namespace Coronado.Web
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(connectionString));
-            services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration => {
                 configuration.RootPath = "ClientApp/build";
+            });
+
+            var jwtSecret = Configuration.GetValue<string>("JwtSecretKey");
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer( x=> 
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSecret)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
             });
 
             services.AddMvc()

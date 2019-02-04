@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Coronado.Web.Models;
 using HtmlAgilityPack;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Coronado.Web.Controllers.Api
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class InvestmentsController : ControllerBase

@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Coronado.Web.Data;
 using Coronado.Web.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Coronado.Web.Controllers.Api
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ResetDataController : ControllerBase

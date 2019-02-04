@@ -1,6 +1,7 @@
 import * as types from '../constants/transactionActionTypes';
 import * as selectedAccountTypes from "../constants/selectAccountActionTypes";
 import TransactionApi from '../api/transactionApi';
+import { authHeader } from '../api/auth-header';
 
 export function loadTransactionsSuccess(transactions, accountId) {
   return { type: types.LOAD_TRANSACTIONS_SUCCESS, transactions, accountId };
@@ -36,6 +37,7 @@ export const deleteTransaction = (transactionId) => {
     const response = await fetch('/api/Transactions/' + transactionId, {
       method: 'DELETE',
       headers: {
+        ...authHeader(),
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       }

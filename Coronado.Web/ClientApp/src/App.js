@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router';
+import { Route, Switch } from 'react-router';
 import Layout from './components/Layout';
 import Home from './components/Home';
 import Account from './components/account_page/Account';
@@ -18,13 +18,15 @@ library.add(faPiggyBank, faCreditCard, faHome, faHandHoldingUsd, faDollarSign, f
 
 export default () => (
   <Layout>
-    <Route exact path='/' component={Home} />
-    <Route exact path='/login' component={LoginPage} />
-    <Route path='/account/:accountId' render={props => <Account {...props} />} />
-    <PrivateRoute exact path='/categories' component={Categories} />
-    <Route exact path='/invoices' component={InvoicesPage} />
-    <Route exact path='/customers' component={CustomersPage} />
-    <Route exact path='/reports' component={ReportsPage} />
-    <Route exact path='/investments' component={InvestmentsPage} />
+    <Switch>
+      <PrivateRoute exact path='/' component={Home} />
+      <Route exact path='/login' component={LoginPage} />
+      <PrivateRoute path='/account/:accountId' component={props => <Account {...props} />} />
+      <PrivateRoute exact path='/categories' component={Categories} />
+      <PrivateRoute exact path='/invoices' component={InvoicesPage} />
+      <PrivateRoute exact path='/customers' component={CustomersPage} />
+      <PrivateRoute exact path='/reports' component={ReportsPage} />
+      <PrivateRoute exact path='/investments' component={InvestmentsPage} />
+    </Switch>
   </Layout>
 );
