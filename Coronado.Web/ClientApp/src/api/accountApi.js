@@ -22,6 +22,7 @@ class AccountApi {
     const response = await fetch(this.baseUrl + account.accountId, {
       method: 'PUT',
       headers: {
+        ...authHeader(),
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
@@ -46,6 +47,7 @@ class AccountApi {
     const response = await fetch(this.baseUrl, {
       method: 'POST',
       headers: {
+        ...authHeader(),
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
