@@ -10,29 +10,61 @@ using Coronado.Web.Domain;
 
 namespace Coronado.Web.Data
 {
-  public class CustomerRepository : BaseRepository, ICustomerRepository
+    public class ConfigurationRepository : BaseRepository, IConfigurationRepository
+    {
+        public ConfigurationRepository(IConfiguration config) : base(config) { }
+
+        public string GetInvoiceTemplate()
+        {
+            using (var conn = Connection) {
+                return conn.ExecuteScalar<string>("SELECT value FROM configuration WHERE name='InvoiceTemplate'");
+            }
+        }
+
+        public void UpdateInvoiceTemplate(string template) {
+            InsertOrUpdate("InvoiceTemplate", template);
+        }
+
+        private void InsertOrUpdate(string name, string value) {
+            using (var conn = Connection) {
+                var existingValue = conn.ExecuteScalar<string>($"SELECT value FROM configuration WHERE name='{name}'");
+                if (existingValue == null) {
+                    conn.Execute("INSERT INTO configuration (name, value) VALUES (@Name, @Value)", 
+                    new { Name = name, Value = value});
+                } else {
+                    conn.Execute("UPDATE configuration SET value = @Value WHERE name = @Name", 
+                    new { Name = name, Value = value});
+                }
+            } 
+        }
+    }
+
+    public class CustomerRepository : BaseRepository, ICustomerRepository
     {
         public CustomerRepository(IConfiguration config) : base(config) { }
 
         public Customer Delete(Guid customerId)
         {
-            using (var conn = Connection) {
-                var customer = conn.QuerySingle<Customer>("SELECT * FROM customers WHERE customer_id=@customerId", new {customerId});
-                conn.Execute("DELETE FROM customers WHERE customer_id=@customerId", new {customerId});
+            using (var conn = Connection)
+            {
+                var customer = conn.QuerySingle<Customer>("SELECT * FROM customers WHERE customer_id=@customerId", new { customerId });
+                conn.Execute("DELETE FROM customers WHERE customer_id=@customerId", new { customerId });
                 return customer;
-            }    
+            }
         }
 
         public IEnumerable<Customer> GetAll()
         {
-            using (var conn = Connection) {
+            using (var conn = Connection)
+            {
                 return conn.Query<Customer>("SELECT * FROM customers");
             }
         }
 
         public void Insert(Customer customer)
         {
-            using (var conn = Connection) {
+            using (var conn = Connection)
+            {
                 conn.Execute(
 @"INSERT INTO customers (customer_id, name, street_address, city, region, email)
 VALUES (@CustomerId, @Name, @StreetAddress, @City, @Region, @Email)", customer);
@@ -41,7 +73,8 @@ VALUES (@CustomerId, @Name, @StreetAddress, @City, @Region, @Email)", customer);
 
         public void Update(Customer customer)
         {
-            using (var conn = Connection) {
+            using (var conn = Connection)
+            {
                 conn.Execute(
 @"UPDATE customers
 SET name = @Name, street_address=@StreetAddress, city=@City, region=@Region, email=@Email
