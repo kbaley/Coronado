@@ -17,8 +17,8 @@ namespace Coronado.Web.Data
         public Investment Delete(Guid investmentId)
         {
             using (var conn = Connection) {
-                var investment = conn.QuerySingle<Investment>("SELECT * FROM customers WHERE customer_id=@customerId", new {investmentId});
-                conn.Execute("DELETE FROM customers WHERE customer_id=@customerId", new {investmentId});
+                var investment = conn.QuerySingle<Investment>("SELECT * FROM investments WHERE investment_id=@investmentId", new {investmentId});
+                conn.Execute("DELETE FROM investments WHERE investment_id=@investmentId", new {investmentId});
                 return investment;
             }    
         }

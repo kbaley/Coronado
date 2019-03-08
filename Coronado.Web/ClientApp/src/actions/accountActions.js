@@ -90,7 +90,6 @@ export const createAccount = (account) => {
 export const uploadQif = (accountId, file, fromDate) => {
   return async (dispatch) => {
     await AccountApi.uploadQif(accountId, file, fromDate);
-    // dispatch(loadTransactionsSuccess(accountId, transactions));
   }
 }
 

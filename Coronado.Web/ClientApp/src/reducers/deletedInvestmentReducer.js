@@ -3,6 +3,7 @@ import * as actions from "../constants/investmentActionTypes.js";
 import { cloneDeep, find } from 'lodash';
 
 export const deletedInvestmentReducer = (state = initialState.deletedInvestments, action, investments) => {
+  
   switch (action.type) {
     case actions.DELETE_INVESTMENT:
       return [

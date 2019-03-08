@@ -3,6 +3,7 @@ import * as actions from "../constants/invoiceActionTypes.js";
 import { cloneDeep, find } from 'lodash';
 
 export const deletedInvoiceReducer = (state = initialState.deletedInvoices, action, invoices) => {
+  
   switch (action.type) {
     case actions.DELETE_INVOICE:
       return [
