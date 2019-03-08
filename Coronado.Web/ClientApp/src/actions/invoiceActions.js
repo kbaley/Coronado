@@ -84,6 +84,12 @@ export const deleteInvoice = (invoiceId, invoiceNumber) => {
   }
 }
 
+export const uploadTemplate = (file) => {
+  return async () => {
+    await InvoiceApi.uploadTemplate(file);
+  }
+}
+
 async function deleteInvoiceForReal(invoiceId, deletedInvoices) {
   if (deletedInvoices.some(c => c.invoiceId === invoiceId)) {
     await fetch('/api/Invoices/' + invoiceId, {

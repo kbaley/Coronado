@@ -69,6 +69,16 @@ class InvoiceApi {
     });
     return response.json();
   }
+
+  static async uploadTemplate(file) {
+    const data = new FormData();
+    data.append('file', file);
+    const response = await fetch('/Invoice/UploadTemplate/', {
+      method: 'POST',
+      body: data
+    });
+    return response.json();
+  }
 }
 
 export default InvoiceApi;
