@@ -23,8 +23,8 @@ namespace Coronado.Web.Data
             using (var conn = Connection) {
                 var existingValue = conn.ExecuteScalar<string>($"SELECT value FROM configuration WHERE name='{name}'");
                 if (existingValue == null) {
-                    conn.Execute("INSERT INTO configuration (name, value) VALUES (@Name, @Value)", 
-                    new { Name = name, Value = value});
+                    conn.Execute("INSERT INTO configuration (configuration_id, name, value) VALUES (@Id, @Name, @Value)", 
+                    new { Id = System.Guid.NewGuid(), Name = name, Value = value});
                 } else {
                     conn.Execute("UPDATE configuration SET value = @Value WHERE name = @Name", 
                     new { Name = name, Value = value});

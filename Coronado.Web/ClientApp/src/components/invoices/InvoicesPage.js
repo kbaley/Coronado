@@ -8,10 +8,11 @@ import UploadInvoiceTemplate from "./UploadInvoiceTemplate";
 import {Icon} from "../icons/Icon";
 import './InvoicesPage.css';
 
-export class InvoicesPage extends Component {
+class InvoicesPage extends Component {
   constructor(props) {
     super(props);
     this.showTemplate = this.showTemplate.bind(this);
+    this.uploadTemplate = this.uploadTemplate.bind(this);
     this.uploadTemplateForm = this.uploadTemplateForm.bind(this);
     this.state = {
       showUploadForm: false
@@ -27,10 +28,7 @@ export class InvoicesPage extends Component {
   }
 
   uploadTemplate(file) {
-    console.log(this.props);
-    
     this.props.actions.uploadTemplate(file);
-    
   }
 
   render() {
@@ -58,9 +56,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-   return {
-     actions: bindActionCreators(actions, dispatch)
-   }
+  return {
+    actions: bindActionCreators(actions, dispatch)
+  }
 }
 
 export default connect(

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Coronado.Web.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.IO;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -17,10 +18,12 @@ namespace Coronado.Web.Controllers.Api
     public class InvoicesController : ControllerBase
     {
         private readonly IInvoiceRepository _invoiceRepo;
+        private readonly IConfigurationRepository _configRepo;
 
-        public InvoicesController(ApplicationDbContext context, IInvoiceRepository invoiceRepo)
+        public InvoicesController(ApplicationDbContext context, IInvoiceRepository invoiceRepo, IConfigurationRepository configRepo)
         {
             _invoiceRepo = invoiceRepo;
+            _configRepo = configRepo;
         }
 
         [HttpGet]
@@ -84,6 +87,22 @@ namespace Coronado.Web.Controllers.Api
             }
 
             return Ok(invoice);
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult UploadTemplate([FromForm] UploadTemplateViewModel model)
+        {
+            var file = model.File;
+            if (file.Length > 0) {
+
+                using (var reader = new StreamReader(file.OpenReadStream()))
+                {
+                    var template = reader.ReadToEnd();
+                    _configRepo.UpdateInvoiceTemplate(template);
+                }
+            }
+            return AcceptedAtAction("UploadTemplate");
         }
     }
 }

@@ -73,8 +73,9 @@ class InvoiceApi {
   static async uploadTemplate(file) {
     const data = new FormData();
     data.append('file', file);
-    const response = await fetch('/Invoice/UploadTemplate/', {
+    const response = await fetch('api/Invoices/UploadTemplate/', {
       method: 'POST',
+      headers: authHeader(),
       body: data
     });
     return response.json();
