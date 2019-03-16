@@ -99,8 +99,8 @@ namespace Coronado.Web.Data
                     {
                         var balance = invoice.LineItems.Sum(li => li.Quantity * li.UnitAmount);
                         conn.Execute(
-                          @"INSERT INTO invoices (invoice_id, date, customer_id, invoice_number, balance) VALUES
-              (@InvoiceId, @Date, @CustomerId, @InvoiceNumber, @Balance)",
+                          @"INSERT INTO invoices (invoice_id, date, customer_id, invoice_number, balance, is_paid_in_full) VALUES
+              (@InvoiceId, @Date, @CustomerId, @InvoiceNumber, @Balance, false)",
                           new
                           {
                               InvoiceId = invoice.InvoiceId,
@@ -138,6 +138,39 @@ namespace Coronado.Web.Data
                 }
             }
         }
+
+        public void UpdateBalances()
+        {
+            using (var conn = Connection){
+                conn.Open();
+                using (var trx = conn.BeginTransaction()) 
+                {
+                    try{
+                        var invoiceIds = conn.Query<Guid>("SELECT invoice_id FROM invoices;");
+                        foreach (var invoiceId in invoiceIds)
+                        {
+                            conn.Execute(
+                                @"UPDATE invoices
+                            SET balance = (SELECT SUM(line_items) FROM (
+                                SELECT quantity * unit_amount as line_items FROM invoice_line_items
+                                WHERE invoice_id = @InvoiceId
+                                UNION
+                                SELECT SUM(-amount) FROM transactions WHERE invoice_id = @InvoiceId) items)
+                            WHERE invoice_id = @InvoiceId",
+                                new { InvoiceId = invoiceId }, trx);
+                        }
+                        trx.Commit();
+                        conn.Close();
+                    }
+                    catch (Exception e) {
+                        trx.Rollback();
+                        conn.Close();
+                        throw e;
+                    }
+                }
+            }
+        }
+
         public void Update(InvoiceForPosting invoice)
         {
             using (var conn = Connection)

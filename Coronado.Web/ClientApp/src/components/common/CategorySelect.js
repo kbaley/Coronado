@@ -33,10 +33,26 @@ export class CategorySelect extends Component {
       }),
       control: (base) => ({
         ...base,
-        width: 200,
-        minHeight: 25,
-        height: 25,
-        borderRadius: 0
+        minHeight: "25px",
+        borderRadius: 0,
+        height: 25
+      }),
+      valueContainer: base => ({
+        ...base,
+        padding: "0px 8px",
+        height: 25
+      }),
+      indicatorsContainer: base => ({
+        ...base,
+        height: "25px"
+      }),
+      clearIndicator: base => ({
+        ...base,
+        padding: "3px"
+      }),
+      dropdownIndicator: base => ({
+        ...base,
+        padding: "3px"
       })
     };
     const options = this.props.categories.filter(c => c.accountId !== this.props.selectedAccount);

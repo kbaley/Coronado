@@ -22,6 +22,8 @@ namespace Coronado.Web.Domain
 
     public IEnumerable<InvoiceLineItem> LineItems { get; set; }
     public decimal Balance { get; set; }
+
+    public bool IsPaidInFull { get; set; }
   }
 
 }

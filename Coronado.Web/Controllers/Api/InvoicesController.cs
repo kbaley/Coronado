@@ -88,6 +88,15 @@ namespace Coronado.Web.Controllers.Api
 
             return Ok(invoice);
         }
+        
+        [HttpGet]
+        [Route("[action]")]
+        // [AllowAnonymous]
+        public IActionResult ResolveInvoices() {
+            _invoiceRepo.UpdateBalances();
+            return Ok();
+        }
+
 
         [HttpPost]
         [Route("[action]")]

@@ -24,13 +24,14 @@ namespace Coronado.Web.Controllers.Api
         [HttpGet]
         public void ResetData( )
         {
-            _context.Database.ExecuteSqlCommand("UPDATE transactions SET related_transaction_id = null");
-            _context.Database.ExecuteSqlCommand("TRUNCATE TABLE transactions");
-            _context.Database.ExecuteSqlCommand("TRUNCATE TABLE accounts CASCADE");
-            _context.Database.ExecuteSqlCommand("TRUNCATE TABLE categories CASCADE");
-            _context.Database.ExecuteSqlCommand("TRUNCATE TABLE customers CASCADE");
-            _context.Database.ExecuteSqlCommand("TRUNCATE TABLE invoices CASCADE");
-            _context.Database.ExecuteSqlCommand("TRUNCATE TABLE vendors CASCADE");
+            // _context.Database.ExecuteSqlCommand("UPDATE transactions SET related_transaction_id = null");
+            // _context.Database.ExecuteSqlCommand("TRUNCATE TABLE transactions");
+            // _context.Database.ExecuteSqlCommand("TRUNCATE TABLE accounts CASCADE");
+            // _context.Database.ExecuteSqlCommand("TRUNCATE TABLE categories CASCADE");
+            // _context.Database.ExecuteSqlCommand("TRUNCATE TABLE customers CASCADE");
+            // _context.Database.ExecuteSqlCommand("TRUNCATE TABLE invoices CASCADE");
+            // _context.Database.ExecuteSqlCommand("TRUNCATE TABLE vendors CASCADE");
+            // _context.Database.ExecuteSqlCommand("TRUNCATE TABLE configuration CASCADE");
         }
 
     }

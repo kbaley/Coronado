@@ -11,5 +11,6 @@ namespace Coronado.Web.Data
         InvoiceForPosting Delete(Guid customerId);
         void Insert(InvoiceForPosting invoice);
         InvoiceForPosting Get(Guid invoiceId);
+        void UpdateBalances();
     }
 }
