@@ -75,14 +75,13 @@ Currency and investment gain/loss are not reported separately in the correcting 
 ## Still to come
 
 - some form of scrolling mechanism for accounts with lots of transactions
-- investments
 - currency conversion (e.g. automatic creation of transactions at the end of the month)
 - transaction tagging (e.g. `spring 2018 vacation` or `rental expense`)
 - console app to enter certain things (e.g. transactions) quickly from the command line
 - reconcile transactions for outdated banks with crappy online service (*cough* ScotiaBank *cough*)
 - ~QIF import~ (maybe export)
 - nested categories
-- net worth report
+- ~net worth report~
 - simple balance sheet
 - income report
 - income vs. expenses report
