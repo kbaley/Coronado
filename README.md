@@ -26,7 +26,7 @@ Plus I wanted to learn React.
 
 ### Invoices
 
-Copy `wwwroot\SampleInvoiceTemplate.html` to `wwwroot\InvoiceTemplate.html` and edit as necessary. Template fields are indicated with `{{CurlyBraces}}` and all available fields are included in the sample template. Files called `InvoiceTemplate.html` are ignored by git to prevent them being checked in.
+Modify `wwwroot\SampleInvoiceTemplate.html` as necessary and upload it on the invoices page. Template fields are indicated with `{{CurlyBraces}}` and all available fields are included in the sample template.
 
 Payments for invoices can be entered as transactions with a category of:
 
