@@ -54,6 +54,10 @@ class InvoiceList extends Component {
   }
   
   render() {
+    const showInvoice = (invoice) => {
+      return invoice.balance > 0 || this.props.showPaid[0];
+    }
+    
     return (
     <table className='table invoice-list'>
       <thead>
@@ -75,7 +79,7 @@ class InvoiceList extends Component {
           onSave={this.saveInvoice} />
         { this.props.isLoading ? <tr><td colSpan="4"><Spinner /></td></tr> :
           this.props.invoices.map(invoice => 
-        invoice.balance > 0 && <InvoiceRow 
+        showInvoice(invoice) && <InvoiceRow 
           key={invoice.invoiceId} 
           invoice={invoice} 
           onEdit={() => this.startEditing(invoice)} 

@@ -1,12 +1,12 @@
 import initialState from './initialState';
 import * as actions from "../constants/invoiceActionTypes";
 import * as transactionActions from "../constants/transactionActionTypes";
-import { cloneDeep, find, sumBy } from 'lodash';
+import { cloneDeep, find, sumBy, orderBy } from 'lodash';
 
 export const invoiceReducer = (state = initialState.invoices, action, deletedInvoices) => {
   switch (action.type) {
     case actions.LOAD_INVOICES_SUCCESS:
-      return action.invoices;
+      return orderBy(action.invoices, ['date'], ['desc']);
 
     case actions.LOAD_INVOICE_SUCCESS:
       return [

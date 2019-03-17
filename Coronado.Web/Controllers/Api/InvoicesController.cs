@@ -93,6 +93,8 @@ namespace Coronado.Web.Controllers.Api
         [Route("[action]")]
         // [AllowAnonymous]
         public IActionResult ResolveInvoices() {
+            // Used to fix an issue with invoices where making a payment would set the current balance
+            // of all invoices to whatever the balance of the update invoice was
             _invoiceRepo.UpdateBalances();
             return Ok();
         }
