@@ -15,3 +15,4 @@ steps:
 - script: npm install
   displayName: 'npm install'
   workingDirectory: './Coronado.Web/ClientApp'
+- task: PublishBuildArtifacts@1
