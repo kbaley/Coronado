@@ -111,6 +111,11 @@ namespace Coronado.Web.Controllers
             return Ok(invoice);
         }
 
+        [HttpGet]
+        public IActionResult Moo() {
+            return Ok(new { Text = "moo"});
+        }
+
         private async Task SendInvoice(InvoiceForPosting invoice)
         {
 
