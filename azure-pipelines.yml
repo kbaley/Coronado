@@ -13,5 +13,5 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet publish --configuration $(buildConfiguration)
-  displayName: 'dotnet publish $(buildConfiguration)'
+- script: dotnet publish --configuration $(buildConfiguration) --output $(build.artifactStagingDirectory) Coronado.Web/Coronado.Web.csproj
+  displayName: 'dotnet publish --configuration $(buildConfiguration) --output $(build.artifactStagingDirectory) Coronado.Web/Coronado.Web.csproj'
