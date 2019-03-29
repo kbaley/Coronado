@@ -16,7 +16,7 @@ export default props => (
   <Navbar inverse fixedTop fluid collapseOnSelect>
     <Navbar.Header>
       <Navbar.Brand style={{ width: "100%", paddingRight: "0" }}>
-        <Link to={'/'}>Coronado</Link>
+        <Link to={'/'}>Coronado F</Link>
         <NetWorth />
       </Navbar.Brand>
       <Navbar.Toggle />
