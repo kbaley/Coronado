@@ -113,7 +113,7 @@ namespace Coronado.Web.Controllers.Api
                     _configRepo.UpdateInvoiceTemplate(template);
                 }
             }
-            return AcceptedAtAction("UploadTemplate");
+            return Ok(new { Status = "Uploaded successfully" } );
         }
     }
 }
