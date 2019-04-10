@@ -24,6 +24,8 @@ namespace Coronado.Web.Domain
     public decimal Balance { get; set; }
 
     public bool IsPaidInFull { get; set; }
+
+    public DateTime? LastSentToCustomer { get; set; }
   }
 
 }

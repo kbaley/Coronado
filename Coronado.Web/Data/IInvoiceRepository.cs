@@ -12,5 +12,6 @@ namespace Coronado.Web.Data
         void Insert(InvoiceForPosting invoice);
         InvoiceForPosting Get(Guid invoiceId);
         void UpdateBalances();
+        void RecordEmail(InvoiceForPosting invoice, DateTime? date);
     }
 }

@@ -234,5 +234,36 @@ namespace Coronado.Web.Data
                 }
             }
         }
+
+        public void RecordEmail(InvoiceForPosting invoice, DateTime? date = null)
+        {
+            if (!date.HasValue) date = DateTime.Now;
+            invoice.LastSentToCustomer = date.Value;
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var trx = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        conn.Execute(@"UPDATE invoices
+            SET last_sent_to_customer = @LastSentToCustomer
+            WHERE invoice_id=@InvoiceId",
+                        invoice, trx);
+
+                        trx.Commit();
+                    }
+                    catch
+                    {
+                        trx.Rollback();
+                        throw;
+                    }
+                    finally
+                    {
+                        conn.Close();
+                    }
+                }
+            }
+        }
     }
 }

@@ -16,6 +16,7 @@ namespace Coronado.Web.Models
         public string CustomerRegion { get; set; }
         public string CustomerEmail { get; set; }
         public string InvoiceNumber { get; set; }
+        public DateTime? LastSentToCustomer { get; set; }
 
         public decimal Balance { get; set; }
     }

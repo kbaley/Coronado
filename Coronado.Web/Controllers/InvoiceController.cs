@@ -148,8 +148,10 @@ namespace Coronado.Web.Controllers
                 var attachmentContent = webClient.UploadValues("http://api.html2pdfrocket.com/pdf", options);
                 var file = Convert.ToBase64String(attachmentContent);
                 msg.AddAttachment($"Invoice {invoice.InvoiceNumber}.pdf", file);
+
             }
             var response = await client.SendEmailAsync(msg);
+            await Task.Run(() => _invoiceRepo.RecordEmail(invoice, null)).ConfigureAwait(false);
         }
     }
 }

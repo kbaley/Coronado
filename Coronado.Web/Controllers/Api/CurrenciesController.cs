@@ -40,6 +40,7 @@ namespace Coronado.Web.Controllers.Api
             if (isNew || currency.LastRetrieved < DateTime.Today) {
                 using (var client = new HttpClient()) {
                     client.BaseAddress = new Uri("https://api.exchangeratesapi.io");
+                    try {
                     var response = await client.GetAsync($"/latest?base=USD&symbols={symbol}");
                     response.EnsureSuccessStatusCode();
                     var stringResult = await response.Content.ReadAsStringAsync();
@@ -50,6 +51,9 @@ namespace Coronado.Web.Controllers.Api
                         _currencyRepo.Insert(currency);
                     else
                         _currencyRepo.Update(currency);
+                    } catch {
+                        // For now, do nothing
+                    }
                 }
             }
             return currency.PriceInUsd;

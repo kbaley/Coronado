@@ -66,6 +66,7 @@ class InvoiceList extends Component {
           <th>Number</th>
           <th>Date</th>
           <th>Customer</th>
+          <th>Email Sent</th>
           <th>Balance</th>
         </tr>
       </thead>

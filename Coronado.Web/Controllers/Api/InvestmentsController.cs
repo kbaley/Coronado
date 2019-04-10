@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Coronado.Web.Models;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Authorization;
+using System.Net;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -43,12 +44,16 @@ namespace Coronado.Web.Controllers.Api
                 if (investment.LastRetrieved < DateTime.Today && !string.IsNullOrWhiteSpace(investment.Symbol)) {
                     var html = $"https://www.theglobeandmail.com/investing/markets/funds/{investment.Symbol}.CF/performance/";
                     var web = new HtmlWeb();
+                    try {
                     var htmlDoc = web.Load(html);
                     var node = htmlDoc.DocumentNode.SelectSingleNode("//barchart-field[@name='lastPrice']");
                     if (node != null && node.Attributes["value"] != null) {
                         investment.Price = decimal.Parse(node.Attributes["value"].Value);
                         investment.LastRetrieved = DateTime.Today;
                         _investmentRepo.Update(investment);
+                    }
+                    } catch (WebException) {
+                        // For now, do nothing if we don't have an internet connection
                     }
                 }
             }
