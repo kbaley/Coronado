@@ -7,8 +7,13 @@ export const reportReducer = (state = initialState.reports, action, deletedCusto
     case actions.LOAD_NET_WORTH_REPORT_SUCCESS:
       return {
         ...state,
-        netWorth: orderBy(action.report, ['date'], ['desc'])
+        netWorth: orderBy(action.report, ['date'], ['desc']),
       };
+    case actions.LOAD_EXPENSES_BY_CATEGORY_REPORT_SUCCESS:
+      return {
+        ...state,
+        expensesByCategory: action.report
+      }
       
     default:
       return state;

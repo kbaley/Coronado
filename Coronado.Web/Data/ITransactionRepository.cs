@@ -14,5 +14,7 @@ namespace Coronado.Web.Data
         TransactionForDisplay Get(Guid transactionId);
         void InsertRelatedTransaction(TransactionForDisplay first, TransactionForDisplay second);
         decimal GetNetWorthFor(DateTime date);
+
+        IEnumerable<dynamic> GetExpensesByCategory(DateTime start, DateTime end);
     }
 }

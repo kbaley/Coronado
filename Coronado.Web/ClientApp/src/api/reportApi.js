@@ -17,6 +17,21 @@ class ReportApi {
     return response.json();
   }
 
+  static async getExpensesByCategoryReport() {
+    const requestOptions = {
+      method: 'GET',
+      headers: authHeader()
+    }
+    const response = await fetch("api/Reports/ExpensesByCategory", requestOptions);
+    if (!response.ok) {
+      if (response.status === 401) {
+        logout();
+        return [];
+      }
+    }
+    return response.json();
+  }
+
 }
 
 export default ReportApi;

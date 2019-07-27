@@ -16,7 +16,8 @@ export default {
   currencies: [],
   vendors: [],
   reports: {
-    netWorth: []
+    netWorth: [],
+    expensesByCategory: []
   },
   loading: {
     accounts: true,

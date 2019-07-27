@@ -283,6 +283,19 @@ WHERE t.transaction_id=@transactionId;", new { transactionId });
             }
         }
 
+        public IEnumerable<dynamic> GetExpensesByCategory(DateTime start, DateTime end) 
+        {
+            using (var conn = Connection)
+            {
+                var sql = "SELECT t.category_id, c.name, 0 - sum(amount) as amount FROM transactions t " +
+                    "INNER JOIN categories c ON t.category_id = c.category_id " +
+                    "WHERE transaction_date > @start and transaction_date <= @end " +
+                    "AND c.Type = 'Expense' " +
+                    "GROUP BY t.category_id, c.name";
+                return conn.Query(sql, new { start, end });
+            }
+        }
+
         public void InsertRelatedTransaction(TransactionForDisplay first, TransactionForDisplay second)
         {
             first.RelatedTransactionId = null;
