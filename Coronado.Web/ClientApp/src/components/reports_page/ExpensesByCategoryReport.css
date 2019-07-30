@@ -1,0 +1,8 @@
+﻿.expensesTable tr:nth-child(odd) {
+  background-color: #fcfcfc;
+}
+
+.expensesTable td:last-child, .expensesTable > tbody > tr:last-child {
+  background-color: #eeeeee;
+  font-weight: bold;
+}

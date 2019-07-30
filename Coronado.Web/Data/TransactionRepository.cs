@@ -7,6 +7,7 @@ using Dapper;
 using System.Data;
 using Npgsql;
 using Coronado.Web.Domain;
+using System.Linq;
 
 namespace Coronado.Web.Data
 {
@@ -287,12 +288,25 @@ WHERE t.transaction_id=@transactionId;", new { transactionId });
         {
             using (var conn = Connection)
             {
-                var sql = "SELECT t.category_id, c.name, 0 - sum(amount) as amount FROM transactions t " +
+                var sql = "SELECT t.category_id, c.name, 0 - sum(amount) as amount, EXTRACT(MONTH from t.transaction_date)::int as month, EXTRACT(YEAR from t.transaction_date)::int as year FROM transactions t " +
                     "INNER JOIN categories c ON t.category_id = c.category_id " +
                     "WHERE transaction_date > @start and transaction_date <= @end " +
                     "AND c.Type = 'Expense' " +
-                    "GROUP BY t.category_id, c.name";
-                return conn.Query(sql, new { start, end });
+                    "GROUP BY t.category_id, c.name, EXTRACT(MONTH from t.transaction_date), EXTRACT(YEAR from t.transaction_date)";
+                var data = conn.Query(sql, new { start, end });
+
+                var results = data.GroupBy(x => x.category_id)
+                                .Select(x => new {
+                                    categoryId = x.Key,
+                                    categoryName = x.First().name,
+                                    total = x.Sum(e => (decimal)e.amount),
+                                    expenses = x.Select(e => new {
+                                        date = new DateTime(e.year, e.month, 1),
+                                        amount = e.amount
+                                    })
+                                });
+                
+                return results;
             }
         }
 
