@@ -30,7 +30,13 @@ namespace Coronado.Web.Controllers.Api
         public IActionResult NetWorth([FromQuery] ReportQuery query )
         {
             var netWorth = new List<dynamic>();
+
+            // If we're in the last half of the year, get the entire year
+            // Otherwise, get the last six months
             var numItems = 6;
+            if (DateTime.Today.Month > 5) {
+                numItems = DateTime.Today.Month + 1;
+            }
             var date = DateTime.Today.LastDayOfMonth();
             for (var i = 0; i < numItems; i++) {
                 netWorth.Add(new {date, netWorth=_transactionRepo.GetNetWorthFor(date)});
