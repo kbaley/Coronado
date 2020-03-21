@@ -5,6 +5,7 @@ namespace Coronado.Web.Controllers.Api
   public class UrlQuery
   {
     public Guid AccountId { get; set; }
+    public int Page { get; set; }
   }
 
   public class ReportQuery

@@ -27,6 +27,8 @@ namespace Coronado.Web.Models
         public Guid? InvoiceId { get; set; }
         public string InvoiceNumber { get; set; }
 
+        public decimal RunningTotal { get; set; }
+
         public void SetAmount() {
             Amount = Debit.HasValue ? (0 - Debit.Value) : Credit.Value;
         }

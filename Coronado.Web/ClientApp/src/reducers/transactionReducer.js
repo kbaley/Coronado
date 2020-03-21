@@ -1,10 +1,11 @@
 import initialState from './initialState';
-import { cloneDeep, concat, filter, orderBy, forEachRight } from 'lodash'; 
+import { cloneDeep, concat, filter, orderBy, forEachRight, last } from 'lodash'; 
 import * as actions from "../constants/transactionActionTypes.js";
 
 function computeRunningTotal(transactions) {
-  var total = 0;
   var sorted = orderBy(transactions, ['transactionDate', 'enteredDate'], ['desc', 'desc']);
+  var lastTransaction = last(sorted);
+  var total = lastTransaction.runningTotal - lastTransaction.credit + lastTransaction.debit;
   forEachRight(sorted, (value) => {
     total += (value.credit - value.debit);
     value.runningTotal = total;
