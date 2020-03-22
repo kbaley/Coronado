@@ -3,8 +3,14 @@ import * as selectedAccountTypes from "../constants/selectAccountActionTypes";
 import TransactionApi from '../api/transactionApi';
 import { authHeader } from '../api/auth-header';
 
-export function loadTransactionsSuccess(transactions, accountId) {
-  return { type: types.LOAD_TRANSACTIONS_SUCCESS, transactions, accountId };
+export function loadTransactionsSuccess(model, accountId) {
+  return { 
+    type: types.LOAD_TRANSACTIONS_SUCCESS, 
+    transactions: model.transactions, 
+    startingBalance: model.startingBalance,
+    page: model.page,
+    remainingTransactionCount: model.remainingTransactionCount,
+    accountId };
 }
 
 export function selectAccount(accountId) {

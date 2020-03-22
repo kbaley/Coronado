@@ -6,7 +6,7 @@ namespace Coronado.Web.Data
 {
     public interface ITransactionRepository
     {
-        IEnumerable<TransactionForDisplay> GetByAccount(Guid accountId, int? page);
+        TransactionListModel GetByAccount(Guid accountId, int? page);
         IEnumerable<TransactionForDisplay> GetByAccount(Guid accountId);
         void Insert(TransactionForDisplay transaction);
         void Insert(IEnumerable<TransactionForDisplay> transactions);

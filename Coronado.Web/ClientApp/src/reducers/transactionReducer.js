@@ -1,11 +1,10 @@
 import initialState from './initialState';
-import { cloneDeep, concat, filter, orderBy, forEachRight, last } from 'lodash'; 
+import { cloneDeep, concat, filter, orderBy, forEachRight } from 'lodash'; 
 import * as actions from "../constants/transactionActionTypes.js";
 
-function computeRunningTotal(transactions) {
+function computeRunningTotal(transactions, startingBalance) {
   var sorted = orderBy(transactions, ['transactionDate', 'enteredDate'], ['desc', 'desc']);
-  var lastTransaction = last(sorted);
-  var total = lastTransaction.runningTotal - lastTransaction.credit + lastTransaction.debit;
+  var total = startingBalance ? startingBalance : 0;
   forEachRight(sorted, (value) => {
     total += (value.credit - value.debit);
     value.runningTotal = total;
@@ -13,27 +12,40 @@ function computeRunningTotal(transactions) {
   return sorted;
 }
 
-export const transactionReducer = (state = initialState.transactions, action, selectedAccount) => {
+export const transactionReducer = (state = initialState.transactionModel, action, selectedAccount) => {
 
   let transactions;
   switch (action.type) {
     
     case actions.LOAD_TRANSACTIONS_SUCCESS:
-      transactions = computeRunningTotal(action.transactions);
-      return transactions;
+      transactions = computeRunningTotal(action.transactions, action.startingBalance);
+      return {
+        transactions: transactions,
+        startingBalance: action.startingBalance,
+        remainingTransactionCount: action.remainingTransactionCount
+      }
 
     case actions.DELETE_TRANSACTION_SUCCESS:
-      return computeRunningTotal(filter(state, t => {return t.transactionId !== action.transaction.transactionId}));
+      return {
+        ...state,
+        transactions: computeRunningTotal(filter(state.transactions, t => {return t.transactionId !== action.transaction.transactionId}), state.startingBalance)
+      }
 
     case actions.CREATE_TRANSACTION_SUCCESS:
-      transactions = concat(cloneDeep(state), cloneDeep(action.transactions.filter(t => t.accountId === selectedAccount)));
+      transactions = concat(cloneDeep(state.transactions), cloneDeep(action.transactions.filter(t => t.accountId === selectedAccount)));
       
-      return computeRunningTotal(transactions)
+      return {
+        ...state,
+        transactions: computeRunningTotal(transactions, state.startingBalance)
+      }
 
     case actions.UPDATE_TRANSACTION_SUCCESS:
-      transactions = state.filter(t => t.transactionId !== action.transaction.transactionId);
+      transactions = state.transactions.filter(t => t.transactionId !== action.transaction.transactionId);
       transactions = concat(transactions, Object.assign({}, action.transaction));
-      return computeRunningTotal(transactions);
+      return {
+        ...state,
+        transactions: computeRunningTotal(transactions, state.startingBalance)
+      }
 
     default:
       return state;

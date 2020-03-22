@@ -10,7 +10,6 @@ export default {
   deletedInvestments: [],
   invoices: [],
   ajaxCallsInProgress: 0,
-  transactions: [],
   customers: [],
   investments: [],
   currencies: [],
@@ -18,6 +17,11 @@ export default {
   reports: {
     netWorth: [],
     expensesByCategory: []
+  },
+  transactionModel: {
+    transactions: [],
+    startingBalance: 0,
+    remainingTransactionCount: 0,
   },
   loading: {
     accounts: true,

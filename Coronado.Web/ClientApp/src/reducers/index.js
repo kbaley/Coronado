@@ -29,7 +29,7 @@ function rootReducer(state, action) {
     deletedCustomers: deletedCustomerReducer(state.deletedCustomers, action, state.customers || []),
     deletedInvoices: deletedInvoiceReducer(state.deletedInvoices, action, state.invoices || []),
     deletedInvestments: deletedInvestmentReducer(state.deletedInvestments, action, state.investments || []),
-    transactions: transactionReducer(state.transactions, action, state.selectedAccount || ''),
+    transactionModel: transactionReducer(state.transactionModel, action, state.selectedAccount || ''),
     accountTypes: accountTypeReducer(state.accountTypes, action),
     currencies: currencyReducer(state.currencies, action),
     customers: customerReducer(state.customers, action, state.deletedCustomers || []),

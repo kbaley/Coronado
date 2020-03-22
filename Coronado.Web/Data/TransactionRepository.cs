@@ -13,7 +13,7 @@ namespace Coronado.Web.Data
 {
     public class TransactionRepository : BaseRepository, ITransactionRepository
     {
-        private const int PAGE_SIZE = 10;
+        private const int PAGE_SIZE = 100;
         public TransactionRepository(IConfiguration config) : base(config) { }
 
         public void Delete(Guid transactionId)
@@ -210,7 +210,7 @@ namespace Coronado.Web.Data
             }
         }
 
-        public IEnumerable<TransactionForDisplay> GetByAccount(Guid accountId, int? page) {
+        public TransactionListModel GetByAccount(Guid accountId, int? page) {
             var thePage = page.HasValue ? page.Value : 0;
             var allTransactions = GetByAccount(accountId)
                 .OrderByDescending(t => t.TransactionDate)
@@ -221,10 +221,13 @@ namespace Coronado.Web.Data
             var restOfTransactions = allTransactions
                 .Skip(PAGE_SIZE * (thePage + 1));
             var startingBalance = restOfTransactions.Sum(t => t.Amount);
-            var lastTransaction = transactions.LastOrDefault();
-            if (lastTransaction != null)
-                lastTransaction.RunningTotal = startingBalance + lastTransaction.Amount;
-            return transactions;
+            var model = new TransactionListModel {
+                Transactions = transactions,
+                StartingBalance = startingBalance,
+                RemainingTransactionCount = restOfTransactions.Count(),
+                Page = thePage
+            };
+            return model;
         }
 
         public IEnumerable<TransactionForDisplay> GetByAccount(Guid accountId)

@@ -50,7 +50,7 @@ function mapStateToProps(state) {
   return {
     categories: state.categories,
     accounts: state.accounts,
-    transactions: state.transactions
+    transactions: state.transactionModel.transactions
   }
 }
 
