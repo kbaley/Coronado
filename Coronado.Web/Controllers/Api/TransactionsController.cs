@@ -37,6 +37,14 @@ namespace Coronado.Web.Controllers.Api
         [HttpGet]
         public TransactionListModel GetTransactions([FromQuery] UrlQuery query)
         {
+            if (query.LoadAll) {
+                var transactions = _transactionRepo.GetByAccount(query.AccountId);
+                return new TransactionListModel {
+                    Transactions = transactions,
+                    StartingBalance = 0,
+                    RemainingTransactionCount = 0
+                };
+            }
             return _transactionRepo.GetByAccount(query.AccountId, query.Page);
         }
 

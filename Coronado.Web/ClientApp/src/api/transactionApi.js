@@ -18,6 +18,21 @@ class AccountApi {
     return response.json();
   }
 
+  static async getAllTransactions(accountId) {
+    const requestOptions = {
+      method: 'GET',
+      headers: authHeader()
+    }
+    const response = await fetch('api/Transactions/?accountId=' + accountId + "&loadAll=true", requestOptions);
+    if (!response.ok) {
+      if (response.status === 401) {
+        logout();
+        return [];
+      }
+    }
+    return response.json();
+  }
+
   static async updateTransaction(transaction) {
 
     const response = await fetch('/api/Transactions/' + transaction.transactionId, {

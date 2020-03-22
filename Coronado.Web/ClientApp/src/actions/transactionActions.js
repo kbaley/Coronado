@@ -32,7 +32,16 @@ export function deleteTransactionSuccess(deleteTransactionModel) {
 export const loadTransactions = (accountId) => {
   return async (dispatch) => {
     dispatch(selectAccount(accountId) );
-    const transactions = await TransactionApi.getTransactions(accountId);
+    const transactionModel = await TransactionApi.getTransactions(accountId);
+
+    dispatch(loadTransactionsSuccess(transactionModel, accountId));
+  }
+}
+
+export const loadAllTransactions = (accountId) => {
+  return async (dispatch) => {
+    dispatch(selectAccount(accountId) );
+    const transactions = await TransactionApi.getAllTransactions(accountId);
 
     dispatch(loadTransactionsSuccess(transactions, accountId));
   }
