@@ -5,6 +5,7 @@ import * as transactionActions from '../../actions/transactionActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import TransactionList from './TransactionList';
+import LoadMoreTransactions from './LoadMoreTransactions';
 import { find } from 'lodash';
 import './Account.css';
 import EditAccount from './EditAccount';
@@ -82,11 +83,11 @@ import { filter } from "lodash";
         </div>
         <AccountHeader account={account} />
         <TransactionList 
-          transactions={this.props.transactions} 
           mortgageAccounts={this.getMortgageAccounts()}
           account={account}
           categories={this.props.categories}
         />
+        { this.props.remainingTransactionCount > 0 ? <LoadMoreTransactions /> : null }
       </div>
     );
   }
@@ -102,7 +103,7 @@ function mapStateToProps(state) {
    return {
      accounts: state.accounts,
      accountTypes: state.accountTypes,
-     transactions: state.transactions
+     remainingTransactionCount: state.transactionModel.remainingTransactionCount
    }
 }
 
