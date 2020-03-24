@@ -179,7 +179,8 @@ export class NewTransactionRow extends Component {
           categoryDisplay: '',
           relatedAccountId: ''
         },
-        selectedCategory: { value: null }
+        selectedCategory: { value: null },
+        transactionType: "Transaction",
       }
     );
     this.setFocus();
