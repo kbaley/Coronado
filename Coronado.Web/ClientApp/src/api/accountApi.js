@@ -38,6 +38,9 @@ class AccountApi {
     data.append('fromDate', fromDate);
     const response = await fetch(this.baseUrl + "PostQif/", {
       method: 'POST',
+      headers: {
+        ...authHeader()
+      },
       body: data
     });
     return response.json();

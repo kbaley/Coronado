@@ -12,7 +12,11 @@ namespace Coronado.Web.Data
         public BaseRepository(IConfiguration config)
         {
             _config = config;    
+#if DEBUG
+            _connectionString = config.GetConnectionString("localConnection");
+#else
             _connectionString = config.GetConnectionString("defaultConnection");
+#endif
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
         }
         internal IDbConnection Connection

@@ -43,8 +43,11 @@ namespace Coronado.Web
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
+#if DEBUG
+            var connectionString = Configuration["ConnectionStrings:LocalConnection"];
+#else
             var connectionString = Configuration["ConnectionStrings:DefaultConnection"];
+#endif
             services.AddTransient<ITransactionRepository, TransactionRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IAccountRepository, AccountRepository>();
@@ -120,6 +123,9 @@ namespace Coronado.Web
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
         }
     }
 }
