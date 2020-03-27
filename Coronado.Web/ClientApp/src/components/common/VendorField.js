@@ -62,7 +62,6 @@ export default class VendorField extends React.Component {
       onChange: this.onChange
     };
 
-    // Finally, render it!
     return (
       <Autosuggest
         suggestions={this.state.suggestions}

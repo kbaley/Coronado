@@ -12,6 +12,7 @@ import { CancelIcon } from '../icons/CancelIcon';
 import { MoneyInput } from '../common/MoneyInput';
 import * as Mousetrap from 'mousetrap';
 import { getCategoriesForDropdown } from "../../selectors/selectors.js";
+import VendorField from '../common/VendorField';
 
 class TransactionRow extends Component {
   constructor(props) {
@@ -22,6 +23,7 @@ class TransactionRow extends Component {
     this.updateTransaction = this.updateTransaction.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.cancelEditing = this.cancelEditing.bind(this);
+    this.handleChangeVendor = this.handleChangeVendor.bind(this);
     this.state = { isEditing: false, 
         selectedCategory: { },
         trx: {...props.transaction, 
@@ -52,6 +54,30 @@ class TransactionRow extends Component {
       e.preventDefault();
       this.updateTransaction();
     }
+  }
+
+  handleChangeVendor(vendorName) {
+    let categoryId = this.state.trx.categoryId;
+    let categoryDisplay = this.state.trx.categoryDisplay;
+    let selectedCategory = this.state.selectedCategory;
+    const vendor = this.props.vendors.find(v => v.name === vendorName);
+    if (vendor) {
+      const category = this.props.categories.find(c => c.categoryId === vendor.lastTransactionCategoryId);
+      if (category) {
+        categoryId = category.categoryId;
+        categoryDisplay = category.name;
+        selectedCategory = category;
+      }
+    }
+    this.setState({ 
+      trx: {
+        ...this.state.trx, 
+        vendor: vendorName,
+        categoryId,
+        categoryDisplay
+      },
+      selectedCategory
+    });
   }
 
   handleChangeField(e) {
@@ -88,8 +114,7 @@ class TransactionRow extends Component {
           value={this.state.trx.transactionDate} />
         </td>
         <td>
-            <input type="text" name="vendor" onChange={this.handleChangeField}
-                value={this.state.trx.vendor} onKeyPress={this.handleKeyPress} />
+          <VendorField vendors={this.props.vendors} value={this.state.trx.vendor} onVendorChanged={this.handleChangeVendor} />
         </td>
         <td>
             <CategorySelect 
@@ -131,7 +156,8 @@ class TransactionRow extends Component {
 
 function mapStateToProps(state) {
   return { 
-    categories: getCategoriesForDropdown(state.categories, state.accounts, state.invoices)
+    categories: getCategoriesForDropdown(state.categories, state.accounts, state.invoices),
+    vendors: state.vendors
   }
 }
 
