@@ -54,8 +54,12 @@ class UploadQif extends Component {
               </Col>
             </FormGroup>
             <FormGroup>
+              <Col componentClass={ControlLabel} sm={3}></Col>
+              <Col sm={5}>Supported formats: QIF, CSV</Col>
+            </FormGroup>
+            <FormGroup>
               <Col componentClass={ControlLabel} sm={3}>From date:</Col>
-              <Col sm={4}>
+              <Col sm={5}>
                 <FormControl type="text" name="fromDate" value={this.state.fromDate} onChange={this.handleChangeDate} />
               </Col>
             </FormGroup>
