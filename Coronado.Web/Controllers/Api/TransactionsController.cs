@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Coronado.Web.Data;
 using Coronado.Web.Domain;
 using Coronado.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -33,7 +31,6 @@ namespace Coronado.Web.Controllers.Api
             _vendorRepo = vendorRepo;
         }
 
-        // GET: api/Transactions
         [HttpGet]
         public TransactionListModel GetTransactions([FromQuery] UrlQuery query)
         {
@@ -48,7 +45,6 @@ namespace Coronado.Web.Controllers.Api
             return _transactionRepo.GetByAccount(query.AccountId, query.Page);
         }
 
-        // DELETE: api/Transactions/5
         [HttpDelete("{id}")]
         public IActionResult DeleteTransaction([FromRoute] Guid id)
         {

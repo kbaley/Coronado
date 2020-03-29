@@ -25,6 +25,14 @@ export const transactionReducer = (state = initialState.transactionModel, action
         remainingTransactionCount: action.remainingTransactionCount
       }
 
+    case actions.UPLOAD_QIF_SUCCESS:
+      transactions = concat(cloneDeep(state.transactions), cloneDeep(action.transactions));
+      
+      return {
+        ...state,
+        transactions: computeRunningTotal(transactions, state.startingBalance)
+      }
+
     case actions.DELETE_TRANSACTION_SUCCESS:
       return {
         ...state,

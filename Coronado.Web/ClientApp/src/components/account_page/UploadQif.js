@@ -8,6 +8,7 @@ class UploadQif extends Component {
     super(props);
 
     this.showUploadForm = this.showUploadForm.bind(this);
+    this.closeUploadForm = this.closeUploadForm.bind(this);
     this.handleSelectedFile = this.handleSelectedFile.bind(this);
     this.handleChangeDate = this.handleChangeDate.bind(this);
     this.onSave = this.onSave.bind(this);
@@ -34,14 +35,19 @@ class UploadQif extends Component {
     this.setState({show: true});
   }
 
+  closeUploadForm() {
+    this.setState({show: false});
+  }
+
   onSave() {
     this.props.onUpload(this.state.selectedFile, this.state.fromDate);
+    this.closeUploadForm();
   }
   render() {
   return (
     <Fragment>
       <Icon className="upload-qif" glyph="upload" onClick={this.showUploadForm} />
-      <Modal show={this.state.show} onHide={this.props.onClose}>
+      <Modal show={this.state.show} onHide={this.closeUploadForm}>
         <Modal.Header closeButton>
           <Modal.Title>Upload transactions to: {this.props.account.name}</Modal.Title>
         </Modal.Header>

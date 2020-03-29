@@ -41,6 +41,7 @@ namespace Coronado.Web.Controllers.Api
             return transactions;
         }
 
+        // Assumes we're parsing for a credit card, specifically AMEX
         private List<TransactionForDisplay> ParseCsv(StreamReader reader, Guid accountId, DateTime? fromDate)
         {
             var transactions = new List<TransactionForDisplay>();
@@ -60,6 +61,7 @@ namespace Coronado.Web.Controllers.Api
                     Description = line[1],
                     Amount = -decimal.Parse(line[4])
                 };
+                trx.SetDebitAndCredit();
                 if (!fromDate.HasValue || trx.TransactionDate >= fromDate.Value)
                     transactions.Add(trx);
             }
@@ -108,6 +110,7 @@ namespace Coronado.Web.Controllers.Api
                                     trx.RelatedTransactionId = relatedTransaction.TransactionId;
                                     transactions.Add(relatedTransaction);
                                 }
+                                trx.SetDebitAndCredit();
                                 transactions.Add(trx);
                             }
                             trx = new TransactionForDisplay

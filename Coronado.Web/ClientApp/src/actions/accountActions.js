@@ -1,4 +1,5 @@
 import * as types from '../constants/accountActionTypes';
+import * as transactionTypes from '../constants/transactionActionTypes';
 import { info } from 'react-notification-system-redux';
 import { push } from 'react-router-redux';
 import AccountApi from '../api/accountApi';
@@ -16,6 +17,10 @@ export function updateAccountSuccess(updatedAccount) {
 
 function createAccountSuccess(newAccount) {
   return { type: types.CREATE_ACCOUNT_SUCCESS, newAccount };
+}
+
+function uploadQifSuccess(transactions) {
+  return { type: transactionTypes.UPLOAD_QIF_SUCCESS, transactions }
 }
 
 function loadAccountsAction() {
@@ -89,7 +94,9 @@ export const createAccount = (account) => {
 
 export const uploadQif = (accountId, file, fromDate) => {
   return async (dispatch) => {
-    await AccountApi.uploadQif(accountId, file, fromDate);
+    const uploadedTransactions = await AccountApi.uploadQif(accountId, file, fromDate);
+
+    dispatch(uploadQifSuccess(uploadedTransactions));
   }
 }
 
