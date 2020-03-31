@@ -154,7 +154,7 @@ namespace Coronado.Web.Data
                             SET balance = (SELECT SUM(line_items) FROM (
                                 SELECT quantity * unit_amount as line_items FROM invoice_line_items
                                 WHERE invoice_id = @InvoiceId
-                                UNION
+                                UNION ALL
                                 SELECT SUM(-amount) FROM transactions WHERE invoice_id = @InvoiceId) items)
                             WHERE invoice_id = @InvoiceId",
                                 new { InvoiceId = invoiceId }, trx);

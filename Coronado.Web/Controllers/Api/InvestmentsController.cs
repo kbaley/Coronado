@@ -10,6 +10,7 @@ using Coronado.Web.Models;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Authorization;
 using System.Net;
+using Microsoft.Extensions.Logging;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -23,16 +24,18 @@ namespace Coronado.Web.Controllers.Api
         private readonly IAccountRepository _accountRepo;
         private readonly ITransactionRepository _transactionRepo;
         private readonly ICategoryRepository _categoryRepo;
+        private readonly ILogger<InvestmentsController> _logger;
 
         public InvestmentsController(ApplicationDbContext context, IInvestmentRepository investmentRepo,
             ICurrencyRepository currencyRepo, IAccountRepository accountRepo, ITransactionRepository transactionRepo,
-            ICategoryRepository categoryRepo)
+            ICategoryRepository categoryRepo, ILogger<InvestmentsController> logger)
         {
             _investmentRepo = investmentRepo;
             _currencyRepo = currencyRepo;
             _accountRepo = accountRepo;
             _transactionRepo = transactionRepo;
             _categoryRepo = categoryRepo;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -42,7 +45,7 @@ namespace Coronado.Web.Controllers.Api
             foreach (var investment in investments)
             {
                 if (investment.LastRetrieved < DateTime.Today && !string.IsNullOrWhiteSpace(investment.Symbol)) {
-                    var html = $"https://www.theglobeandmail.com/investing/markets/funds/{investment.Symbol}.CF/performance/";
+                    var html = $"https://www.theglobeandmail.com/investing/markets/stocks/{investment.Symbol}/performance/";
                     var web = new HtmlWeb();
                     try {
                     var htmlDoc = web.Load(html);
@@ -52,8 +55,8 @@ namespace Coronado.Web.Controllers.Api
                         investment.LastRetrieved = DateTime.Today;
                         _investmentRepo.Update(investment);
                     }
-                    } catch (WebException) {
-                        // For now, do nothing if we don't have an internet connection
+                    } catch (WebException e) {
+                        _logger.LogError("Error retrieving prices", e);
                     }
                 }
             }

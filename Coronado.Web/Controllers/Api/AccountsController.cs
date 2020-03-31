@@ -35,7 +35,6 @@ namespace Coronado.Web.Controllers.Api
         [HttpGet]
         public IEnumerable<Account> GetAccounts()
         {
-            _logger.LogWarning("Getting all the moo accounts");
             return _accountRepo.GetAll();
         }
 
