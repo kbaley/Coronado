@@ -74,7 +74,7 @@ Currency and investment gain/loss are not reported separately in the correcting 
 
 ## Still to come
 
-- some form of scrolling mechanism for accounts with lots of transactions
+- ~some form of scrolling mechanism for accounts with lots of transactions~
 - currency conversion (e.g. automatic creation of transactions at the end of the month)
 - transaction tagging (e.g. `spring 2018 vacation` or `rental expense`)
 - console app to enter certain things (e.g. transactions) quickly from the command line
@@ -84,7 +84,7 @@ Currency and investment gain/loss are not reported separately in the correcting 
 - ~net worth report~
 - simple balance sheet
 - income report
-- income vs. expenses report
+- ~income vs. expenses report~
 - reimbursable expenses (mark expenses as reimbursable so they can be tracked if they have been paid)
 - simple what-if mortgage analysis (e.g. effect of extra payment, effect of increased regular payments)
 - possibly budgeting but not likely since I'm so bad at it
@@ -113,4 +113,4 @@ I started with only EF. A few weeks in, I started hitting problems managing the 
 
 - `dotnet publish --configuration=Release`
 - Then deploy from VS Code from the Azure plugin in the left menu
-- At some vague point in the future, try to set this up in AzDO
+- At some vague point in the future, try to set this up in GitHub Actions or Travis
