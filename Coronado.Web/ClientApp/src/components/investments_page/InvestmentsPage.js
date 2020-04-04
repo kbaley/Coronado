@@ -6,6 +6,7 @@ import NewInvestment from "./NewInvestment";
 import InvestmentList from "./InvestmentList";
 import {Icon} from "../icons/Icon";
 import './InvestmentsPage.css';
+import { filter } from 'lodash';
 
 class InvestmentsPage extends Component {
   constructor(props) {
@@ -28,7 +29,10 @@ class InvestmentsPage extends Component {
         <h1>
           Investments <NewInvestment />
         </h1>
-        <InvestmentList investments={this.props.investments} />
+        <h3>USD</h3>
+        <InvestmentList investments={filter(this.props.investments, i => i.currency === 'USD')} currency='USD' />
+        <h3>CAD</h3>
+        <InvestmentList investments={filter(this.props.investments, i => i.currency === 'CAD')} currency='CAD' />
       </div>
     );
   }

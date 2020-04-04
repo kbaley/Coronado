@@ -8,6 +8,7 @@ import { find } from 'lodash';
 import { InvestmentRow } from './InvestmentRow';
 import InvestmentsTotal from './InvestmentsTotal';
 import Spinner from '../common/Spinner';
+import { filter } from 'lodash';
 
 class InvestmentList extends Component {
   constructor(props) {
@@ -78,6 +79,7 @@ class InvestmentList extends Component {
         )}
         <InvestmentsTotal
             investments={this.props.investments}
+            currency={this.props.currency}
             currencies={this.props.currencies} />
       </tbody>
     </table>
@@ -88,7 +90,6 @@ class InvestmentList extends Component {
 function mapStateToProps(state) {
  
   return {
-    investments: state.investments,
     notifications: state.notifications,
     isLoading: state.loading.investments,
     currencies: state.currencies
