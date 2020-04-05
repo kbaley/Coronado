@@ -17,6 +17,8 @@ namespace Coronado.Web.Models
         public string AccountType { get; set; }
         public decimal? MortgagePayment { get; set; }
         public string MortgageType { get; set; }
+        public bool IsHidden { get; set; }
+        public int DisplayOrder { get; set; }
     }
 
     public class AccountWithTransactions

@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Coronado.Web.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Dapper;
-using System.Data;
 using Coronado.Web.Domain;
 
 namespace Coronado.Web.Data
@@ -65,8 +63,8 @@ GROUP BY account_id"
         {
             using (var conn = Connection) {
                 conn.Execute(
-@"INSERT INTO accounts (account_id, name, currency, vendor, account_type, mortgage_payment, mortgage_type)
-VALUES (@AccountId, @Name, @Currency, @Vendor, @AccountType, @MortgagePayment, @MortgageType)", account);
+@"INSERT INTO accounts (account_id, name, currency, vendor, account_type, mortgage_payment, mortgage_type, is_hidden, display_order)
+VALUES (@AccountId, @Name, @Currency, @Vendor, @AccountType, @MortgagePayment, @MortgageType, @IsHidden, @DisplayOrder)", account);
             }
         }
 
@@ -76,7 +74,7 @@ VALUES (@AccountId, @Name, @Currency, @Vendor, @AccountType, @MortgagePayment, @
                 conn.Execute(
 @"UPDATE accounts
 SET name = @Name, currency = @Currency, vendor = @Vendor, account_type = @AccountType,
-    mortgage_payment = @MortgagePayment, mortgage_type = @MortgageType, display_order = @DisplayOrder
+    mortgage_payment = @MortgagePayment, mortgage_type = @MortgageType, display_order = @DisplayOrder, is_hidden = @IsHidden
 WHERE account_id = @AccountId", account);
             }
         }

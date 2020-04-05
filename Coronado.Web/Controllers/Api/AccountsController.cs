@@ -38,7 +38,6 @@ namespace Coronado.Web.Controllers.Api
             return _accountRepo.GetAll();
         }
 
-        // PUT: api/Accounts/5
         [HttpPut("{id}")]
         public IActionResult PutAccount([FromRoute] Guid id, [FromBody] Account account)
         {
@@ -82,7 +81,6 @@ namespace Coronado.Web.Controllers.Api
             return CreatedAtAction("PostQif", new { id = model.AccountId }, transactions);
         }
 
-        // POST: api/Accounts
         [HttpPost]
         public IActionResult PostAccount([FromBody] AccountForPosting account)
         {
@@ -99,7 +97,9 @@ namespace Coronado.Web.Controllers.Api
                 Vendor = account.Vendor,
                 AccountType = account.AccountType,
                 MortgagePayment = account.MortgagePayment,
-                MortgageType = account.MortgageType
+                MortgageType = account.MortgageType,
+                IsHidden = account.IsHidden,
+                DisplayOrder = account.DisplayOrder
             };
             _accountRepo.Insert(newAccount);
 
