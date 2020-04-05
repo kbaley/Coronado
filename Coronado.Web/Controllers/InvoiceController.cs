@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Specialized;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,18 +18,16 @@ namespace Coronado.Web.Controllers
     public class InvoiceController : Controller
     {
 
-        private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IConfiguration _config;
         private readonly IInvoiceRepository _invoiceRepo;
         private readonly ILogger _logger;
         private readonly ICustomerRepository _customerRepo;
         private readonly IConfigurationRepository _configRepo;
 
-        public InvoiceController(IHostingEnvironment hostingEnvironment, IConfiguration config,
+        public InvoiceController(IConfiguration config,
           IInvoiceRepository invoiceRepo, ILogger<InvoiceController> logger, ICustomerRepository customerRepo,
           IConfigurationRepository configRepo)
         {
-            _hostingEnvironment = hostingEnvironment;
             _config = config;
             _invoiceRepo = invoiceRepo;
             _logger = logger;
@@ -63,8 +60,6 @@ namespace Coronado.Web.Controllers
                 throw new Exception("No invoice template found");
             }
             if (invoice == null) return template;
-            // var contentPath = _hostingEnvironment.WebRootPath;
-            // var value = System.IO.File.ReadAllText(Path.Combine(contentPath, "InvoiceTemplate.html"))
             var value = template
               .Replace("{{InvoiceNumber}}", invoice.InvoiceNumber)
               .Replace("{{Balance}}", invoice.Balance.ToString("C"))

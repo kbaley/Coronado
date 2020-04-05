@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Coronado.Web.Data;
 using Coronado.Web.Domain;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Coronado.Web.Models;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Authorization;
@@ -44,6 +42,9 @@ namespace Coronado.Web.Controllers.Api
             var investments = _investmentRepo.GetAll();
             foreach (var investment in investments)
             {
+                if (investment.CanLookUp()) {
+                    UpdatePriceHistory(investment);
+                }
                 if (investment.LastRetrieved < DateTime.Today && !string.IsNullOrWhiteSpace(investment.Symbol)) {
                     var html = $"https://www.theglobeandmail.com/investing/markets/stocks/{investment.Symbol}/performance/";
                     var web = new HtmlWeb();
@@ -62,6 +63,9 @@ namespace Coronado.Web.Controllers.Api
             }
 
             return investments.OrderBy(i => i.Name);
+        }
+
+        private void UpdatePriceHistory(Investment investment) {
         }
 
 

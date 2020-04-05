@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Coronado.Web.Data;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -17,7 +16,7 @@ namespace Coronado.Web
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env) {
+        public Startup(IWebHostEnvironment env) {
 
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
@@ -84,16 +83,13 @@ namespace Coronado.Web
                 };
             });
 
-            services.AddMvc()
-                .AddJsonOptions(options => 
-                {
-                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-                })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().AddNewtonsoftJson(
+                options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory) {
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory) {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
@@ -105,16 +101,18 @@ namespace Coronado.Web
             loggerFactory.AddApplicationInsights(app.ApplicationServices, LogLevel.Debug);
 
 //            app.UseHttpsRedirection();
+            app.UseRouting();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+            app.UseAuthorization();
 
-            app.UseMvc(routes => {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllerRoute(
+                    name:"default", 
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
             app.UseSpa(spa => {
                 spa.Options.SourcePath = "ClientApp";
@@ -123,9 +121,6 @@ namespace Coronado.Web
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
-
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
         }
     }
 }
