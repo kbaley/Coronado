@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal, Form, FormControl, FormGroup, ControlLabel, Col, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
+import { Button, Modal, Form, FormControl, Checkbox, FormGroup, ControlLabel, Col, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
 
 export class AccountForm extends Component {
   constructor(props) {
@@ -41,7 +41,10 @@ export class AccountForm extends Component {
 
   handleChange(e) {
     var name = e.target.name;
-    this.setState({ account: { ...this.state.account, [name]: e.target.value } });
+    var value = e.target.value;
+    if (e.target.type === "checkbox")
+      value = e.target.checked;
+    this.setState({ account: { ...this.state.account, [name]: value } });
   }
 
   handleChangeType(e) {
@@ -112,6 +115,12 @@ export class AccountForm extends Component {
             <Col componentClass={ControlLabel} sm={3}>Currency</Col>
             <Col sm={3}>
               <FormControl type="text" name="currency" value={this.state.account.currency} onChange={this.handleChange} />
+            </Col>
+          </FormGroup>
+          <FormGroup>
+            <Col componentClass={ControlLabel} sm={3}>Hidden?</Col>
+            <Col sm={3}>
+              <Checkbox name="isHidden" onChange={this.handleChange} />
             </Col>
           </FormGroup>
           {this.state.account.accountType === "Mortgage" &&

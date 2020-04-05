@@ -40,6 +40,9 @@ namespace Coronado.Web.Domain
 
         public decimal CurrentBalance { get; set; }
 
+        [DefaultValue(false)]
+        public bool IsHidden { get; set; }
+
         [Required]
         [DefaultValue("USD")]
         public string Currency {get;set;}

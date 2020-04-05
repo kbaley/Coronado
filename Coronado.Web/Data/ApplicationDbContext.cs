@@ -55,13 +55,13 @@ namespace Coronado.Web.Data
                 }
             }
 
-            builder.Entity<Category>().HasData(
-                new Category { CategoryId = Guid.NewGuid(), Name = "Starting Balance", Type = "Income" }
-            );
+            // builder.Entity<Category>().HasData(
+            //     new Category { CategoryId = Guid.NewGuid(), Name = "Starting Balance", Type = "Income" }
+            // );
 
-            builder.Entity<Category>().HasData(
-                new Category { CategoryId = Guid.NewGuid(), Name = "Bank Fees", Type = "Expense" }
-            );
+            // builder.Entity<Category>().HasData(
+            //     new Category { CategoryId = Guid.NewGuid(), Name = "Bank Fees", Type = "Expense" }
+            // );
         }
     }
 }

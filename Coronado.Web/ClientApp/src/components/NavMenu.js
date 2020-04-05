@@ -9,6 +9,7 @@ import CustomersMenu from './customers/CustomersMenu';
 import InvestmentsMenu from './investments_page/InvestmentsMenu';
 import ReportsMenu from './reports_page/ReportsMenu';
 import NewAccount from './account_page/NewAccount';
+import ToggleAllAccounts from './account_page/ToggleAllAccounts';
 import NetWorth from './NetWorth';
 
 export default props => (
@@ -23,7 +24,7 @@ export default props => (
     </Navbar.Header>
     <Navbar.Collapse>
       <Navbar.Header>
-        <Navbar.Brand>Accounts <NewAccount /></Navbar.Brand>
+        <Navbar.Brand>Accounts <NewAccount /><ToggleAllAccounts /></Navbar.Brand>
       </Navbar.Header>
       <AccountNavList />
     </Navbar.Collapse>

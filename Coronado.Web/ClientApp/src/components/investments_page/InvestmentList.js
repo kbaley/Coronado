@@ -8,7 +8,6 @@ import { find } from 'lodash';
 import { InvestmentRow } from './InvestmentRow';
 import InvestmentsTotal from './InvestmentsTotal';
 import Spinner from '../common/Spinner';
-import { filter } from 'lodash';
 
 class InvestmentList extends Component {
   constructor(props) {

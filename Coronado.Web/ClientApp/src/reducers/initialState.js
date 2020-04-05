@@ -30,6 +30,7 @@ export default {
     customers: true,
     invoices: true,
     investments: true
-  }
+  },
+  showAllAccounts: false,
 }
 

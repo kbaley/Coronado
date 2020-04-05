@@ -11,6 +11,7 @@ import { MoneyFormat } from './common/DecimalFormat';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Spinner from './common/Spinner';
 import {SortableContainer, SortableElement} from 'react-sortable-hoc';
+import {filter} from 'lodash';
 
 
   function getIcon(accountType) {
@@ -116,8 +117,9 @@ class AccountNavList extends Component {
 
 function mapStateToProps(state) {
   return {
-    accounts: state.accounts,
-    isLoadingData: state.loading ? state.loading.accounts : true
+    accounts: state.showAllAccounts ? state.accounts : filter(state.accounts, a => !a.isHidden),
+    isLoadingData: state.loading ? state.loading.accounts : true,
+    showAllAccounts: state.showAllAccounts
   }
 }
 
