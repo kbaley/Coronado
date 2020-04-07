@@ -10,6 +10,10 @@ namespace Coronado.Web.Domain
     [Table("investments")]
     public class Investment
     {
+        public Investment() {
+            HistoricalPrices = new List<InvestmentPrice>();
+        }
+        
         [Key]
         public Guid InvestmentId { get; set; }
         public string Name { get; set; }

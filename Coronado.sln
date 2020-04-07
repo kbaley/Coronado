@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coronado.Web", "Coronado.Web\Coronado.Web.csproj", "{EE2056D6-1E28-4C35-BEC7-E2091FD17722}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coronado.Web.Tests", "Coronado.Web.Tests\Coronado.Web.Tests.csproj", "{B366A54C-78CE-42DF-9275-C3D1E8B53D6C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{62B2C338-CA6E-4A96-9437-761400AACAEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62B2C338-CA6E-4A96-9437-761400AACAEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62B2C338-CA6E-4A96-9437-761400AACAEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B366A54C-78CE-42DF-9275-C3D1E8B53D6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B366A54C-78CE-42DF-9275-C3D1E8B53D6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B366A54C-78CE-42DF-9275-C3D1E8B53D6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B366A54C-78CE-42DF-9275-C3D1E8B53D6C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
