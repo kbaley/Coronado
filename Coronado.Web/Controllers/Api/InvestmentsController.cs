@@ -47,7 +47,7 @@ namespace Coronado.Web.Controllers.Api
             {
                 // if (investment.CanLookUp())
                 // {
-                    UpdatePriceHistory(investment);
+                    // UpdatePriceHistory(investment);
                 // }
             }
 
@@ -83,16 +83,16 @@ namespace Coronado.Web.Controllers.Api
                     var stringResult = System.IO.File.ReadAllText(@"moo.json");
                     dynamic rawResult = JsonConvert.DeserializeObject(stringResult);
                     var firstPrice = rawResult.prices[0];
-                    var dateValue = long.Parse(firstPrice.date);
+                    var dateValue = firstPrice.date;
                     var date = DateTimeOffset.FromUnixTimeSeconds(dateValue).ToUniversalTime();
-                    var price = decimal.Parse(firstPrice.close);
+                    var price = firstPrice.close;
                     var prices = investment.HistoricalPrices.ToList();
                     prices.Add(new InvestmentPrice{ 
                         InvestmentPriceId = Guid.NewGuid(),
                         Price = price,
                         Date = date
                     });
-                    _investmentRepo.Update(investment);
+                    // _investmentRepo.Update(investment);
                 }
                 catch
                 {

@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Coronado.Web.Models;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Dapper;
-using System.Data;
-using Npgsql;
 using Coronado.Web.Domain;
 
 namespace Coronado.Web.Data
@@ -25,8 +23,29 @@ namespace Coronado.Web.Data
 
         public IEnumerable<Investment> GetAll()
         {
-            using (var conn = Connection) {
-                return conn.Query<Investment>("SELECT * FROM investments");
+            using (var conn = Connection)
+            {
+                var investmentDictionary = new Dictionary<Guid, Investment>();
+                // Make sure investment_id is listed first in the joined table for Dapper to work
+                var invoices = conn.Query<Investment, InvestmentPrice, Investment>(
+                    @"SELECT i.*, p.investment_id, p.investment_price_id as investment_price_id, p.date, p.price
+                    FROM investments i inner join investment_price p on i.investment_id = p.investment_id",
+                (investment, price) =>
+                {
+                    Investment investmentEntry;
+                    if (!investmentDictionary.TryGetValue(investment.InvestmentId, out investmentEntry))
+                    {
+                        investmentEntry = investment;
+                        investmentEntry.HistoricalPrices = new List<InvestmentPrice>();
+                        investmentDictionary.Add(investmentEntry.InvestmentId, investmentEntry);
+                    }
+
+                    investmentEntry.HistoricalPrices.Add(price);
+                    return investmentEntry;
+                },
+                splitOn: "investment_id")
+                .Distinct();
+                return invoices;
             }
         }
 

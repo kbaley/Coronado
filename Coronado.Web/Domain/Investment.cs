@@ -23,7 +23,7 @@ namespace Coronado.Web.Domain
         public string Url { get; set; }
         public DateTime LastRetrieved { get; set; }
         public string Currency { get; set; }
-        public IEnumerable<InvestmentPrice> HistoricalPrices { get; set; }
+        public List<InvestmentPrice> HistoricalPrices { get; set; }
 
         public bool CanLookUp() {
             return !string.IsNullOrWhiteSpace(Symbol) && LastRetrieved < DateTime.Today;
@@ -33,9 +33,10 @@ namespace Coronado.Web.Domain
     public class InvestmentPrice
     {
         [Key]
+        [Column("investment_price_id")]
         public Guid InvestmentPriceId { get; set; }
         [Required]
-        public Invoice Invoice { get; set; }
+        public Guid InvestmentId { get; set; }
         public DateTime Date { get; set; }
         public decimal Price { get; set; }
     }
