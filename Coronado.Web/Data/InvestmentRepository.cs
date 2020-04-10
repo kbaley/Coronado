@@ -29,7 +29,7 @@ namespace Coronado.Web.Data
                 // Make sure investment_id is listed first in the joined table for Dapper to work
                 var invoices = conn.Query<Investment, InvestmentPrice, Investment>(
                     @"SELECT i.*, p.investment_id, p.investment_price_id as investment_price_id, p.date, p.price
-                    FROM investments i inner join investment_price p on i.investment_id = p.investment_id",
+                    FROM investments i left join investment_price p on i.investment_id = p.investment_id",
                 (investment, price) =>
                 {
                     Investment investmentEntry;

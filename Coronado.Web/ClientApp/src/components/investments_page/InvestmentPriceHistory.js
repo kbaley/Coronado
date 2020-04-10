@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Button,Modal} from 'react-bootstrap';
-import BootstrapTable from 'react-bootstrap-table';
+import { Button,Modal, Table} from 'react-bootstrap';
+import { DeleteIcon } from '../icons/DeleteIcon';
+import { CheckIcon } from '../icons/CheckIcon';
+import { MoneyFormat } from '../common/DecimalFormat';
 
 class InvestmentPriceHistory extends Component {
   displayName = InvestmentPriceHistory.name;
@@ -14,57 +16,122 @@ class InvestmentPriceHistory extends Component {
   }];
   constructor(props) {
     super(props);
-    this.saveInvestment = this.saveInvestment.bind(this);   
+    this.savePrices = this.savePrices.bind(this);   
+    this.savePrice = this.savePrice.bind(this);
+    this.deletePrice = this.deletePrice.bind(this);
     this.handleChangeField = this.handleChangeField.bind(this);
+    this.setFocus = this.setFocus.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
     this.state = {
-      newInvestment: true,
-      investment: {name: '', symbol: '', shares: 0, price: 0, url: '', currency: 'USD'}
+      newInvestment: {date: '', price: 0},
+      investment: { },
+      prices: [ ],
+      nextId: 0
     };
   }
-
 
   componentDidUpdate() {
     if (this.props.investment && this.props.investment.investmentId 
         && this.props.investment.investmentId !== this.state.investment.investmentId ) {
       this.setState({
-        newInvestment: false,
         investment: {
           investmentId: this.props.investment.investmentId, 
           name: this.props.investment.name,
           symbol: this.props.investment.symbol || '',
-          shares: this.props.investment.shares || 0,
-          price: this.props.investment.price || 0.00,
-          currency: this.props.investment.currency || 'USD',
-          url: this.props.investment.url || ''
-        }
+        },
+        prices: this.props.investment.historicalPrices,
+        nextId: this.props.investment.historicalPrices.length
       });
     }
   }
 
-  saveInvestment() {
+  deletePrice(price) {
+    var priceIndex = this.state.prices.indexOf(price);
+    if (priceIndex > -1) {
+      var prices = [...this.state.prices];
+      prices.splice(priceIndex, 1);
+      this.setState({prices});
+    } 
+  }
+
+  handleKeyPress(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      this.savePrice();
+    }
+  }
+
+  savePrices() {
     this.props.onSave(this.state.investment);
     this.setState({investment: {name: '', symbol: '', shares: 0, price: 0, url: ''} });
     this.props.onClose();
   }
+  
+  setFocus(e) {
+    if (e) e.preventDefault();
+    this.refs["inputDate"].focus();
+    return false;
+  }
+
+  savePrice() {
+    var newPrice = {
+      date: this.state.newInvestment.date,
+      price: this.state.newInvestment.price
+    }
+    this.state.prices.push(newPrice);
+    this.setState({newInvestment: {date: '', price: this.state.newInvestment.price }});
+    this.setFocus();
+  }
 
   handleChangeField(e) {
     var name = e.target.name;
-    this.setState( { investment: {...this.state.investment, [name]: e.target.value } } );
+    this.setState( { newInvestment: {...this.state.newInvestment, [name]: e.target.value } } );
   }
 
   render() {
-    console.log(this.state.investment);
-    
     return (
-      <Modal show={this.props.show} onHide={this.props.onClose}>
+      <Modal show={this.props.show} onHide={this.props.onClose} autoFocus={false}>
         <Modal.Header closeButton>
           <Modal.Title>{this.state.investment.name}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div>{this.state.investment.historicalPrices}</div>
+          <Table striped bordered>
+            <thead>
+              <tr>
+                <th>&nbsp;</th>
+                <th>Date</th>
+                <th>Price</th>
+              </tr>
+            </thead>
+            <tbody>
+            {this.state.prices && this.state.prices.map( (p, index) =>
+              <tr key={index}>
+                <td><DeleteIcon onDelete={() => this.deletePrice(p)} /></td>
+                <td>{new Date(p.date).toLocaleDateString()}</td>
+                <td><MoneyFormat amount={p.price} /></td>
+              </tr>
+            )}
+            <tr>
+              <td><CheckIcon onClick={this.savePrice} /></td>
+              <td><input 
+                type="text" 
+                name="date" 
+                ref="inputDate" 
+                autoFocus={true}
+                value={this.state.newInvestment.date} onChange={this.handleChangeField} /></td>
+              <td style={{"textAlign": "right"}}>
+                <input type="text" 
+                  name="price" 
+                  style={{"textAlign": "right"}}
+                  onKeyPress={this.handleKeyPress}
+                  value={this.state.newInvestment.price} onChange={this.handleChangeField} />
+                </td>
+            </tr>
+            </tbody>
+          </Table>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.saveInvestment}>Save</Button>
+          <Button onClick={this.savePrices}>Save</Button>
         </Modal.Footer>
       </Modal>
     );

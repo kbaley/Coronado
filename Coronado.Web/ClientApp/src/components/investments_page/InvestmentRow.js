@@ -4,6 +4,7 @@ import { EditIcon } from '../icons/EditIcon';
 import { Icon } from '../icons/Icon';
 
 export function InvestmentRow({investment, onEdit, onDelete, openPriceHistory}) {
+  
   return (
     <tr>
       <td>
