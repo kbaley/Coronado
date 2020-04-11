@@ -4,7 +4,6 @@ using System.Data;
 using System.Linq;
 using Coronado.Web.Models;
 using Microsoft.Extensions.Configuration;
-using Npgsql;
 using Dapper;
 
 namespace Coronado.Web.Data

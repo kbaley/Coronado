@@ -68,6 +68,7 @@ export class NewTransactionRow extends Component {
     const name = e.target.name;
     this.setState({ trx: { ...this.state.trx, [name]: e.target.value } });
   }
+
   handleKeyPress(e) {
     if (e.key === 'Enter') {
       e.preventDefault();

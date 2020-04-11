@@ -15,43 +15,53 @@ namespace Coronado.Web.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
-                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                .HasAnnotation("ProductVersion", "3.1.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("Coronado.Web.Domain.Account", b =>
                 {
                     b.Property<Guid>("AccountId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("account_id");
+                        .HasColumnName("account_id")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("AccountType")
-                        .HasColumnName("account_type");
+                        .HasColumnName("account_type")
+                        .HasColumnType("text");
 
                     b.Property<string>("Currency")
                         .IsRequired()
-                        .HasColumnName("currency");
+                        .HasColumnName("currency")
+                        .HasColumnType("text");
 
                     b.Property<decimal>("CurrentBalance")
-                        .HasColumnName("current_balance");
+                        .HasColumnName("current_balance")
+                        .HasColumnType("numeric");
 
                     b.Property<int>("DisplayOrder")
-                        .HasColumnName("display_order");
+                        .HasColumnName("display_order")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsHidden")
-                        .HasColumnName("is_hidden");
+                        .HasColumnName("is_hidden")
+                        .HasColumnType("boolean");
 
                     b.Property<decimal?>("MortgagePayment")
-                        .HasColumnName("mortgage_payment");
+                        .HasColumnName("mortgage_payment")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("MortgageType")
-                        .HasColumnName("mortgage_type");
+                        .HasColumnName("mortgage_type")
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .HasColumnName("name");
+                        .HasColumnName("name")
+                        .HasColumnType("text");
 
                     b.Property<string>("Vendor")
-                        .HasColumnName("vendor");
+                        .HasColumnName("vendor")
+                        .HasColumnType("text");
 
                     b.HasKey("AccountId")
                         .HasName("pk_accounts");
@@ -63,18 +73,22 @@ namespace Coronado.Web.Migrations
                 {
                     b.Property<Guid>("CategoryId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("category_id");
+                        .HasColumnName("category_id")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnName("name");
+                        .HasColumnName("name")
+                        .HasColumnType("text");
 
                     b.Property<Guid?>("ParentCategoryId")
-                        .HasColumnName("parent_category_id");
+                        .HasColumnName("parent_category_id")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnName("type");
+                        .HasColumnName("type")
+                        .HasColumnType("text");
 
                     b.HasKey("CategoryId")
                         .HasName("pk_categories");
@@ -86,13 +100,16 @@ namespace Coronado.Web.Migrations
                 {
                     b.Property<Guid>("ConfigurationId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("configuration_id");
+                        .HasColumnName("configuration_id")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
-                        .HasColumnName("name");
+                        .HasColumnName("name")
+                        .HasColumnType("text");
 
                     b.Property<string>("Value")
-                        .HasColumnName("value");
+                        .HasColumnName("value")
+                        .HasColumnType("text");
 
                     b.HasKey("ConfigurationId")
                         .HasName("pk_configuration");
@@ -103,14 +120,16 @@ namespace Coronado.Web.Migrations
             modelBuilder.Entity("Coronado.Web.Domain.Currency", b =>
                 {
                     b.Property<string>("Symbol")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("symbol");
+                        .HasColumnName("symbol")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("LastRetrieved")
-                        .HasColumnName("last_retrieved");
+                        .HasColumnName("last_retrieved")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<decimal>("PriceInUsd")
-                        .HasColumnName("price_in_usd");
+                        .HasColumnName("price_in_usd")
+                        .HasColumnType("numeric");
 
                     b.HasKey("Symbol")
                         .HasName("pk_currencies");
@@ -122,23 +141,29 @@ namespace Coronado.Web.Migrations
                 {
                     b.Property<Guid>("CustomerId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("customer_id");
+                        .HasColumnName("customer_id")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("City")
-                        .HasColumnName("city");
+                        .HasColumnName("city")
+                        .HasColumnType("text");
 
                     b.Property<string>("Email")
-                        .HasColumnName("email");
+                        .HasColumnName("email")
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnName("name");
+                        .HasColumnName("name")
+                        .HasColumnType("text");
 
                     b.Property<string>("Region")
-                        .HasColumnName("region");
+                        .HasColumnName("region")
+                        .HasColumnType("text");
 
                     b.Property<string>("StreetAddress")
-                        .HasColumnName("street_address");
+                        .HasColumnName("street_address")
+                        .HasColumnType("text");
 
                     b.HasKey("CustomerId")
                         .HasName("pk_customers");
@@ -150,28 +175,36 @@ namespace Coronado.Web.Migrations
                 {
                     b.Property<Guid>("InvestmentId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("investment_id");
+                        .HasColumnName("investment_id")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Currency")
-                        .HasColumnName("currency");
+                        .HasColumnName("currency")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("LastRetrieved")
-                        .HasColumnName("last_retrieved");
+                        .HasColumnName("last_retrieved")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
-                        .HasColumnName("name");
+                        .HasColumnName("name")
+                        .HasColumnType("text");
 
                     b.Property<decimal>("Price")
-                        .HasColumnName("price");
+                        .HasColumnName("price")
+                        .HasColumnType("numeric");
 
                     b.Property<decimal>("Shares")
-                        .HasColumnName("shares");
+                        .HasColumnName("shares")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("Symbol")
-                        .HasColumnName("symbol");
+                        .HasColumnName("symbol")
+                        .HasColumnType("text");
 
                     b.Property<string>("Url")
-                        .HasColumnName("url");
+                        .HasColumnName("url")
+                        .HasColumnType("text");
 
                     b.HasKey("InvestmentId")
                         .HasName("pk_investments");
@@ -183,28 +216,26 @@ namespace Coronado.Web.Migrations
                 {
                     b.Property<Guid>("InvestmentPriceId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("investment_price_id");
+                        .HasColumnName("investment_price_id")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnName("date");
+                        .HasColumnName("date")
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid?>("InvestmentId")
-                        .HasColumnName("investment_id");
-
-                    b.Property<Guid>("InvoiceId")
-                        .HasColumnName("invoice_id");
+                    b.Property<Guid>("InvestmentId")
+                        .HasColumnName("investment_id")
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("Price")
-                        .HasColumnName("price");
+                        .HasColumnName("price")
+                        .HasColumnType("numeric");
 
                     b.HasKey("InvestmentPriceId")
                         .HasName("pk_investment_price");
 
                     b.HasIndex("InvestmentId")
                         .HasName("ix_investment_price_investment_id");
-
-                    b.HasIndex("InvoiceId")
-                        .HasName("ix_investment_price_invoice_id");
 
                     b.ToTable("investment_price");
                 });
@@ -213,26 +244,33 @@ namespace Coronado.Web.Migrations
                 {
                     b.Property<Guid>("InvoiceId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("invoice_id");
+                        .HasColumnName("invoice_id")
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("Balance")
-                        .HasColumnName("balance");
+                        .HasColumnName("balance")
+                        .HasColumnType("numeric");
 
                     b.Property<Guid>("CustomerId")
-                        .HasColumnName("customer_id");
+                        .HasColumnName("customer_id")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnName("date");
+                        .HasColumnName("date")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("InvoiceNumber")
                         .IsRequired()
-                        .HasColumnName("invoice_number");
+                        .HasColumnName("invoice_number")
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsPaidInFull")
-                        .HasColumnName("is_paid_in_full");
+                        .HasColumnName("is_paid_in_full")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime?>("LastSentToCustomer")
-                        .HasColumnName("last_sent_to_customer");
+                        .HasColumnName("last_sent_to_customer")
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("InvoiceId")
                         .HasName("pk_invoices");
@@ -247,19 +285,24 @@ namespace Coronado.Web.Migrations
                 {
                     b.Property<Guid>("InvoiceLineItemId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("invoice_line_item_id");
+                        .HasColumnName("invoice_line_item_id")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
-                        .HasColumnName("description");
+                        .HasColumnName("description")
+                        .HasColumnType("text");
 
                     b.Property<Guid>("InvoiceId")
-                        .HasColumnName("invoice_id");
+                        .HasColumnName("invoice_id")
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("Quantity")
-                        .HasColumnName("quantity");
+                        .HasColumnName("quantity")
+                        .HasColumnType("numeric");
 
                     b.Property<decimal>("UnitAmount")
-                        .HasColumnName("unit_amount");
+                        .HasColumnName("unit_amount")
+                        .HasColumnType("numeric");
 
                     b.HasKey("InvoiceLineItemId")
                         .HasName("pk_invoice_line_items");
@@ -274,37 +317,48 @@ namespace Coronado.Web.Migrations
                 {
                     b.Property<Guid>("TransactionId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("transaction_id");
+                        .HasColumnName("transaction_id")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("AccountId")
-                        .HasColumnName("account_id");
+                        .HasColumnName("account_id")
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnName("amount");
+                        .HasColumnName("amount")
+                        .HasColumnType("numeric");
 
                     b.Property<Guid?>("CategoryId")
-                        .HasColumnName("category_id");
+                        .HasColumnName("category_id")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
-                        .HasColumnName("description");
+                        .HasColumnName("description")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("EnteredDate")
-                        .HasColumnName("entered_date");
+                        .HasColumnName("entered_date")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid?>("InvoiceId")
-                        .HasColumnName("invoice_id");
+                        .HasColumnName("invoice_id")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("IsReconciled")
-                        .HasColumnName("is_reconciled");
+                        .HasColumnName("is_reconciled")
+                        .HasColumnType("boolean");
 
                     b.Property<Guid?>("RelatedTransactionId")
-                        .HasColumnName("related_transaction_id");
+                        .HasColumnName("related_transaction_id")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("TransactionDate")
-                        .HasColumnName("transaction_date");
+                        .HasColumnName("transaction_date")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Vendor")
-                        .HasColumnName("vendor");
+                        .HasColumnName("vendor")
+                        .HasColumnType("text");
 
                     b.HasKey("TransactionId")
                         .HasName("pk_transactions");
@@ -328,19 +382,23 @@ namespace Coronado.Web.Migrations
                 {
                     b.Property<Guid>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("user_id");
+                        .HasColumnName("user_id")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnName("email");
+                        .HasColumnName("email")
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnName("name");
+                        .HasColumnName("name")
+                        .HasColumnType("text");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnName("password");
+                        .HasColumnName("password")
+                        .HasColumnType("text");
 
                     b.HasKey("UserId")
                         .HasName("pk_users");
@@ -352,14 +410,17 @@ namespace Coronado.Web.Migrations
                 {
                     b.Property<Guid>("VendorId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("vendor_id");
+                        .HasColumnName("vendor_id")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("LastTransactionCategoryId")
-                        .HasColumnName("last_transaction_category_id");
+                        .HasColumnName("last_transaction_category_id")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnName("name");
+                        .HasColumnName("name")
+                        .HasColumnType("text");
 
                     b.HasKey("VendorId")
                         .HasName("pk_vendors");
@@ -369,16 +430,12 @@ namespace Coronado.Web.Migrations
 
             modelBuilder.Entity("Coronado.Web.Domain.InvestmentPrice", b =>
                 {
-                    b.HasOne("Coronado.Web.Domain.Investment")
+                    b.HasOne("Coronado.Web.Domain.Investment", null)
                         .WithMany("HistoricalPrices")
                         .HasForeignKey("InvestmentId")
-                        .HasConstraintName("fk_investment_price_investments_investment_id");
-
-                    b.HasOne("Coronado.Web.Domain.Invoice", "Invoice")
-                        .WithMany()
-                        .HasForeignKey("InvoiceId")
-                        .HasConstraintName("fk_investment_price_invoices_invoice_id")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasConstraintName("fk_investment_price_investments_investment_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Coronado.Web.Domain.Invoice", b =>
@@ -387,7 +444,8 @@ namespace Coronado.Web.Migrations
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .HasConstraintName("fk_invoices_customers_customer_id")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Coronado.Web.Domain.InvoiceLineItem", b =>
@@ -396,7 +454,8 @@ namespace Coronado.Web.Migrations
                         .WithMany("LineItems")
                         .HasForeignKey("InvoiceId")
                         .HasConstraintName("fk_invoice_line_items_invoices_invoice_id")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Coronado.Web.Domain.Transaction", b =>
@@ -405,7 +464,8 @@ namespace Coronado.Web.Migrations
                         .WithMany()
                         .HasForeignKey("AccountId")
                         .HasConstraintName("fk_transactions_accounts_account_id")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Coronado.Web.Domain.Category", "Category")
                         .WithMany()

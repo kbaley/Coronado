@@ -69,6 +69,13 @@ export const updateInvestment = (investment) => {
   }
 }
 
+export const updatePriceHistory = (investment, prices) => {
+  return async (dispatch) => {
+    const updatedInvestment = await InvestmentApi.updatePriceHistory(investment, prices);
+    dispatch(updateInvestmentSuccess(updatedInvestment));
+  }
+}
+
 export const createInvestment = (investment) => {
   return async (dispatch) => {
     const newInvestment = await InvestmentApi.createInvestment(investment);
