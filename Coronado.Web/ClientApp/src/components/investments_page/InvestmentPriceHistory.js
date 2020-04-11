@@ -3,17 +3,12 @@ import { Button,Modal, Table} from 'react-bootstrap';
 import { DeleteIcon } from '../icons/DeleteIcon';
 import { CheckIcon } from '../icons/CheckIcon';
 import { MoneyFormat } from '../common/DecimalFormat';
+import Moment from 'react-moment';
+import moment from 'moment';
+import {parseMmDdDate} from '../common/dateHelpers';
 
 class InvestmentPriceHistory extends Component {
   displayName = InvestmentPriceHistory.name;
-  columns = [{
-    dataField: 'investmentPriceId',
-    text: 'ID'
-  },
-  {
-    dataField: 'date',
-    text: 'Date'
-  }];
   constructor(props) {
     super(props);
     this.savePrices = this.savePrices.bind(this);   
@@ -39,7 +34,10 @@ class InvestmentPriceHistory extends Component {
           name: this.props.investment.name,
           symbol: this.props.investment.symbol || '',
         },
-        prices: this.props.investment.historicalPrices,
+        prices: this.props.investment.historicalPrices.map( p => ({
+          ...p,
+          status: "Unchanged"
+        })),
         nextId: this.props.investment.historicalPrices.length
       });
     }
@@ -49,7 +47,7 @@ class InvestmentPriceHistory extends Component {
     var priceIndex = this.state.prices.indexOf(price);
     if (priceIndex > -1) {
       var prices = [...this.state.prices];
-      prices.splice(priceIndex, 1);
+      prices[priceIndex].status = "Deleted";
       this.setState({prices});
     } 
   }
@@ -75,7 +73,7 @@ class InvestmentPriceHistory extends Component {
 
   savePrice() {
     var newPrice = {
-      date: this.state.newInvestment.date,
+      date: parseMmDdDate(this.state.newInvestment.date), 
       price: this.state.newInvestment.price
     }
     this.state.prices.push(newPrice);
@@ -105,9 +103,10 @@ class InvestmentPriceHistory extends Component {
             </thead>
             <tbody>
             {this.state.prices && this.state.prices.map( (p, index) =>
+              p.status !== "Deleted" &&
               <tr key={index}>
                 <td><DeleteIcon onDelete={() => this.deletePrice(p)} /></td>
-                <td>{new Date(p.date).toLocaleDateString()}</td>
+                <td><Moment format="M/D/YYYY">{p.date}</Moment></td>
                 <td><MoneyFormat amount={p.price} /></td>
               </tr>
             )}
