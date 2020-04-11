@@ -1,20 +1,15 @@
 import React from 'react';
 import { CurrencyFormat } from "../common/CurrencyFormat";
 import { sumBy } from 'lodash';
+import DisplayTotalRow from './DisplayTotalRow';
 
 const InvestmentsTotal = ({investments, currency, currencies}) => {
   var total = sumBy(investments, i => (i.shares * i.price)).toFixed(2);
   return (
     <React.Fragment>
-      <tr>
-        <td colSpan="6" style={{textAlign: 'right', fontWeight: 'bold', paddingRight: '100px'}}>Total</td>
-        <td><CurrencyFormat value={total} /></td>
-      </tr>
+      <DisplayTotalRow text="Total" value={total} />
       {currency === 'CAD' &&
-      <tr>
-        <td colSpan="6" style={{textAlign: 'right', fontWeight: 'bold', paddingRight: '100px'}}>Total in USD ({Number(currencies['CAD']).toFixed(4)})</td>
-        <td><CurrencyFormat value={total / currencies['CAD']} /></td>
-      </tr>
+      <DisplayTotalRow text={"Total in USD (" + Number(currencies['CAD']).toFixed(4) + ")"} value={total / currencies['CAD']} />
       }
     </React.Fragment>
   );
