@@ -20,7 +20,7 @@ namespace Coronado.Web.Migrations
                 {
                     table.PrimaryKey("pk_investment_price", x => x.investment_price_id);
                     table.ForeignKey(
-                        name: "fk_investment_price_investments_investment_id",
+                        name: "fk_investment_prices_investments_investment_id",
                         column: x => x.investment_id,
                         principalTable: "investments",
                         principalColumn: "investment_id",
@@ -29,7 +29,7 @@ namespace Coronado.Web.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "ix_investment_price_investment_id",
-                table: "investment_price",
+                table: "investment_prices",
                 column: "investment_id");
         }
 
