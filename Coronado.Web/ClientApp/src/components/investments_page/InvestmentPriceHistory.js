@@ -4,8 +4,8 @@ import { DeleteIcon } from '../icons/DeleteIcon';
 import { CheckIcon } from '../icons/CheckIcon';
 import { MoneyFormat } from '../common/DecimalFormat';
 import Moment from 'react-moment';
-import moment from 'moment';
 import {parseMmDdDate} from '../common/dateHelpers';
+import { getEmptyGuid } from '../common/guidHelpers';
 
 class InvestmentPriceHistory extends Component {
   displayName = InvestmentPriceHistory.name;
@@ -20,8 +20,7 @@ class InvestmentPriceHistory extends Component {
     this.state = {
       newInvestment: {date: '', price: 0},
       investment: { },
-      prices: [ ],
-      nextId: 0
+      prices: [ ]
     };
   }
 
@@ -37,8 +36,7 @@ class InvestmentPriceHistory extends Component {
         prices: this.props.investment.historicalPrices.map( p => ({
           ...p,
           status: "Unchanged"
-        })),
-        nextId: this.props.investment.historicalPrices.length
+        }))
       });
     }
   }
@@ -60,8 +58,12 @@ class InvestmentPriceHistory extends Component {
   }
 
   savePrices() {
-    this.props.onSave(this.state.investment);
-    this.setState({investment: {name: '', symbol: '', shares: 0, price: 0, url: ''} });
+    this.props.onSave(this.state.investment, this.state.prices);
+    this.setState({
+      newInvestment: {date: '', price: 0},
+      investment: { },
+      prices: [ ]
+    });
     this.props.onClose();
   }
   
@@ -73,8 +75,11 @@ class InvestmentPriceHistory extends Component {
 
   savePrice() {
     var newPrice = {
-      date: parseMmDdDate(this.state.newInvestment.date), 
-      price: this.state.newInvestment.price
+      date: parseMmDdDate(this.state.newInvestment.date).format(), 
+      price: this.state.newInvestment.price,
+      investmentId: this.state.investment.investmentId,
+      status: 'Added',
+      investmentPriceId: getEmptyGuid()
     }
     this.state.prices.push(newPrice);
     this.setState({newInvestment: {date: '', price: this.state.newInvestment.price }});

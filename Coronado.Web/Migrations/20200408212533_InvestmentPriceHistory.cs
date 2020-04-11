@@ -8,7 +8,7 @@ namespace Coronado.Web.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "investment_price",
+                name: "investment_prices",
                 columns: table => new
                 {
                     investment_price_id = table.Column<Guid>(nullable: false),
@@ -36,7 +36,7 @@ namespace Coronado.Web.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "investment_price");
+                name: "investment_prices");
         }
     }
 }

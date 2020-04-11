@@ -5,12 +5,9 @@ using Coronado.Web.Data;
 using Coronado.Web.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Coronado.Web.Models;
-using HtmlAgilityPack;
 using Microsoft.AspNetCore.Authorization;
-using System.Net;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace Coronado.Web.Controllers.Api
@@ -25,17 +22,20 @@ namespace Coronado.Web.Controllers.Api
         private readonly IAccountRepository _accountRepo;
         private readonly ITransactionRepository _transactionRepo;
         private readonly ICategoryRepository _categoryRepo;
+        private readonly IInvestmentPriceRepository _investmentPriceRepo;
         private readonly ILogger<InvestmentsController> _logger;
 
         public InvestmentsController(ApplicationDbContext context, IInvestmentRepository investmentRepo,
             ICurrencyRepository currencyRepo, IAccountRepository accountRepo, ITransactionRepository transactionRepo,
-            ICategoryRepository categoryRepo, ILogger<InvestmentsController> logger)
+            ICategoryRepository categoryRepo, IInvestmentPriceRepository investmentPriceRepo,
+            ILogger<InvestmentsController> logger)
         {
             _investmentRepo = investmentRepo;
             _currencyRepo = currencyRepo;
             _accountRepo = accountRepo;
             _transactionRepo = transactionRepo;
             _categoryRepo = categoryRepo;
+            _investmentPriceRepo = investmentPriceRepo;
             _logger = logger;
         }
 
@@ -47,14 +47,14 @@ namespace Coronado.Web.Controllers.Api
             {
                 // if (investment.CanLookUp())
                 // {
-                    // UpdatePriceHistory(investment);
+                    // UpdatePrices(investment);
                 // }
             }
 
             return investments.OrderBy(i => i.Name);
         }
 
-        private void UpdatePriceHistory(Investment investment)
+        private void UpdatePrices(Investment investment)
         {
 
             using (var client = new HttpClient())
@@ -101,6 +101,20 @@ namespace Coronado.Web.Controllers.Api
             }
         }
 
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult UpdatePriceHistory(Investment investment) {
+            foreach(var price in investment.HistoricalPrices) {
+                if (price.Status == "Deleted") {
+                    _investmentPriceRepo.Delete(price.InvestmentPriceId);
+                } else if (price.Status == "Added") {
+                    price.InvestmentPriceId = Guid.NewGuid();
+                    _investmentPriceRepo.Insert(price);
+                }
+            }
+            investment = _investmentRepo.GetAll().Single(i => i.InvestmentId == investment.InvestmentId);
+            return CreatedAtAction("PostInvestment", new { id = investment.InvestmentId }, investment);
+        }
 
         [HttpPost]
         [Route("[action]")]

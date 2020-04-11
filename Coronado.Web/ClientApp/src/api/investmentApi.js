@@ -43,6 +43,20 @@ class InvestmentApi {
     return response.json();
   }
 
+  static async updatePriceHistory(investment, prices) {
+    investment.historicalPrices = prices;
+    const response = await fetch('/api/Investments/UpdatePriceHistory', {
+      method: 'POST',
+      headers: {
+        ...authHeader(),
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(investment)
+    });
+    return response.json();
+  }
+
   static async makeCorrectingEntries() {
     const response = await fetch('/api/Investments/MakeCorrectingEntries', {
       method: 'POST',

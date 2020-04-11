@@ -20,6 +20,7 @@ class InvestmentList extends Component {
     this.getInvestmentName = this.getInvestmentName.bind(this);
     this.openPriceHistory = this.openPriceHistory.bind(this);
     this.handleClosePriceHistory = this.handleClosePriceHistory.bind(this);
+    this.savePrices = this.savePrices.bind(this);
     this.state = {
       show: false,
       selectedInvestment: {},
@@ -49,6 +50,10 @@ class InvestmentList extends Component {
 
   saveInvestment(investment) {
     this.props.actions.updateInvestment(investment);
+  }
+
+  savePrices(investment, prices) {
+    this.props.actions.updatePriceHistory(investment, prices);
   }
 
   getInvestmentName(investmentId) {
@@ -82,6 +87,7 @@ class InvestmentList extends Component {
         <InvestmentPriceHistory
           show={this.state.showPriceHistory}
           onClose={this.handleClosePriceHistory}
+          onSave={this.savePrices}
           investment={this.state.selectedInvestment} />
         { this.props.isLoading ? <tr><td colSpan="2"><Spinner /></td></tr> :
           this.props.investments.map(i => 
