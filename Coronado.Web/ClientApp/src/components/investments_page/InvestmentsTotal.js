@@ -1,5 +1,4 @@
 import React from 'react';
-import { CurrencyFormat } from "../common/CurrencyFormat";
 import { sumBy } from 'lodash';
 import DisplayTotalRow from './DisplayTotalRow';
 

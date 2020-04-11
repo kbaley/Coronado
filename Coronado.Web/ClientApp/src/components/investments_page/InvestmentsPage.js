@@ -6,31 +6,20 @@ import NewInvestment from "./NewInvestment";
 import InvestmentList from "./InvestmentList";
 import {Icon} from "../icons/Icon";
 import './InvestmentsPage.css';
-import { filter, sumBy } from 'lodash';
-import { CurrencyFormat } from '../common/CurrencyFormat';
+import { filter } from 'lodash';
 import DisplayTotalRow from './DisplayTotalRow';
+import { getInvestmentsTotal } from '../common/investmentHelpers';
 
 class InvestmentsPage extends Component {
   constructor(props) {
     super(props);
     this.makeCorrectingEntries = this.makeCorrectingEntries.bind(this);
-    this.getTotal = this.getTotal.bind(this);
     this.state = {
     }
   }
 
   makeCorrectingEntries() {
     this.props.actions.makeCorrectingEntries();
-  }
-
-  getTotal() {
-    return sumBy(this.props.investments, i => {
-      if (i.currency === 'CAD') {
-        return (i.shares * i.price) / this.props.currencies['CAD'];
-      } else {
-        return (i.shares * i.price)
-      }
-    }).toFixed(2);
   }
 
   render() {
@@ -49,7 +38,7 @@ class InvestmentsPage extends Component {
         <table className='table investment-list'>
           <tbody>
             <React.Fragment>
-              <DisplayTotalRow text="Grand Total" value={this.getTotal()} />
+              <DisplayTotalRow text="Grand Total" value={getInvestmentsTotal()} />
             </React.Fragment>
           </tbody>
         </table>

@@ -24,6 +24,7 @@ const history = createBrowserHistory({ basename: baseUrl });
 // Get the application-wide store instance, prepopulating with state from the server where available.
 const initialState = window.initialReduxState;
 const store = configureStore(history, initialState);
+export default store;
 store.dispatch(loadAccounts());
 store.dispatch(loadCategories());
 store.dispatch(loadAccountTypes());
