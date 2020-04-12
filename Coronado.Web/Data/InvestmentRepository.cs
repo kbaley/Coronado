@@ -41,7 +41,8 @@ namespace Coronado.Web.Data
                         investmentDictionary.Add(investmentEntry.InvestmentId, investmentEntry);
                     }
 
-                    investmentEntry.HistoricalPrices.Add(price);
+                    if (price != null)
+                        investmentEntry.HistoricalPrices.Add(price);
                     return investmentEntry;
                 },
                 splitOn: "investment_id")

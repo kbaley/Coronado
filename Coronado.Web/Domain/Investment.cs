@@ -10,10 +10,6 @@ namespace Coronado.Web.Domain
     [Table("investments")]
     public class Investment
     {
-        public Investment() {
-            HistoricalPrices = new List<InvestmentPrice>();
-        }
-        
         [Key]
         public Guid InvestmentId { get; set; }
         public string Name { get; set; }
@@ -58,10 +54,11 @@ namespace Coronado.Web.Domain
 
     public static class InvestmentExtensions {
         public static decimal GetLastPrice(this Investment investment) {
-            var lastPrice = investment.HistoricalPrices?
+            if (investment.HistoricalPrices == null || investment.HistoricalPrices.Count == 0) return 0;
+            var lastPrice = investment.HistoricalPrices
                 .OrderByDescending(p => p.Date)
-                .FirstOrDefault();
-            return lastPrice == null ? 0 : lastPrice.Price;
+                .First();
+            return lastPrice.Price;
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Coronado.Web.Domain
         [Key]
         public Guid TransactionId { get; set; }
 
+        public Guid AccountId { get; set; }
         [Required]
         public Account Account { get; set; }
         public string Vendor { get; set; }

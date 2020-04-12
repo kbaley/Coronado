@@ -48,16 +48,12 @@ namespace Coronado.Web.Controllers.Api
         [HttpGet]
         public IEnumerable<InvestmentForListDto> GetInvestments()
         {
-            var investments = _investmentRepo.GetAll();
-            foreach (var investment in investments)
-            {
-                // if (investment.CanLookUp())
-                // {
-                    // UpdatePrices(investment);
-                // }
-            }
-
-            return investments.OrderBy(i => i.Name).Select(i => _mapper.Map<InvestmentForListDto>(i));
+            var investments = _context.Investments
+                .Include(i => i.HistoricalPrices)
+                .OrderBy(i => i.Name)
+                .ToList();
+            var dtos = investments.Select(i => _mapper.Map<InvestmentForListDto>(i));
+            return dtos;
         }
 
         [HttpPost]
@@ -89,11 +85,13 @@ namespace Coronado.Web.Controllers.Api
             investmentsTotal += investments
                 .Where(i => i.Currency == "USD")
                 .Sum(i => i.AveragePrice * i.Shares);
-            var investmentAccount = _accountRepo.GetAll().FirstOrDefault(a => a.AccountType == "Investment");
+            var investmentAccount = _context.Accounts.FirstOrDefault(a => a.AccountType == "Investment");
             if (investmentAccount == null)
                 return Ok();
 
-            var bookBalance = _transactionRepo.GetByAccount(investmentAccount.AccountId).Sum(i => i.Amount);
+            var bookBalance = _context.Transactions
+                .Where(t => t.AccountId == investmentAccount.AccountId)
+                .Sum(i => i.Amount);
 
             var difference = Math.Round(investmentsTotal - bookBalance, 2);
             if (Math.Abs(difference) >= 1)
@@ -135,33 +133,25 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpPost]
-        public IActionResult PostInvestment([FromBody] Investment investment)
+        public async Task<IActionResult> PostInvestment([FromBody] InvestmentForListDto investment)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             if (investment.InvestmentId == null || investment.InvestmentId == Guid.Empty) investment.InvestmentId = Guid.NewGuid();
-            _investmentRepo.Insert(investment);
+            var investmentMapped = _mapper.Map<Investment>(investment);
+            _context.Investments.Add(investmentMapped);
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("PostInvestment", new { id = investment.InvestmentId }, investment);
+            return CreatedAtAction("PostInvestment", new { id = investment.InvestmentId }, investmentMapped);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete([FromRoute] Guid id)
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var investment = _investmentRepo.Delete(id);
-            if (investment == null)
-            {
+            var investment = await _context.Investments.FindAsync(id);
+            if (investment == null) {
                 return NotFound();
             }
-
+            _context.Investments.Remove(investment);
+            await _context.SaveChangesAsync();
             return Ok(investment);
         }
     }
