@@ -8,9 +8,9 @@ export function getInvestmentsTotal() {
   const currencies = store.getState().currencies;
   return sumBy(investments, i => {
     if (i.currency === 'CAD') {
-      return (i.shares * i.price) / currencies['CAD'];
+      return (parseFloat(i.currentValue)) / currencies['CAD'];
     } else {
-      return (i.shares * i.price)
+      return (parseFloat(i.currentValue));
     }
   }).toFixed(2);
 }

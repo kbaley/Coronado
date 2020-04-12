@@ -54,53 +54,6 @@ namespace Coronado.Web.Controllers.Api
             return investments.OrderBy(i => i.Name);
         }
 
-        private void UpdatePrices(Investment investment)
-        {
-
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2");
-                try
-                {
-                    var symbol = investment.Symbol;
-                    var frequency = "1d";
-                    var end = (DateTime.UtcNow - DateTime.UnixEpoch).TotalSeconds;
-                    var lastPrice = investment.HistoricalPrices.OrderByDescending(d => d.Date).FirstOrDefault();
-                    // Get three months worth of prices by default
-                    var start = (DateTime.Today.AddMonths(-3).ToUniversalTime() - DateTime.UnixEpoch).TotalSeconds;
-                    if (lastPrice != null) {
-                        var startDate = lastPrice.Date;
-                        // Don't go back more than 90 days
-                        if ((DateTime.UtcNow - startDate).TotalDays >= 90) {
-                            startDate = DateTime.UtcNow.AddDays(-90);
-                        }
-                        start = (startDate - DateTime.UnixEpoch).TotalSeconds;
-                    }
-                    var request = $"/get-historical-data?frequency={frequency}&filter=history&period1={start}&period2={end}&symbol={symbol}";
-                    // var response = await client.GetAsync(request);
-                    // response.EnsureSuccessStatusCode();
-                    // var stringResult = await response.Content.ReadAsStringAsync();
-                    var stringResult = System.IO.File.ReadAllText(@"moo.json");
-                    dynamic rawResult = JsonConvert.DeserializeObject(stringResult);
-                    var firstPrice = rawResult.prices[0];
-                    var dateValue = firstPrice.date;
-                    var date = DateTimeOffset.FromUnixTimeSeconds(dateValue).ToUniversalTime();
-                    var price = firstPrice.close;
-                    var prices = investment.HistoricalPrices.ToList();
-                    prices.Add(new InvestmentPrice{ 
-                        InvestmentPriceId = Guid.NewGuid(),
-                        Price = price,
-                        Date = date
-                    });
-                    // _investmentRepo.Update(investment);
-                }
-                catch
-                {
-                    // For now, do nothing
-                }
-            }
-        }
-
         [HttpPost]
         [Route("[action]")]
         public IActionResult UpdatePriceHistory(Investment investment) {
@@ -120,19 +73,22 @@ namespace Coronado.Web.Controllers.Api
         [Route("[action]")]
         public IActionResult MakeCorrectingEntries()
         {
-
             var investments = GetInvestments();
             var currencyController = new CurrenciesController(_currencyRepo);
             var currency = currencyController.GetExchangeRateFor("CAD").GetAwaiter().GetResult();
-            var investmentsTotal = investments.Sum(i => i.Price * i.Shares);
-            var totalInUsd = investmentsTotal / currency;
+            var investmentsTotal = investments
+                .Where(i => i.Currency == "CAD")
+                .Sum(i => i.AveragePrice * i.Shares / currency);
+            investmentsTotal += investments
+                .Where(i => i.Currency == "USD")
+                .Sum(i => i.AveragePrice * i.Shares);
             var investmentAccount = _accountRepo.GetAll().FirstOrDefault(a => a.AccountType == "Investment");
             if (investmentAccount == null)
                 return Ok();
 
             var bookBalance = _transactionRepo.GetByAccount(investmentAccount.AccountId).Sum(i => i.Amount);
 
-            var difference = Math.Round(totalInUsd - bookBalance, 2);
+            var difference = Math.Round(investmentsTotal - bookBalance, 2);
             if (Math.Abs(difference) >= 1)
             {
                 var category = TransactionHelpers.GetOrCreateCategory("Gain/loss on investments", _categoryRepo);

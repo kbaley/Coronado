@@ -3,7 +3,9 @@ import { sumBy } from 'lodash';
 import DisplayTotalRow from './DisplayTotalRow';
 
 const InvestmentsTotal = ({investments, currency, currencies}) => {
-  var total = sumBy(investments, i => (i.shares * i.price)).toFixed(2);
+  var total = sumBy(investments, i => parseFloat(i.currentValue));
+  console.log(investments);
+  
   return (
     <React.Fragment>
       <DisplayTotalRow text="Total" value={total} />

@@ -73,7 +73,7 @@ class InvestmentList extends Component {
           <th>Symbol</th>
           <th>Currency</th>
           <th>Shares</th>
-          <th>Price</th>
+          <th>Last Price</th>
           <th>Current Value</th>
         </tr>
       </thead>

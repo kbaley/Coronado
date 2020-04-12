@@ -3,7 +3,7 @@ import * as actions from "../constants/investmentActionTypes";
 import { cloneDeep, find, forEach } from 'lodash';
 
 function computeBalance(investments) {
-  forEach(investments, i => i.currentValue = format(i.shares * i.price));
+  forEach(investments, i => i.currentValue = (i.shares * i.lastPrice).toFixed(2));
   return investments;
 }
 
