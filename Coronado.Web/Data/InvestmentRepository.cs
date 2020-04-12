@@ -42,7 +42,6 @@ namespace Coronado.Web.Data
                     }
 
                     investmentEntry.HistoricalPrices.Add(price);
-                    investmentEntry.LastPrice = investmentEntry.GetLastPrice();
                     return investmentEntry;
                 },
                 splitOn: "investment_id")

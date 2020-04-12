@@ -7,7 +7,9 @@ namespace Coronado.Web.Controllers.Dtos
     {
         public MappingProfile()
         {
-            CreateMap<Investment, InvestmentForListDto>();  
+            CreateMap<Investment, InvestmentForListDto>()
+                .ForMember(i => i.LastPrice, opt => opt.MapFrom(src => src.GetLastPrice()))
+                .ReverseMap();  
             CreateMap<InvestmentPrice, InvestmentPriceDto>().ReverseMap();  
         }
     }    

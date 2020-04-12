@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Coronado.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
-using System.Net.Http;
-using Newtonsoft.Json;
 using AutoMapper;
 using Coronado.Web.Controllers.Dtos;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -27,6 +27,7 @@ namespace Coronado.Web.Controllers.Api
         private readonly IInvestmentPriceRepository _investmentPriceRepo;
         private readonly ILogger<InvestmentsController> _logger;
         private readonly IMapper _mapper;
+        private readonly ApplicationDbContext _context;
 
         public InvestmentsController(ApplicationDbContext context, IInvestmentRepository investmentRepo,
             ICurrencyRepository currencyRepo, IAccountRepository accountRepo, ITransactionRepository transactionRepo,
@@ -41,6 +42,7 @@ namespace Coronado.Web.Controllers.Api
             _investmentPriceRepo = investmentPriceRepo;
             _logger = logger;
             _mapper = mapper;
+            _context = context;
         }
 
         [HttpGet]
@@ -123,19 +125,11 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpPut("{id}")]
-        public IActionResult PutInvestment([FromRoute] Guid id, [FromBody] Investment investment)
+        public async Task<IActionResult> PutInvestment([FromRoute] Guid id, [FromBody] InvestmentForListDto investment)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != investment.InvestmentId)
-            {
-                return BadRequest();
-            }
-
-            _investmentRepo.Update(investment);
+            var investmentMapped = _mapper.Map<Investment>(investment);
+            _context.Entry(investmentMapped).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
 
             return Ok(investment);
         }
