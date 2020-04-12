@@ -19,8 +19,7 @@ namespace Coronado.Web.Tests
             var json = System.IO.File.ReadAllText("../../../moo.json");
             retriever.Setup(r => r.RetrieveDataFor(symbol, It.IsAny<double>()))
                 .Returns(System.IO.File.ReadAllText("../../../moo.json"));
-            var repo = new Mock<IInvestmentRepository>();
-            var parser = new InvestmentPriceParser(repo.Object, retriever.Object);
+            var parser = new InvestmentPriceParser(retriever.Object);
             var investment = new Investment {
                 InvestmentId = Guid.NewGuid(),
                 Name = "MOO",

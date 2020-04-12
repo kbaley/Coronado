@@ -32,12 +32,10 @@ namespace Coronado.Web.Controllers.Api
     }
     public class InvestmentPriceParser
     {
-        private readonly IInvestmentRepository investmentRepo;
         private readonly IInvestmentRetriever investmentRetriever;
 
-        public InvestmentPriceParser(IInvestmentRepository investmentRepository, IInvestmentRetriever investmentRetriever)
+        public InvestmentPriceParser(IInvestmentRetriever investmentRetriever)
         {
-            this.investmentRepo = investmentRepository;
             this.investmentRetriever = investmentRetriever;
         }
 
@@ -71,7 +69,6 @@ namespace Coronado.Web.Controllers.Api
                 Date = date
             });
             investment.HistoricalPrices = prices;
-            investmentRepo.Update(investment);
         }
     }
 }
