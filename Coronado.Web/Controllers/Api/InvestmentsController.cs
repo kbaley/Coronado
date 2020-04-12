@@ -20,18 +20,15 @@ namespace Coronado.Web.Controllers.Api
     public class InvestmentsController : ControllerBase
     {
         private readonly ITransactionRepository _transactionRepo;
-        private readonly IInvestmentPriceRepository _investmentPriceRepo;
         private readonly ILogger<InvestmentsController> _logger;
         private readonly IMapper _mapper;
         private readonly CoronadoDbContext _context;
 
         public InvestmentsController(CoronadoDbContext context,
-            ICurrencyRepository currencyRepo, ITransactionRepository transactionRepo,
-            ICategoryRepository categoryRepo, IInvestmentPriceRepository investmentPriceRepo,
+            ITransactionRepository transactionRepo,
             ILogger<InvestmentsController> logger, IMapper mapper)
         {
             _transactionRepo = transactionRepo;
-            _investmentPriceRepo = investmentPriceRepo;
             _logger = logger;
             _mapper = mapper;
             _context = context;
@@ -53,13 +50,14 @@ namespace Coronado.Web.Controllers.Api
         public async Task<IActionResult> UpdatePriceHistory(InvestmentForListDto investment) {
             foreach(var priceDto in investment.HistoricalPrices) {
                 if (priceDto.Status == "Deleted") {
-                    _investmentPriceRepo.Delete(priceDto.InvestmentPriceId);
+                    await _context.InvestmentPrices.RemoveById(priceDto.InvestmentPriceId).ConfigureAwait(false);
                 } else if (priceDto.Status == "Added") {
                     priceDto.InvestmentPriceId = Guid.NewGuid();
                     var price = _mapper.Map<InvestmentPrice>(priceDto);
-                    _investmentPriceRepo.Insert(price);
+                    await _context.InvestmentPrices.AddAsync(price).ConfigureAwait(false);
                 }
             }
+            await _context.SaveChangesAsync().ConfigureAwait(false);
             var investmentFromDb = await _context.Investments.FindAsync(investment.InvestmentId);
             return CreatedAtAction("PostInvestment", new { id = investment.InvestmentId }, investmentFromDb);
         }

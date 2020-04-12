@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Coronado.Web.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Coronado.Web.Data
 {
@@ -23,6 +24,7 @@ namespace Coronado.Web.Data
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Configuration> Configurations { get; set; }
+        public DbSet<InvestmentPrice> InvestmentPrices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -87,6 +89,12 @@ GROUP BY account_id"
                 await context.SaveChangesAsync();
             }
             return category;
+        }
+
+        public async static Task RemoveById<T>(this DbSet<T> items, Guid id) where T: class
+        {
+            var item = await items.FindAsync(id).ConfigureAwait(false);
+            items.Remove(item);
         }
     }
 }
