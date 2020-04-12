@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Coronado.Web.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(CoronadoDbContext))]
     [Migration("20181226003929_InvestmentLastRetrievedDate")]
     partial class InvestmentLastRetrievedDate
     {

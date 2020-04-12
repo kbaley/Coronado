@@ -59,7 +59,7 @@ namespace Coronado.Web
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IConfigurationRepository, ConfigurationRepository>();
             services.AddTransient<IInvestmentPriceRepository, InvestmentPriceRepository>();
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<CoronadoDbContext>(options =>
                 options.UseNpgsql(connectionString));
 
             services.AddAutoMapper(typeof(Startup));

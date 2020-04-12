@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Coronado.Web.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(CoronadoDbContext))]
     [Migration("20200412044721_InvestmentTransactions")]
     partial class InvestmentTransactions
     {

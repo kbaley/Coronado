@@ -15,9 +15,9 @@ namespace Coronado.Web.Controllers.Api
     [ApiController]
     public class ResetDataController : ControllerBase
     {
-        private ApplicationDbContext _context;
+        private CoronadoDbContext _context;
 
-        public ResetDataController(ApplicationDbContext context) {
+        public ResetDataController(CoronadoDbContext context) {
             _context = context;
         }
 

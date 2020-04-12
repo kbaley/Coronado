@@ -24,7 +24,7 @@ namespace Coronado.Web.Controllers.Api
         private readonly ILogger<AuthController> _logger;
         const int NUM_ITERATIONS = 10_000;
 
-        public AuthController(ILogger<AuthController> logger, ApplicationDbContext context, IUserRepository userRepo, IConfiguration config)
+        public AuthController(ILogger<AuthController> logger, CoronadoDbContext context, IUserRepository userRepo, IConfiguration config)
         {
             _logger = logger;
             _userRepo = userRepo;

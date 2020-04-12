@@ -18,7 +18,7 @@ namespace Coronado.Web.Controllers.Api
     {
         private readonly ICategoryRepository _categoryRepo;
 
-        public CategoriesController(ApplicationDbContext context, ICategoryRepository categoryRepo)
+        public CategoriesController(CoronadoDbContext context, ICategoryRepository categoryRepo)
         {
             _categoryRepo = categoryRepo;
         }

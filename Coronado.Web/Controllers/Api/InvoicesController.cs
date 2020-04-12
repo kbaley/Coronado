@@ -20,7 +20,7 @@ namespace Coronado.Web.Controllers.Api
         private readonly IInvoiceRepository _invoiceRepo;
         private readonly IConfigurationRepository _configRepo;
 
-        public InvoicesController(ApplicationDbContext context, IInvoiceRepository invoiceRepo, IConfigurationRepository configRepo)
+        public InvoicesController(CoronadoDbContext context, IInvoiceRepository invoiceRepo, IConfigurationRepository configRepo)
         {
             _invoiceRepo = invoiceRepo;
             _configRepo = configRepo;

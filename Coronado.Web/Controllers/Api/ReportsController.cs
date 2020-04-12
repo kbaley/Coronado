@@ -20,7 +20,7 @@ namespace Coronado.Web.Controllers.Api
         private readonly ITransactionRepository _transactionRepo;
         private readonly ICategoryRepository _categoryRepo;
 
-        public ReportsController(ApplicationDbContext context, ITransactionRepository transactionRepo, ICategoryRepository categoryRepo)
+        public ReportsController(CoronadoDbContext context, ITransactionRepository transactionRepo, ICategoryRepository categoryRepo)
         {
             _transactionRepo = transactionRepo;
             _categoryRepo = categoryRepo;

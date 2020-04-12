@@ -20,7 +20,7 @@ namespace Coronado.Web.Controllers.Api
         private readonly IInvoiceRepository _invoiceRepo;
         private readonly IVendorRepository _vendorRepo;
 
-        public TransactionsController(ApplicationDbContext context, ITransactionRepository transactionRepo,
+        public TransactionsController(CoronadoDbContext context, ITransactionRepository transactionRepo,
             IAccountRepository accountRepo, ICategoryRepository categoryRepo, IInvoiceRepository invoiceRepo,
             IVendorRepository vendorRepo)
         {

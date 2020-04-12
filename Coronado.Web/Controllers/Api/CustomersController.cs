@@ -18,7 +18,7 @@ namespace Coronado.Web.Controllers.Api
     {
         private readonly ICustomerRepository _customerRepo;
 
-        public CustomersController(ApplicationDbContext context, ICustomerRepository customerRepo)
+        public CustomersController(CoronadoDbContext context, ICustomerRepository customerRepo)
         {
             _customerRepo = customerRepo;
         }

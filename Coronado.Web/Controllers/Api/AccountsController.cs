@@ -21,7 +21,7 @@ namespace Coronado.Web.Controllers.Api
         private readonly ILogger<AccountsController> _logger;
         private readonly QifParser _qifParser;
 
-        public AccountsController(ApplicationDbContext context, IAccountRepository accountRepo,
+        public AccountsController(CoronadoDbContext context, IAccountRepository accountRepo,
             ITransactionRepository transactionRepo, ICategoryRepository categoryRepo, ILogger<AccountsController> logger)
         {
             _accountRepo = accountRepo;

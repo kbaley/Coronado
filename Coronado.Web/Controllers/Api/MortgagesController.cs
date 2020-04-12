@@ -20,7 +20,7 @@ namespace Coronado.Web.Controllers.Api
         private readonly IAccountRepository _accountRepo;
         private readonly ICategoryRepository _categoryRepo;
 
-        public MortgagesController(ApplicationDbContext context, ITransactionRepository transactionRepo,
+        public MortgagesController(CoronadoDbContext context, ITransactionRepository transactionRepo,
             IAccountRepository accountRepo, ICategoryRepository categoryRepo)
         {
             _transactionRepo = transactionRepo;

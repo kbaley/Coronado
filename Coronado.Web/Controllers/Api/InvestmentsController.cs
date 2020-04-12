@@ -19,26 +19,18 @@ namespace Coronado.Web.Controllers.Api
     [ApiController]
     public class InvestmentsController : ControllerBase
     {
-        private readonly IInvestmentRepository _investmentRepo;
-        private readonly ICurrencyRepository _currencyRepo;
-        private readonly IAccountRepository _accountRepo;
         private readonly ITransactionRepository _transactionRepo;
-        private readonly ICategoryRepository _categoryRepo;
         private readonly IInvestmentPriceRepository _investmentPriceRepo;
         private readonly ILogger<InvestmentsController> _logger;
         private readonly IMapper _mapper;
-        private readonly ApplicationDbContext _context;
+        private readonly CoronadoDbContext _context;
 
-        public InvestmentsController(ApplicationDbContext context, IInvestmentRepository investmentRepo,
-            ICurrencyRepository currencyRepo, IAccountRepository accountRepo, ITransactionRepository transactionRepo,
+        public InvestmentsController(CoronadoDbContext context,
+            ICurrencyRepository currencyRepo, ITransactionRepository transactionRepo,
             ICategoryRepository categoryRepo, IInvestmentPriceRepository investmentPriceRepo,
             ILogger<InvestmentsController> logger, IMapper mapper)
         {
-            _investmentRepo = investmentRepo;
-            _currencyRepo = currencyRepo;
-            _accountRepo = accountRepo;
             _transactionRepo = transactionRepo;
-            _categoryRepo = categoryRepo;
             _investmentPriceRepo = investmentPriceRepo;
             _logger = logger;
             _mapper = mapper;
@@ -58,7 +50,7 @@ namespace Coronado.Web.Controllers.Api
 
         [HttpPost]
         [Route("[action]")]
-        public IActionResult UpdatePriceHistory(InvestmentForListDto investment) {
+        public async Task<IActionResult> UpdatePriceHistory(InvestmentForListDto investment) {
             foreach(var priceDto in investment.HistoricalPrices) {
                 if (priceDto.Status == "Deleted") {
                     _investmentPriceRepo.Delete(priceDto.InvestmentPriceId);
@@ -68,16 +60,16 @@ namespace Coronado.Web.Controllers.Api
                     _investmentPriceRepo.Insert(price);
                 }
             }
-            var investmentFromDb = _investmentRepo.GetAll().Single(i => i.InvestmentId == investment.InvestmentId);
+            var investmentFromDb = await _context.Investments.FindAsync(investment.InvestmentId);
             return CreatedAtAction("PostInvestment", new { id = investment.InvestmentId }, investmentFromDb);
         }
 
         [HttpPost]
         [Route("[action]")]
-        public IActionResult MakeCorrectingEntries()
+        public async Task<IActionResult> MakeCorrectingEntries()
         {
             var investments = GetInvestments();
-            var currencyController = new CurrenciesController(_currencyRepo);
+            var currencyController = new CurrenciesController(_context);
             var currency = currencyController.GetExchangeRateFor("CAD").GetAwaiter().GetResult();
             var investmentsTotal = investments
                 .Where(i => i.Currency == "CAD")
@@ -96,7 +88,7 @@ namespace Coronado.Web.Controllers.Api
             var difference = Math.Round(investmentsTotal - bookBalance, 2);
             if (Math.Abs(difference) >= 1)
             {
-                var category = TransactionHelpers.GetOrCreateCategory("Gain/loss on investments", _categoryRepo);
+                var category = await _context.GetOrCreateCategory("Gain/loss on investments").ConfigureAwait(false);
                 var transaction = new TransactionForDisplay
                 {
                     TransactionId = Guid.NewGuid(),
@@ -111,7 +103,7 @@ namespace Coronado.Web.Controllers.Api
                 };
                 transaction.SetDebitAndCredit();
                 _transactionRepo.Insert(transaction);
-                var accountBalances = _accountRepo.GetAccountBalances().Select(a => new { a.AccountId, a.CurrentBalance });
+                var accountBalances = _context.Accounts.GetAccountBalances().Select(a => new { a.AccountId, a.CurrentBalance} ).ToList();
                 var transactions = new[] { transaction };
 
                 return CreatedAtAction("PostTransaction", new { id = transaction.TransactionId }, new { transactions, accountBalances });

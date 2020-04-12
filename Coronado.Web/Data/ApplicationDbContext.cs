@@ -1,11 +1,14 @@
-﻿using Coronado.Web.Domain;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Coronado.Web.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Coronado.Web.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class CoronadoDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public CoronadoDbContext(DbContextOptions<CoronadoDbContext> options)
             : base(options)
         {
         }
@@ -52,6 +55,38 @@ namespace Coronado.Web.Data
                 }
             }
 
+        }
+    }
+
+    public static class DbContextExtensions {
+
+        public static IQueryable<Account> GetAccountBalances(this DbSet<Account> accounts) {
+
+            return accounts.FromSqlRaw<Account>(
+@"SELECT account_id, sum(amount) as current_balance
+FROM Transactions
+GROUP BY account_id"
+            );
+        }
+
+        public async static Task<Currency> FindBySymbol(this DbSet<Currency> currencies, string symbol) {
+            return await currencies.FirstOrDefaultAsync(c => c.Symbol == symbol);
+        }
+
+        public async static Task<Category> GetOrCreateCategory(this CoronadoDbContext context, string newCategoryName) {
+            var category = await context.Categories
+                .SingleOrDefaultAsync(c => c.Name.Equals(newCategoryName, StringComparison.CurrentCultureIgnoreCase))
+                .ConfigureAwait(false);
+            if (category == null) {
+                category = new Category {
+                    CategoryId = Guid.NewGuid(),
+                    Name = newCategoryName,
+                    Type = "Expense"
+                };
+                await context.Categories.AddAsync(category).ConfigureAwait(false);
+                await context.SaveChangesAsync();
+            }
+            return category;
         }
     }
 }
