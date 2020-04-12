@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using AutoMapper;
 
 namespace Coronado.Web
 {
@@ -60,6 +61,8 @@ namespace Coronado.Web
             services.AddTransient<IInvestmentPriceRepository, InvestmentPriceRepository>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(connectionString));
+
+            services.AddAutoMapper(typeof(Startup));
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration => {

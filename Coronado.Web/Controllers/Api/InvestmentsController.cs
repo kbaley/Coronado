@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using Newtonsoft.Json;
+using AutoMapper;
+using Coronado.Web.Controllers.Dtos;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -24,11 +26,12 @@ namespace Coronado.Web.Controllers.Api
         private readonly ICategoryRepository _categoryRepo;
         private readonly IInvestmentPriceRepository _investmentPriceRepo;
         private readonly ILogger<InvestmentsController> _logger;
+        private readonly IMapper _mapper;
 
         public InvestmentsController(ApplicationDbContext context, IInvestmentRepository investmentRepo,
             ICurrencyRepository currencyRepo, IAccountRepository accountRepo, ITransactionRepository transactionRepo,
             ICategoryRepository categoryRepo, IInvestmentPriceRepository investmentPriceRepo,
-            ILogger<InvestmentsController> logger)
+            ILogger<InvestmentsController> logger, IMapper mapper)
         {
             _investmentRepo = investmentRepo;
             _currencyRepo = currencyRepo;
@@ -37,10 +40,11 @@ namespace Coronado.Web.Controllers.Api
             _categoryRepo = categoryRepo;
             _investmentPriceRepo = investmentPriceRepo;
             _logger = logger;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public IEnumerable<Investment> GetInvestments()
+        public IEnumerable<InvestmentForListDto> GetInvestments()
         {
             var investments = _investmentRepo.GetAll();
             foreach (var investment in investments)
@@ -51,22 +55,23 @@ namespace Coronado.Web.Controllers.Api
                 // }
             }
 
-            return investments.OrderBy(i => i.Name);
+            return investments.OrderBy(i => i.Name).Select(i => _mapper.Map<InvestmentForListDto>(i));
         }
 
         [HttpPost]
         [Route("[action]")]
-        public IActionResult UpdatePriceHistory(Investment investment) {
-            foreach(var price in investment.HistoricalPrices) {
-                if (price.Status == "Deleted") {
-                    _investmentPriceRepo.Delete(price.InvestmentPriceId);
-                } else if (price.Status == "Added") {
-                    price.InvestmentPriceId = Guid.NewGuid();
+        public IActionResult UpdatePriceHistory(InvestmentForListDto investment) {
+            foreach(var priceDto in investment.HistoricalPrices) {
+                if (priceDto.Status == "Deleted") {
+                    _investmentPriceRepo.Delete(priceDto.InvestmentPriceId);
+                } else if (priceDto.Status == "Added") {
+                    priceDto.InvestmentPriceId = Guid.NewGuid();
+                    var price = _mapper.Map<InvestmentPrice>(priceDto);
                     _investmentPriceRepo.Insert(price);
                 }
             }
-            investment = _investmentRepo.GetAll().Single(i => i.InvestmentId == investment.InvestmentId);
-            return CreatedAtAction("PostInvestment", new { id = investment.InvestmentId }, investment);
+            var investmentFromDb = _investmentRepo.GetAll().Single(i => i.InvestmentId == investment.InvestmentId);
+            return CreatedAtAction("PostInvestment", new { id = investment.InvestmentId }, investmentFromDb);
         }
 
         [HttpPost]

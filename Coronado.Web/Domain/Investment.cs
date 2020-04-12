@@ -54,8 +54,6 @@ namespace Coronado.Web.Domain
         public Guid InvestmentId { get; set; }
         public DateTime Date { get; set; }
         public decimal Price { get; set; }
-        [NotMapped]
-        public string Status { get; set; }
     }
 
     public static class InvestmentExtensions {
