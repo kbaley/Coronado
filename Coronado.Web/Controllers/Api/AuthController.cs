@@ -19,15 +19,15 @@ namespace Coronado.Web.Controllers.Api
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IUserRepository _userRepo;
         private readonly IConfiguration _config;
         private readonly ILogger<AuthController> _logger;
+        private readonly CoronadoDbContext _context;
         const int NUM_ITERATIONS = 10_000;
 
-        public AuthController(ILogger<AuthController> logger, CoronadoDbContext context, IUserRepository userRepo, IConfiguration config)
+        public AuthController(ILogger<AuthController> logger, CoronadoDbContext context, IConfiguration config)
         {
             _logger = logger;
-            _userRepo = userRepo;
+            _context = context;
             _config = config;
         }
 
@@ -43,7 +43,8 @@ namespace Coronado.Web.Controllers.Api
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var user = _userRepo.GetByEmail(model.Email);
+            var user = _context.Users
+                .SingleOrDefault(u => u.Email == model.Email);
 
             if (user == null) {
                 return BadRequest(new { email = "No user found"});
