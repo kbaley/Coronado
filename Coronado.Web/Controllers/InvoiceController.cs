@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Coronado.Web.Data;
 using Coronado.Web.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -19,18 +19,17 @@ namespace Coronado.Web.Controllers
     {
 
         private readonly IConfiguration _config;
+        private readonly CoronadoDbContext _context;
         private readonly IInvoiceRepository _invoiceRepo;
         private readonly ILogger _logger;
-        private readonly IConfigurationRepository _configRepo;
 
-        public InvoiceController(IConfiguration config,
-          IInvoiceRepository invoiceRepo, ILogger<InvoiceController> logger,
-          IConfigurationRepository configRepo)
+        public InvoiceController(IConfiguration config, CoronadoDbContext context,
+          IInvoiceRepository invoiceRepo, ILogger<InvoiceController> logger)
         {
             _config = config;
+            _context = context;
             _invoiceRepo = invoiceRepo;
             _logger = logger;
-            _configRepo = configRepo;
         }
 
         public IActionResult GeneratePDF(Guid invoiceId)
@@ -53,12 +52,12 @@ namespace Coronado.Web.Controllers
 
         private string GetInvoiceHtml(InvoiceForPosting invoice)
         {
-            var template = _configRepo.GetInvoiceTemplate();
-            if (string.IsNullOrWhiteSpace(template)) {
+            var template = _context.Configurations.SingleOrDefault(c => c.Name == "InvoiceTemplate");
+            if (template == null || string.IsNullOrWhiteSpace(template.Value)) {
                 throw new Exception("No invoice template found");
             }
-            if (invoice == null) return template;
-            var value = template
+            if (invoice == null) return template.Value;
+            var value = template.Value
               .Replace("{{InvoiceNumber}}", invoice.InvoiceNumber)
               .Replace("{{Balance}}", invoice.Balance.ToString("C"))
               .Replace("{{CustomerName}}", invoice.CustomerName)

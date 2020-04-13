@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Coronado.Web.Data;
 using Coronado.Web.Domain;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Coronado.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.IO;
@@ -17,13 +15,13 @@ namespace Coronado.Web.Controllers.Api
     [ApiController]
     public class InvoicesController : ControllerBase
     {
+        private readonly CoronadoDbContext _context;
         private readonly IInvoiceRepository _invoiceRepo;
-        private readonly IConfigurationRepository _configRepo;
 
-        public InvoicesController(CoronadoDbContext context, IInvoiceRepository invoiceRepo, IConfigurationRepository configRepo)
+        public InvoicesController(CoronadoDbContext context, IInvoiceRepository invoiceRepo)
         {
+            _context = context;
             _invoiceRepo = invoiceRepo;
-            _configRepo = configRepo;
         }
 
         [HttpGet]
@@ -110,7 +108,18 @@ namespace Coronado.Web.Controllers.Api
                 using (var reader = new StreamReader(file.OpenReadStream()))
                 {
                     var template = reader.ReadToEnd();
-                    _configRepo.UpdateInvoiceTemplate(template);
+                    var config = _context.Configurations.SingleOrDefault(c => c.Name == "InvoiceTemplate");
+                    if (config == null) {
+                        config = new Configuration {
+                            ConfigurationId = Guid.NewGuid(),
+                            Name = "InvoiceTemplate",
+                            Value = template
+                        };
+                        _context.Configurations.Add(config);
+                    } else {
+                        config.Value = template;
+                    }
+                    _context.SaveChanges();
                 }
             }
             return Ok(new { Status = "Uploaded successfully" } );
