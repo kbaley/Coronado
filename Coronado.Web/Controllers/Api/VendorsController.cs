@@ -6,25 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Coronado.Web.Controllers.Api
 {
-        [Authorize]
-        [Route("api/[controller]")]
-        [ApiController]
-        public class VendorsController : ControllerBase
+    [Authorize]
+    [Route("api/[controller]")]
+    [ApiController]
+    public class VendorsController : ControllerBase
+    {
+        public VendorsController(CoronadoDbContext context)
         {
-                public VendorsController(CoronadoDbContext context)
-                {
-                }
-
-                [HttpGet]
-                public IEnumerable<Vendor> GetVendors()
-                {
-                        return null;
-                        // return _context.Vendors;
-                }
         }
 
-        public class THETHING
+        [HttpGet]
+        public IEnumerable<Vendor> GetVendors()
         {
-
+            return null;
+            // return _context.Vendors;
         }
+    }
+
+    public class THETHING
+    {
+
+    }
 }
