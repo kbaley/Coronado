@@ -17,13 +17,13 @@ namespace Coronado.Web.Controllers.Api
     [ApiController]
     public class ReportsController : ControllerBase
     {
+        private readonly CoronadoDbContext _context;
         private readonly ITransactionRepository _transactionRepo;
-        private readonly ICategoryRepository _categoryRepo;
 
-        public ReportsController(CoronadoDbContext context, ITransactionRepository transactionRepo, ICategoryRepository categoryRepo)
+        public ReportsController(CoronadoDbContext context, ITransactionRepository transactionRepo)
         {
+            _context = context;
             _transactionRepo = transactionRepo;
-            _categoryRepo = categoryRepo;
         }
 
         [HttpGet]
@@ -45,7 +45,7 @@ namespace Coronado.Web.Controllers.Api
         {
             var report = new Dictionary<Guid, dynamic>();
             var numMonths = 8;
-            var categories = _categoryRepo.GetAll().Where(c => c.Type == "Expense").ToList();
+            var categories = _context.Categories.Where(c => c.Type == "Expense").ToList();
             var end = DateTime.Today.LastDayOfMonth();
             var start = end.AddMonths(0 - numMonths + 1).FirstDayOfMonth();
             var expenses = _transactionRepo.GetExpensesByCategory(start, end).ToList();

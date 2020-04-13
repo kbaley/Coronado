@@ -10,14 +10,12 @@ namespace Coronado.Web.Controllers.Api
 {
     public class QifParser
     {
-        private readonly ICategoryRepository _categoryRepo;
-        private readonly ITransactionRepository _transactionRepo;
+        private readonly CoronadoDbContext _context;
         private readonly IAccountRepository _accountRepo;
 
-        public QifParser(ICategoryRepository categoryRepo, ITransactionRepository transactionRepo, IAccountRepository accountRepo)
+        public QifParser(CoronadoDbContext context, IAccountRepository accountRepo)
         {
-            _categoryRepo = categoryRepo;
-            _transactionRepo = transactionRepo;
+            _context = context;
             _accountRepo = accountRepo;
         }
 
@@ -135,7 +133,7 @@ namespace Coronado.Web.Controllers.Api
                               .Replace("Everyday Expenses:", "")
                               .Replace("Rainy Day Funds:", "")
                               .Replace("Monthly Bills:", "");
-                            trx.CategoryId = TransactionHelpers.GetOrCreateCategory(category, _categoryRepo).CategoryId;
+                            trx.CategoryId = _context.GetOrCreateCategory(category).GetAwaiter().GetResult().CategoryId;
                             break;
                         case 'M':
                             trx.Description = line.Substring(1);

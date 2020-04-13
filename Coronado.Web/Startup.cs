@@ -49,7 +49,6 @@ namespace Coronado.Web
             var connectionString = Configuration["ConnectionStrings:DefaultConnection"];
 #endif
             services.AddTransient<ITransactionRepository, TransactionRepository>();
-            services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IAccountRepository, AccountRepository>();
             services.AddTransient<IInvoiceRepository, InvoiceRepository>();
             services.AddTransient<IUserRepository, UserRepository>();

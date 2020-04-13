@@ -15,20 +15,20 @@ namespace Coronado.Web.Controllers.Api
     [ApiController]
     public class AccountsController : ControllerBase
     {
+        private readonly CoronadoDbContext _context;
         private readonly IAccountRepository _accountRepo;
         private readonly ITransactionRepository _transactionRepo;
-        private readonly ICategoryRepository _categoryRepo;
         private readonly ILogger<AccountsController> _logger;
         private readonly QifParser _qifParser;
 
         public AccountsController(CoronadoDbContext context, IAccountRepository accountRepo,
-            ITransactionRepository transactionRepo, ICategoryRepository categoryRepo, ILogger<AccountsController> logger)
+            ITransactionRepository transactionRepo, ILogger<AccountsController> logger)
         {
+            _context = context;
             _accountRepo = accountRepo;
             _transactionRepo = transactionRepo;
-            _categoryRepo = categoryRepo;
             _logger = logger;
-            _qifParser = new QifParser(categoryRepo, transactionRepo, accountRepo);
+            _qifParser = new QifParser(context, accountRepo);
         }
 
         // GET: api/Accounts
@@ -103,7 +103,7 @@ namespace Coronado.Web.Controllers.Api
             };
             _accountRepo.Insert(newAccount);
 
-            var category = TransactionHelpers.GetOrCreateCategory("Starting Balance", _categoryRepo);
+            var category = _context.GetOrCreateCategory("Starting Balance").GetAwaiter().GetResult();
             var transaction = new TransactionForDisplay
             {
                 TransactionId = Guid.NewGuid(),
@@ -134,11 +134,6 @@ namespace Coronado.Web.Controllers.Api
         [HttpDelete("{id}")]
         public IActionResult DeleteAccount([FromRoute] Guid id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var account = _accountRepo.Delete(id);
             return Ok(account);
         }

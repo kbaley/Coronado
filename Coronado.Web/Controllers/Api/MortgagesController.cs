@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Coronado.Web.Data;
-using Coronado.Web.Domain;
 using Coronado.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -16,20 +14,20 @@ namespace Coronado.Web.Controllers.Api
     [ApiController]
     public class MortgagesController : ControllerBase
     {
+        private readonly CoronadoDbContext _context;
         private readonly ITransactionRepository _transactionRepo;
         private readonly IAccountRepository _accountRepo;
-        private readonly ICategoryRepository _categoryRepo;
-
+        
         public MortgagesController(CoronadoDbContext context, ITransactionRepository transactionRepo,
-            IAccountRepository accountRepo, ICategoryRepository categoryRepo)
+            IAccountRepository accountRepo)
         {
+            _context = context;
             _transactionRepo = transactionRepo;
             _accountRepo = accountRepo;
-            _categoryRepo = categoryRepo;
         }
 
         [HttpPost]
-        public IActionResult PostMortgagePayment([FromBody] TransactionForDisplay transaction)
+        public async Task<IActionResult> PostMortgagePayment([FromBody] TransactionForDisplay transaction)
         {
             var principal = transaction.Debit.Value;
             var interest = transaction.Credit.Value;
@@ -56,7 +54,7 @@ namespace Coronado.Web.Controllers.Api
 
             transaction.RelatedTransactionId = relatedTransactionId;
 
-            var mortgageInterestCategoryId = TransactionHelpers.GetOrCreateCategory("Mortgage Interest", _categoryRepo).CategoryId;
+            var mortgageInterestCategoryId = (await _context.GetOrCreateCategory("Mortgage Interest").ConfigureAwait(false)).CategoryId;
             var interestTransaction = new TransactionForDisplay {
                 TransactionDate = transaction.TransactionDate,
                 TransactionId = Guid.NewGuid(),
@@ -69,7 +67,7 @@ namespace Coronado.Web.Controllers.Api
                 CategoryDisplay = "Mortgage Interest"
             };
 
-            var bankFeeTransactions = TransactionHelpers.GetBankFeeTransactions(transaction, _categoryRepo, _accountRepo);
+            var bankFeeTransactions = TransactionHelpers.GetBankFeeTransactions(transaction, _accountRepo, _context);
             transactions.Add(transaction);
             transactions.Add(relatedTransaction);
             transactions.Add(interestTransaction);
@@ -80,7 +78,7 @@ namespace Coronado.Web.Controllers.Api
                 _transactionRepo.Insert(trx);
             }
 
-            var accountBalances = _accountRepo.GetAccountBalances();
+            var accountBalances = _context.Accounts.GetAccountBalances();
             return CreatedAtAction("PostTransfer", 
                 new { id = transaction.TransactionId }, new {transactions, accountBalances});
         }

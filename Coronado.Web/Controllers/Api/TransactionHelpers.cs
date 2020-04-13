@@ -8,25 +8,12 @@ using Coronado.Web.Models;
 namespace Coronado.Web.Controllers {
     class TransactionHelpers {
 
-        public static Category GetOrCreateCategory(string name, ICategoryRepository categoryRepo) {
-
-            var category = categoryRepo.GetAll().SingleOrDefault(c => c.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
-            if (category == null) {
-                category = new Category {
-                    CategoryId = Guid.NewGuid(),
-                    Name = name,
-                    Type = "Expense"
-                };
-                categoryRepo.Insert(category);
-            }
-            return category;
-        }
         public static IEnumerable<TransactionForDisplay> GetBankFeeTransactions(TransactionForDisplay newTransaction, 
-            ICategoryRepository categoryRepo, IAccountRepository accountRepo) {
+            IAccountRepository accountRepo, CoronadoDbContext context) {
             var transactions = new List<TransactionForDisplay>();
             var description = newTransaction.Description;
 
-            var category = GetOrCreateCategory("Bank Fees", categoryRepo);
+            var category = context.GetOrCreateCategory("Bank Fees").GetAwaiter().GetResult();
             var account = accountRepo.Get(newTransaction.AccountId.Value);
             if (description.Contains("bf:", StringComparison.CurrentCultureIgnoreCase)) {
                 newTransaction.Description = description.Substring(0, description.IndexOf("bf:", StringComparison.CurrentCultureIgnoreCase));

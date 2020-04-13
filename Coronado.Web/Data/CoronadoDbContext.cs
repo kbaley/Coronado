@@ -76,9 +76,9 @@ GROUP BY account_id"
         }
 
         public async static Task<Category> GetOrCreateCategory(this CoronadoDbContext context, string newCategoryName) {
-            var category = await context.Categories
-                .SingleOrDefaultAsync(c => c.Name.Equals(newCategoryName, StringComparison.CurrentCultureIgnoreCase))
-                .ConfigureAwait(false);
+            var categories = await context.Categories.ToListAsync().ConfigureAwait(false);
+            var category = categories
+                .SingleOrDefault(c => c.Name.Equals(newCategoryName, StringComparison.CurrentCultureIgnoreCase));
             if (category == null) {
                 category = new Category {
                     CategoryId = Guid.NewGuid(),

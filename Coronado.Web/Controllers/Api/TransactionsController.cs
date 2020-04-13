@@ -17,16 +17,14 @@ namespace Coronado.Web.Controllers.Api
         private readonly CoronadoDbContext _context;
         private readonly ITransactionRepository _transactionRepo;
         private readonly IAccountRepository _accountRepo;
-        private readonly ICategoryRepository _categoryRepo;
         private readonly IInvoiceRepository _invoiceRepo;
 
         public TransactionsController(CoronadoDbContext context, ITransactionRepository transactionRepo,
-            IAccountRepository accountRepo, ICategoryRepository categoryRepo, IInvoiceRepository invoiceRepo)
+            IAccountRepository accountRepo, IInvoiceRepository invoiceRepo)
         {
             _context = context;
             _transactionRepo = transactionRepo;
             _accountRepo = accountRepo;
-            _categoryRepo = categoryRepo;
             _invoiceRepo = invoiceRepo;
         }
 
@@ -98,21 +96,10 @@ namespace Coronado.Web.Controllers.Api
             transaction.EnteredDate = DateTime.Now;
             if (transaction.CategoryId.IsNullOrEmpty() && !string.IsNullOrWhiteSpace(transaction.CategoryName))
             {
-                var category = _categoryRepo.GetAll().SingleOrDefault(c => (c.Name.Equals(transaction.CategoryName, StringComparison.CurrentCultureIgnoreCase)));
-                if (category == null)
-                {
-                    category = new Category
-                    {
-                        CategoryId = Guid.NewGuid(),
-                        Name = transaction.CategoryName,
-                        Type = "Expenses"
-                    };
-                    _categoryRepo.Insert(category);
-                }
-                transaction.CategoryId = category.CategoryId;
+                transaction.CategoryId = _context.GetOrCreateCategory(transaction.CategoryName).GetAwaiter().GetResult().CategoryId;
             }
 
-            var bankFeeTransactions = TransactionHelpers.GetBankFeeTransactions(transaction, _categoryRepo, _accountRepo);
+            var bankFeeTransactions = TransactionHelpers.GetBankFeeTransactions(transaction, _accountRepo, _context);
             transactions.Add(transaction);
             transactions.AddRange(bankFeeTransactions);
             foreach (var trx in transactions)

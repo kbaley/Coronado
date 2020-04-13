@@ -16,16 +16,16 @@ namespace Coronado.Web.Controllers.Api
     [ApiController]
     public class TransfersController : ControllerBase
     {
+        private readonly CoronadoDbContext _context;
         private readonly ITransactionRepository _transactionRepo;
         private readonly IAccountRepository _accountRepo;
-        private readonly ICategoryRepository _categoryRepo;
 
         public TransfersController(CoronadoDbContext context, ITransactionRepository transactionRepo,
-            IAccountRepository accountRepo, ICategoryRepository categoryRepo)
+            IAccountRepository accountRepo)
         {
+            _context = context;
             _transactionRepo = transactionRepo;
             _accountRepo = accountRepo;
-            _categoryRepo = categoryRepo;
         }
 
         [HttpPost]
@@ -53,7 +53,7 @@ namespace Coronado.Web.Controllers.Api
 
             transaction.RelatedTransactionId = relatedTransactionId;
 
-            var bankFeeTransactions = TransactionHelpers.GetBankFeeTransactions(transaction, _categoryRepo, _accountRepo);
+            var bankFeeTransactions = TransactionHelpers.GetBankFeeTransactions(transaction, _accountRepo, _context);
             transactions.Add(transaction);
             transactions.Add(relatedTransaction);
             transactions.AddRange(bankFeeTransactions);
