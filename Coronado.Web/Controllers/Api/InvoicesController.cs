@@ -4,9 +4,12 @@ using System.Linq;
 using Coronado.Web.Data;
 using Coronado.Web.Domain;
 using Microsoft.AspNetCore.Mvc;
-using Coronado.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.IO;
+using AutoMapper;
+using Coronado.Web.Controllers.Dtos;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -17,18 +20,23 @@ namespace Coronado.Web.Controllers.Api
     {
         private readonly CoronadoDbContext _context;
         private readonly IInvoiceRepository _invoiceRepo;
+        private readonly IMapper _mapper;
 
-        public InvoicesController(CoronadoDbContext context, IInvoiceRepository invoiceRepo)
+        public InvoicesController(CoronadoDbContext context, IInvoiceRepository invoiceRepo, IMapper mapper)
         {
             _context = context;
             _invoiceRepo = invoiceRepo;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public IEnumerable<InvoiceForPosting> GetInvoices([FromQuery] UrlQuery query )
+        public IEnumerable<InvoiceForPosting> GetInvoices()
         {
-            var invoices = _invoiceRepo.GetAll();
-            return invoices;
+            var invoices = _context.Invoices
+                .Include(i => i.Customer)
+                .Include(i => i.LineItems)
+                .ToArray();
+            return _mapper.Map<Invoice[], IEnumerable<InvoiceForPosting>>(invoices);
         }
 
         [HttpGet("{id}")]
@@ -37,53 +45,75 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put([FromRoute] Guid id, [FromBody] InvoiceForPosting invoice)
+        public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] InvoiceForPosting invoice)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
+            var payments = _context.Transactions
+                .Where(t => t.InvoiceId == invoice.InvoiceId)
+                .Sum(t => t.Amount);
+            var newBalance = invoice.LineItems.Sum(i => i.Quantity * i.UnitAmount) - payments;
+            invoice.Balance = newBalance;
+            var invoiceMapped = _mapper.Map<Invoice>(invoice);
+
+            var existingInvoice = await _context.Invoices
+                .Where(i => i.InvoiceId == id)
+                .Include(i => i.LineItems)
+                .SingleOrDefaultAsync().ConfigureAwait(false);
+            
+            if (existingInvoice != null) {
+                _context.Entry(existingInvoice).CurrentValues.SetValues(invoice);
+
+                foreach (var existingLineItem in existingInvoice.LineItems.ToList())
+                {
+                    if (invoice.LineItems.All(li => li.InvoiceLineItemId != existingLineItem.InvoiceLineItemId)) {
+                        _context.InvoiceLineItems.Remove(existingLineItem);
+                    }    
+                }
+
+                var newLineItems = new List<InvoiceLineItem>();
+                foreach (var lineItemDto in invoice.LineItems)
+                {
+                    var existingLineItem = existingInvoice.LineItems
+                        .SingleOrDefault(li => li.InvoiceLineItemId == lineItemDto.InvoiceLineItemId);
+                    if (existingLineItem != null) {
+                        _context.Entry(existingLineItem).CurrentValues.SetValues(lineItemDto);
+                    } else {
+                        var mappedLineItem = _mapper.Map<InvoiceLineItem>(lineItemDto);
+                        newLineItems.Add(mappedLineItem);
+                    }
+                }
+                foreach (var lineItem in newLineItems)
+                {
+                    existingInvoice.LineItems.Add(lineItem);
+                }
             }
 
-            if (id != invoice.InvoiceId)
-            {
-                return BadRequest();
-            }
-
-            _invoiceRepo.Update(invoice);
-            invoice = _invoiceRepo.Get(invoice.InvoiceId);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
 
             return Ok(invoice);
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] InvoiceForPosting invoice)
+        public async Task<IActionResult> Post([FromBody] InvoiceForPosting invoice)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
+            
             if (invoice.InvoiceId == null || invoice.InvoiceId == Guid.Empty) invoice.InvoiceId = Guid.NewGuid();
-            _invoiceRepo.Insert(invoice);
-            invoice = _invoiceRepo.Get(invoice.InvoiceId);
+            invoice.Balance = invoice.LineItems.Sum(li => li.Quantity * li.UnitAmount);
+            var invoiceMapped = _mapper.Map<Invoice>(invoice);
+            _context.Invoices.Add(invoiceMapped);
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction("PostInvoice", new { id = invoice.InvoiceId }, invoice);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete([FromRoute] Guid id)
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var invoice = _invoiceRepo.Delete(id);
-            if (invoice == null)
-            {
+            var invoice = await _context.Invoices.FindAsync(id);
+            if (invoice == null) {
                 return NotFound();
             }
-
+            _context.Invoices.Remove(invoice);
+            await _context.SaveChangesAsync();
             return Ok(invoice);
         }
         

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using Coronado.Web.Models;
+using Coronado.Web.Controllers.Dtos;
 using Microsoft.Extensions.Configuration;
 using Dapper;
 
@@ -110,13 +110,13 @@ namespace Coronado.Web.Data
                           }, trx);
                         foreach (var item in invoice.LineItems)
                         {
-                            item.LineItemId = item.LineItemId.GetId();
+                            item.InvoiceLineItemId = item.InvoiceLineItemId.GetId();
                             conn.Execute(
                               @"INSERT INTO invoice_line_items (invoice_line_item_id, invoice_id, quantity, unit_amount, description) VALUES
                (@InvoiceLineItemId, @InvoiceId, @Quantity, @UnitAmount, @Description)",
                                 new
                                 {
-                                    InvoiceLineItemId = item.LineItemId,
+                                    InvoiceLineItemId = item.InvoiceLineItemId,
                                     InvoiceId = invoice.InvoiceId,
                                     Quantity = item.Quantity,
                                     UnitAmount = item.UnitAmount,
@@ -185,26 +185,26 @@ namespace Coronado.Web.Data
                         var oldBalance = existingLineItems.Sum(li => (li.Quantity * li.UnitAmount));
                         var newBalance = invoice.LineItems.Sum(li => li.Quantity * li.UnitAmount);
                         invoice.Balance = newBalance;
-                        var newLineItems = invoice.LineItems.Where(li => existingLineItems.All(li2 => li2.LineItemId != li.LineItemId));
-                        var removedLineItems = existingLineItems.Where(li => invoice.LineItems.All(li2 => li2.LineItemId != li.LineItemId));
-                        var updatedLineItems = invoice.LineItems.Where(li => existingLineItems.Any(li2 => li2.LineItemId == li.LineItemId));
+                        var newLineItems = invoice.LineItems.Where(li => existingLineItems.All(li2 => li2.InvoiceLineItemId != li.InvoiceLineItemId));
+                        var removedLineItems = existingLineItems.Where(li => invoice.LineItems.All(li2 => li2.InvoiceLineItemId != li.InvoiceLineItemId));
+                        var updatedLineItems = invoice.LineItems.Where(li => existingLineItems.Any(li2 => li2.InvoiceLineItemId == li.InvoiceLineItemId));
                         foreach (var item in newLineItems)
                         {
-                            conn.Execute(@"INSERT INTO invoice_line_items (invoice_line_item_id, invoice_id, quantity, unit_amount, description)
+                            _ = conn.Execute(@"INSERT INTO invoice_line_items (invoice_line_item_id, invoice_id, quantity, unit_amount, description)
               VALUES (@InvoiceLineItemId, @InvoiceId, @Quantity, @UnitAmount, @Description)",
                             new
                             {
                                 InvoiceLineItemId = Guid.NewGuid(),
-                                InvoiceId = invoice.InvoiceId,
-                                Quantity = item.Quantity,
-                                UnitAmount = item.UnitAmount,
-                                Description = item.Description
+                                invoice.InvoiceId,
+                                item.Quantity,
+                                item.UnitAmount,
+                                item.Description
                             }, trx);
                         }
                         foreach (var item in removedLineItems)
                         {
                             conn.Execute(@"DELETE FROM invoice_line_items WHERE invoice_line_item_id=@InvoiceLineItemId",
-                            new { InvoiceLineItemId = item.LineItemId }, trx);
+                            new { item.InvoiceLineItemId }, trx);
                         }
                         foreach (var item in updatedLineItems)
                         {
@@ -264,5 +264,6 @@ namespace Coronado.Web.Data
                 }
             }
         }
+
     }
 }

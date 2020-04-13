@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 
-namespace Coronado.Web.Models
+namespace Coronado.Web.Controllers.Dtos
 {
     public class InvoiceForPosting
     {

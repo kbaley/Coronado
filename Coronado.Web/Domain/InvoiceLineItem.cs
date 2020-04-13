@@ -12,6 +12,7 @@ namespace Coronado.Web.Domain
 
     [Required]
     public Invoice Invoice { get; set; }
+    public Guid InvoiceId { get; set; }
 
     public decimal Quantity { get; set; }
     public decimal UnitAmount { get; set; }

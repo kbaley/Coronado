@@ -19,8 +19,9 @@ namespace Coronado.Web.Domain
 
     [Required]
     public Customer Customer { get; set; }
+    public Guid CustomerId { get; set; }
 
-    public IEnumerable<InvoiceLineItem> LineItems { get; set; }
+    public virtual ICollection<InvoiceLineItem> LineItems { get; set; }
     public decimal Balance { get; set; }
 
     public bool IsPaidInFull { get; set; }
