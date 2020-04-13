@@ -53,7 +53,6 @@ namespace Coronado.Web
             services.AddTransient<IAccountRepository, AccountRepository>();
             services.AddTransient<ICustomerRepository, CustomerRepository>();
             services.AddTransient<IInvoiceRepository, InvoiceRepository>();
-            services.AddTransient<IVendorRepository, VendorRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IConfigurationRepository, ConfigurationRepository>();
             services.AddDbContext<CoronadoDbContext>(options =>

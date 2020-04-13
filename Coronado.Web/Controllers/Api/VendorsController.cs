@@ -11,15 +11,17 @@ namespace Coronado.Web.Controllers.Api
     [ApiController]
     public class VendorsController : ControllerBase
     {
+        private readonly CoronadoDbContext _context;
+
         public VendorsController(CoronadoDbContext context)
         {
+            _context = context;
         }
 
         [HttpGet]
         public IEnumerable<Vendor> GetVendors()
         {
-            return null;
-            // return _context.Vendors;
+            return _context.Vendors;
         }
     }
 
