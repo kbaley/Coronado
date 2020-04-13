@@ -1,31 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Coronado.Web.Data;
 using Coronado.Web.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Coronado.Web.Controllers.Api
 {
-    [Authorize]
-    [Route("api/[controller]")]
-    [ApiController]
-    public class VendorsController : ControllerBase
-    {
-        private readonly IVendorRepository _vendorRepo;
-
-        public VendorsController(IVendorRepository vendorRepo)
+        [Authorize]
+        [Route("api/[controller]")]
+        [ApiController]
+        public class VendorsController : ControllerBase
         {
-            _vendorRepo = vendorRepo;
+                public VendorsController(CoronadoDbContext context)
+                {
+                }
+
+                [HttpGet]
+                public IEnumerable<Vendor> GetVendors()
+                {
+                        return null;
+                        // return _context.Vendors;
+                }
         }
 
-        [HttpGet]
-        public IEnumerable<Vendor> GetVendors( )
+        public class THETHING
         {
-            return _vendorRepo.GetAll();
+
         }
-    }
 }
