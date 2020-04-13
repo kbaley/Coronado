@@ -16,65 +16,47 @@ namespace Coronado.Web.Controllers.Api
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private readonly ICustomerRepository _customerRepo;
+        private readonly CoronadoDbContext _context;
 
-        public CustomersController(CoronadoDbContext context, ICustomerRepository customerRepo)
+        public CustomersController(CoronadoDbContext context)
         {
-            _customerRepo = customerRepo;
+            _context = context;
         }
 
         [HttpGet]
-        public IEnumerable<Customer> GetCustomer([FromQuery] UrlQuery query )
+        public IEnumerable<Customer> GetCustomer()
         {
-            return _customerRepo.GetAll();
+            return _context.Customers;
         }
 
         [HttpPut("{id}")]
-        public IActionResult PutCustomer([FromRoute] Guid id, [FromBody] Customer customer)
+        public async Task<IActionResult> PutCustomer([FromRoute] Guid id, [FromBody] Customer customer)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != customer.CustomerId)
-            {
-                return BadRequest();
-            }
-
-            _customerRepo.Update(customer);
+            _context.Entry(customer).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
 
             return Ok(customer);
         }
 
         [HttpPost]
-        public IActionResult PostCustomer([FromBody] Customer customer)
+        public async Task<IActionResult> PostCustomer([FromBody] Customer customer)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             if (customer.CustomerId == null || customer.CustomerId == Guid.Empty) customer.CustomerId = Guid.NewGuid();
-            _customerRepo.Insert(customer);
+            _context.Customers.Add(customer);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
 
             return CreatedAtAction("PostCustomer", new { id = customer.CustomerId }, customer);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteCustomer([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteCustomer([FromRoute] Guid id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var customer = _customerRepo.Delete(id);
-            if (customer == null)
-            {
+            var customer = await _context.Customers.FindAsync(id).ConfigureAwait(false);
+            if (customer == null) {
                 return NotFound();
             }
-
+            _context.Customers.Remove(customer);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
             return Ok(customer);
         }
     }

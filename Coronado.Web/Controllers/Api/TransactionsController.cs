@@ -14,21 +14,20 @@ namespace Coronado.Web.Controllers.Api
     [ApiController]
     public class TransactionsController : ControllerBase
     {
+        private readonly CoronadoDbContext _context;
         private readonly ITransactionRepository _transactionRepo;
         private readonly IAccountRepository _accountRepo;
         private readonly ICategoryRepository _categoryRepo;
         private readonly IInvoiceRepository _invoiceRepo;
-        private readonly IVendorRepository _vendorRepo;
 
         public TransactionsController(CoronadoDbContext context, ITransactionRepository transactionRepo,
-            IAccountRepository accountRepo, ICategoryRepository categoryRepo, IInvoiceRepository invoiceRepo,
-            IVendorRepository vendorRepo)
+            IAccountRepository accountRepo, ICategoryRepository categoryRepo, IInvoiceRepository invoiceRepo)
         {
+            _context = context;
             _transactionRepo = transactionRepo;
             _accountRepo = accountRepo;
             _categoryRepo = categoryRepo;
             _invoiceRepo = invoiceRepo;
-            _vendorRepo = vendorRepo;
         }
 
         [HttpGet]
@@ -127,7 +126,7 @@ namespace Coronado.Web.Controllers.Api
             {
                 invoice = _invoiceRepo.Get(transaction.InvoiceId.Value);
             }
-            var vendor = _vendorRepo.GetAll().SingleOrDefault(v => v.Name == transaction.Vendor);
+            var vendor = _context.Vendors.SingleOrDefault(v => v.Name == transaction.Vendor);
 
             return CreatedAtAction("PostTransaction", new { id = transaction.TransactionId }, new { transactions, accountBalances, invoice, vendor });
         }

@@ -21,17 +21,15 @@ namespace Coronado.Web.Controllers
         private readonly IConfiguration _config;
         private readonly IInvoiceRepository _invoiceRepo;
         private readonly ILogger _logger;
-        private readonly ICustomerRepository _customerRepo;
         private readonly IConfigurationRepository _configRepo;
 
         public InvoiceController(IConfiguration config,
-          IInvoiceRepository invoiceRepo, ILogger<InvoiceController> logger, ICustomerRepository customerRepo,
+          IInvoiceRepository invoiceRepo, ILogger<InvoiceController> logger,
           IConfigurationRepository configRepo)
         {
             _config = config;
             _invoiceRepo = invoiceRepo;
             _logger = logger;
-            _customerRepo = customerRepo;
             _configRepo = configRepo;
         }
 
