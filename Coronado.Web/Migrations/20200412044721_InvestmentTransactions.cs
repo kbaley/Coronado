@@ -15,11 +15,6 @@ namespace Coronado.Web.Migrations
                 name: "url",
                 table: "investments");
 
-            migrationBuilder.RenameIndex(
-                name: "ix_investment_price_investment_id",
-                table: "investment_prices",
-                newName: "ix_investment_prices_investment_id");
-
             migrationBuilder.AddColumn<decimal>(
                 name: "average_price",
                 table: "investments",
@@ -56,10 +51,6 @@ namespace Coronado.Web.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "fk_investment_prices_investments_investment_id",
-                table: "investment_prices");
-
             migrationBuilder.DropTable(
                 name: "investment_transactions");
 
@@ -79,14 +70,6 @@ namespace Coronado.Web.Migrations
                 table: "investments",
                 type: "text",
                 nullable: true);
-
-            migrationBuilder.AddForeignKey(
-                name: "fk_investment_price_investments_investment_id",
-                table: "investment_price",
-                column: "investment_id",
-                principalTable: "investments",
-                principalColumn: "investment_id",
-                onDelete: ReferentialAction.Cascade);
         }
     }
 }
