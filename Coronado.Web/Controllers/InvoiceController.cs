@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using Coronado.Web.Domain;
 
 namespace Coronado.Web.Controllers
 {
@@ -20,28 +21,28 @@ namespace Coronado.Web.Controllers
 
         private readonly IConfiguration _config;
         private readonly CoronadoDbContext _context;
-        private readonly IInvoiceRepository _invoiceRepo;
         private readonly ILogger _logger;
 
         public InvoiceController(IConfiguration config, CoronadoDbContext context,
-          IInvoiceRepository invoiceRepo, ILogger<InvoiceController> logger)
+          ILogger<InvoiceController> logger)
         {
             _config = config;
             _context = context;
-            _invoiceRepo = invoiceRepo;
             _logger = logger;
         }
 
-        public IActionResult GeneratePDF(Guid invoiceId)
+        public async Task<IActionResult> GeneratePDF(Guid invoiceId)
         {
             var apiKey = _config.GetValue<string>("Html2PdfRocketKey");
 
             using (var client = new WebClient())
             {
-                var invoice = _invoiceRepo.Get(invoiceId);
-                var options = new NameValueCollection();
-                options.Add("apikey", apiKey);
-                options.Add("value", GetInvoiceHtml(invoice));
+                var invoice = await _context.FindInvoiceEager(invoiceId).ConfigureAwait(false);
+                var options = new NameValueCollection
+                {
+                    { "apikey", apiKey },
+                    { "value", GetInvoiceHtml(invoice) }
+                };
 
                 var ms = new MemoryStream(client.UploadValues("http://api.html2pdfrocket.com/pdf", options));
 
@@ -50,18 +51,20 @@ namespace Coronado.Web.Controllers
             }
         }
 
-        private string GetInvoiceHtml(InvoiceForPosting invoice)
+        private string GetInvoiceHtml(Invoice invoice)
         {
             var template = _context.Configurations.SingleOrDefault(c => c.Name == "InvoiceTemplate");
-            if (template == null || string.IsNullOrWhiteSpace(template.Value)) {
+            if (template == null || string.IsNullOrWhiteSpace(template.Value))
+            {
                 throw new Exception("No invoice template found");
             }
             if (invoice == null) return template.Value;
             var value = template.Value
               .Replace("{{InvoiceNumber}}", invoice.InvoiceNumber)
               .Replace("{{Balance}}", invoice.Balance.ToString("C"))
-              .Replace("{{CustomerName}}", invoice.CustomerName)
-              .Replace("{{CustomerAddress}}", StringExtensions.GetAddress(invoice.CustomerStreetAddress, invoice.CustomerCity, invoice.CustomerRegion).Replace("\n", "<br/>"))
+              .Replace("{{CustomerName}}", invoice.Customer.Name)
+              .Replace("{{CustomerAddress}}", StringExtensions
+                .GetAddress(invoice.Customer.StreetAddress, invoice.Customer.City, invoice.Customer.Region).Replace("\n", "<br/>"))
               .Replace("{{InvoiceDate}}", invoice.Date.ToString("MMM dd, yyyy"))
               .Replace("{{DueDate}}", invoice.Date.AddDays(30).ToString("MMM dd, yyyy"));
             var lineItemTemplate = value.Substring(value.IndexOf("{{StartInvoiceLineItem}}"));
@@ -86,9 +89,9 @@ namespace Coronado.Web.Controllers
 
             return value;
         }
-        public IActionResult GenerateHtml(Guid invoiceId)
+        public async Task<IActionResult> GenerateHtml(Guid invoiceId)
         {
-            var invoice = _invoiceRepo.Get(invoiceId);
+            var invoice = await _context.FindInvoiceEager(invoiceId).ConfigureAwait(false);
             var value = GetInvoiceHtml(invoice);
             var ms = new MemoryStream(Encoding.UTF8.GetBytes(value));
             return new FileStreamResult(ms, "text/html");
@@ -97,24 +100,21 @@ namespace Coronado.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> SendEmail(Guid invoiceId)
         {
-            var invoice = _invoiceRepo.Get(invoiceId);
+            var invoice = await _context.FindInvoiceEager(invoiceId).ConfigureAwait(false); 
             await SendInvoice(invoice).ConfigureAwait(false);
+            invoice.LastSentToCustomer = DateTime.Now;
+            await _context.SaveChangesAsync().ConfigureAwait(false);
 
             return Ok(invoice);
         }
 
-        [HttpGet]
-        public IActionResult Moo() {
-            return Ok(new { Text = "moo"});
-        }
-
-        private async Task SendInvoice(InvoiceForPosting invoice)
+        private async Task SendInvoice(Invoice invoice)
         {
 
             var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("kyle@baley.org", "Kyle Baley");
-            var to = new EmailAddress(invoice.CustomerEmail, invoice.CustomerName);
+            var to = new EmailAddress(invoice.Customer.Email, invoice.Customer.Name);
             var subject = $"Invoice {invoice.InvoiceNumber} from Kyle Baley Consulting Ltd.";
             var cc = new EmailAddress("kyle@baley.org", "Kyle Baley");
 
@@ -129,7 +129,6 @@ namespace Coronado.Web.Controllers
             };
             msg.AddTo(to);
             msg.AddCc(cc);
-            var attachment = new Attachment();
             using (var webClient = new WebClient())
             {
                 var pdfApiKey = _config.GetValue<string>("Html2PdfRocketKey");
@@ -142,8 +141,7 @@ namespace Coronado.Web.Controllers
                 msg.AddAttachment($"Invoice {invoice.InvoiceNumber}.pdf", file);
 
             }
-            var response = await client.SendEmailAsync(msg);
-            await Task.Run(() => _invoiceRepo.RecordEmail(invoice, null)).ConfigureAwait(false);
+            await client.SendEmailAsync(msg).ConfigureAwait(false);
         }
     }
 }

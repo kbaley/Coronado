@@ -55,5 +55,14 @@ GROUP BY account_id"
                 .Where(t => t.InvoiceId == invoiceId)
                 .Sum(t => t.Amount);
         }
+
+        public async static Task<Invoice> FindInvoiceEager(this CoronadoDbContext context, Guid invoiceId) {
+            var invoice = await context.Invoices.FindAsync(invoiceId).ConfigureAwait(false);
+            await context.Entry(invoice).Collection(i => i.LineItems).LoadAsync().ConfigureAwait(false);
+            await context.Entry(invoice).Reference(i => i.Customer).LoadAsync().ConfigureAwait(false);
+
+            return invoice;
+
+        }
     }
 }

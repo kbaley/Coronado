@@ -6,6 +6,7 @@ using Coronado.Web.Models;
 using Coronado.Web.Controllers.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -17,15 +18,15 @@ namespace Coronado.Web.Controllers.Api
         private readonly CoronadoDbContext _context;
         private readonly ITransactionRepository _transactionRepo;
         private readonly IAccountRepository _accountRepo;
-        private readonly IInvoiceRepository _invoiceRepo;
+        private readonly IMapper _mapper;
 
         public TransactionsController(CoronadoDbContext context, ITransactionRepository transactionRepo,
-            IAccountRepository accountRepo, IInvoiceRepository invoiceRepo)
+            IAccountRepository accountRepo, IMapper mapper)
         {
             _context = context;
             _transactionRepo = transactionRepo;
             _accountRepo = accountRepo;
-            _invoiceRepo = invoiceRepo;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -52,13 +53,16 @@ namespace Coronado.Web.Controllers.Api
 
             var transaction = _transactionRepo.Get(id);
             _transactionRepo.Delete(id);
-            InvoiceForPosting invoice = null;
+            InvoiceForPosting invoiceDto = null;
             if (transaction.InvoiceId.HasValue)
             {
-                invoice = _invoiceRepo.Get(transaction.InvoiceId.Value);
+                var invoice = _context.Invoices.Find(transaction.InvoiceId.Value);
+                _context.Entry(invoice).Collection(i => i.LineItems).Load();
+                _context.Entry(invoice).Reference(i => i.Customer).Load();
+                invoiceDto = _mapper.Map<InvoiceForPosting>(invoice);
             }
 
-            return Ok(new { transaction, accountBalances = _accountRepo.GetAccountBalances(), invoice });
+            return Ok(new { transaction, accountBalances = _accountRepo.GetAccountBalances(), invoiceDto });
         }
 
         [HttpPut("{id}")]
@@ -74,13 +78,14 @@ namespace Coronado.Web.Controllers.Api
             var originalAmount = _transactionRepo.Get(transaction.TransactionId).Amount;
             transaction.SetAmount();
             _transactionRepo.Update(transaction);
-            InvoiceForPosting invoice = null;
+            InvoiceForPosting invoiceDto = null;
             if (transaction.InvoiceId.HasValue)
             {
-                invoice = _invoiceRepo.Get(transaction.InvoiceId.Value);
+                var invoice = _context.FindInvoiceEager(transaction.InvoiceId.Value);
+                invoiceDto = _mapper.Map<InvoiceForPosting>(invoice);    
             }
 
-            return Ok(new { transaction, originalAmount, accountBalances = _accountRepo.GetAccountBalances(), invoice });
+            return Ok(new { transaction, originalAmount, accountBalances = _accountRepo.GetAccountBalances(), invoiceDto });
         }
 
         [HttpPost]
@@ -108,14 +113,15 @@ namespace Coronado.Web.Controllers.Api
             }
 
             var accountBalances = _accountRepo.GetAccountBalances().Select(a => new { a.AccountId, a.CurrentBalance });
-            InvoiceForPosting invoice = null;
+            InvoiceForPosting invoiceDto = null;
             if (transaction.InvoiceId.HasValue)
             {
-                invoice = _invoiceRepo.Get(transaction.InvoiceId.Value);
+                var invoice = _context.FindInvoiceEager(transaction.InvoiceId.Value);
+                invoiceDto = _mapper.Map<InvoiceForPosting>(invoice);
             }
             var vendor = _context.Vendors.SingleOrDefault(v => v.Name == transaction.Vendor);
 
-            return CreatedAtAction("PostTransaction", new { id = transaction.TransactionId }, new { transactions, accountBalances, invoice, vendor });
+            return CreatedAtAction("PostTransaction", new { id = transaction.TransactionId }, new { transactions, accountBalances, invoiceDto, vendor });
         }
 
     }

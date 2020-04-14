@@ -19,13 +19,11 @@ namespace Coronado.Web.Controllers.Api
     public class InvoicesController : ControllerBase
     {
         private readonly CoronadoDbContext _context;
-        private readonly IInvoiceRepository _invoiceRepo;
         private readonly IMapper _mapper;
 
-        public InvoicesController(CoronadoDbContext context, IInvoiceRepository invoiceRepo, IMapper mapper)
+        public InvoicesController(CoronadoDbContext context, IMapper mapper)
         {
             _context = context;
-            _invoiceRepo = invoiceRepo;
             _mapper = mapper;
         }
 
@@ -37,11 +35,6 @@ namespace Coronado.Web.Controllers.Api
                 .Include(i => i.LineItems)
                 .ToArray();
             return _mapper.Map<Invoice[], IEnumerable<InvoiceForPosting>>(invoices);
-        }
-
-        [HttpGet("{id}")]
-        public InvoiceForPosting GetInvoice([FromRoute] Guid id) {
-            return _invoiceRepo.Get(id);
         }
 
         [HttpPut("{id}")]
@@ -96,32 +89,39 @@ namespace Coronado.Web.Controllers.Api
                 return NotFound();
             }
             _context.Invoices.Remove(invoice);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
             return Ok(invoice);
         }
         
         [HttpGet]
         [Route("[action]")]
         // [AllowAnonymous]
-        public IActionResult ResolveInvoices() {
+        public async Task<IActionResult> ResolveInvoices() {
             // Used to fix an issue with invoices where making a payment would set the current balance
             // of all invoices to whatever the balance of the update invoice was
-            _invoiceRepo.UpdateBalances();
+            var invoices = _context.Invoices;
+            foreach (var invoice in invoices)
+            {
+                var newBalance = invoice.LineItems
+                    .Sum(li => li.Quantity * li.UnitAmount) - _context.Transactions.GetPaymentsFor(invoice.InvoiceId);
+                invoice.Balance = newBalance;
+            }
+            await _context.SaveChangesAsync().ConfigureAwait(false);
             return Ok();
         }
 
 
         [HttpPost]
         [Route("[action]")]
-        public IActionResult UploadTemplate([FromForm] UploadTemplateViewModel model)
+        public async Task<IActionResult> UploadTemplate([FromForm] UploadTemplateViewModel model)
         {
             var file = model.File;
             if (file.Length > 0) {
 
                 using (var reader = new StreamReader(file.OpenReadStream()))
                 {
-                    var template = reader.ReadToEnd();
-                    var config = _context.Configurations.SingleOrDefault(c => c.Name == "InvoiceTemplate");
+                    var template = await reader.ReadToEndAsync().ConfigureAwait(false);
+                    var config = await _context.Configurations.SingleOrDefaultAsync(c => c.Name == "InvoiceTemplate").ConfigureAwait(false);
                     if (config == null) {
                         config = new Configuration {
                             ConfigurationId = Guid.NewGuid(),
@@ -132,7 +132,7 @@ namespace Coronado.Web.Controllers.Api
                     } else {
                         config.Value = template;
                     }
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
                 }
             }
             return Ok(new { Status = "Uploaded successfully" } );

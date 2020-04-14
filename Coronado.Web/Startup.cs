@@ -50,7 +50,6 @@ namespace Coronado.Web
 #endif
             services.AddTransient<ITransactionRepository, TransactionRepository>();
             services.AddTransient<IAccountRepository, AccountRepository>();
-            services.AddTransient<IInvoiceRepository, InvoiceRepository>();
             services.AddDbContext<CoronadoDbContext>(options =>
                 options.UseNpgsql(connectionString));
 

@@ -35,13 +35,6 @@ export const loadInvoices = () => {
   };
 }
 
-export const loadInvoice = (invoiceId) => {
-  return async (dispatch) => {
-    const invoice = await InvoiceApi.getInvoice(invoiceId);
-    dispatch(loadInvoiceSuccess(invoice));
-  }
-}
-
 export const updateInvoice = (invoice) => {
   return async (dispatch) => {
     const updatedInvoice = await InvoiceApi.updateInvoice(invoice);
@@ -60,7 +53,7 @@ export const emailInvoice = (invoiceId) => {
   return async (dispatch) => {
     const invoice = await InvoiceApi.emailInvoice(invoiceId);
     const notificationOpts = {
-      message: 'Invoice ' + invoice.invoiceNumber + ' sent to ' + invoice.customerEmail,
+      message: 'Invoice ' + invoice.invoiceNumber + ' sent to ' + invoice.customer.email,
       position: 'br'
     };
     dispatch(emailInvoiceSuccess(invoice));

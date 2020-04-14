@@ -17,21 +17,6 @@ class InvoiceApi {
     return response.json();
   }
 
-  static async getInvoice(invoiceId) {
-    const requestOptions = {
-      method: 'GET',
-      headers: authHeader()
-    }
-    const response = await fetch("/api/Invoices" + invoiceId, requestOptions);
-    if (!response.ok) {
-      if (response.status === 401) {
-        logout();
-        return [];
-      }
-    }
-    return response.json();
-  }
-
   static async createInvoice(invoice) {
     const response = await fetch('/api/Invoices', {
       method: 'POST',
