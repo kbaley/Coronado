@@ -12,7 +12,8 @@ namespace Coronado.Web.Controllers.Dtos
                 .ForMember(i => i.LastPrice, opt => opt.MapFrom(src => src.GetLastPrice()))
                 .ReverseMap();  
             CreateMap<InvestmentPrice, InvestmentPriceDto>().ReverseMap();  
-            CreateMap<InvoiceLineItem, InvoiceLineItemsForPosting>().ReverseMap();
+            CreateMap<InvoiceLineItem, InvoiceLineItemsForPosting>()
+                .ReverseMap();
             CreateMap<Invoice, InvoiceForPosting>()
                 .ReverseMap()
                 .ForMember(dest => dest.Customer, opt => opt.Ignore());

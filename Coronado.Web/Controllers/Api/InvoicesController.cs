@@ -47,47 +47,30 @@ namespace Coronado.Web.Controllers.Api
         [HttpPut("{id}")]
         public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] InvoiceForPosting invoice)
         {
-            var payments = _context.Transactions
-                .Where(t => t.InvoiceId == invoice.InvoiceId)
-                .Sum(t => t.Amount);
-            var newBalance = invoice.LineItems.Sum(i => i.Quantity * i.UnitAmount) - payments;
+            var newBalance = invoice.GetLineItemTotal() - _context.Transactions.GetPaymentsFor(id);
             invoice.Balance = newBalance;
             var invoiceMapped = _mapper.Map<Invoice>(invoice);
+            _context.Entry(invoiceMapped).State = EntityState.Modified;
 
-            var existingInvoice = await _context.Invoices
-                .Where(i => i.InvoiceId == id)
-                .Include(i => i.LineItems)
-                .SingleOrDefaultAsync().ConfigureAwait(false);
-            
-            if (existingInvoice != null) {
-                _context.Entry(existingInvoice).CurrentValues.SetValues(invoice);
-
-                foreach (var existingLineItem in existingInvoice.LineItems.ToList())
-                {
-                    if (invoice.LineItems.All(li => li.InvoiceLineItemId != existingLineItem.InvoiceLineItemId)) {
-                        _context.InvoiceLineItems.Remove(existingLineItem);
-                    }    
-                }
-
-                var newLineItems = new List<InvoiceLineItem>();
-                foreach (var lineItemDto in invoice.LineItems)
-                {
-                    var existingLineItem = existingInvoice.LineItems
-                        .SingleOrDefault(li => li.InvoiceLineItemId == lineItemDto.InvoiceLineItemId);
-                    if (existingLineItem != null) {
-                        _context.Entry(existingLineItem).CurrentValues.SetValues(lineItemDto);
-                    } else {
-                        var mappedLineItem = _mapper.Map<InvoiceLineItem>(lineItemDto);
-                        newLineItems.Add(mappedLineItem);
-                    }
-                }
-                foreach (var lineItem in newLineItems)
-                {
-                    existingInvoice.LineItems.Add(lineItem);
+            foreach (var item in invoice.LineItems)
+            {
+                var mappedLineItem = _mapper.Map<InvoiceLineItem>(item);
+                switch (item.Status.ToLower()) {
+                    case "deleted":
+                        await _context.InvoiceLineItems.RemoveById(item.InvoiceLineItemId).ConfigureAwait(false);
+                        break;
+                    case "added":
+                        _context.InvoiceLineItems.Add(mappedLineItem);
+                        break;
+                    case "updated":
+                        _context.Entry(mappedLineItem).State = EntityState.Modified;
+                        break;
                 }
             }
 
             await _context.SaveChangesAsync().ConfigureAwait(false);
+            await _context.Entry(invoiceMapped).Reference(i => i.Customer).LoadAsync().ConfigureAwait(false);
+            invoice = _mapper.Map<InvoiceForPosting>(invoiceMapped);
 
             return Ok(invoice);
         }
@@ -97,7 +80,7 @@ namespace Coronado.Web.Controllers.Api
         {
             
             if (invoice.InvoiceId == null || invoice.InvoiceId == Guid.Empty) invoice.InvoiceId = Guid.NewGuid();
-            invoice.Balance = invoice.LineItems.Sum(li => li.Quantity * li.UnitAmount);
+            invoice.Balance = invoice.GetLineItemTotal();
             var invoiceMapped = _mapper.Map<Invoice>(invoice);
             _context.Invoices.Add(invoiceMapped);
             await _context.SaveChangesAsync();

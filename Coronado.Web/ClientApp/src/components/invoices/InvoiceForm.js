@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import { Button, Modal, Form, FormControl, FormGroup, ControlLabel, Col } from 'react-bootstrap';
 import InvoiceLineItems from "./InvoiceLineItems";
-import { filter } from "lodash";
+import { filter, findIndex } from "lodash";
+import {v4 as uuidv4 } from 'uuid';
 
 class InvoiceForm extends Component {
   displayName = InvoiceForm.name;
   blankLineItem = {
     description: '',
     quantity: '',
-    unitAmount: ''
+    unitAmount: '',
+    status: 'Added',
+    invoiceLineItemId: 0
   }
   initialState = {
       newInvoice: true,
@@ -50,14 +53,21 @@ class InvoiceForm extends Component {
     this.setState({ invoice: { ...this.state.invoice, [name]: e.target.value } });
   }
 
-  handleLineItemChanged(index, field, value) {
+  handleLineItemChanged(lineItemId, field, value) {
+    const index = findIndex(this.state.invoice.lineItems, li => li.invoiceLineItemId === lineItemId);
+    
     const lineItems = this.state.invoice.lineItems;
     lineItems[index][field] = value;
+    if (lineItems[index].status !== "Added")
+      lineItems[index].status = "Updated";
     this.setState({...this.state, invoice: {...this.state.invoice, lineItems}});
   }
 
   handleLineItemAdded() {
     const lineItems = this.state.invoice.lineItems;
+    
+    this.blankLineItem.invoiceLineItemId = uuidv4();
+    this.blankLineItem.invoiceId = this.state.invoice.invoiceId;
     this.setState(
       {...this.state, 
         invoice: {
@@ -66,15 +76,19 @@ class InvoiceForm extends Component {
         }
       }
     );
+    this.blankLineItem.invoiceLineItemId = '';
+    this.blankLineItem.invoiceId = '';
   }
 
-  handleLineItemDeleted(index) {
+  handleLineItemDeleted(lineItemId) {
+    const index = findIndex(this.state.invoice.lineItems, li => li.invoiceLineItemId === lineItemId);
     const lineItems = this.state.invoice.lineItems;
+    lineItems[index].status = "Deleted";
     this.setState(
       {...this.state, 
         invoice: {
           ...this.state.invoice, 
-          lineItems: filter(lineItems, (_, itemIndex) => { return itemIndex !== index; })
+          lineItems
         }
       }
     );
@@ -126,7 +140,7 @@ class InvoiceForm extends Component {
               <Col componentClass={ControlLabel} sm={3}>Line items</Col>
               <Col sm={9}>
                 <InvoiceLineItems 
-                  lineItems={this.state.invoice.lineItems} 
+                  lineItems={filter(this.state.invoice.lineItems, li => li.status !== "Deleted")} 
                   onLineItemChanged={this.handleLineItemChanged} 
                   onNewItemAdded={this.handleLineItemAdded}
                   onLineItemDeleted={this.handleLineItemDeleted}

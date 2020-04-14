@@ -17,31 +17,31 @@ const InvoiceLineItems = ({ lineItems, onLineItemChanged, onNewItemAdded, onLine
         </tr>
       </thead>
       <tbody>
-        {lineItems && lineItems.map((li, index) =>
-          <tr key={index}>
+        {lineItems && lineItems.map( li =>
+          <tr key={li.invoiceLineItemId}>
             <td>
               <input type="text"
                 name="description"
                 value={li.description}
-                onChange={(e) => onLineItemChanged(index, e.target.name, e.target.value)} />
+                onChange={(e) => onLineItemChanged(li.invoiceLineItemId, e.target.name, e.target.value)} />
             </td>
             <td>
               <input type="text"
                 name="quantity"
                 value={li.quantity}
-                onChange={(e) => onLineItemChanged(index, e.target.name, e.target.value)} />
+                onChange={(e) => onLineItemChanged(li.invoiceLineItemId, e.target.name, e.target.value)} />
             </td>
             <td>
               <input type="text"
                 name="unitAmount"
                 value={li.unitAmount}
-                onChange={(e) => onLineItemChanged(index, e.target.name, e.target.value)} />
+                onChange={(e) => onLineItemChanged(li.invoiceLineItemId, e.target.name, e.target.value)} />
             </td>
             <td><CurrencyFormat value={li.quantity && li.unitAmount ? (li.quantity * li.unitAmount ) : 0} /></td>
             <td>
               <NewIcon onClick={onNewItemAdded} />
               {lineItems.length > 1 &&
-              <DeleteIcon onDelete={() => onLineItemDeleted(index)} />
+              <DeleteIcon onDelete={() => onLineItemDeleted(li.invoiceLineItemId)} />
               }
             </td>
           </tr>

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
 
 namespace Coronado.Web.Controllers.Dtos
@@ -19,6 +20,10 @@ namespace Coronado.Web.Controllers.Dtos
         public DateTime? LastSentToCustomer { get; set; }
 
         public decimal Balance { get; set; }
+
+        public decimal GetLineItemTotal() {
+            return LineItems.Where(li => li.Status != "Deleted").Sum(li => li.Quantity * li.UnitAmount);
+        }
     }
 
     public class UploadTemplateViewModel

@@ -7,10 +7,6 @@ function computeBalance(investments) {
   return investments;
 }
 
-function format(number) {
-  return Number(number).toLocaleString('en', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-}
-
 export const investmentReducer = (state = initialState.investments, action, deletedInvestments) => {
   switch (action.type) {
     case actions.LOAD_INVESTMENTS_SUCCESS:
