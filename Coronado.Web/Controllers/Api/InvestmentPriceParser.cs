@@ -1,42 +1,60 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
+using System.Threading.Tasks;
 using Coronado.Web.Data;
 using Coronado.Web.Domain;
 using Newtonsoft.Json;
 
 namespace Coronado.Web.Controllers.Api
 {
-    public interface IInvestmentRetriever
+    public class InvestmentPriceParser : IInvestmentPriceParser
     {
-        string RetrieveDataFor(string symbol, double start);
-    }
-
-    public class InvestmentRetriever : IInvestmentRetriever
-    {
-        public string RetrieveDataFor(string symbol, double start)
-        {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2");
-                var frequency = "1d";
-                var end = (DateTime.UtcNow - DateTime.UnixEpoch).TotalSeconds;
-                var request = $"/get-historical-data?frequency={frequency}&filter=history&period1={start}&period2={end}&symbol={symbol}";
-                // var response = await client.GetAsync(request);
-                // response.EnsureSuccessStatusCode();
-                // var stringResult = await response.Content.ReadAsStringAsync();
-                var stringResult = System.IO.File.ReadAllText(@"moo.json");
-                return stringResult;
-            }
-        }
-    }
-    public class InvestmentPriceParser
-    {
-        private readonly IInvestmentRetriever investmentRetriever;
+        private readonly IInvestmentRetriever _investmentRetriever;
 
         public InvestmentPriceParser(IInvestmentRetriever investmentRetriever)
         {
-            this.investmentRetriever = investmentRetriever;
+            _investmentRetriever = investmentRetriever;
+        }
+
+        async Task IInvestmentPriceParser.UpdatePricesFor(CoronadoDbContext context)
+        {
+            var investments = context.Investments.ToList();
+            var symbols = investments.Select(i => i.Symbol);
+            var quoteData = await _investmentRetriever.RetrieveTodaysPricesFor(symbols).ConfigureAwait(false);
+            dynamic rawRate = JsonConvert.DeserializeObject(quoteData);
+            var results = rawRate.quoteResponse.result;
+            foreach (var item in results)
+            {
+                var symbol = item.symbol.Value;
+                var investment = investments.SingleOrDefault(i => i.Symbol == symbol);
+                if (investment != null)
+                {
+                    InvestmentPrice newPrice = null;
+                    if (investment.HistoricalPrices != null)
+                    {
+                        var lastPrice = investment.HistoricalPrices.OrderByDescending(p => p.Date).FirstOrDefault();
+                        if (lastPrice == null || lastPrice.Date < DateTime.Today)
+                        {
+                            newPrice = new InvestmentPrice();
+                        }
+                    }
+                    else
+                    {
+                        newPrice = new InvestmentPrice();
+                    }
+
+                    if (newPrice != null)
+                    {
+                        newPrice.InvestmentPriceId = Guid.NewGuid();
+                        newPrice.InvestmentId = investment.InvestmentId;
+                        newPrice.Date = DateTime.Now;
+                        newPrice.Price = (decimal)item.regularMarketPrice.Value;
+                        context.InvestmentPrices.Add(newPrice);
+                    }
+                }
+            }
+            await context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         public void UpdatePriceHistoryFor(Investment investment)
@@ -54,7 +72,7 @@ namespace Coronado.Web.Controllers.Api
                 }
                 start = (startDate - DateTime.UnixEpoch).TotalSeconds;
             }
-            var stringResult = investmentRetriever.RetrieveDataFor(investment.Symbol, start);
+            var stringResult = _investmentRetriever.RetrieveDataFor(investment.Symbol, start);
             dynamic rawResult = JsonConvert.DeserializeObject(stringResult);
             var firstPrice = rawResult.prices[0];
             var firstDate = firstPrice.date;
@@ -70,5 +88,6 @@ namespace Coronado.Web.Controllers.Api
             });
             investment.HistoricalPrices = prices;
         }
+
     }
 }

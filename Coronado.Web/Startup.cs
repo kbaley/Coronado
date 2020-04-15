@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AutoMapper;
+using Coronado.Web.Controllers.Api;
 
 namespace Coronado.Web
 {
@@ -50,6 +51,8 @@ namespace Coronado.Web
 #endif
             services.AddTransient<ITransactionRepository, TransactionRepository>();
             services.AddTransient<IAccountRepository, AccountRepository>();
+            services.AddTransient<IInvestmentPriceParser, InvestmentPriceParser>();
+            services.AddTransient<IInvestmentRetriever, InvestmentRetriever>();
             services.AddDbContext<CoronadoDbContext>(options =>
                 options.UseNpgsql(connectionString));
 

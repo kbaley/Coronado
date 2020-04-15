@@ -21,15 +21,16 @@ namespace Coronado.Web.Controllers.Api
     {
         private readonly ITransactionRepository _transactionRepo;
         private readonly ILogger<InvestmentsController> _logger;
+        private readonly IInvestmentPriceParser _priceParser;
         private readonly IMapper _mapper;
         private readonly CoronadoDbContext _context;
 
-        public InvestmentsController(CoronadoDbContext context,
-            ITransactionRepository transactionRepo,
-            ILogger<InvestmentsController> logger, IMapper mapper)
+        public InvestmentsController(CoronadoDbContext context,ITransactionRepository transactionRepo,
+            ILogger<InvestmentsController> logger, IInvestmentPriceParser priceParser, IMapper mapper)
         {
             _transactionRepo = transactionRepo;
             _logger = logger;
+            _priceParser = priceParser;
             _mapper = mapper;
             _context = context;
         }
@@ -47,6 +48,12 @@ namespace Coronado.Web.Controllers.Api
 
         [HttpPost]
         [Route("[action]")]
+        public async Task UpdateCurrentPrices() {
+            await _priceParser.UpdatePricesFor(_context).ConfigureAwait(false);
+        }
+
+        [HttpPost]
+        [Route("[action]")]
         public async Task<IActionResult> UpdatePriceHistory(InvestmentForListDto investment) {
             foreach(var priceDto in investment.HistoricalPrices) {
                 if (priceDto.Status == "Deleted") {
@@ -59,7 +66,9 @@ namespace Coronado.Web.Controllers.Api
             }
             await _context.SaveChangesAsync().ConfigureAwait(false);
             var investmentFromDb = await _context.Investments.FindAsync(investment.InvestmentId);
-            return CreatedAtAction("PostInvestment", new { id = investment.InvestmentId }, investmentFromDb);
+            await _context.Entry(investmentFromDb).Collection(i => i.HistoricalPrices).LoadAsync().ConfigureAwait(false);
+            investment = _mapper.Map<InvestmentForListDto>(investmentFromDb);
+            return CreatedAtAction("PostInvestment", new { id = investment.InvestmentId }, investment);
         }
 
         [HttpPost]
