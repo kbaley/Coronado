@@ -14,6 +14,7 @@ class InvestmentsPage extends Component {
   constructor(props) {
     super(props);
     this.makeCorrectingEntries = this.makeCorrectingEntries.bind(this);
+    this.getLatestPrices = this.getLatestPrices.bind(this);
     this.state = {
     }
   }
@@ -22,11 +23,16 @@ class InvestmentsPage extends Component {
     this.props.actions.makeCorrectingEntries();
   }
 
+  getLatestPrices() {
+    this.props.actions.getLatestPrices();
+  }
+
   render() {
     return (
       <div>
         <div style={{float: "right", width: "150px", textAlign: "right"}}>
-          <Icon className="make-correcting-entry" glyph="transfer" onClick={this.makeCorrectingEntries} />
+          <Icon className="make-correcting-entry" glyph="transfer" onClick={this.makeCorrectingEntries} title="Sync with Investments accont" />
+          <Icon className="make-correcting-entry" glyph="arrow-down" onClick={this.getLatestPrices} title="Get latest prices from Yahoo" />
         </div>
         <h1>
           Investment <NewInvestment />

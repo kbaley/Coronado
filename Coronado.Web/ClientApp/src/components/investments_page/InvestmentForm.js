@@ -1,32 +1,32 @@
 import React, { Component } from 'react';
-import { Button,Modal,Form,FormControl,FormGroup,ControlLabel,Col } from 'react-bootstrap';
+import { Button, Modal, Form, FormControl, FormGroup, ControlLabel, Col, Checkbox } from 'react-bootstrap';
 import TextField from "../common/TextField";
 
 class InvestmentForm extends Component {
   displayName = InvestmentForm.name;
   constructor(props) {
     super(props);
-    this.saveInvestment = this.saveInvestment.bind(this);   
+    this.saveInvestment = this.saveInvestment.bind(this);
     this.handleChangeField = this.handleChangeField.bind(this);
     this.state = {
       newInvestment: true,
-      investment: {name: '', symbol: '', shares: 0, price: 0, url: '', currency: 'USD'}
+      investment: { name: '', symbol: '', shares: 0, price: 0, currency: 'USD', dontRetrievePrices: false }
     };
   }
 
   componentDidUpdate() {
-    if (this.props.investment && this.props.investment.investmentId 
-        && this.props.investment.investmentId !== this.state.investment.investmentId ) {
+    if (this.props.investment && this.props.investment.investmentId
+      && this.props.investment.investmentId !== this.state.investment.investmentId) {
       this.setState({
         newInvestment: false,
         investment: {
-          investmentId: this.props.investment.investmentId, 
+          investmentId: this.props.investment.investmentId,
           name: this.props.investment.name,
           symbol: this.props.investment.symbol || '',
           shares: this.props.investment.shares || 0,
           price: this.props.investment.price || 0.00,
           currency: this.props.investment.currency || 'USD',
-          url: this.props.investment.url || ''
+          dontRetrievePrices: this.props.investment.dontRetrievePrices
         }
       });
     }
@@ -34,13 +34,16 @@ class InvestmentForm extends Component {
 
   saveInvestment() {
     this.props.onSave(this.state.investment);
-    this.setState({investment: {name: '', symbol: '', shares: 0, price: 0, url: ''} });
+    this.setState({ investment: { name: '', symbol: '', shares: 0, price: 0, dontRetrievePrices: false } });
     this.props.onClose();
   }
 
   handleChangeField(e) {
     var name = e.target.name;
-    this.setState( { investment: {...this.state.investment, [name]: e.target.value } } );
+    var value = e.target.value;
+    if (e.target.type === "checkbox")
+      value = e.target.checked;
+    this.setState({ investment: { ...this.state.investment, [name]: value } });
   }
 
   render() {
@@ -54,12 +57,12 @@ class InvestmentForm extends Component {
             <FormGroup>
               <Col componentClass={ControlLabel} sm={3}>Name</Col>
               <Col sm={9}>
-            <FormControl
-              type="text" autoFocus
-              name="name" ref="inputName"
-              value={this.state.investment.name}
-              onChange={this.handleChangeField}
-            />
+                <FormControl
+                  type="text" autoFocus
+                  name="name" ref="inputName"
+                  value={this.state.investment.name}
+                  onChange={this.handleChangeField}
+                />
               </Col>
             </FormGroup>
             <TextField width={4}
@@ -86,12 +89,15 @@ class InvestmentForm extends Component {
               value={this.state.investment.currency}
               onChange={this.handleChangeField}
             />
-            <TextField width={4}
-              label="Url"
-              name="url"
-              value={this.state.investment.url}
-              onChange={this.handleChangeField}
-            />
+            <FormGroup>
+              <Col componentClass={ControlLabel} sm={3}>Don't retrieve prices?</Col>
+              <Col sm={3}>
+                <Checkbox 
+                  name="dontRetrievePrices" 
+                  checked={this.state.investment.dontRetrievePrices}
+                  onChange={this.handleChangeField} />
+              </Col>
+            </FormGroup>
           </Form>
         </Modal.Body>
         <Modal.Footer>

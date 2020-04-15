@@ -20,6 +20,7 @@ namespace Coronado.Web.Domain
         public decimal LastPrice { get; set; }
         public DateTime LastRetrieved { get; set; }
         public string Currency { get; set; }
+        public bool DontRetrievePrices { get; set; }
         public List<InvestmentPrice> HistoricalPrices { get; set; }
         public List<InvestmentTransaction> Transactions { get; set; }
 

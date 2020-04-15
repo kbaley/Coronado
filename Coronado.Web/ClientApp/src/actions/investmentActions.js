@@ -32,6 +32,15 @@ export const loadInvestments = () => {
   };
 }
 
+export const getLatestPrices = () => {
+  return async (dispatch) => {
+    const updatedInvestments = await InvestmentApi.getLatestPrices();
+    if (updatedInvestments && updatedInvestments !== "") {
+      dispatch(loadInvestmentsSuccess(updatedInvestments));
+    }
+  }
+}
+
 export const makeCorrectingEntries = () => {
   return async (dispatch) => {
     const correctingEntryModel = await InvestmentApi.makeCorrectingEntries();

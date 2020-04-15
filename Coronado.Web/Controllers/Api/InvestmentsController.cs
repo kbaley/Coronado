@@ -48,8 +48,21 @@ namespace Coronado.Web.Controllers.Api
 
         [HttpPost]
         [Route("[action]")]
-        public async Task UpdateCurrentPrices() {
-            await _priceParser.UpdatePricesFor(_context).ConfigureAwait(false);
+        public async Task<IEnumerable<InvestmentForListDto>> UpdateCurrentPrices() {
+            var mustUpdatePrices = _context.Investments
+                .Include(i => i.HistoricalPrices)
+                .ToList().Any(i => {
+                if (i.HistoricalPrices == null) return true;
+                if (i.DontRetrievePrices) return false;
+
+                var lastPrice = i.HistoricalPrices.OrderBy(p => p.Date).LastOrDefault();
+                if (lastPrice == null) return true;
+                return lastPrice.Date < DateTime.Today;
+            });
+            if (mustUpdatePrices) {
+                await _priceParser.UpdatePricesFor(_context).ConfigureAwait(false);
+            }
+            return GetInvestments();
         }
 
         [HttpPost]

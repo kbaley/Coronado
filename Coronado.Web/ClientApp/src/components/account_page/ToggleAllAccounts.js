@@ -20,7 +20,7 @@ class ToggleAllAccounts extends Component {
   render() {
     var text = this.props.showAllAccounts ? "Hide hidden" : "Show all"
     return (
-      <span style={{paddingLeft: "150px", textAlign: "right"}}>
+      <span style={{paddingLeft: "120px", textAlign: "right"}}>
         <Button bsSize="xs" bsStyle="primary" onClick={this.toggle} active={this.props.showAllAccounts}>{text}</Button>
       </span>
     );

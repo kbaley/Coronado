@@ -12,6 +12,7 @@ namespace Coronado.Web.Controllers.Dtos
         public decimal LastPrice { get; set; }
         public decimal AveragePrice { get; set; }
         public string Currency { get; set; }
+        public bool DontRetrievePrices { get; set; }
         public List<InvestmentPriceDto> HistoricalPrices { get; set; } 
     }
 

@@ -17,6 +17,16 @@ class InvestmentApi {
     return response.json();
   }
 
+  static async getLatestPrices() {
+    const requestOptions = {
+      method: 'POST',
+      headers: authHeader()
+    };
+    const response = await fetch("api/Investments/UpdateCurrentPrices", requestOptions);
+    if (response.status === 200) return "";
+    return response.json();
+  }
+
   static async createInvestment(investment) {
     const response = await fetch('/api/Investments', {
       method: 'POST',
