@@ -49,6 +49,7 @@ namespace Coronado.Web.Controllers.Api
         [HttpPost]
         [Route("[action]")]
         public async Task<IEnumerable<InvestmentForListDto>> UpdateCurrentPrices() {
+            _logger.LogError("Updating prices");
             var mustUpdatePrices = _context.Investments
                 .Include(i => i.HistoricalPrices)
                 .ToList().Any(i => {
@@ -59,10 +60,14 @@ namespace Coronado.Web.Controllers.Api
                 if (lastPrice == null) return true;
                 return lastPrice.Date < DateTime.Today;
             });
+            _logger.LogError($"Update prices? {mustUpdatePrices}");
             if (mustUpdatePrices) {
                 await _priceParser.UpdatePricesFor(_context).ConfigureAwait(false);
             }
-            return GetInvestments();
+            _logger.LogError("Prices Updated");
+            if (mustUpdatePrices)
+                return GetInvestments();
+            return new List<InvestmentForListDto>();
         }
 
         [HttpPost]

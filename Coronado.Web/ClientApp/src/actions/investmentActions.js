@@ -36,7 +36,31 @@ export const getLatestPrices = () => {
   return async (dispatch) => {
     const updatedInvestments = await InvestmentApi.getLatestPrices();
     if (updatedInvestments && updatedInvestments !== "") {
-      dispatch(loadInvestmentsSuccess(updatedInvestments));
+      const message = 'Investments updated to latest prices.';
+      if (updatedInvestments.length === 0)
+        message = 'Investments have been updated already for today. No changes made.'
+      else
+        dispatch(loadInvestmentsSuccess(updatedInvestments));
+      const notificationOpts = {
+        message: message,
+        position: 'br',
+        level: 'success',
+        autoDismiss: 5,
+        dismissible: 'click',
+        title: 'Prices updated'
+      };
+      dispatch(info(notificationOpts));
+    } else {
+
+      const notificationOpts = {
+        message: 'Something went wrong updating the prices',
+        position: 'br',
+        level: 'warning',
+        autoDismiss: 5,
+        dismissible: 'click',
+        title: 'Something went wrong'
+      };
+      dispatch(info(notificationOpts));
     }
   }
 }

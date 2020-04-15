@@ -6,6 +6,7 @@ import { MoneyFormat } from '../common/DecimalFormat';
 import Moment from 'react-moment';
 import {parseMmDdDate} from '../common/dateHelpers';
 import { getEmptyGuid } from '../common/guidHelpers';
+import { orderBy } from 'lodash';
 
 class InvestmentPriceHistory extends Component {
   displayName = InvestmentPriceHistory.name;
@@ -33,7 +34,7 @@ class InvestmentPriceHistory extends Component {
           name: this.props.investment.name,
           symbol: this.props.investment.symbol || '',
         },
-        prices: this.props.investment.historicalPrices.map( p => ({
+        prices: orderBy(this.props.investment.historicalPrices, ['date'], ['desc']).map( p => ({
           ...p,
           status: "Unchanged"
         }))
@@ -58,6 +59,7 @@ class InvestmentPriceHistory extends Component {
   }
 
   savePrices() {
+    this.savePrice();
     this.props.onSave(this.state.investment, this.state.prices);
     this.setState({
       newInvestment: {date: '', price: 0},
@@ -74,6 +76,7 @@ class InvestmentPriceHistory extends Component {
   }
 
   savePrice() {
+    if (this.state.newInvestment.date === '' || this.state.newInvestment.price === '') return;
     var newPrice = {
       date: parseMmDdDate(this.state.newInvestment.date).format(), 
       price: this.state.newInvestment.price,

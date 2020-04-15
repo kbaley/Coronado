@@ -23,7 +23,6 @@ class InvestmentApi {
       headers: authHeader()
     };
     const response = await fetch("api/Investments/UpdateCurrentPrices", requestOptions);
-    if (response.status === 200) return "";
     return response.json();
   }
 
