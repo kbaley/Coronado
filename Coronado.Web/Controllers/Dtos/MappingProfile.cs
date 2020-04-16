@@ -1,3 +1,4 @@
+using System;
 using AgileObjects.ReadableExpressions;
 using AutoMapper;
 using Coronado.Web.Domain;
@@ -10,7 +11,7 @@ namespace Coronado.Web.Controllers.Dtos
         {
             CreateMap<Investment, InvestmentForListDto>()
                 .ForMember(i => i.LastPrice, opt => opt.MapFrom(src => src.GetLastPrice()))
-                .ForMember(i => i.CurrentValue, opt => opt.MapFrom(src => src.Shares * src.GetLastPrice()))
+                .ForMember(i => i.CurrentValue, opt => opt.MapFrom(src => Math.Round(src.Shares * src.GetLastPrice(), 2)))
                 .ReverseMap();  
             CreateMap<InvestmentPrice, InvestmentPriceDto>().ReverseMap();  
             CreateMap<InvoiceLineItem, InvoiceLineItemsForPosting>()

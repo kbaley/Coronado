@@ -2,6 +2,7 @@ import React from 'react';
 import { DeleteIcon } from '../icons/DeleteIcon';
 import { EditIcon } from '../icons/EditIcon';
 import { Icon } from '../icons/Icon';
+import { MoneyFormat } from '../common/DecimalFormat';
 
 export function InvestmentRow({investment, onEdit, onDelete, openPriceHistory}) {
   
@@ -16,8 +17,8 @@ export function InvestmentRow({investment, onEdit, onDelete, openPriceHistory}) 
       <td>{investment.symbol}</td>
       <td>{investment.currency}</td>
       <td>{investment.shares}</td>
-      <td>{investment.lastPrice}</td>
-      <td>{investment.currentValue}</td>
+      <td><MoneyFormat amount={investment.lastPrice}/></td>
+      <td><MoneyFormat amount={investment.currentValue}/></td>
     </tr>
   );
 }
