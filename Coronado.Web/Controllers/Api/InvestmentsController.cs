@@ -145,6 +145,9 @@ namespace Coronado.Web.Controllers.Api
             var investmentMapped = _mapper.Map<Investment>(investment);
             _context.Entry(investmentMapped).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+            await _context.Entry(investmentMapped).ReloadAsync().ConfigureAwait(false);
+            await _context.Entry(investmentMapped).Collection(i => i.HistoricalPrices).LoadAsync().ConfigureAwait(false);
+            investment = _mapper.Map<InvestmentForListDto>(investmentMapped);
 
             return Ok(investment);
         }
