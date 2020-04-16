@@ -27,6 +27,11 @@ namespace Coronado.Web.Domain
         public bool CanLookUp() {
             return !string.IsNullOrWhiteSpace(Symbol) && LastRetrieved < DateTime.Today;
         }
+        public decimal GetLastPrice() {
+            if (HistoricalPrices == null || HistoricalPrices.Count == 0) return 0.00m;
+
+            return HistoricalPrices.OrderByDescending(p => p.Date).First().Price;
+        }
     }
 
     [Table("investment_transactions")]

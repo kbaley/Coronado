@@ -93,21 +93,21 @@ namespace Coronado.Web.Controllers.Api
         [Route("[action]")]
         public async Task<IActionResult> MakeCorrectingEntries()
         {
-            var investments = GetInvestments();
+            var investments = _context.Investments.Include(i => i.HistoricalPrices);
             var currencyController = new CurrenciesController(_context);
             var currency = currencyController.GetExchangeRateFor("CAD").GetAwaiter().GetResult();
             var investmentsTotal = investments
-                .Where(i => i.Currency == "CAD")
-                .Sum(i => i.AveragePrice * i.Shares / currency);
+                .Where(i => i.Currency == "CAD").ToList()
+                .Sum(i => i.GetLastPrice() * i.Shares / currency);
             investmentsTotal += investments
-                .Where(i => i.Currency == "USD")
-                .Sum(i => i.AveragePrice * i.Shares);
+                .Where(i => i.Currency == "USD").ToList()
+                .Sum(i => i.GetLastPrice() * i.Shares);
             var investmentAccount = _context.Accounts.FirstOrDefault(a => a.AccountType == "Investment");
             if (investmentAccount == null)
                 return Ok();
 
             var bookBalance = _context.Transactions
-                .Where(t => t.AccountId == investmentAccount.AccountId)
+                .Where(t => t.AccountId == investmentAccount.AccountId).ToList()
                 .Sum(i => i.Amount);
 
             var difference = Math.Round(investmentsTotal - bookBalance, 2);
@@ -124,7 +124,7 @@ namespace Coronado.Web.Controllers.Api
                     CategoryDisplay = category.Name,
                     TransactionDate = DateTime.Now,
                     EnteredDate = DateTime.Now,
-                    Description = "Gain/loss"
+                    Description = ""
                 };
                 transaction.SetDebitAndCredit();
                 _transactionRepo.Insert(transaction);
