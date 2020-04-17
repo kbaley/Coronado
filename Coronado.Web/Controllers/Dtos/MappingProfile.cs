@@ -19,6 +19,8 @@ namespace Coronado.Web.Controllers.Dtos
             CreateMap<Invoice, InvoiceForPosting>()
                 .ReverseMap()
                 .ForMember(dest => dest.Customer, opt => opt.Ignore());
+            CreateMap<Account, AccountForPosting>().ReverseMap();
+            CreateMap<Transaction, TransactionForDisplay>();
 
             // Useful for visualizing an AutoMapper mapping
             // var config = new MapperConfiguration(cfg => cfg

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Coronado.Web.Data;
 using Coronado.Web.Domain;
-using Coronado.Web.Models;
+using Coronado.Web.Controllers.Dtos;
 
 namespace Coronado.Web.Controllers {
     class TransactionHelpers {

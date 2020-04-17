@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Coronado.Web.Data;
-using Coronado.Web.Models;
+using Coronado.Web.Controllers.Dtos;
 using Microsoft.AspNetCore.Http;
 
 namespace Coronado.Web.Controllers.Api

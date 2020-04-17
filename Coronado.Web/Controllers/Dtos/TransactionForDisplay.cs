@@ -1,7 +1,6 @@
 using System;
-using Coronado.Web.Domain;
 
-namespace Coronado.Web.Models
+namespace Coronado.Web.Controllers.Dtos
 {
     public class TransactionForDisplay
     {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Coronado.Web.Controllers.Dtos;
 using Coronado.Web.Models;
 
 namespace Coronado.Web.Data

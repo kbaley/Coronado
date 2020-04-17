@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Coronado.Web.Data;
 using Coronado.Web.Domain;
-using Coronado.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using Coronado.Web.Controllers.Dtos;
+using AutoMapper;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -19,15 +22,17 @@ namespace Coronado.Web.Controllers.Api
         private readonly IAccountRepository _accountRepo;
         private readonly ITransactionRepository _transactionRepo;
         private readonly ILogger<AccountsController> _logger;
+        private readonly IMapper _mapper;
         private readonly QifParser _qifParser;
 
         public AccountsController(CoronadoDbContext context, IAccountRepository accountRepo,
-            ITransactionRepository transactionRepo, ILogger<AccountsController> logger)
+            ITransactionRepository transactionRepo, ILogger<AccountsController> logger, IMapper mapper)
         {
             _context = context;
             _accountRepo = accountRepo;
             _transactionRepo = transactionRepo;
             _logger = logger;
+            _mapper = mapper;
             _qifParser = new QifParser(context, accountRepo);
         }
 
@@ -39,19 +44,10 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpPut("{id}")]
-        public IActionResult PutAccount([FromRoute] Guid id, [FromBody] Account account)
+        public async Task<IActionResult> PutAccount([FromRoute] Guid id, [FromBody] Account account)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != account.AccountId)
-            {
-                return BadRequest();
-            }
-
-            _accountRepo.Update(account);
+            _context.Entry(account).State = EntityState.Modified;
+            await _context.SaveChangesAsync().ConfigureAwait(false);
 
             return Ok(account);
         }
@@ -82,59 +78,45 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpPost]
-        public IActionResult PostAccount([FromBody] AccountForPosting account)
+        public async Task<IActionResult> PostAccount([FromBody] AccountForPosting account)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var newAccount = new Account
-            {
-                AccountId = Guid.NewGuid(),
-                Name = account.Name,
-                Currency = account.Currency,
-                Vendor = account.Vendor,
-                AccountType = account.AccountType,
-                MortgagePayment = account.MortgagePayment,
-                MortgageType = account.MortgageType,
-                IsHidden = account.IsHidden,
-                DisplayOrder = account.DisplayOrder
-            };
-            _accountRepo.Insert(newAccount);
+            var mappedAccount = _mapper.Map<Account>(account);
+            mappedAccount.AccountId = Guid.NewGuid();
+            _context.Accounts.Add(mappedAccount);
 
             var category = _context.GetOrCreateCategory("Starting Balance").GetAwaiter().GetResult();
-            var transaction = new TransactionForDisplay
+            var transaction = new Transaction
             {
                 TransactionId = Guid.NewGuid(),
-                AccountId = newAccount.AccountId,
+                AccountId = mappedAccount.AccountId,
                 Amount = account.StartingBalance,
                 TransactionDate = account.StartDate,
                 Vendor = "",
                 Description = "",
                 CategoryId = category.CategoryId,
-                CategoryName = category.Name,
                 EnteredDate = account.StartDate,
                 IsReconciled = true
             };
-            _transactionRepo.Insert(transaction);
+            _context.Transactions.Add(transaction);
 
             var model = new AccountWithTransactions
             {
-                AccountId = newAccount.AccountId,
-                Name = newAccount.Name,
-                Transactions = new List<TransactionForDisplay>(new[] { transaction }),
+                AccountId = mappedAccount.AccountId,
+                Name = mappedAccount.Name,
+                Transactions = new List<TransactionForDisplay>(new[] { _mapper.Map<TransactionForDisplay>(transaction) }),
                 CurrentBalance = account.StartingBalance
             };
+            await _context.SaveChangesAsync().ConfigureAwait(false);
 
-            return CreatedAtAction("PostAccount", new { id = newAccount.AccountId }, model);
+            return CreatedAtAction("PostAccount", new { id = mappedAccount.AccountId }, model);
         }
 
-        // DELETE: api/Accounts/5
         [HttpDelete("{id}")]
-        public IActionResult DeleteAccount([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteAccount([FromRoute] Guid id)
         {
-            var account = _accountRepo.Delete(id);
+            var account = await _context.Accounts.FindAsync(id).ConfigureAwait(false);
+            _context.Remove(account);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
             return Ok(account);
         }
     }

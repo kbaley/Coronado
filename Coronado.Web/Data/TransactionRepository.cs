@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Coronado.Web.Controllers.Dtos;
 using Coronado.Web.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Dapper;
 using System.Data;
-using Npgsql;
 using Coronado.Web.Domain;
 using System.Linq;
 
