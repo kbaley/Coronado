@@ -35,12 +35,18 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.transactionList .transactionRow td:nth-child(3), .transactionList .new-transaction td:nth-child(3) {
+  overflow: visible;
+}
 
 .transactionList td:nth-child(4) {
   max-width: 180px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.transactionList .transactionRow td:nth-child(4), .transactionList .new-transaction td:nth-child(4) {
+  overflow: visible;
 }
 .transactionList td:nth-child(5) {
   max-width: 480px;
