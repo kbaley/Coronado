@@ -107,7 +107,7 @@ To migrate data, use `pg_dump` with `--data-only` and --column-inserts` to get a
 
 ### Why Dapper _and_ Entity Framework?
 
-I started with only EF. A few weeks in, I started hitting problems managing the interdependencies between my entities. Things like accounts having transactions which link to other accounts, etc. It's been a while since I've had to deal with a full ORM and I don't have the patience for it anymore so I switched to Dapper for the data access. But I like how EF handles the migrations so I've kept it around for that purpose only.
+I started with only EF. A few weeks in, I started hitting problems managing the interdependencies between my entities. Things like accounts having transactions which link to other accounts, etc. It's been a while since I've had to deal with a full ORM and I don't have the patience for it anymore so I switched to Dapper for some of the more complicated data access and cases where I need aggregate (e.g. account balances). EF6 remains for the simple stuff.
 
 ### Deploying
 
