@@ -1,4 +1,4 @@
-namespace Coronado.Web.Models
+namespace Coronado.Web.Controllers.Dtos
 {
 
     public class AuthData {

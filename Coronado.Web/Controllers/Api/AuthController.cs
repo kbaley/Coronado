@@ -2,7 +2,7 @@
 using System.Linq;
 using Coronado.Web.Data;
 using Microsoft.AspNetCore.Mvc;
-using Coronado.Web.Models;
+using Coronado.Web.Controllers.Dtos;
 using CryptoHelper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
