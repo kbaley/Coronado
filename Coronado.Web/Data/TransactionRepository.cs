@@ -42,9 +42,6 @@ namespace Coronado.Web.Data
                         conn.Execute("DELETE FROM transactions WHERE transaction_id = @TransactionId", new { transactionId }, trx);
                         if (transaction.InvoiceId.HasValue)
                         {
-                            // Isolation level doesn't allow use of `UpdateInvoice`
-                            // conn.Execute("UPDATE invoices SET balance = balance + @Amount WHERE invoice_id = @InvoiceId",
-                            //   new { Amount = transaction.Amount, InvoiceId = transaction.InvoiceId.Value}, trx);
                             UpdateInvoice(transaction.InvoiceId.Value, conn, trx);
                         }
                         trx.Commit();
@@ -126,49 +123,7 @@ namespace Coronado.Web.Data
             {
                 conn.Execute(@"UPDATE vendors
           SET last_transaction_category_id = @categoryId
-          WHERE vendor_id = @VendorId", new { VendorId = vendor.VendorId, categoryId }, trx);
-            }
-        }
-
-        public void Insert(IEnumerable<TransactionForDisplay> transactions)
-        {
-
-            using (var conn = Connection)
-            {
-                conn.Open();
-                using (var trx = conn.BeginTransaction())
-                {
-                    try
-                    {
-                        foreach (var transaction in transactions)
-                        {
-                            conn.Execute(
-                            @"INSERT INTO transactions (transaction_id, account_id, vendor, description, is_reconciled, transaction_date, category_id,
-                    entered_date, amount, related_transaction_id, invoice_id)
-                    VALUES (@TransactionId, @AccountId, @Vendor, @Description, @IsReconciled, @TransactionDate, @CategoryId,
-                    @EnteredDate, @Amount, @RelatedTransactionId, @InvoiceId)
-                ", transaction, trx);
-                            if (transaction.InvoiceId.HasValue)
-                            {
-                                UpdateInvoice(transaction.InvoiceId.Value, conn, trx);
-                            }
-                            if (transaction.CategoryId.HasValue)
-                            {
-                                UpdateVendor(transaction.Vendor, transaction.CategoryId.Value, conn, trx);
-                            }
-                        }
-                        trx.Commit();
-                    }
-                    catch
-                    {
-                        trx.Rollback();
-                        throw;
-                    }
-                    finally
-                    {
-                        conn.Close();
-                    }
-                }
+          WHERE vendor_id = @VendorId", new { vendor.VendorId, categoryId }, trx);
             }
         }
 
