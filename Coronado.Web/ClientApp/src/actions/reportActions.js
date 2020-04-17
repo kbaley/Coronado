@@ -17,6 +17,14 @@ export function loadExpensesByCategoryReportAction() {
   return {type: types.LOAD_EXPENSES_BY_CATEGORY_REPORT};
 }
 
+export function loadDashboardStatsAction() {
+  return {type: types.LOAD_DASHBOARD_STATS};
+}
+
+export function loadDashboardStatsSuccess(report) {
+  return {type: types.LOAD_DASHBOARD_STATS_SUCCESS, report};
+}
+
 export const loadNetWorthReport = () => {
   return async (dispatch) => {
     dispatch(loadNetWorthReportAction());
@@ -30,5 +38,13 @@ export const loadExpensesByCategoryReport = () => {
     dispatch(loadExpensesByCategoryReportAction());
     const report = await ReportApi.getExpensesByCategoryReport();
     dispatch(loadExpensesByCategoryReportSuccess(report));
+  }
+}
+
+export const loadDashboardStats = () => {
+  return async (dispatch) => {
+    dispatch(loadDashboardStatsAction());
+    const report = await ReportApi.getDashboardStats();
+    dispatch(loadDashboardStatsSuccess(report));
   }
 }

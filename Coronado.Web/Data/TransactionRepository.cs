@@ -8,6 +8,7 @@ using Dapper;
 using System.Data;
 using Coronado.Web.Domain;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Coronado.Web.Data
 {
@@ -279,7 +280,7 @@ WHERE t.transaction_id=@transactionId;", new { transactionId });
                                     total = x.Sum(e => (decimal)e.amount),
                                     expenses = x.Select(e => new {
                                         date = new DateTime(e.year, e.month, 1),
-                                        amount = e.amount
+                                        e.amount
                                     })
                                 });
                 
@@ -294,6 +295,24 @@ WHERE t.transaction_id=@transactionId;", new { transactionId });
             Insert(second);
             first.RelatedTransactionId = second.TransactionId;
             Update(first);
+        }
+
+        public async Task<IEnumerable<dynamic>> GetMonthlyTotalsForCategory(Guid categoryId, DateTime start, DateTime end)
+        {
+            using (var conn = Connection)
+            {
+                var sql = @"SELECT sum(amount) as amount, EXTRACT(MONTH from t.transaction_date)::int as month, EXTRACT(YEAR from t.transaction_date)::int as year FROM transactions t
+                    WHERE transaction_date > @start and transaction_date <= @end
+                    AND t.category_id = @categoryId
+                    GROUP BY EXTRACT(MONTH from t.transaction_date), EXTRACT(YEAR from t.transaction_date)";
+                var data = await conn.QueryAsync(sql, new { start, end, categoryId }).ConfigureAwait(false);
+                var results = data.Select(e => new {
+                    date = new DateTime(e.year, e.month, 1),
+                    e.amount
+                }).OrderByDescending(r => r.date);
+
+                return results;
+            }
         }
     }
 }

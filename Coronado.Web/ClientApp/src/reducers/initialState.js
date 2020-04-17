@@ -16,7 +16,8 @@ export default {
   vendors: [],
   reports: {
     netWorth: [],
-    expensesByCategory: []
+    expensesByCategory: [],
+    dashboardStats: { }
   },
   transactionModel: {
     transactions: [],

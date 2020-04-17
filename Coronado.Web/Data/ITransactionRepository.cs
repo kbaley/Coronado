@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Coronado.Web.Controllers.Dtos;
 using Coronado.Web.Models;
 
@@ -17,5 +18,6 @@ namespace Coronado.Web.Data
         decimal GetNetWorthFor(DateTime date);
 
         IEnumerable<dynamic> GetExpensesByCategory(DateTime start, DateTime end);
+        Task<IEnumerable<dynamic>> GetMonthlyTotalsForCategory(Guid categoryId, DateTime start, DateTime end);
     }
 }

@@ -14,6 +14,12 @@ export const reportReducer = (state = initialState.reports, action, deletedCusto
         ...state,
         expensesByCategory: action.report
       }
+
+    case actions.LOAD_DASHBOARD_STATS_SUCCESS:
+        return {
+          ...state,
+          dashboardStats: action.report
+        }
       
     default:
       return state;

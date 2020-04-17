@@ -3,18 +3,34 @@ import { Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { sumBy, filter } from 'lodash';
 import { Currency } from './common/CurrencyFormat';
+import * as reportActions from '../actions/reportActions';
+import { bindActionCreators } from 'redux';
 import NetWorthReport from './reports_page/NetWorthReport';
+import moment from 'moment';
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
+    this.getGainLossForMonth = this.getGainLossForMonth.bind(this);
     this.state = {
-      
     }
   }
 
-  componentDidUpdate() {
+  componentDidMount() {
+    this.props.actions.loadDashboardStats();
+  }
 
+  getGainLossForMonth(month) {
+    const stats = this.props.dashboardStats;
+    if (!stats || !stats.length) return Currency(0);
+    if (stats.length < month) return Currency(0);
+
+    const today = moment();
+    const desiredDate = moment(today).add(0 - month, 'M').startOf('M');
+    const statsDate = moment(stats[month].date);
+    
+    if (!statsDate.isSame(desiredDate)) return Currency(0);
+    return Currency(stats[month].amount);
   }
 
   render() {
@@ -24,6 +40,7 @@ class Home extends React.Component {
     var liquidAssets = sumBy(bankAccounts, a => a.currentBalance);
     var ccTotal = sumBy(creditCards, c => c.currentBalance);
     var mortgageTotal = sumBy(mortgages, m => m.currentBalance);
+    
     return (
       <div>
         <h1>Coronado Financial App for Me</h1>
@@ -42,6 +59,8 @@ class Home extends React.Component {
             <h4 style={{textAlign: "right"}}>{Currency(liquidAssets)}</h4>
             <h4 style={{textAlign: "right"}}>{Currency(ccTotal)}</h4>
             <h4 style={{textAlign: "right"}}>{Currency(mortgageTotal)}</h4>
+            <h4 style={{textAlign: "right"}}>{this.getGainLossForMonth(0)}</h4>
+            <h4 style={{textAlign: "right"}}>{this.getGainLossForMonth(1)}</h4>
           </Col>
           <Col sm={7}></Col>
         </Row>
@@ -52,10 +71,18 @@ class Home extends React.Component {
 function mapStateToProps(state) {
   return {
     accounts: state.accounts,
+    dashboardStats: state.reports.dashboardStats,
     isLoadingData: state.loading ? state.loading.accounts : true
   }
 }
 
+function mapDispatchToProps(dispatch) {
+   return {
+     actions: bindActionCreators(reportActions, dispatch)
+   }
+}
+
 export default connect(
-  mapStateToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(Home);

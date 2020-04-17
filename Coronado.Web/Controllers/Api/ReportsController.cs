@@ -4,6 +4,8 @@ using Coronado.Web.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using Coronado.Web.Domain;
+using System.Threading.Tasks;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -63,6 +65,16 @@ namespace Coronado.Web.Controllers.Api
             return Ok(new { expenses, monthTotals } );
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetDashboardStats()
+        {
+            var numMonths = 3;
+            var gainLossCategory = await _context.GetOrCreateCategory("Gain/loss on investments").ConfigureAwait(false);
+            var end = DateTime.Today.LastDayOfMonth();
+            var start = end.AddMonths(0 - numMonths).FirstDayOfMonth();
+            var expenses = await _transactionRepo.GetMonthlyTotalsForCategory(gainLossCategory.CategoryId, start, end).ConfigureAwait(false);
+            return Ok(expenses);
+        }
     }
 
     public static class Extensions {
