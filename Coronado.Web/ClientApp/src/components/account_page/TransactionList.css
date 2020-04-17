@@ -21,21 +21,33 @@
 }
 
 .transactionList td:nth-child(1) {
-    width: 50px;
+    width: 80px;
+    max-width: 80px;
 }
 
 .transactionList td:nth-child(2) {
-    width: 120px;
+    width: 110px;
 }
 
 .transactionList td:nth-child(3) {
-    width: 150px;
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .transactionList td:nth-child(4) {
-    width: 120px;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-
+.transactionList td:nth-child(5) {
+  max-width: 480px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .transactionList td:nth-child(6) {
     width: 100px;
 }

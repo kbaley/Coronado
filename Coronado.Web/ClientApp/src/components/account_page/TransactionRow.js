@@ -143,9 +143,9 @@ class TransactionRow extends Component {
             <DeleteIcon onDelete={this.props.onDelete} />
         </td>
         <td>{new Date(trx.transactionDate).toLocaleDateString()}</td>
-        <td>{trx.vendor}</td>
-        <td>{trx.categoryDisplay}</td>
-        <td>{trx.description}</td>
+        <td title={trx.vendor}>{trx.vendor}</td>
+        <td title={trx.categoryDisplay}>{trx.categoryDisplay}</td>
+        <td title={trx.description}>{trx.description}</td>
         <td><DecimalFormat isDebit={true} amount={trx.debit} /></td>
         <td><DecimalFormat isCredit={true} amount={trx.credit} /></td>
         <td><MoneyFormat amount={trx.runningTotal} /></td>
