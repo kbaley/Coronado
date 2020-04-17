@@ -15,18 +15,6 @@ namespace Coronado.Web.Data
             _logger = logger;
         }
 
-        public Account Delete(Guid accountId)
-        {
-            using (var conn = Connection) {
-                var accountIdParam = new {accountId};
-                var account = conn.QuerySingle<Account>("SELECT * FROM accounts WHERE account_id=@accountId", new {accountId});
-                conn.Execute("UPDATE transactions SET related_transaction_id = null WHERE account_id=@accountId", accountIdParam);
-                conn.Execute("DELETE FROM transactions WHERE account_id = @accountId", accountIdParam);
-                conn.Execute("DELETE FROM accounts WHERE account_id=@accountId", accountIdParam);
-                return account;
-            }    
-        }
-
         public Account Get(Guid accountId)
         {
             using (var conn = Connection) {
@@ -56,26 +44,6 @@ FROM accounts a"
 FROM Transactions
 GROUP BY account_id"
 );
-            }
-        }
-
-        public void Insert(Account account)
-        {
-            using (var conn = Connection) {
-                conn.Execute(
-@"INSERT INTO accounts (account_id, name, currency, vendor, account_type, mortgage_payment, mortgage_type, is_hidden, display_order)
-VALUES (@AccountId, @Name, @Currency, @Vendor, @AccountType, @MortgagePayment, @MortgageType, @IsHidden, @DisplayOrder)", account);
-            }
-        }
-
-        public void Update(Account account)
-        {
-            using (var conn = Connection) {
-                conn.Execute(
-@"UPDATE accounts
-SET name = @Name, currency = @Currency, vendor = @Vendor, account_type = @AccountType,
-    mortgage_payment = @MortgagePayment, mortgage_type = @MortgageType, display_order = @DisplayOrder, is_hidden = @IsHidden
-WHERE account_id = @AccountId", account);
             }
         }
     }
