@@ -4,7 +4,6 @@ using System.Linq;
 using Coronado.Web.Data;
 using Coronado.Web.Domain;
 using Microsoft.AspNetCore.Mvc;
-using Coronado.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using AutoMapper;

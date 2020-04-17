@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Coronado.Web.Data;
+﻿using System.Collections.Generic;
 using Coronado.Web.Domain;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Coronado.Web.Controllers.Api
 {

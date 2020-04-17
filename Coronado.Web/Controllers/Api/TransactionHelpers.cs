@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Coronado.Web.Data;
-using Coronado.Web.Domain;
 using Coronado.Web.Controllers.Dtos;
 
 namespace Coronado.Web.Controllers {
