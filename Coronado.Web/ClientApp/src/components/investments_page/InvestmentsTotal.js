@@ -4,7 +4,6 @@ import DisplayTotalRow from './DisplayTotalRow';
 
 const InvestmentsTotal = ({investments, currency, currencies}) => {
   var total = sumBy(investments, i => parseFloat(i.currentValue));
-  console.log(investments);
   
   return (
     <React.Fragment>
