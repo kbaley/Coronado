@@ -1,6 +1,6 @@
 import initialState from './initialState';
 import * as actions from "../constants/investmentActionTypes";
-import { cloneDeep, find, forEach } from 'lodash';
+import { cloneDeep, find } from 'lodash';
 
 export const investmentReducer = (state = initialState.investments, action, deletedInvestments) => {
   switch (action.type) {
