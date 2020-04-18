@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import CreatableSelect from 'react-select/lib/Creatable';
+import CreatableSelect from 'react-select/creatable';
 
 export class CategorySelect extends Component {
   constructor(props) {

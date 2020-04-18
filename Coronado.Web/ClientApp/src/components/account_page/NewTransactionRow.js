@@ -189,7 +189,7 @@ export class NewTransactionRow extends Component {
 
   render() {
     return (
-      <tr key="new-transaction" class="new-transaction">
+      <tr key="new-transaction" className="new-transaction">
         <td>
           <CheckIcon onClick={this.saveTransaction} />
         </td>
