@@ -167,7 +167,7 @@ namespace Coronado.Web.Data
         }
 
         public TransactionListModel GetByAccount(Guid accountId, int? page) {
-            var thePage = page.HasValue ? page.Value : 0;
+            var thePage = page ?? 0;
             var allTransactions = GetByAccount(accountId)
                 .OrderByDescending(t => t.TransactionDate)
                 .ThenByDescending(t => t.EnteredDate);

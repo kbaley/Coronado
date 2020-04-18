@@ -71,13 +71,13 @@ class InvestmentForm extends Component {
               value={this.state.investment.symbol}
               onChange={this.handleChangeField}
             />
-            <TextField width={6}
+            <TextField width={4}
               label="Starting Shares"
               name="shares"
               value={this.state.investment.shares}
               onChange={this.handleChangeField}
             />
-            <TextField
+            <TextField width={4}
               label="Starting Price"
               name="price"
               value={this.state.investment.price}

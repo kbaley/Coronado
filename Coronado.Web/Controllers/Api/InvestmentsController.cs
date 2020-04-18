@@ -39,6 +39,7 @@ namespace Coronado.Web.Controllers.Api
         {
             var investments = _context.Investments
                 .Include(i => i.HistoricalPrices)
+                .Include(i => i.Transactions)
                 .OrderBy(i => i.Name)
                 .ToList();
             var dtos = investments.Select(i => _mapper.Map<InvestmentForListDto>(i));
