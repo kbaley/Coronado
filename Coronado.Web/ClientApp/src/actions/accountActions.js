@@ -1,11 +1,11 @@
 import * as types from '../constants/accountActionTypes';
 import * as transactionTypes from '../constants/transactionActionTypes';
 import { info } from 'react-notification-system-redux';
-import { push } from 'react-router-redux';
 import AccountApi from '../api/accountApi';
 import { sortBy } from 'lodash';
 import { arrayMove } from 'react-sortable-hoc';
 import { authHeader } from '../api/auth-header';
+import history from "../history";
 
 export function loadAccountsSuccess(accounts) {
   return { type: types.LOAD_ACCOUNTS_SUCCESS, accounts };
@@ -68,10 +68,13 @@ export const deleteAccount = (accountId, accountName) => {
     };
     dispatch( { type: types.DELETE_ACCOUNT, accountId } );
     dispatch(info(notificationOpts));
-    if (getState().accounts.length > 0)
-      dispatch(push('/account/' + getState().accounts[0].accountId));
-    else
-      dispatch(push('/'));
+    
+    var accounts = getState().accounts;
+    if (accounts.length === 0) {
+      history.push('/');
+    } else {
+      history.push('/account/' + getState().accounts[0].accountId);
+    }
   }
 }
 
@@ -88,7 +91,7 @@ export const createAccount = (account) => {
     const newAccount = await AccountApi.createAccount(account);
 
     dispatch(createAccountSuccess(newAccount));
-    dispatch(push('/account/' + newAccount.accountId));
+    history.push('/account/' + newAccount.accountId);
   }
 }
 
