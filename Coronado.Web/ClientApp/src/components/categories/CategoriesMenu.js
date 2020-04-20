@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
-import { NavItem, Glyphicon } from 'react-bootstrap';
+import { NavItem } from 'react-bootstrap';
 import * as Mousetrap from 'mousetrap';
 import { withRouter } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 class CategoriesMenu extends Component {
@@ -23,7 +24,7 @@ class CategoriesMenu extends Component {
   render() {
     return (<LinkContainer to={'/categories'}>
       <NavItem>
-        <Glyphicon glyph='cog' /> Categories
+        <FontAwesomeIcon icon='cog' /> Categories
       </NavItem>
     </LinkContainer>);
   }

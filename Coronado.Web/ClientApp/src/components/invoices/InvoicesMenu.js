@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
-import { NavItem, Glyphicon, Row, Col } from 'react-bootstrap';
+import { NavItem, Row, Col } from 'react-bootstrap';
 import * as Mousetrap from 'mousetrap';
 import { withRouter } from 'react-router-dom';
 import { CurrencyFormat } from '../common/CurrencyFormat';
 import { connect } from 'react-redux';
 import { sumBy } from 'lodash';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export class InvoicesMenu extends Component {
   constructor(props) {
@@ -32,7 +33,7 @@ export class InvoicesMenu extends Component {
         <NavItem>
           <Row>
             <Col sm={1}>
-              <Glyphicon glyph='list-alt' />
+              <FontAwesomeIcon icon='list-alt' /> 
             </Col>
             <Col sm={7} style={{ overflow: "hidden", textOverflow: "ellipsis" }}>Invoices</Col>
             <Col sm={3} style={{ textAlign: "right", fontSize: "13px", padding: "0 13px 0 0" }}>

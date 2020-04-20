@@ -1,11 +1,11 @@
 import React from 'react';
-import { Glyphicon } from 'react-bootstrap';
 import './EditIcon.css'
 import './Icon.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export function EditIcon(props) {
   const classes = `edit-icon icon ${props.className}`
   return (
-    <Glyphicon glyph='pencil' className={classes} onClick={props.onStartEditing} />
+    <FontAwesomeIcon icon='pencil-alt' className={classes} onClick={props.onStartEditing} />
   );
 }

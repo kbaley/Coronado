@@ -18,5 +18,19 @@ export default props => (
     <div className="sidebar-heading">
       <Link to={'/'}>Coronado</Link>
     </div>
+    <Navbar.Brand style={{ width: "100%", paddingRight: "0" }}>
+      <Link to={'/'}>Coronado</Link>
+      {/* <NetWorth /> */}
+    </Navbar.Brand>
+    <Navbar.Toggle />
+    <Navbar.Brand>Accounts <NewAccount /><ToggleAllAccounts /></Navbar.Brand>
+    <AccountNavList />
+    <Nav>
+      <InvoicesMenu />
+      <ReportsMenu />
+      <CategoriesMenu />
+      <InvestmentsMenu />
+      <CustomersMenu />
+    </Nav>
   </div>
 );

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button,Modal,Form,FormControl,FormGroup,ControlLabel,Col } from 'react-bootstrap';
+import { Button,Modal,Form,FormControl,FormGroup,Col } from 'react-bootstrap';
 
 class CategoryForm extends Component {
   displayName = CategoryForm.name;
@@ -52,7 +52,7 @@ class CategoryForm extends Component {
         <Modal.Body>
           <Form horizontal>
             <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Category Name</Col>
+              <Col as={Form.Label} sm={3}>Category Name</Col>
               <Col sm={9}>
             <FormControl
               type="text" autoFocus
@@ -63,7 +63,7 @@ class CategoryForm extends Component {
               </Col>
             </FormGroup>
             <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Type</Col>
+              <Col as={Form.Label} sm={3}>Type</Col>
               <Col sm={5}>
                 <FormControl type="text" value={this.state.category.type}
                   name="type"
@@ -72,9 +72,9 @@ class CategoryForm extends Component {
               </Col>
             </FormGroup>
             <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Parent Category</Col>
+              <Col as={Form.Label} sm={3}>Parent Category</Col>
               <Col sm={5}>
-                <FormControl componentClass="select" name="parentCategory" value={this.state.category.parentCategoryId}
+                <FormControl as="select" name="parentCategory" value={this.state.category.parentCategoryId}
                     onChange={this.handleChangeParent}>
                   <option key="0" value="">None</option>
                   {this.props.categories ? this.props.categories.map(c => 

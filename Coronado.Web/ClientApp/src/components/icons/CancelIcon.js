@@ -1,11 +1,11 @@
 import React from 'react';
-import { Glyphicon } from 'react-bootstrap';
 import './CancelIcon.css';
 import './Icon.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export function CancelIcon(props) {
   const classes = `cancel-icon icon ${props.className}`
   return (
-    <Glyphicon glyph='remove' className={classes} onClick={props.onCancel}/>
+    <FontAwesomeIcon glyph='minus-circle' className={classes} onClick={props.onCancel}/>
   );
 }

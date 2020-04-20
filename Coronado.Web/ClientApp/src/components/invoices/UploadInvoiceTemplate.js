@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import * as actions from '../../actions/invoiceActions';
-import { Button, Modal, Form, FormGroup, ControlLabel, Col } from 'react-bootstrap';
+import { Button, Modal, Form, FormGroup, Col } from 'react-bootstrap';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import './NewInvoice.css';
@@ -35,7 +35,7 @@ export class NewInvoice extends Component {
           <Modal.Body>
             <Form horizontal>
               <FormGroup>
-                <Col componentClass={ControlLabel} sm={3}>Select file:</Col>
+                <Col as={Form.Label} sm={3}>Select file:</Col>
                 <Col sm={9}>
                   <input type="file" name="selectedFile" onChange={this.handleSelectedFile} />
                 </Col>

@@ -1,10 +1,10 @@
 import React from 'react';
-import { Glyphicon } from 'react-bootstrap';
 import './Icon.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export function Icon(props) {
   const classes = `icon ${props.className}`
   return (
-    <Glyphicon glyph={props.glyph} className={classes} onClick={props.onClick} title={props.title || ""}/>
+    <FontAwesomeIcon icon={props.glyph} className={classes} onClick={props.onClick} title={props.title || ""}/>
   );
 }

@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import { Button, Modal, Form, FormControl, FormGroup, ControlLabel, Col} from 'react-bootstrap';
+import { Button, Modal, Form, FormControl, FormGroup, Col} from 'react-bootstrap';
 import {Icon} from "../icons/Icon";
 import "./UploadQif.css";
 
@@ -54,17 +54,17 @@ class UploadQif extends Component {
         <Modal.Body>
           <Form horizontal>
             <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>QIF File</Col>
+              <Col as={Form.Label} sm={3}>QIF File</Col>
               <Col sm={9}>
                 <input type="file" name="selectedFile" onChange={this.handleSelectedFile} />
               </Col>
             </FormGroup>
             <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}></Col>
+              <Col as={Form.Label} sm={3}></Col>
               <Col sm={5}>Supported formats: QIF, CSV</Col>
             </FormGroup>
             <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>From date:</Col>
+              <Col as={Form.Label} sm={3}>From date:</Col>
               <Col sm={5}>
                 <FormControl type="text" name="fromDate" value={this.state.fromDate} onChange={this.handleChangeDate} />
               </Col>

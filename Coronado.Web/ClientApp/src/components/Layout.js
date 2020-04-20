@@ -1,12 +1,12 @@
 import React from 'react';
-import { Col, Grid, Row } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import NavMenu from './NavMenu';
 import NotificationsComponent from './Notifications';
 import { ShortcutHelper } from './common/ShortcutHelper';
 import { Icon } from "./icons/Icon";
 
 export default props => (
-  <Grid fluid>
+  <Container fluid>
     <Row>
       <Col sm={2} style={{"width": "20%"}}>
         <NavMenu />
@@ -20,5 +20,5 @@ export default props => (
     </Row>
     <NotificationsComponent />
     <ShortcutHelper />
-  </Grid>
+  </Container>
 );

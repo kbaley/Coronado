@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
-import { NavItem, Glyphicon } from 'react-bootstrap';
+import { NavItem } from 'react-bootstrap';
 import * as Mousetrap from 'mousetrap';
 import { withRouter } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export class CustomersMenu extends Component {
   constructor(props) {
@@ -28,7 +29,7 @@ export class CustomersMenu extends Component {
     return (
     <LinkContainer to={'/customers'}>
       <NavItem>
-        <Glyphicon glyph='user' /> Customers
+        <FontAwesomeIcon icon='user' /> Customers
       </NavItem>
     </LinkContainer>
     );

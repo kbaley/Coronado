@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal, Form, FormControl, FormGroup, ControlLabel, Col, Checkbox } from 'react-bootstrap';
+import { Button, Modal, Form, FormControl, FormGroup, Col } from 'react-bootstrap';
 import TextField from "../common/TextField";
 
 class InvestmentForm extends Component {
@@ -55,7 +55,7 @@ class InvestmentForm extends Component {
         <Modal.Body>
           <Form horizontal>
             <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Name</Col>
+              <Col as={Form.Label} sm={3}>Name</Col>
               <Col sm={9}>
                 <FormControl
                   type="text" autoFocus
@@ -90,12 +90,13 @@ class InvestmentForm extends Component {
               onChange={this.handleChangeField}
             />
             <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Don't retrieve prices?</Col>
+              <Col as={Form.Label} sm={3}>Don't retrieve prices?</Col>
               <Col sm={3}>
-                <Checkbox 
+                <Form.Check type='checkbox' name='dontRetrievePrices' />
+                {/* <Checkbox 
                   name="dontRetrievePrices" 
                   checked={this.state.investment.dontRetrievePrices}
-                  onChange={this.handleChangeField} />
+                  onChange={this.handleChangeField} /> */}
               </Col>
             </FormGroup>
           </Form>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button,Modal,Form,FormControl,FormGroup,ControlLabel,Col } from 'react-bootstrap';
+import { Button,Modal,Form,FormControl,FormGroup,Col } from 'react-bootstrap';
 import TextField from "../common/TextField";
 
 class CustomerForm extends Component {
@@ -50,7 +50,7 @@ class CustomerForm extends Component {
         <Modal.Body>
           <Form horizontal>
             <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Name</Col>
+              <Col as={Form.Label} sm={3}>Name</Col>
               <Col sm={9}>
             <FormControl
               type="text" autoFocus

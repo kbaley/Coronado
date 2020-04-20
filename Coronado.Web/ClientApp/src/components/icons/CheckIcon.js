@@ -1,11 +1,11 @@
 import React from 'react';
-import { Glyphicon } from 'react-bootstrap';
 import './CheckIcon.css';
 import './Icon.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export function CheckIcon(props) {
   const classes = `check-icon icon ${props.className || ''}`
   return (
-    <Glyphicon glyph='ok' className={classes} onClick={props.onClick} />
+    <FontAwesomeIcon icon='check-circle' className={classes} onClick={props.onClick} />
   );
 }

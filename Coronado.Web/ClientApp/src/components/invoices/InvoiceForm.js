@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal, Form, FormControl, FormGroup, ControlLabel, Col } from 'react-bootstrap';
+import { Button, Modal, Form, FormControl, FormGroup, Col } from 'react-bootstrap';
 import InvoiceLineItems from "./InvoiceLineItems";
 import { filter, findIndex } from "lodash";
 import {v4 as uuidv4 } from 'uuid';
@@ -103,7 +103,7 @@ class InvoiceForm extends Component {
         <Modal.Body>
           <Form horizontal>
             <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Number</Col>
+              <Col as={Form.Label} sm={3}>Number</Col>
               <Col sm={2}>
                 <FormControl autoFocus
                   type="text"
@@ -114,7 +114,7 @@ class InvoiceForm extends Component {
               </Col>
             </FormGroup>
             <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Date</Col>
+              <Col as={Form.Label} sm={3}>Date</Col>
               <Col sm={2}>
                 <FormControl
                   type="text"
@@ -125,9 +125,9 @@ class InvoiceForm extends Component {
               </Col>
             </FormGroup>
             <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Customer</Col>
+              <Col as={Form.Label} sm={3}>Customer</Col>
               <Col sm={5}>
-                <FormControl componentClass="select" name="customerId" value={this.state.invoice.customerId}
+                <FormControl as="select" name="customerId" value={this.state.invoice.customerId}
                   onChange={this.handleChangeField}>
                   <option key="0" value="">Select...</option>
                   {this.props.customers ? this.props.customers.map(c =>
@@ -137,7 +137,7 @@ class InvoiceForm extends Component {
               </Col>
             </FormGroup>
             <FormGroup>
-              <Col componentClass={ControlLabel} sm={3}>Line items</Col>
+              <Col as={Form.Label} sm={3}>Line items</Col>
               <Col sm={9}>
                 <InvoiceLineItems 
                   lineItems={filter(this.state.invoice.lineItems, li => li.status !== "Deleted")} 

@@ -8,13 +8,15 @@ import InvoicesPage from './components/invoices/InvoicesPage';
 import LoginPage from './components/LoginPage';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPiggyBank, faCreditCard, faHome, faHandHoldingUsd, 
-  faDollarSign, faCar, faMoneyBillWave, faChartLine } from '@fortawesome/free-solid-svg-icons'
+  faDollarSign, faCar, faMoneyBillWave, faChartLine, faCog, faUser,
+  faListAlt, faTrashAlt, faPencilAlt, faPlusCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import CustomersPage from './components/customers/CustomersPage';
 import ReportsPage from "./components/reports_page/ReportsPage";
 import InvestmentsPage from "./components/investments_page/InvestmentsPage";
 import { PrivateRoute } from "./components/common/PrivateRoute";
 
-library.add(faPiggyBank, faCreditCard, faHome, faHandHoldingUsd, faDollarSign, faCar, faMoneyBillWave, faChartLine);
+library.add(faPiggyBank, faCreditCard, faHome, faHandHoldingUsd, faDollarSign, faCar, faMoneyBillWave, faChartLine,
+  faCog, faUser, faListAlt, faTrashAlt, faPencilAlt, faPlusCircle, faCheckCircle );
 
 export default () => (
   <Layout>
