@@ -3,12 +3,12 @@
     overflow: hidden;
     text-overflow: ellipsis;
     float: left;
+    white-space: nowrap;
 }
 
 .accountNav .row div {
     padding: 0;
-    font-size: 13px;
-    color: #ffffff;
+    font-size: 14px;
 }
 
 .accountNav .row div:first-child {

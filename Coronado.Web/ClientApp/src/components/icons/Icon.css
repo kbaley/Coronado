@@ -1,14 +1,25 @@
 .icon {
-    --icon-font-size: var(--font-size, 15px);
+    --icon-font-size: var(--font-size, 16px);
     cursor: pointer;
     font-size: var(--icon-font-size);
     vertical-align: middle;
-    padding: 4px 6px;
+    padding: 0;
+    margin: 0 5px;
     border: 1px solid transparent;
+    position: relative;
+    z-index: 0;
+    display: inline-block;
 }
 
-.icon:hover {
-    background-color: #eee;
-    border-radius: 4px;
-    border: 1px solid #666;
+.icon:hover::before {
+  content: '';
+  position: absolute;
+  display: block;
+  bottom: -7px;
+  left: -7px;
+  top: -7px;
+  right: -7px;
+  background-color: #eee;
+  z-index: -1;
+  border-radius: 50%;
 }

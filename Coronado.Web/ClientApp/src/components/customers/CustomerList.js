@@ -7,6 +7,7 @@ import './CustomerList.css';
 import { find } from 'lodash';
 import { CustomerRow } from './CustomerRow';
 import Spinner from '../common/Spinner';
+import { Table } from 'react-bootstrap';
 
 class CustomerList extends Component {
   constructor(props) {
@@ -47,7 +48,7 @@ class CustomerList extends Component {
   
   render() {
     return (
-    <table className='table customer-list'>
+    <Table className='customer-list' striped>
       <thead>
         <tr>
           <th></th>
@@ -74,7 +75,7 @@ class CustomerList extends Component {
           onDelete={()=>this.deleteCustomer(cust.customerId, cust.name)} />
         )}
       </tbody>
-    </table>
+    </Table>
     );
   }
 }

@@ -5,7 +5,7 @@ import { sumBy} from 'lodash';
 class NetWorth extends Component {
   render() {
     return (
-      <div style={{ float: "right", width: "140px" }}>
+      <div style={{ float: "right" }}>
       {Number(this.props.netWorth).toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 })}
     </div>
     );

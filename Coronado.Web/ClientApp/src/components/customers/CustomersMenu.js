@@ -29,7 +29,7 @@ export class CustomersMenu extends Component {
     return (
     <LinkContainer to={'/customers'}>
       <NavItem>
-        <FontAwesomeIcon icon='user' /> Customers
+        <FontAwesomeIcon icon="user" /><span style={{marginLeft: "15px"}}>Customers</span>
       </NavItem>
     </LinkContainer>
     );

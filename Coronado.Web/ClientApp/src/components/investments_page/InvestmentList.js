@@ -9,6 +9,7 @@ import { InvestmentRow } from './InvestmentRow';
 import InvestmentsTotal from './InvestmentsTotal';
 import Spinner from '../common/Spinner';
 import InvestmentPriceHistory from './InvestmentPriceHistory';
+import { Table } from "react-bootstrap";
 
 class InvestmentList extends Component {
   constructor(props) {
@@ -65,7 +66,7 @@ class InvestmentList extends Component {
   
   render() {
     return (
-    <table className='table investment-list'>
+    <Table className='investment-list' striped>
       <thead>
         <tr>
           <th></th>
@@ -103,7 +104,7 @@ class InvestmentList extends Component {
             currency={this.props.currency}
             currencies={this.props.currencies} />
       </tbody>
-    </table>
+    </Table>
     );
   }
 }

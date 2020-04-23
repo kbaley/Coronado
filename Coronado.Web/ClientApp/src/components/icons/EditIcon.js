@@ -4,8 +4,8 @@ import './Icon.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export function EditIcon(props) {
-  const classes = `edit-icon icon ${props.className}`
+  const classes = `${props.className}`
   return (
-    <FontAwesomeIcon icon='pencil-alt' className={classes} onClick={props.onStartEditing} />
+    <div className="edit-icon icon"><FontAwesomeIcon icon='pencil-alt' className={classes} onClick={props.onStartEditing} /></div>
   );
 }

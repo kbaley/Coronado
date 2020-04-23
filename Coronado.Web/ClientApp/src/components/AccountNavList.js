@@ -40,7 +40,7 @@ const SortableLinkContainer = SortableElement((props) =>
 
 const SortableNavBar = SortableContainer((props) => {
   return (
-    <Nav className="accountNav">
+    <div className="accountNav">
       {props.isLoadingData ? <Spinner /> :
       props.items.map((account, index) => (
           <SortableLinkContainer 
@@ -52,7 +52,7 @@ const SortableNavBar = SortableContainer((props) => {
                 <Col sm={1}>
                   <FontAwesomeIcon icon={getIcon(account.accountType)} />
                 </Col>
-                <Col sm={6} style={{overflow: "hidden", textOverflow: "ellipsis"}}>{account.name}</Col>
+                <Col sm={6} className="accountName">{account.name}</Col>
                 <Col sm={4} style={{textAlign: "right"}}>
                   <MoneyFormat amount={account.currentBalance} />
                 </Col>
@@ -60,7 +60,7 @@ const SortableNavBar = SortableContainer((props) => {
             </NavItem>
           </SortableLinkContainer>
       ))}
-    </Nav>
+    </div>
   );
 });
 

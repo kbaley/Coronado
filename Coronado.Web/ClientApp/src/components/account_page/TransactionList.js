@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import TransactionRow from './TransactionRow';
 import './TransactionList.css';
 import NewTransactionRow from './NewTransactionRow';
+import { Table } from 'react-bootstrap';
 
 class TransactionList extends Component {
   displayName = TransactionList.name;
@@ -21,7 +22,7 @@ class TransactionList extends Component {
 
   render() {
         
-    return (<table className='table transactionList'>
+    return (<Table className='transactionList' striped>
       <thead>
         <tr>
           <th></th>
@@ -42,7 +43,7 @@ class TransactionList extends Component {
           onDelete={() => this.deleteTransaction(trx.transactionId)} />
         ) : <tr/>}
       </tbody>
-    </table>);
+    </Table>);
   }
 }
 

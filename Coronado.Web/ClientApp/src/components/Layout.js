@@ -1,6 +1,7 @@
 import React from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import NavMenu from './NavMenu';
+import './Layout.css';
 import NotificationsComponent from './Notifications';
 import { ShortcutHelper } from './common/ShortcutHelper';
 import { Icon } from "./icons/Icon";
@@ -8,10 +9,10 @@ import { Icon } from "./icons/Icon";
 export default props => (
   <Container fluid>
     <Row>
-      <Col sm={2} style={{"width": "20%"}}>
+      <Col className='sidebar'>
         <NavMenu />
       </Col>
-      <Col sm={10} style={{"width": "80%"}}>
+      <Col className='mainContent'>
         <div style={{textAlign: "right", marginTop: 4}}>
           <Icon glyph="log-out" onClick={() => { localStorage.removeItem('coronado-user'); window.location.reload(true);}} />
         </div>

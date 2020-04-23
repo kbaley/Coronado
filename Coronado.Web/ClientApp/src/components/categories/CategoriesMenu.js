@@ -24,7 +24,7 @@ class CategoriesMenu extends Component {
   render() {
     return (<LinkContainer to={'/categories'}>
       <NavItem>
-        <FontAwesomeIcon icon='cog' /> Categories
+        <FontAwesomeIcon icon="cog" /><span style={{marginLeft: "15px"}}>Categories</span>
       </NavItem>
     </LinkContainer>);
   }

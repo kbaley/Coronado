@@ -1,0 +1,10 @@
+﻿.sidebar {
+  -ms-flex: 0 0 335px;
+  flex: 0 0 335px;
+  background-color: #d6ecff;
+  height: calc(100vh);
+  overflow: hidden scroll;
+}
+.sidebar::-webkit-scrollbar {
+  display: none;
+}

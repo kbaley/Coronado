@@ -15,12 +15,9 @@ import NetWorth from './NetWorth';
 export default props => (
   localStorage.getItem('coronado-user') &&
   <div className="bg-dark border-right" id="sidebar-wrapper">
-    <div className="sidebar-heading">
-      <Link to={'/'}>Coronado</Link>
-    </div>
     <Navbar.Brand style={{ width: "100%", paddingRight: "0" }}>
       <Link to={'/'}>Coronado</Link>
-      {/* <NetWorth /> */}
+      <NetWorth />
     </Navbar.Brand>
     <Navbar.Toggle />
     <Navbar.Brand>Accounts <NewAccount /><ToggleAllAccounts /></Navbar.Brand>
