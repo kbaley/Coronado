@@ -33,7 +33,7 @@ export class NewInvoice extends Component {
             <Modal.Title>Invoice Template</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form horizontal>
+            <Form>
               <FormGroup>
                 <Col as={Form.Label} sm={3}>Select file:</Col>
                 <Col sm={9}>

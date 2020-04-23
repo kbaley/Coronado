@@ -24,7 +24,7 @@ class ExpensesByCategoryReport extends Component {
     return (
       <div style={{margin: "10px"}}>
         <h4>Expenses By Category</h4>
-        <table className="table expensesTable" style={{width: "400px"}}>
+        <table className="table expensesTable table-striped" style={{width: "400px"}}>
           <thead>
             <tr>
               <th>Expense</th>

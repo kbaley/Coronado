@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal, Form, FormControl, FormGroup, Col, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
+import { Button, Modal, Form, FormControl, FormGroup, Col, ToggleButtonGroup, ToggleButton, Row } from 'react-bootstrap';
 
 export class AccountForm extends Component {
   constructor(props) {
@@ -32,7 +32,8 @@ export class AccountForm extends Component {
           currency: this.props.account.currency || '',
           accountType: this.props.account.accountType || '',
           mortgageType: this.props.account.mortgageType || '',
-          mortgagePayment: this.props.account.mortgagePayment || ''
+          mortgagePayment: this.props.account.mortgagePayment || '',
+          isHidden: this.props.account.isHidden
         }
       });
     }
@@ -65,25 +66,25 @@ export class AccountForm extends Component {
   }
   render() {
     return (
-    <Modal show={this.props.show} onHide={this.props.onClose}>
+    <Modal size="lg" show={this.props.show} onHide={this.props.onClose}>
       <Modal.Header closeButton>
         <Modal.Title>New account</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form horizontal>
-          <FormGroup>
+        <Form>
+          <FormGroup as={Row}>
             <Col as={Form.Label} sm={3}>Account Name</Col>
             <Col sm={9}>
               <FormControl autoFocus type="text" ref="inputName" name="name" value={this.state.account.name} onChange={this.handleChange} />
             </Col>
           </FormGroup>
-          <FormGroup>
+          <FormGroup as={Row}>
             <Col as={Form.Label} sm={3}>Vendor</Col>
             <Col sm={9}>
               <FormControl type="text" name="vendor" value={this.state.account.vendor} onChange={this.handleChange} />
             </Col>
           </FormGroup>
-          <FormGroup>
+          <FormGroup as={Row}>
             <Col as={Form.Label} sm={3}>Account Type</Col>
             <Col sm={9}>
               <FormControl as="select" name="accountType" 
@@ -96,7 +97,7 @@ export class AccountForm extends Component {
             </Col>
           </FormGroup>
           {this.state.newAccount &&
-          <FormGroup>
+          <FormGroup as={Row}>
             <Col as={Form.Label} sm={3}>Starting Balance</Col>
             <Col sm={3}>
               <FormControl type="number" name="startingBalance" value={this.state.account.startingBalance} onChange={this.handleChange} />
@@ -104,35 +105,38 @@ export class AccountForm extends Component {
           </FormGroup>
           }
           {this.state.newAccount &&
-          <FormGroup>
+          <FormGroup as={Row}>
             <Col as={Form.Label} sm={3}>Starting Date</Col>
             <Col sm={5}>
               <FormControl type="text" name="startDate" value={this.state.account.startDate} onChange={this.handleChange} placeholder="mm/dd/yyyy" />
             </Col>
           </FormGroup>
           }
-          <FormGroup>
+          <FormGroup as={Row}>
             <Col as={Form.Label} sm={3}>Currency</Col>
             <Col sm={3}>
               <FormControl type="text" name="currency" value={this.state.account.currency} onChange={this.handleChange} />
             </Col>
           </FormGroup>
-          <FormGroup>
+          <FormGroup as={Row}>
             <Col as={Form.Label} sm={3}>Hidden?</Col>
             <Col sm={3}>
-              <Form.Check type='checkbox' name='isHidden' />
-              {/* <Checkbox name="isHidden" onChange={this.handleChange} /> */}
+              <Form.Check 
+                type='checkbox' 
+                checked={this.state.account.isHidden}
+                onChange={this.handleChange}
+                name='isHidden' />
             </Col>
           </FormGroup>
           {this.state.account.accountType === "Mortgage" &&
           <React.Fragment>
-            <FormGroup>
+            <FormGroup as={Row}>
               <Col as={Form.Label} sm={3}>Monthly Payment</Col>
               <Col sm={3}>
                 <FormControl type="text" name="mortgagePayment" value={this.state.account.mortgagePayment} onChange={this.handleChange} />
               </Col>
             </FormGroup>
-            <FormGroup>
+            <FormGroup as={Row}>
               <Col as={Form.Label} sm={3}>Mortgage Type</Col>
               <Col sm={9}>
                 <ToggleButtonGroup type="radio" value={this.state.account.mortgageType} onChange={this.handleChangeMortgageType} name="mortgageType">

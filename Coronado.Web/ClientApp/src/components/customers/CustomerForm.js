@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button,Modal,Form,FormControl,FormGroup,Col } from 'react-bootstrap';
+import { Button,Modal,Form,FormControl,FormGroup,Col, Row } from 'react-bootstrap';
 import TextField from "../common/TextField";
 
 class CustomerForm extends Component {
@@ -43,13 +43,13 @@ class CustomerForm extends Component {
 
   render() {
     return (
-      <Modal show={this.props.show} onHide={this.props.onClose}>
+      <Modal size="lg" show={this.props.show} onHide={this.props.onClose}>
         <Modal.Header closeButton>
           <Modal.Title>Customer</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form horizontal>
-            <FormGroup>
+          <Form>
+            <FormGroup as={Row}>
               <Col as={Form.Label} sm={3}>Name</Col>
               <Col sm={9}>
             <FormControl

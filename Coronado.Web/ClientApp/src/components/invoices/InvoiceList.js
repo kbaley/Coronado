@@ -6,6 +6,7 @@ import InvoiceForm from './InvoiceForm';
 import './InvoiceList.css';
 import { InvoiceRow } from './InvoiceRow';
 import Spinner from '../common/Spinner';
+import { Table } from 'react-bootstrap';
 
 class InvoiceList extends Component {
   constructor(props) {
@@ -59,7 +60,7 @@ class InvoiceList extends Component {
     }
     
     return (
-    <table className='table invoice-list'>
+    <Table className='invoice-list' striped>
       <thead>
         <tr>
           <th></th>
@@ -90,7 +91,7 @@ class InvoiceList extends Component {
           onDelete={()=>this.deleteInvoice(invoice.invoiceId, invoice.invoiceNumber)} />
         )}
       </tbody>
-    </table>
+    </Table>
     );
   }
 }

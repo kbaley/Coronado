@@ -14,7 +14,7 @@ export default props => (
       </Col>
       <Col className='mainContent'>
         <div style={{textAlign: "right", marginTop: 4}}>
-          <Icon glyph="log-out" onClick={() => { localStorage.removeItem('coronado-user'); window.location.reload(true);}} />
+          <Icon glyph="sign-out-alt" onClick={() => { localStorage.removeItem('coronado-user'); window.location.reload(true);}} />
         </div>
         {props.children}
       </Col>

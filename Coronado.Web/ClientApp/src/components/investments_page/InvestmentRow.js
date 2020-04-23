@@ -11,7 +11,7 @@ export function InvestmentRow({investment, onEdit, onDelete, openPriceHistory}) 
       <td>
         <EditIcon onStartEditing={onEdit} />
         <DeleteIcon onDelete={onDelete} />
-        <Icon onClick={openPriceHistory} glyph="usd" title="Show historical prices" />
+        <Icon onClick={openPriceHistory} glyph="dollar-sign" title="Show historical prices" />
       </td>
       <td>{investment.name}</td>
       <td>{investment.symbol}</td>

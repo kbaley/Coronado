@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Tabs, Tab } from 'react-bootstrap';
 import NetWorthReport from './NetWorthReport';
 import ExpensesByCategoryReport from './ExpensesByCategoryReport';
+import './ReportsPage.css';
 
 class ReportsPage extends Component {
   constructor(props) {
@@ -19,7 +20,7 @@ class ReportsPage extends Component {
 
   render() {
     return (
-      <div>
+      <div className='reports-list'>
         <h1>Reports</h1>
           <Tabs
             activeKey={this.state.key}

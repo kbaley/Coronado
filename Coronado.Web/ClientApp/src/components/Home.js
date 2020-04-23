@@ -36,31 +36,27 @@ class Home extends React.Component {
   render() {
     var bankAccounts = filter(this.props.accounts, a => a.accountType === 'Bank Account' || a.accountType === 'Cash');
     var creditCards = filter(this.props.accounts, a => a.accountType === 'Credit Card');
-    var mortgages = filter(this.props.accounts, a => a.accountType === 'Mortgage');
     var liquidAssets = sumBy(bankAccounts, a => a.currentBalance);
     var ccTotal = sumBy(creditCards, c => c.currentBalance);
-    var mortgageTotal = sumBy(mortgages, m => m.currentBalance);
     
     return (
       <div>
-        <h1>Coronado Financial App for Me</h1>
+        <h2>Coronado Financial App for Me</h2>
         <Row>
           <Col sm={3}>
-            <h4>Liquid assets</h4>   
-            <h4>Credit cards</h4>
-            <h4>Mortgages</h4>
-            <h4>Investment Gain/Loss this month</h4>
-            <h4>Investment Gain/Loss last month</h4>
+            <h5>Liquid assets</h5>   
+            <h5>Credit cards</h5>
+            <h5>Investment Gain/Loss this month</h5>
+            <h5>Investment Gain/Loss last month</h5>
             <br/>
             <br/>
             <NetWorthReport />
           </Col>
           <Col sm={2}>
-            <h4 style={{textAlign: "right"}}>{Currency(liquidAssets)}</h4>
-            <h4 style={{textAlign: "right"}}>{Currency(ccTotal)}</h4>
-            <h4 style={{textAlign: "right"}}>{Currency(mortgageTotal)}</h4>
-            <h4 style={{textAlign: "right"}}>{this.getGainLossForMonth(0)}</h4>
-            <h4 style={{textAlign: "right"}}>{this.getGainLossForMonth(1)}</h4>
+            <h5 style={{textAlign: "right"}}>{Currency(liquidAssets)}</h5>
+            <h5 style={{textAlign: "right"}}>{Currency(ccTotal)}</h5>
+            <h5 style={{textAlign: "right"}}>{this.getGainLossForMonth(0)}</h5>
+            <h5 style={{textAlign: "right"}}>{this.getGainLossForMonth(1)}</h5>
           </Col>
           <Col sm={7}></Col>
         </Row>

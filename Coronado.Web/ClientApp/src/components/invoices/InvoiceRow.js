@@ -11,9 +11,9 @@ export function InvoiceRow({invoice, onEdit, onDelete, onDownload, onEmail, onPr
       <td>
         <EditIcon onStartEditing={onEdit} />
         <DeleteIcon onDelete={onDelete} />
-        <Icon onClick={onDownload} glyph="download-alt" title="Download" />
+        <Icon onClick={onDownload} glyph="file-download" title="Download" />
         <Icon onClick={onEmail} glyph="envelope" title="Email" />
-        <Icon onClick={onPreview} glyph="new-window" title="Preview" />
+        <Icon onClick={onPreview} glyph="external-link-alt" title="Preview" />
       </td>
       <td>{invoice.invoiceNumber}</td>
       <td>{new Date(invoice.date).toLocaleDateString()}</td>

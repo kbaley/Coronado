@@ -15,7 +15,7 @@ class NetWorthReport extends Component {
     return (
       <div style={{margin: "10px"}}>
         <h4>Net Worth</h4>
-        <table className="table" style={{width: "400px"}}>
+        <table className="table table-striped" style={{width: "400px"}}>
           <thead>
             <tr>
               <th>Date</th>

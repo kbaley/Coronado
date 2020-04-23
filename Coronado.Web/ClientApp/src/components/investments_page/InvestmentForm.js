@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal, Form, FormControl, FormGroup, Col } from 'react-bootstrap';
+import { Button, Modal, Form, FormControl, FormGroup, Col, Row } from 'react-bootstrap';
 import TextField from "../common/TextField";
 
 class InvestmentForm extends Component {
@@ -48,13 +48,13 @@ class InvestmentForm extends Component {
 
   render() {
     return (
-      <Modal show={this.props.show} onHide={this.props.onClose}>
+      <Modal size="lg" show={this.props.show} onHide={this.props.onClose}>
         <Modal.Header closeButton>
           <Modal.Title>Investment</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form horizontal>
-            <FormGroup>
+          <Form>
+            <FormGroup as={Row}>
               <Col as={Form.Label} sm={3}>Name</Col>
               <Col sm={9}>
                 <FormControl
@@ -89,14 +89,15 @@ class InvestmentForm extends Component {
               value={this.state.investment.currency}
               onChange={this.handleChangeField}
             />
-            <FormGroup>
+            <FormGroup as={Row}>
               <Col as={Form.Label} sm={3}>Don't retrieve prices?</Col>
               <Col sm={3}>
-                <Form.Check type='checkbox' name='dontRetrievePrices' />
-                {/* <Checkbox 
-                  name="dontRetrievePrices" 
+                <Form.Check 
+                  type='checkbox' 
+                  name='dontRetrievePrices' 
                   checked={this.state.investment.dontRetrievePrices}
-                  onChange={this.handleChangeField} /> */}
+                  onChange={this.handleChangeField}
+                  style={{"marginTop": "8px"}} />
               </Col>
             </FormGroup>
           </Form>

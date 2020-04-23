@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Nav, NavItem, Row, Col } from 'react-bootstrap';
+import { NavItem, Row, Col } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import * as accountActions from '../actions/accountActions';
 import { bindActionCreators } from 'redux';

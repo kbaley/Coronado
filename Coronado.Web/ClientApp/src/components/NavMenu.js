@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import { Link } from 'react-router-dom';
-import { Navbar, Nav } from 'react-bootstrap';
+import { Navbar } from 'react-bootstrap';
 import AccountNavList from './AccountNavList';
 import './NavMenu.css';
 import CategoriesMenu from './categories/CategoriesMenu';

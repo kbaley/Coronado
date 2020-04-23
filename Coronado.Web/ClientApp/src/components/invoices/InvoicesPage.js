@@ -46,7 +46,7 @@ class InvoicesPage extends Component {
             <ToggleButton value={true}>Show Paid</ToggleButton>
           </ToggleButtonGroup>
           <Icon className="show-template" glyph="upload" onClick={this.uploadTemplateForm} />
-          <Icon className="show-template" glyph="new-window" onClick={this.showTemplate} />
+          <Icon className="show-template" glyph="external-link-alt" onClick={this.showTemplate} />
           <UploadInvoiceTemplate show={this.state.showUploadForm} onHide={() => this.setState({showUploadForm: false})}
             onUpload={this.uploadTemplate}/>
         </div>

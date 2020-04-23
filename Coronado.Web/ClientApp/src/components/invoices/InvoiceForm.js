@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal, Form, FormControl, FormGroup, Col } from 'react-bootstrap';
+import { Button, Modal, Form, FormControl, FormGroup, Col, Row } from 'react-bootstrap';
 import InvoiceLineItems from "./InvoiceLineItems";
 import { filter, findIndex } from "lodash";
 import {v4 as uuidv4 } from 'uuid';
@@ -96,13 +96,13 @@ class InvoiceForm extends Component {
 
   render() {
     return (
-      <Modal show={this.props.show} onHide={this.props.onClose} bsSize="large">
+      <Modal size="lg" show={this.props.show} onHide={this.props.onClose} bsSize="large">
         <Modal.Header closeButton>
           <Modal.Title>Invoice</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form horizontal>
-            <FormGroup>
+          <Form>
+            <FormGroup as={Row}>
               <Col as={Form.Label} sm={3}>Number</Col>
               <Col sm={2}>
                 <FormControl autoFocus
@@ -113,7 +113,7 @@ class InvoiceForm extends Component {
                 />
               </Col>
             </FormGroup>
-            <FormGroup>
+            <FormGroup as={Row}>
               <Col as={Form.Label} sm={3}>Date</Col>
               <Col sm={2}>
                 <FormControl
@@ -124,7 +124,7 @@ class InvoiceForm extends Component {
                 />
               </Col>
             </FormGroup>
-            <FormGroup>
+            <FormGroup as={Row}>
               <Col as={Form.Label} sm={3}>Customer</Col>
               <Col sm={5}>
                 <FormControl as="select" name="customerId" value={this.state.invoice.customerId}
@@ -136,7 +136,7 @@ class InvoiceForm extends Component {
                 </FormControl>
               </Col>
             </FormGroup>
-            <FormGroup>
+            <FormGroup as={Row}>
               <Col as={Form.Label} sm={3}>Line items</Col>
               <Col sm={9}>
                 <InvoiceLineItems 

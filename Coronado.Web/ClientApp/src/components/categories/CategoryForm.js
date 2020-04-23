@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Button,Modal,Form,FormControl,FormGroup,Col } from 'react-bootstrap';
+import { Button,Modal,Form,FormControl,FormGroup,Col, Row } from 'react-bootstrap';
+import '../common/Forms.css';
 
 class CategoryForm extends Component {
   displayName = CategoryForm.name;
@@ -45,15 +46,15 @@ class CategoryForm extends Component {
   }
   render() {
     return (
-      <Modal show={this.props.show} onHide={this.props.onClose}>
+      <Modal dialogClassName="category-form" show={this.props.show} onHide={this.props.onClose}>
         <Modal.Header closeButton>
           <Modal.Title>New category</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form horizontal>
-            <FormGroup>
-              <Col as={Form.Label} sm={3}>Category Name</Col>
-              <Col sm={9}>
+          <Form>
+            <FormGroup as={Row}>
+              <Col as={Form.Label} sm={4}>Category Name</Col>
+              <Col sm={8}>
             <FormControl
               type="text" autoFocus
               name="name" ref="inputName"
@@ -62,8 +63,8 @@ class CategoryForm extends Component {
             />
               </Col>
             </FormGroup>
-            <FormGroup>
-              <Col as={Form.Label} sm={3}>Type</Col>
+            <FormGroup as={Row}>
+              <Col as={Form.Label} sm={4}>Type</Col>
               <Col sm={5}>
                 <FormControl type="text" value={this.state.category.type}
                   name="type"
@@ -71,8 +72,8 @@ class CategoryForm extends Component {
                 />
               </Col>
             </FormGroup>
-            <FormGroup>
-              <Col as={Form.Label} sm={3}>Parent Category</Col>
+            <FormGroup as={Row}>
+              <Col as={Form.Label} sm={4}>Parent Category</Col>
               <Col sm={5}>
                 <FormControl as="select" name="parentCategory" value={this.state.category.parentCategoryId}
                     onChange={this.handleChangeParent}>

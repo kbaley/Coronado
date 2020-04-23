@@ -47,7 +47,7 @@ class CategoryList extends Component {
   
   render() {
     return (
-    <table className='table category-list'>
+    <table className='table category-list table-striped'>
       <thead>
         <tr>
           <th></th>

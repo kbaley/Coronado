@@ -31,15 +31,15 @@ class InvestmentsPage extends Component {
     return (
       <div>
         <div style={{float: "right", width: "150px", textAlign: "right"}}>
-          <Icon className="make-correcting-entry" glyph="transfer" onClick={this.makeCorrectingEntries} title="Sync with Investments accont" />
+          <Icon className="make-correcting-entry" glyph="exchange-alt" onClick={this.makeCorrectingEntries} title="Sync with Investments accont" />
           <Icon className="make-correcting-entry" glyph="arrow-down" onClick={this.getLatestPrices} title="Get latest prices from Yahoo" />
         </div>
         <h1>
-          Investment <NewInvestment />
+          Investments <NewInvestment />
         </h1>
-        <h3>USD</h3>
+        <h4>USD</h4>
         <InvestmentList investments={filter(this.props.investments, i => i.currency === 'USD')} currency='USD' />
-        <h3>CAD</h3>
+        <h4>CAD</h4>
         <InvestmentList investments={filter(this.props.investments, i => i.currency === 'CAD')} currency='CAD' />
         <table className='table investment-list'>
           <tbody>

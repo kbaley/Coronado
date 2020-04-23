@@ -1,5 +1,20 @@
 body {
   font-size: 13px;
+  font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+}
+
+a {
+  color: #337ab7;
+}
+
+h1 {
+  font-size: 36px;
+  font-weight: 500;
+}
+
+label {
+  font-weight: 700;
+  font-size: 14px;
 }
 
 @media (max-width: 767px) {
@@ -11,13 +26,4 @@ body {
 
 @media (min-width: 768px) {
 
-}
-
-a.delete-icon {
-    cursor: pointer;
-}
-
-a.delete-icon > .glyphicon {
-    color: #990000;
-    font-size:15px;
 }
