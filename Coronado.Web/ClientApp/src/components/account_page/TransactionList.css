@@ -10,6 +10,7 @@
 .transactionList > tbody > tr> td {
     white-space: nowrap;
     padding: 3px 8px;
+    vertical-align: middle;
 }
 
 .transactionList > tbody > tr {
@@ -21,8 +22,8 @@
 }
 
 .transactionList td:nth-child(1) {
-    width: 80px;
-    max-width: 80px;
+    width: 100px;
+    max-width: 100px;
 }
 
 .transactionList td:nth-child(2) {

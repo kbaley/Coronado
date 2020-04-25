@@ -6,6 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 export function CheckIcon(props) {
   const classes = `check-icon icon ${props.className || ''}`
   return (
-    <FontAwesomeIcon icon='check-circle' className={classes} onClick={props.onClick} />
+    <div className={classes}><FontAwesomeIcon icon='check-circle' onClick={props.onClick} fixedWidth /></div>
   );
 }

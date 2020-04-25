@@ -41,8 +41,8 @@ class InvoicesPage extends Component {
   render() {
     return (
       <div>
-        <div style={{float: "right", width: "250px", textAlign: "right"}}>
-          <ToggleButtonGroup type="checkbox" value={this.state.showPaid} onChange={this.handleChangeButton}>
+        <div style={{float: "right", width: "350px", textAlign: "right", "marginRight": "30px"}}>
+          <ToggleButtonGroup className="show-all" type="checkbox" value={this.state.showPaid} onChange={this.handleChangeButton}>
             <ToggleButton value={true}>Show Paid</ToggleButton>
           </ToggleButtonGroup>
           <Icon className="show-template" glyph="upload" onClick={this.uploadTemplateForm} />

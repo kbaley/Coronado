@@ -9,6 +9,8 @@
     position: relative;
     z-index: 0;
     display: inline-block;
+    width: 25px;
+    text-align: center;
 }
 
 .icon:hover::before {
@@ -19,7 +21,7 @@
   left: -7px;
   top: -7px;
   right: -7px;
-  background-color: #eee;
+  background-color: #ddd;
   z-index: -1;
   border-radius: 50%;
 }

@@ -3,6 +3,6 @@
 }
 
 .expensesTable td:last-child, .expensesTable > tbody > tr:last-child {
-  background-color: #eeeeee;
+  background-color: #d6ecff;
   font-weight: bold;
 }
