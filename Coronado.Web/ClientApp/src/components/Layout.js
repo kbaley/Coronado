@@ -5,12 +5,13 @@ import './Layout.css';
 import NotificationsComponent from './Notifications';
 import { ShortcutHelper } from './common/ShortcutHelper';
 import { Icon } from "./icons/Icon";
+import Sidebar from './Sidebar';
 
 export default props => (
   <Container fluid>
     <Row>
       <Col className='sidebar'>
-        <NavMenu />
+        <Sidebar />
       </Col>
       <Col className='mainContent'>
         <div style={{textAlign: "right", marginTop: 4}}>
