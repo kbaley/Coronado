@@ -1,30 +1,18 @@
 import React, { Component } from 'react';
-import { LinkContainer } from 'react-router-bootstrap';
-import { NavItem, Row, Col } from 'react-bootstrap';
-import * as Mousetrap from 'mousetrap';
 import { withRouter } from 'react-router-dom';
 import { getInvestmentsTotal } from '../common/investmentHelpers';
 import { CurrencyFormat } from '../common/CurrencyFormat';
 import { connect } from 'react-redux';
 import { sumBy } from 'lodash';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import LocalAtmIcon from '@material-ui/icons/LocalAtm';
+import { SidebarMenuItem } from '../common/SidebarMenuItem';
 
 export class InvestmentsMenu extends Component {
   constructor(props) {
     super(props);
-    this.goToInvestments = this.goToInvestments.bind(this);
     this.getInvestmentsTotal = this.getInvestmentsTotal.bind(this);
     this.state = {};
   }
-
-  componentDidMount() {
-    Mousetrap.bind('g n', this.goToInvestments);
-  }
-
-  componentWillUnmount() {
-    Mousetrap.unbind('g n');
-  }
-
 
   getInvestmentsTotal() {
 
@@ -37,25 +25,14 @@ export class InvestmentsMenu extends Component {
     }).toFixed(2);
   }
 
-  goToInvestments() {
-    this.props.history.push('/investments');
-  }
-
   render() {
     return (
-      <LinkContainer to={'/investments'}>
-        <NavItem>
-          <Row>
-            <Col sm={1}>
-              <FontAwesomeIcon icon='dollar-sign' />
-            </Col>
-            <Col sm={7} style={{ overflow: "hidden", textOverflow: "ellipsis" }}>Investments</Col>
-            <Col sm={3} style={{ textAlign: "right", fontSize: "13px", padding: "0 13px 0 0" }}>
-              <CurrencyFormat value={getInvestmentsTotal()} />
-            </Col>
-          </Row>
-        </NavItem>
-      </LinkContainer>
+      <SidebarMenuItem 
+        to='/investments' 
+        primary="Investments" 
+        icon={<LocalAtmIcon />}
+        secondary={<CurrencyFormat value={getInvestmentsTotal()} />}
+        />
     );
   }
 }

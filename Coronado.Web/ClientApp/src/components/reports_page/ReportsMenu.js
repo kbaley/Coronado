@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { LinkContainer } from 'react-router-bootstrap';
-import { NavItem} from 'react-bootstrap';
 import * as Mousetrap from 'mousetrap';
-import { withRouter } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { withRouter, NavLink } from 'react-router-dom';
+import { MenuItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 
 export class ReportsMenu extends Component {
   constructor(props) {
@@ -27,11 +26,12 @@ export class ReportsMenu extends Component {
 
   render() {
     return (
-    <LinkContainer to={'/reports'}>
-      <NavItem>
-        <FontAwesomeIcon icon="chart-line" /><span style={{marginLeft: "15px"}}>Reports</span>
-      </NavItem>
-    </LinkContainer>
+      <NavLink to={'/reports'}>
+        <MenuItem button key="Reports">
+          <ListItemIcon><TrendingUpIcon /></ListItemIcon>
+          <ListItemText primary="Reports" />
+        </MenuItem>
+      </NavLink>
     );
   }
 }

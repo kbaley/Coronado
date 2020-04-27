@@ -1,47 +1,24 @@
 import React, { Component } from 'react';
-import { LinkContainer } from 'react-router-bootstrap';
-import { NavItem, Row, Col } from 'react-bootstrap';
-import * as Mousetrap from 'mousetrap';
 import { withRouter } from 'react-router-dom';
-import { CurrencyFormat } from '../common/CurrencyFormat';
 import { connect } from 'react-redux';
+import ListAltIcon from '@material-ui/icons/ListAlt';
 import { sumBy } from 'lodash';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { CurrencyFormat } from '../common/CurrencyFormat';
+import { SidebarMenuItem } from '../common/SidebarMenuItem';
 
 export class InvoicesMenu extends Component {
   constructor(props) {
     super(props);
-    this.goToInvoices = this.goToInvoices.bind(this);
-  }
-
-  componentDidMount() {
-    Mousetrap.bind('g i', this.goToInvoices);
-  }
-
-  componentWillUnmount() {
-    Mousetrap.unbind('g i');
-  }
-
-
-  goToInvoices() {
-    this.props.history.push('/invoices');
   }
 
   render() {
     return (
-      <LinkContainer to={'/invoices'}>
-        <NavItem>
-          <Row>
-            <Col sm={1}>
-              <FontAwesomeIcon icon='list-alt' /> 
-            </Col>
-            <Col sm={7} style={{ overflow: "hidden", textOverflow: "ellipsis" }}>Invoices</Col>
-            <Col sm={3} style={{ textAlign: "right", fontSize: "13px", padding: "0 13px 0 0" }}>
-              <CurrencyFormat value={sumBy(this.props.invoices, i => { return i.balance })} />
-            </Col>
-          </Row>
-        </NavItem>
-      </LinkContainer>
+      <SidebarMenuItem 
+        to='/invoices' 
+        primary="Invoices" 
+        icon={<ListAltIcon />}
+        secondary={<CurrencyFormat value={sumBy(this.props.invoices, i => { return i.balance })} />}
+        />
     );
   }
 }
