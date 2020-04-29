@@ -10,8 +10,8 @@ namespace Coronado.Web.Controllers.Dtos
         public MappingProfile()
         {
             CreateMap<Investment, InvestmentForListDto>()
-                .ForMember(i => i.LastPrice, opt => opt.MapFrom(src => src.GetLastPrice()))
-                .ForMember(i => i.CurrentValue, opt => opt.MapFrom(src => Math.Round(src.Shares * src.GetLastPrice(), 2)))
+                .ForMember(i => i.LastPrice, opt => opt.MapFrom(src => src.GetLastPriceAmount()))
+                .ForMember(i => i.CurrentValue, opt => opt.MapFrom(src => Math.Round(src.Shares * src.GetLastPriceAmount(), 2)))
                 .ReverseMap();  
             CreateMap<InvestmentPrice, InvestmentPriceDto>().ReverseMap();  
             CreateMap<InvoiceLineItem, InvoiceLineItemsForPosting>()

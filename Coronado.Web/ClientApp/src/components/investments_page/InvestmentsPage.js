@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import NewInvestment from "./NewInvestment";
 import InvestmentList from "./InvestmentList";
+import TodaysPrices from "./TodaysPrices";
 import {Icon} from "../icons/Icon";
 import './InvestmentsPage.css';
 import { filter } from 'lodash';
@@ -15,6 +16,7 @@ class InvestmentsPage extends Component {
     super(props);
     this.makeCorrectingEntries = this.makeCorrectingEntries.bind(this);
     this.getLatestPrices = this.getLatestPrices.bind(this);
+    this.saveTodaysPrices = this.saveTodaysPrices.bind(this);
     this.state = {
     }
   }
@@ -27,6 +29,10 @@ class InvestmentsPage extends Component {
     this.props.actions.getLatestPrices();
   }
 
+  saveTodaysPrices(investments) {
+    this.props.actions.saveTodaysPrices(investments);
+  }
+
   render() {
     return (
       <div>
@@ -35,7 +41,9 @@ class InvestmentsPage extends Component {
           <Icon className="make-correcting-entry" glyph="arrow-down" onClick={this.getLatestPrices} title="Get latest prices from Yahoo" />
         </div>
         <h1>
-          Investments <NewInvestment />
+          Investments <NewInvestment /> <TodaysPrices 
+            investments={this.props.investments} 
+            onSave={this.saveTodaysPrices} />
         </h1>
         <h4>USD</h4>
         <InvestmentList investments={filter(this.props.investments, i => i.currency === 'USD')} currency='USD' />

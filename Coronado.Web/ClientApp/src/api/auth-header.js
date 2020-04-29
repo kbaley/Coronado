@@ -9,3 +9,11 @@ export function authHeader() {
       return {};
   }
 }
+
+export function defaultHeaders() {
+  return {
+    ...authHeader(),
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+}

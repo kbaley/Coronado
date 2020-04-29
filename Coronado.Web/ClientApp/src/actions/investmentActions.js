@@ -102,6 +102,13 @@ export const updateInvestment = (investment) => {
   }
 }
 
+export const saveTodaysPrices = (investments) => {
+  return async (dispatch) => {
+    const updatedInvestments = await InvestmentApi.saveTodaysPrices(investments);
+    dispatch(loadInvestmentsSuccess(updatedInvestments));
+  }
+}
+
 export const updatePriceHistory = (investment, prices) => {
   return async (dispatch) => {
     const updatedInvestment = await InvestmentApi.updatePriceHistory(investment, prices);

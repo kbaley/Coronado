@@ -47,7 +47,7 @@ namespace Coronado.Web.Controllers.Api
                     {
                         newPrice.InvestmentPriceId = Guid.NewGuid();
                         newPrice.InvestmentId = investment.InvestmentId;
-                        newPrice.Date = DateTime.Now;
+                        newPrice.Date = DateTime.Today;
                         newPrice.Price = (decimal)item.regularMarketPrice.Value;
                         context.InvestmentPrices.Add(newPrice);
                     }
