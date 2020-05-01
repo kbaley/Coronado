@@ -12,24 +12,31 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Spinner from './common/Spinner';
 import {SortableContainer, SortableElement} from 'react-sortable-hoc';
 import {filter} from 'lodash';
-
+import { SidebarMenuItem } from './common/SidebarMenuItem';
+import CreditCardIcon from '@material-ui/icons/CreditCard';
+import DirectionsCarIcon from '@material-ui/icons/DirectionsCar';
+import HouseIcon from '@material-ui/icons/House';
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney'
+import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
+import MoneyIcon from '@material-ui/icons/Money';
 
   function getIcon(accountType) {
     switch (accountType) {
       case "Credit Card":
-        return "credit-card";
+        return (<CreditCardIcon />);
       case "Asset":
-        return "car";
+        return (<DirectionsCarIcon />);
       case "Mortgage":
-        return "home";
+        return (<HouseIcon />);
       case "Investment":
-        return "dollar-sign";
+        return (<AttachMoneyIcon />);
       case "Loan":
-        return "hand-holding-usd";
+        return (<MoneyIcon />);
       case "Cash":
-        return "money-bill-wave";
+        return (<AccountBalanceWalletIcon />);
       default:
-        return "piggy-bank";
+        return (<AccountBalanceIcon />);
     }
   }
 const SortableLinkContainer = SortableElement((props) =>
@@ -43,22 +50,11 @@ const SortableNavBar = SortableContainer((props) => {
     <div className="accountNav">
       {props.isLoadingData ? <Spinner /> :
       props.items.map((account, index) => (
-          <SortableLinkContainer 
-            index={index}
-            to={'/account/' + account.accountId} 
-            key={account.accountId}>
-            <NavItem>
-              <Row>
-                <Col sm={1}>
-                  <FontAwesomeIcon icon={getIcon(account.accountType)} />
-                </Col>
-                <Col sm={6} className="accountName">{account.name}</Col>
-                <Col sm={4} style={{textAlign: "right"}}>
-                  <MoneyFormat amount={account.currentBalance} />
-                </Col>
-              </Row>
-            </NavItem>
-          </SortableLinkContainer>
+        <SidebarMenuItem 
+          to={'/account/' + account.accountId} 
+          primary={account.name} 
+          secondary={account.currentBalance}
+          icon={getIcon(account.accountType)} />
       ))}
     </div>
   );

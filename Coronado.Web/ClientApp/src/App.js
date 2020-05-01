@@ -15,6 +15,7 @@ import CustomersPage from './components/customers/CustomersPage';
 import ReportsPage from "./components/reports_page/ReportsPage";
 import InvestmentsPage from "./components/investments_page/InvestmentsPage";
 import { PrivateRoute } from "./components/common/PrivateRoute";
+import { CssBaseline } from '@material-ui/core';
 
 library.add(faPiggyBank, faCreditCard, faHome, faHandHoldingUsd, faDollarSign, faCar, faMoneyBillWave, faChartLine,
   faCog, faUser, faListAlt, faTrashAlt, faPencilAlt, faPlusCircle, faCheckCircle, faTrash, faSignOutAlt, faExchangeAlt,
@@ -22,6 +23,7 @@ library.add(faPiggyBank, faCreditCard, faHome, faHandHoldingUsd, faDollarSign, f
 
 export default () => (
   <Layout>
+    <CssBaseline />
     <Switch>
       <PrivateRoute exact path='/' component={Home} />
       <Route exact path='/login' component={LoginPage} />

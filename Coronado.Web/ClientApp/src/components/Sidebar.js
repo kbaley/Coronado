@@ -3,7 +3,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import AccountNavList from './AccountNavList';
 import InvoicesMenu from './invoices/InvoicesMenu';
 import InvestmentsMenu from './investments_page/InvestmentsMenu';
-import ReportsMenu from './reports_page/ReportsMenu';
 import NewAccount from './account_page/NewAccount';
 import ToggleAllAccounts from './account_page/ToggleAllAccounts';
 import { makeStyles, Drawer, Divider, List } from '@material-ui/core';
@@ -13,6 +12,7 @@ import { SidebarMenuItem } from './common/SidebarMenuItem';
 import LabelIcon from '@material-ui/icons/Label';
 import PeopleIcon from '@material-ui/icons/People';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
+import './Sidebar.css';
 
 const drawerWidth = 335;
 
@@ -59,11 +59,13 @@ export default Sidebar => {
       <Divider />
       <AccountNavList />
       <Divider />
-      <InvoicesMenu />
-      <SidebarMenuItem to='/reports' primary="Reports" icon={<TrendingUpIcon />} />
-      <SidebarMenuItem to='/categories' primary="Categories" icon={<LabelIcon />} />
-      <InvestmentsMenu />
-      <SidebarMenuItem to='/customers' primary="Customers" icon={<PeopleIcon />} />
+      <div>
+        <InvoicesMenu />
+        <SidebarMenuItem to='/reports' primary="Reports" icon={<TrendingUpIcon />} />
+        <SidebarMenuItem to='/categories' primary="Categories" icon={<LabelIcon />} />
+        <InvestmentsMenu />
+        <SidebarMenuItem to='/customers' primary="Customers" icon={<PeopleIcon />} />
+      </div>
     </Drawer>
   </div>
   );
