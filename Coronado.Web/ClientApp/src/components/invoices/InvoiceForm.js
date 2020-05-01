@@ -11,7 +11,7 @@ class InvoiceForm extends Component {
     quantity: '',
     unitAmount: '',
     status: 'Added',
-    invoiceLineItemId: 0
+    invoiceLineItemId: uuidv4()
   }
   initialState = {
       newInvoice: true,
@@ -67,6 +67,7 @@ class InvoiceForm extends Component {
     const lineItems = this.state.invoice.lineItems;
     
     this.blankLineItem.invoiceLineItemId = uuidv4();
+    
     this.blankLineItem.invoiceId = this.state.invoice.invoiceId;
     this.setState(
       {...this.state, 
@@ -96,7 +97,7 @@ class InvoiceForm extends Component {
 
   render() {
     return (
-      <Modal size="lg" show={this.props.show} onHide={this.props.onClose} bsSize="large">
+      <Modal size="lg" show={this.props.show} onHide={this.props.onClose} >
         <Modal.Header closeButton>
           <Modal.Title>Invoice</Modal.Title>
         </Modal.Header>

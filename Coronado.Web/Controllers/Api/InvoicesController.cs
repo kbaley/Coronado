@@ -71,7 +71,6 @@ namespace Coronado.Web.Controllers.Api
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] InvoiceForPosting invoice)
         {
-            
             if (invoice.InvoiceId == null || invoice.InvoiceId == Guid.Empty) invoice.InvoiceId = Guid.NewGuid();
             invoice.Balance = invoice.GetLineItemTotal();
             var invoiceMapped = _mapper.Map<Invoice>(invoice);
