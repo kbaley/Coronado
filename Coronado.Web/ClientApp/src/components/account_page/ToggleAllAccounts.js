@@ -20,7 +20,7 @@ class ToggleAllAccounts extends Component {
 
   render() {
     const { classes } = this.props;
-    var text = this.props.showAllAccounts ? "Hide hidden" : "Show all"
+    var text = this.props.showAllAccounts ? "Hide inactive" : "Show all"
     return (
         <Button onClick={this.toggle} className={classes.blue} size="small">
           {text}

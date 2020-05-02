@@ -30,6 +30,7 @@ class TodaysPrices extends Component {
             return {
               investmentId: i.investmentId,
               name: i.name,
+              symbol: i.symbol,
               lastPriceDate: lastPrice.date,
               lastPrice: lastPrice.price
             }  
@@ -107,7 +108,7 @@ class TodaysPrices extends Component {
               {this.state.investments && this.state.investments.map( (i, index) => {
                 return (
                 <tr key={i.investmentId}>
-                  <td>{i.name}</td>
+                  <td>{i.symbol}</td>
                   <td><Moment format="M/D/YYYY">{i.lastPriceDate}</Moment></td>
                   <td>
                     <input type="text" name="price" value={i.lastPrice}

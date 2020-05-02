@@ -10,6 +10,7 @@ import './InvestmentsPage.css';
 import { filter } from 'lodash';
 import DisplayTotalRow from './DisplayTotalRow';
 import { getInvestmentsTotal } from '../common/investmentHelpers';
+import { orderBy } from 'lodash';
 
 class InvestmentsPage extends Component {
   constructor(props) {
@@ -42,7 +43,7 @@ class InvestmentsPage extends Component {
         </div>
         <h1>
           Investments <NewInvestment /> <TodaysPrices 
-            investments={this.props.investments} 
+            investments={orderBy(this.props.investments, ['symbol'], ['asc'])} 
             onSave={this.saveTodaysPrices} />
         </h1>
         <h4>USD</h4>
