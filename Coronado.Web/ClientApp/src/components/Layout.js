@@ -11,7 +11,8 @@ export default props => (
   <Container fluid>
     <Row>
       <Col className='sidebar'>
-        <Sidebar />
+        <Sidebar 
+        />
       </Col>
       <Col className='mainContent'>
         <div style={{textAlign: "right", marginTop: 4}}>

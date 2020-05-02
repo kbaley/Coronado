@@ -1,46 +1,32 @@
-﻿import React from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
+﻿import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import AccountNavList from './AccountNavList';
-import InvoicesMenu from './invoices/InvoicesMenu';
-import InvestmentsMenu from './investments_page/InvestmentsMenu';
 import NewAccount from './account_page/NewAccount';
 import ToggleAllAccounts from './account_page/ToggleAllAccounts';
-import { makeStyles, Drawer, Divider, List } from '@material-ui/core';
+import { Drawer, Divider, withStyles, List, CssBaseline } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import NetWorth from './NetWorth';
 import { SidebarMenuItem } from './common/SidebarMenuItem';
-import LabelIcon from '@material-ui/icons/Label';
-import PeopleIcon from '@material-ui/icons/People';
-import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import './Sidebar.css';
+import styles from '../assets/jss/material-dashboard-react/components/sidebarStyle.js';
+import routes from '../routes';
+import { getInvestmentsTotal } from './common/investmentHelpers';
+import { MoneyFormat } from './common/DecimalFormat';
+import { connect } from 'react-redux';
+import { sumBy } from 'lodash';
 
-const drawerWidth = 335;
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
-  appBar: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  toolbar: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
-    padding: theme.spacing(3),
+export class Sidebar extends Component {
+  constructor(props) {
+    super(props);
+    this.activeRoute = this.activeRoute.bind(this);
   }
-}));
 
-export default Sidebar => {
-  const classes = useStyles();
+  activeRoute(routeName) {
+    return window.location.href.indexOf(routeName) > -1;
+  }
+  render() {
+    const { classes } = this.props;
+
   return (localStorage.getItem('coronado-user') &&
   <div>
     <CssBaseline />
@@ -52,21 +38,55 @@ export default Sidebar => {
       }}
       anchor="left"
     >
-      <div className="sidebar-heading">
-        <Link to={'/'}>Coronado</Link>
+      <div className={classes.sidebarWrapper}>
+      <div className={classes.logo}>
+        <Link to={'/'} className={classes.logoLink}>Coronado</Link>
         <NetWorth />
       </div>
-      <Divider />
+      <div>Accounts <NewAccount /><ToggleAllAccounts /></div>
+      <List className={classes.list}>
       <AccountNavList />
-      <Divider />
-      <div>
-        <InvoicesMenu />
-        <SidebarMenuItem to='/reports' primary="Reports" icon={<TrendingUpIcon />} />
-        <SidebarMenuItem to='/categories' primary="Categories" icon={<LabelIcon />} />
-        <InvestmentsMenu />
-        <SidebarMenuItem to='/customers' primary="Customers" icon={<PeopleIcon />} />
+      </List>
+      <Divider light={true} />
+      <List className={classes.list}>
+        { routes.map((route, index) => {
+          let secondary = null;
+          if (route.name === 'Investments') {
+            secondary = <MoneyFormat amount={getInvestmentsTotal()} />;
+          }
+          if (route.name === 'Invoices') {
+            secondary = <MoneyFormat amount={sumBy(this.props.invoices, i => { return i.balance })} />;
+          }
+          if (route.isTopLevelMenu)
+            return <SidebarMenuItem key={index} to={route.path} primary={route.name} icon={route.icon} secondary={secondary} />
+          else
+            return null;
+        })}
+      </List>
       </div>
+      <div
+        className={classes.background}
+      />
     </Drawer>
   </div>
   );
+};
+}
+
+function mapStateToProps(state) {
+  return {
+    investments: state.investments,
+    invoices: state.invoices,
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  null)
+  (withStyles(styles)(Sidebar));
+
+Sidebar.propTypes = {
+  bgColor: PropTypes.oneOf(["purple", "blue", "green", "orange", "red"]),
+  image: PropTypes.string,
+  routes: PropTypes.arrayOf(PropTypes.object),
 };

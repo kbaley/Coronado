@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { NavItem, Row, Col } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
 import * as accountActions from '../actions/accountActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -8,9 +6,8 @@ import * as Mousetrap from 'mousetrap';
 import { withRouter } from 'react-router-dom';
 import './AccountNavList.css'
 import { MoneyFormat } from './common/DecimalFormat';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Spinner from './common/Spinner';
-import {SortableContainer, SortableElement} from 'react-sortable-hoc';
+import {SortableContainer} from 'react-sortable-hoc';
 import {filter} from 'lodash';
 import { SidebarMenuItem } from './common/SidebarMenuItem';
 import CreditCardIcon from '@material-ui/icons/CreditCard';
@@ -24,36 +21,31 @@ import MoneyIcon from '@material-ui/icons/Money';
   function getIcon(accountType) {
     switch (accountType) {
       case "Credit Card":
-        return (<CreditCardIcon />);
+        return CreditCardIcon;
       case "Asset":
-        return (<DirectionsCarIcon />);
+        return DirectionsCarIcon;
       case "Mortgage":
-        return (<HouseIcon />);
+        return HouseIcon;
       case "Investment":
-        return (<AttachMoneyIcon />);
+        return AttachMoneyIcon;
       case "Loan":
-        return (<MoneyIcon />);
+        return MoneyIcon;
       case "Cash":
-        return (<AccountBalanceWalletIcon />);
+        return AccountBalanceWalletIcon;
       default:
-        return (<AccountBalanceIcon />);
+        return AccountBalanceIcon;
     }
   }
-const SortableLinkContainer = SortableElement((props) =>
-    <LinkContainer {...props}>
-      {props.children}
-    </LinkContainer>
-);
-
 const SortableNavBar = SortableContainer((props) => {
   return (
     <div className="accountNav">
       {props.isLoadingData ? <Spinner /> :
       props.items.map((account, index) => (
         <SidebarMenuItem 
+          key={index}
           to={'/account/' + account.accountId} 
           primary={account.name} 
-          secondary={account.currentBalance}
+          secondary={<MoneyFormat amount={account.currentBalance} />}
           icon={getIcon(account.accountType)} />
       ))}
     </div>

@@ -7,10 +7,6 @@ import { CurrencyFormat } from '../common/CurrencyFormat';
 import { SidebarMenuItem } from '../common/SidebarMenuItem';
 
 export class InvoicesMenu extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <SidebarMenuItem 
