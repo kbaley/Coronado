@@ -154,20 +154,12 @@ const sidebarStyle = theme => ({
     verticalAlign: "middle",
     color: "rgba(" + hexToRgb(whiteColor) + ", 0.8)"
   },
-  itemIconRTL: {
-    marginRight: "3px",
-    marginLeft: "15px",
-    float: "right"
-  },
   itemText: {
     ...defaultFont,
     margin: "0",
     lineHeight: "30px",
     fontSize: "14px",
     color: whiteColor
-  },
-  itemTextRTL: {
-    textAlign: "right"
   },
   whiteFont: {
     color: whiteColor
@@ -276,6 +268,13 @@ const sidebarStyle = theme => ({
     zIndex: "4",
     overflowScrolling: "touch"
   },
+  newAccount: {
+    margin: "5px 5px 5px 15px"
+  },
+  toolbar: {
+    margin: "5px 10px",
+    minHeight: "48px"
+  }
 });
 
 export default sidebarStyle;

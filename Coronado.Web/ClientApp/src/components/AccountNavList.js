@@ -4,10 +4,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
 import { withRouter } from 'react-router-dom';
-import './AccountNavList.css'
 import { MoneyFormat } from './common/DecimalFormat';
 import Spinner from './common/Spinner';
-import {SortableContainer} from 'react-sortable-hoc';
 import {filter} from 'lodash';
 import { SidebarMenuItem } from './common/SidebarMenuItem';
 import CreditCardIcon from '@material-ui/icons/CreditCard';
@@ -17,6 +15,10 @@ import AttachMoneyIcon from '@material-ui/icons/AttachMoney'
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import MoneyIcon from '@material-ui/icons/Money';
+import NewAccount from './account_page/NewAccount';
+import ToggleAllAccounts from './account_page/ToggleAllAccounts';
+import { Toolbar, withStyles } from '@material-ui/core';
+import styles from '../assets/jss/material-dashboard-react/components/sidebarStyle.js';
 
   function getIcon(accountType) {
     switch (accountType) {
@@ -36,21 +38,6 @@ import MoneyIcon from '@material-ui/icons/Money';
         return AccountBalanceIcon;
     }
   }
-const SortableNavBar = SortableContainer((props) => {
-  return (
-    <div className="accountNav">
-      {props.isLoadingData ? <Spinner /> :
-      props.items.map((account, index) => (
-        <SidebarMenuItem 
-          key={index}
-          to={'/account/' + account.accountId} 
-          primary={account.name} 
-          secondary={<MoneyFormat amount={account.currentBalance} />}
-          icon={getIcon(account.accountType)} />
-      ))}
-    </div>
-  );
-});
 
 class AccountNavList extends Component {
   displayName = AccountNavList.name;
@@ -93,12 +80,23 @@ class AccountNavList extends Component {
   }
 
   render() {
+    const { classes } = this.props;
     return (
-      <SortableNavBar 
-        items={this.props.accounts} 
-        onSortEnd={this.resort} 
-        pressDelay={200}
-        isLoadingData={this.props.isLoadingData} />
+      <div>
+          <Toolbar disableGutters={true} className={classes.toolbar} >
+            <NewAccount />
+            <ToggleAllAccounts />
+          </Toolbar>
+        {this.props.isLoadingData ? <Spinner /> :
+        this.props.accounts.map((account, index) => (
+          <SidebarMenuItem 
+            key={index}
+            to={'/account/' + account.accountId} 
+            primary={account.name} 
+            secondary={<MoneyFormat amount={account.currentBalance} />}
+            icon={getIcon(account.accountType)} />
+        ))}
+      </div>
     );
   }
 }
@@ -122,4 +120,4 @@ export default withRouter(connect(
   mapDispatchToProps,
   null,
   {pure:false}
-)(AccountNavList));
+)(withStyles(styles)(AccountNavList)));

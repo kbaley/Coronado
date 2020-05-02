@@ -1,10 +1,8 @@
 ﻿import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import AccountNavList from './AccountNavList';
-import NewAccount from './account_page/NewAccount';
-import ToggleAllAccounts from './account_page/ToggleAllAccounts';
-import { Drawer, Divider, withStyles, List, ListItem, CssBaseline, ListItemSecondaryAction, ListItemText } from '@material-ui/core';
-import { Link, NavLink } from 'react-router-dom';
+import { Drawer, Divider, withStyles, List, ListItem, CssBaseline, ListItemText } from '@material-ui/core';
+import { NavLink } from 'react-router-dom';
 import NetWorth from './NetWorth';
 import { SidebarMenuItem } from './common/SidebarMenuItem';
 import './Sidebar.css';
@@ -17,10 +15,6 @@ import { sumBy } from 'lodash';
 import classNames from 'classnames';
 
 export class Sidebar extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { classes } = this.props;
 
@@ -44,7 +38,6 @@ export class Sidebar extends Component {
         </ListItem>
         </List>
       </NavLink>
-      Accounts <NewAccount /><ToggleAllAccounts />
       <List className={classes.list}>
       <AccountNavList />
       </List>

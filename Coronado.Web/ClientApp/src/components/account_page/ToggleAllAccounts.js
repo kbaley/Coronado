@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as navListActions from '../../actions/navListActions'
 import './DeleteAccount.css';
-import { Button } from 'react-bootstrap';
+import { withStyles, Button } from '@material-ui/core';
+import styles from '../../assets/jss/material-dashboard-react/components/sidebarStyle.js';
 
 class ToggleAllAccounts extends Component {
 
@@ -18,11 +19,12 @@ class ToggleAllAccounts extends Component {
   }
 
   render() {
+    const { classes } = this.props;
     var text = this.props.showAllAccounts ? "Hide hidden" : "Show all"
     return (
-      <span style={{paddingLeft: "120px", textAlign: "right"}}>
-        <Button size="sm" variant="primary" onClick={this.toggle} active={this.props.showAllAccounts}>{text}</Button>
-      </span>
+        <Button onClick={this.toggle} className={classes.blue} size="small">
+          {text}
+        </Button>
     );
   }
 }
@@ -42,5 +44,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ToggleAllAccounts);
-
+)(withStyles(styles)(ToggleAllAccounts));

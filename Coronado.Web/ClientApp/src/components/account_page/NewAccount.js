@@ -4,7 +4,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
 import { AccountForm } from './AccountForm';
-import { NewIcon } from '../icons/NewIcon';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { Button, withStyles } from '@material-ui/core';
+import styles from '../../assets/jss/material-dashboard-react/components/sidebarStyle.js';
 
 class NewAccount extends Component {
   displayName = NewAccount.name
@@ -39,12 +41,16 @@ class NewAccount extends Component {
   }
 
   render() {
+    const { classes } = this.props;
     return (
-      <span>
-        <NewIcon onClick={this.newAccount} />
+      <div className={classes.newAccount}>
+        <Button onClick={this.newAccount} className={classes.green} size="small">
+          <AddCircleIcon />
+          <span style={{"marginLeft": "5px"}}>New Account</span>
+        </Button>
         <AccountForm show={this.state.show} onClose={this.handleClose}
           onSave={this.saveNewAccount} accountTypes={this.props.accountTypes} />
-      </span>
+      </div>
     );
   }
 }
@@ -64,4 +70,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(NewAccount);
+)(withStyles(styles)(NewAccount));
