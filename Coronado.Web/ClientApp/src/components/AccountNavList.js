@@ -45,7 +45,6 @@ class AccountNavList extends Component {
   constructor(props) {
     super(props);
     this.goToAccount = this.goToAccount.bind(this);
-    this.resort = this.resort.bind(this);
     this.state = { isLoading: true, accounts: props.accounts };
   }
 
@@ -73,10 +72,6 @@ class AccountNavList extends Component {
   goToAccount(e) {
     var key = parseInt(e.key, 10) - 1;
     this.props.history.push('/account/' + this.props.accounts[key].accountId);
-  }
-
-  resort({oldIndex, newIndex}) {
-    this.props.actions.reorderAccounts(oldIndex, newIndex);    
   }
 
   render() {

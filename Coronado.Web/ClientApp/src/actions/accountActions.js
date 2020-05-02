@@ -2,8 +2,6 @@ import * as types from '../constants/accountActionTypes';
 import * as transactionTypes from '../constants/transactionActionTypes';
 import { info } from 'react-notification-system-redux';
 import AccountApi from '../api/accountApi';
-import { sortBy } from 'lodash';
-import { arrayMove } from 'react-sortable-hoc';
 import { authHeader } from '../api/auth-header';
 import history from "../history";
 
@@ -33,24 +31,6 @@ export const loadAccounts = () => {
     const accounts = await AccountApi.getAllAccounts();
     dispatch(loadAccountsSuccess(accounts));
   };
-}
-
-export const reorderAccounts = (oldIndex, newIndex) => {
-  return async function(dispatch, getState) {
-    let accounts = sortBy(getState().accounts, a => a.displayOrder);
-    accounts = arrayMove(accounts, oldIndex, newIndex);
-    let accountsToUpdate = [];
-    for (let index = 0; index < accounts.length; index++) {
-      if (accounts[index].displayOrder !== index) {
-        accounts[index].displayOrder = index;
-        accountsToUpdate.push(accounts[index]);
-      }
-    }
-    dispatch(loadAccountsSuccess(accounts));
-    for ( let i = 0; i < accountsToUpdate.length; i++ ) {
-      await AccountApi.updateAccount(accountsToUpdate[i]);
-    }
-  }
 }
 
 export const deleteAccount = (accountId, accountName) => { 
