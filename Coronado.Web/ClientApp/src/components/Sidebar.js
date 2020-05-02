@@ -43,7 +43,6 @@ export class Sidebar extends Component {
         <Link to={'/'} className={classes.logoLink}>Coronado</Link>
         <NetWorth />
       </div>
-      <div>Accounts <NewAccount /><ToggleAllAccounts /></div>
       <List className={classes.list}>
       <AccountNavList />
       </List>

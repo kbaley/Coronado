@@ -135,11 +135,11 @@ const sidebarStyle = theme => ({
   itemLink: {
     width: "auto",
     transition: "all 300ms linear",
-    margin: "10px 15px 0",
+    margin: "5px 15px 0",
     borderRadius: "3px",
     position: "relative",
     display: "block",
-    padding: "10px 15px",
+    padding: "0px 15px",
     backgroundColor: "transparent",
     ...defaultFont
   },
@@ -276,13 +276,6 @@ const sidebarStyle = theme => ({
     zIndex: "4",
     overflowScrolling: "touch"
   },
-  activePro: {
-    [theme.breakpoints.up("md")]: {
-      position: "absolute",
-      width: "100%",
-      bottom: "13px"
-    }
-  }
 });
 
 export default sidebarStyle;

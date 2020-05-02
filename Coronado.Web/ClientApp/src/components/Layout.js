@@ -1,27 +1,32 @@
 import React from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
-import NavMenu from './NavMenu';
 import './Layout.css';
 import NotificationsComponent from './Notifications';
 import { ShortcutHelper } from './common/ShortcutHelper';
 import { Icon } from "./icons/Icon";
 import Sidebar from './Sidebar';
+import { makeStyles } from '@material-ui/core/styles';
 
-export default props => (
-  <Container fluid>
-    <Row>
-      <Col className='sidebar'>
-        <Sidebar 
-        />
-      </Col>
-      <Col className='mainContent'>
+import styles from '../assets/jss/material-dashboard-react/layouts/adminStyle.js';
+
+const useStyles = makeStyles(styles);
+
+export default function Layout(props) {
+  const classes = useStyles();
+  return (
+    <div className={classes.wrapper}>
+      <Sidebar />
+      <div className={classes.mainPanel}>
         <div style={{textAlign: "right", marginTop: 4}}>
           <Icon glyph="sign-out-alt" onClick={() => { localStorage.removeItem('coronado-user'); window.location.reload(true);}} />
         </div>
-        {props.children}
-      </Col>
-    </Row>
-    <NotificationsComponent />
-    <ShortcutHelper />
-  </Container>
-);
+        <div className={classes.content}>
+          <div className={classes.container}>
+            {props.children}
+          </div>
+        </div>
+      </div>
+      <NotificationsComponent />
+      <ShortcutHelper />
+    </div>
+  );
+};
