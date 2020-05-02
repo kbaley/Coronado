@@ -51,7 +51,6 @@ const routes = [
     name: 'Investments',
     path: '/investments',
     component: InvestmentsPage,
-    isTopLevelMenu: true,
     icon: LocalAtmIcon,
   },
   {
