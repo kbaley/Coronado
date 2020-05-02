@@ -18,12 +18,8 @@ import { sumBy } from 'lodash';
 export class Sidebar extends Component {
   constructor(props) {
     super(props);
-    this.activeRoute = this.activeRoute.bind(this);
   }
 
-  activeRoute(routeName) {
-    return window.location.href.indexOf(routeName) > -1;
-  }
   render() {
     const { classes } = this.props;
 
@@ -85,7 +81,5 @@ export default connect(
   (withStyles(styles)(Sidebar));
 
 Sidebar.propTypes = {
-  bgColor: PropTypes.oneOf(["purple", "blue", "green", "orange", "red"]),
-  image: PropTypes.string,
   routes: PropTypes.arrayOf(PropTypes.object),
 };
