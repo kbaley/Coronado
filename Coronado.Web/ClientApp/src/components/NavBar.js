@@ -1,7 +1,7 @@
 import React from 'react';
 import './Layout.css';
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import { AppBar, Toolbar, IconButton, Button, Menu, MenuItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import SettingsIcon from '@material-ui/icons/Settings';
 import routes from '../routes';
@@ -32,6 +32,19 @@ export default function Header() {
       <Toolbar className={classes.container}>
         <div className={classes.flex}></div>
         <div>
+          {routes.filter(r => r.isTopBar).map((route, index) => {
+            return (<Button
+              key={index}
+              variant="outlined"
+              color="default"
+              startIcon={React.createElement(route.icon)}
+              className={classes.button}
+              component={Link}
+              to={route.path}
+            >
+              {route.name}
+            </Button>
+          )})}
           <IconButton variant="contained" onClick={openMenu}>
             <SettingsIcon />
           </IconButton>
@@ -42,8 +55,7 @@ export default function Header() {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            {routes.map((route, index) => {
-              if (route.isTopLevelMenu) {
+            {routes.filter(r => r.isTopLevelMenu).map((route, index) => {
                 return (
               <MenuItem key={index} component={Link} to={route.path} onClick={handleClose}>
                 <ListItemIcon>
@@ -51,9 +63,7 @@ export default function Header() {
                 </ListItemIcon>
                 <ListItemText primary={route.name} />
               </MenuItem>
-              )} else {
-                return null;
-              };
+                )
             })}
             <MenuItem onClick={logout}>
               <ListItemIcon><ExitToAppIcon /></ListItemIcon>

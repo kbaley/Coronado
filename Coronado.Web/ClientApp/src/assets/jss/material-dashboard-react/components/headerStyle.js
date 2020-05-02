@@ -77,6 +77,7 @@ const headerStyle = () => ({
     color: whiteColor,
     ...defaultBoxShadow
   }
+
 });
 
 export default headerStyle;

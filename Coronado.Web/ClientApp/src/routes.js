@@ -52,6 +52,7 @@ const routes = [
     path: '/investments',
     component: InvestmentsPage,
     icon: LocalAtmIcon,
+    isTopBar: true
   },
   {
     name: 'Account',
