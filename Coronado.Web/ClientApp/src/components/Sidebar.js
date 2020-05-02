@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import AccountNavList from './AccountNavList';
 import NewAccount from './account_page/NewAccount';
 import ToggleAllAccounts from './account_page/ToggleAllAccounts';
-import { Drawer, Divider, withStyles, List, CssBaseline } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { Drawer, Divider, withStyles, List, ListItem, CssBaseline, ListItemSecondaryAction, ListItemText } from '@material-ui/core';
+import { Link, NavLink } from 'react-router-dom';
 import NetWorth from './NetWorth';
 import { SidebarMenuItem } from './common/SidebarMenuItem';
 import './Sidebar.css';
@@ -14,6 +14,7 @@ import { getInvestmentsTotal } from './common/investmentHelpers';
 import { MoneyFormat } from './common/DecimalFormat';
 import { connect } from 'react-redux';
 import { sumBy } from 'lodash';
+import classNames from 'classnames';
 
 export class Sidebar extends Component {
   constructor(props) {
@@ -35,10 +36,15 @@ export class Sidebar extends Component {
       anchor="left"
     >
       <div className={classes.sidebarWrapper}>
-      <div className={classes.logo}>
-        <Link to={'/'} className={classes.logoLink}>Coronado</Link>
-        <NetWorth />
-      </div>
+      <NavLink to={'/'} className={classNames(classes.logo, classes.item)}>
+      <List className={classes.list}>
+        <ListItem className={classNames(classes.logoLink, classes.itemLink)}>
+          <ListItemText primary="Coronado" disableTypography={true}/>
+          <NetWorth />
+        </ListItem>
+        </List>
+      </NavLink>
+      Accounts <NewAccount /><ToggleAllAccounts />
       <List className={classes.list}>
       <AccountNavList />
       </List>

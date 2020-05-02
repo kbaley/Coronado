@@ -5,7 +5,6 @@ import { ShortcutHelper } from './common/ShortcutHelper';
 import Sidebar from './Sidebar';
 import { makeStyles } from '@material-ui/core/styles';
 import NavBar from './NavBar';
-import { ExitToAppIcon } from "@material-ui/icons/ExitToApp";
 
 import styles from '../assets/jss/material-dashboard-react/layouts/adminStyle.js';
 

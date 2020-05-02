@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { sumBy} from 'lodash';
+import { ListItemSecondaryAction } from '@material-ui/core';
 
 class NetWorth extends Component {
   render() {
     return (
-      <div style={{ float: "right" }}>
-      {Number(this.props.netWorth).toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 })}
-    </div>
+      <ListItemSecondaryAction>
+        {Number(this.props.netWorth).toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 })}
+      </ListItemSecondaryAction>
     );
 
   }

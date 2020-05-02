@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link as RouterLink, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { ListItemText, Icon, ListItem, ListItemSecondaryAction } from '@material-ui/core';
 import styles from '../../assets/jss/material-dashboard-react/components/sidebarStyle.js';
 import { makeStyles} from '@material-ui/core/styles';
@@ -11,12 +11,7 @@ const useStyles = makeStyles(styles);
 export function SidebarMenuItem(props) {
   const { icon, primary, to, secondary } = props;
   const classes = useStyles();
-  const renderLink = React.useMemo(
-    () => React.forwardRef((itemProps, ref) => <RouterLink to={to} ref={ref} {...itemProps} />),
-    [to],
-  );
 
-  console.log(icon);
   return (
     <NavLink
       to={to}
