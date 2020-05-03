@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { Modal, Table } from 'react-bootstrap';
 import * as Mousetrap from 'mousetrap';
 import './ShortcutHelper.css';
 import routes from '../../routes';
 import { withRouter } from 'react-router-dom';
+import { withStyles, Dialog, DialogTitle, TableContainer, Paper, Table, TableBody, TableRow, TableCell } from '@material-ui/core';
+
+const styles = theme => ({
+})
 
 class ShortcutHelper extends Component {
   constructor(props) {
@@ -13,12 +16,10 @@ class ShortcutHelper extends Component {
     this.state = { show: false };
   }
   componentDidMount() {
-    console.log(this.props);
     
     Mousetrap.bind('?', this.showHelp);
     routes.filter(r => r.shortcut).map(route => {
       Mousetrap.bind(route.shortcut, () => {
-        console.log(route.path);
         this.props.history.push(route.path);
       });
     });
@@ -30,47 +31,67 @@ class ShortcutHelper extends Component {
     this.setState({ show: false });
   }
   render() {
-    return (<Modal show={this.state.show} onHide={this.handleClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>Shortcuts</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Table condensed className='borderless'>
-          <tbody>
-            <tr>
-              <td>g [1-9]</td>
-              <td>Go to account</td>
-            </tr>
-            <tr>
-              <td>n a</td>
-              <td>New account</td>
-            </tr>
-            <tr>
-              <td>n t</td>
-              <td>New transaction</td>
-            </tr>
-            <tr>
-              <td>g c</td>
-              <td>Go to categories</td>
-            </tr>
-            <tr>
-              <td>n c</td>
-              <td>New category</td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>Include <span style={{fontFamily: "monospace"}}>
-                bf: &lt;amount&gt; &lt;bank fee description&gt;</span> in a transaction description to 
-                automatically add one or more bank fee transactions<br/>
-                E.g. <span style={{fontFamily: "monospace"}}>Payment for services bf: 35.00 transfer fee bf: 2.45 tax on fee</span></td>
-            </tr>
-          </tbody>
-        </Table>
-      </Modal.Body>
-      <Modal.Footer>
-      </Modal.Footer>
-    </Modal>);
+    const { classes } = this.props;
+
+    return (
+      <Dialog onClose={this.handleClose}
+        open={this.state.show}
+        fullWidth={true}
+        maxWidth={"md"}
+      >
+        <DialogTitle>Shortcuts</DialogTitle>
+        <TableContainer component={Paper}>
+          <Table className={classes.table}>
+            <TableBody>
+              <TableRow>
+                <TableCell>g [1-9]</TableCell>
+                <TableCell>Go to account</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>n a</TableCell>
+                <TableCell>New account</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>n t</TableCell>
+                <TableCell>(On an account listing) New transaction</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>g d</TableCell>
+                <TableCell>Go to the dashboard</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>g i</TableCell>
+                <TableCell>Go to the investments page</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>g r</TableCell>
+                <TableCell>Go to the reports page</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>g n</TableCell>
+                <TableCell>Go to the invoices page</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>n i</TableCell>
+                <TableCell>(On the invoices page) Create a new invoice</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>n c</TableCell>
+                <TableCell>(On the categories page) Create a new category</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell>Include <span style={{fontFamily: "monospace"}}>
+                  bf: &lt;amount&gt; &lt;bank fee description&gt;</span> in a transaction description to 
+                  automatically add one or more bank fee transactions<br/>
+                  E.g. <span style={{fontFamily: "monospace"}}>Payment for services bf: 35.00 transfer fee bf: 2.45 tax on fee</span></TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Dialog>
+    );
   }
 }
 
-export default withRouter(ShortcutHelper);
+export default withRouter((withStyles(styles)(ShortcutHelper)));
