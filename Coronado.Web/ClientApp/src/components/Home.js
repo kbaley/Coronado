@@ -1,5 +1,4 @@
 import React from 'react';
-import { Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { sumBy, filter } from 'lodash';
 import { Currency } from './common/CurrencyFormat';
@@ -7,6 +6,22 @@ import * as reportActions from '../actions/reportActions';
 import { bindActionCreators } from 'redux';
 import NetWorthReport from './reports_page/NetWorthReport';
 import moment from 'moment';
+import { withStyles, TableContainer, Table, TableBody, TableRow, TableCell, Paper } from '@material-ui/core';
+
+const styles = (theme) => ({
+  table: {
+    '& td': {
+      fontWeight: 200,
+      fontSize: "1.25em",
+      border: 0
+    },
+    border: 0
+  },
+  tableContainer: {
+    maxWidth: 550,
+    marginBottom: 50,
+  }
+})
 
 class Home extends React.Component {
   constructor(props) {
@@ -34,6 +49,7 @@ class Home extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
     var bankAccounts = filter(this.props.accounts, a => a.accountType === 'Bank Account' || a.accountType === 'Cash');
     var creditCards = filter(this.props.accounts, a => a.accountType === 'Credit Card');
     var liquidAssets = sumBy(bankAccounts, a => a.currentBalance);
@@ -42,24 +58,29 @@ class Home extends React.Component {
     return (
       <div>
         <h2>Coronado Financial App for Me</h2>
-        <Row>
-          <Col sm={3}>
-            <h5>Liquid assets</h5>   
-            <h5>Credit cards</h5>
-            <h5>Investment Gain/Loss this month</h5>
-            <h5>Investment Gain/Loss last month</h5>
-            <br/>
-            <br/>
-            <NetWorthReport />
-          </Col>
-          <Col sm={2}>
-            <h5 style={{textAlign: "right"}}>{Currency(liquidAssets)}</h5>
-            <h5 style={{textAlign: "right"}}>{Currency(ccTotal)}</h5>
-            <h5 style={{textAlign: "right"}}>{this.getGainLossForMonth(0)}</h5>
-            <h5 style={{textAlign: "right"}}>{this.getGainLossForMonth(1)}</h5>
-          </Col>
-          <Col sm={7}></Col>
-        </Row>
+        <TableContainer component={Paper} elevation={0} className={classes.tableContainer}>
+          <Table className={classes.table} size="small">
+            <TableBody>
+              <TableRow>
+                <TableCell>Liquid assets</TableCell>
+                <TableCell align="right">{Currency(liquidAssets)}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Credit cards</TableCell>
+                <TableCell align="right">{Currency(ccTotal)}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Investment change this month</TableCell>
+                <TableCell align="right">{this.getGainLossForMonth(0)}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Investment change last month</TableCell>
+                <TableCell align="right">{this.getGainLossForMonth(1)}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <NetWorthReport />
       </div>
   )}
 } 
@@ -81,4 +102,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Home);
+)(withStyles(styles)(Home));
