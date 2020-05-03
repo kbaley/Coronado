@@ -1,7 +1,7 @@
 import React from 'react';
 import './Layout.css';
 import NotificationsComponent from './Notifications';
-import { ShortcutHelper } from './common/ShortcutHelper';
+import ShortcutHelper from './common/ShortcutHelper';
 import Sidebar from './Sidebar';
 import { makeStyles } from '@material-ui/core/styles';
 import NavBar from './NavBar';
@@ -24,7 +24,7 @@ export default function Layout(props) {
         </div>
       </div>
       <NotificationsComponent />
-      <ShortcutHelper />
+      <ShortcutHelper history={props.history} />
     </div>
   );
 };

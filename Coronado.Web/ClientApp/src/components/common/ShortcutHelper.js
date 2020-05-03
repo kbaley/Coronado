@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { Modal, Table } from 'react-bootstrap';
 import * as Mousetrap from 'mousetrap';
-import './ShortcutHelper.css'
+import './ShortcutHelper.css';
+import routes from '../../routes';
+import { withRouter } from 'react-router-dom';
 
-export class ShortcutHelper extends Component {
+class ShortcutHelper extends Component {
   constructor(props) {
     super(props);
     this.showHelp = this.showHelp.bind(this);
@@ -11,7 +13,15 @@ export class ShortcutHelper extends Component {
     this.state = { show: false };
   }
   componentDidMount() {
+    console.log(this.props);
+    
     Mousetrap.bind('?', this.showHelp);
+    routes.filter(r => r.shortcut).map(route => {
+      Mousetrap.bind(route.shortcut, () => {
+        console.log(route.path);
+        this.props.history.push(route.path);
+      });
+    });
   }
   showHelp() {
     this.setState({ show: true });
@@ -62,3 +72,5 @@ export class ShortcutHelper extends Component {
     </Modal>);
   }
 }
+
+export default withRouter(ShortcutHelper);

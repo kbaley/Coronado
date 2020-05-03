@@ -32,6 +32,7 @@ const routes = [
     component: InvoicesPage,
     isTopLevelMenu: true,
     icon: ListAltIcon,
+    shortcut: 'g n',
   },
   {
     name: 'Customers',
@@ -46,13 +47,15 @@ const routes = [
     component: ReportsPage,
     isTopLevelMenu: true,
     icon: TrendingUpIcon,
+    shortcut: 'g r',
   },
   {
     name: 'Investments',
     path: '/investments',
     component: InvestmentsPage,
     icon: LocalAtmIcon,
-    isTopBar: true
+    isTopBar: true,
+    shortcut: 'g i',
   },
   {
     name: 'Account',
@@ -62,7 +65,8 @@ const routes = [
   {
     name: 'Dashboard',
     path: '/',
-    component: Home
+    component: Home,
+    shortcut: 'g d',
   },
 ]
 
