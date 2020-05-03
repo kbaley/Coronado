@@ -7,7 +7,9 @@ import './CustomerList.css';
 import { find } from 'lodash';
 import { CustomerRow } from './CustomerRow';
 import Spinner from '../common/Spinner';
-import { Table } from 'react-bootstrap';
+import { withStyles, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
+
+import styles from "../../assets/jss/material-dashboard-react/components/tableStyle.js";
 
 class CustomerList extends Component {
   constructor(props) {
@@ -47,35 +49,36 @@ class CustomerList extends Component {
   }
   
   render() {
+    const { classes } = this.props;
     return (
-    <Table className='customer-list' striped>
-      <thead>
-        <tr>
-          <th></th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Street Address</th>
-          <th>City</th>
-          <th>Region</th>
-        </tr>
-      </thead>
-      <tbody>
-        <CustomerForm 
-          show={this.state.show} 
-          onClose={this.handleClose} 
-          customer={this.state.selectedCustomer} 
-          customers={this.props.customers}
-          onSave={this.saveCustomer} />
-        { this.props.isLoading ? <tr><td colSpan="2"><Spinner /></td></tr> :
-          this.props.customers.map(cust => 
-        <CustomerRow 
-          key={cust.customerId} 
-          customer={cust} 
-          onEdit={() => this.startEditing(cust)} 
-          onDelete={()=>this.deleteCustomer(cust.customerId, cust.name)} />
-        )}
-      </tbody>
-    </Table>
+      <Table className={classes.table}>
+        <TableHead className={classes.primaryTableHeader}>
+          <TableRow className={classes.tableHeadRow}>
+            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}></TableCell>
+            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>Name</TableCell>
+            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>Email</TableCell>
+            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>Street Address</TableCell>
+            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>City</TableCell>
+            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>Region</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <CustomerForm 
+            show={this.state.show} 
+            onClose={this.handleClose} 
+            customer={this.state.selectedCustomer} 
+            customers={this.props.customers}
+            onSave={this.saveCustomer} />
+          { this.props.isLoading ? <tr><td colSpan="2"><Spinner /></td></tr> :
+            this.props.customers.map(cust => 
+          <CustomerRow 
+            key={cust.customerId} 
+            customer={cust} 
+            onEdit={() => this.startEditing(cust)} 
+            onDelete={()=>this.deleteCustomer(cust.customerId, cust.name)} />
+          )}
+        </TableBody>
+      </Table>
     );
   }
 }
@@ -97,4 +100,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(CustomerList);
+)(withStyles(styles)(CustomerList));

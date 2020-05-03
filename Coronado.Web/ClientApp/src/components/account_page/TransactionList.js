@@ -22,7 +22,8 @@ class TransactionList extends Component {
 
   render() {
         
-    return (<Table className='transactionList' striped>
+    return (
+    <Table className='transactionList' striped>
       <thead>
         <tr>
           <th></th>
