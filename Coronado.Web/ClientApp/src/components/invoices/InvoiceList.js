@@ -61,6 +61,7 @@ class InvoiceList extends Component {
     return (
       <CustomTable
         tableHeader={['', 'Number', 'Date', 'Customer', 'Email', 'Balance']}
+        headerAlignment={['inherit', 'inherit', 'inherit', 'inherit', 'inherit', 'right']}
       >
         <InvoiceForm 
           show={this.state.show} 
