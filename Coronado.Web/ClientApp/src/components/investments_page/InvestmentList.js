@@ -9,7 +9,7 @@ import { InvestmentRow } from './InvestmentRow';
 import InvestmentsTotal from './InvestmentsTotal';
 import Spinner from '../common/Spinner';
 import InvestmentPriceHistory from './InvestmentPriceHistory';
-import { Table } from "react-bootstrap";
+import CustomTable from '../common/Table';
 
 class InvestmentList extends Component {
   constructor(props) {
@@ -66,19 +66,10 @@ class InvestmentList extends Component {
   
   render() {
     return (
-    <Table className='investment-list' striped>
-      <thead>
-        <tr>
-          <th></th>
-          <th>Name</th>
-          <th>Symbol</th>
-          <th>Currency</th>
-          <th>Shares</th>
-          <th style={{"textAlign": "right"}}>Last Price</th>
-          <th>Current Value</th>
-        </tr>
-      </thead>
-      <tbody>
+      <CustomTable
+        tableHeader={['', 'Name', 'Symbol', 'Currency', 'Shares', 'Last Price', 'Current Value']}
+        headerAlignment={['', '', '', '', '', 'right', 'right']}
+      >
         <InvestmentForm 
           show={this.state.show} 
           onClose={this.handleClose} 
@@ -103,8 +94,7 @@ class InvestmentList extends Component {
             investments={this.props.investments}
             currency={this.props.currency}
             currencies={this.props.currencies} />
-      </tbody>
-    </Table>
+      </CustomTable>
     );
   }
 }

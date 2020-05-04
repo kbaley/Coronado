@@ -46,9 +46,9 @@ class InvestmentsPage extends Component {
             investments={orderBy(this.props.investments, ['symbol'], ['asc'])} 
             onSave={this.saveTodaysPrices} />
         </h1>
-        <h4>USD</h4>
+        <h3>USD</h3>
         <InvestmentList investments={filter(this.props.investments, i => i.currency === 'USD')} currency='USD' />
-        <h4>CAD</h4>
+        <h3>CAD</h3>
         <InvestmentList investments={filter(this.props.investments, i => i.currency === 'CAD')} currency='CAD' />
         <table className='table investment-list'>
           <tbody>
