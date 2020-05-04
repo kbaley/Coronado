@@ -1,53 +1,53 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Tabs, Tab } from 'react-bootstrap';
+import React from 'react';
 import NetWorthReport from './NetWorthReport';
 import ExpensesByCategoryReport from './ExpensesByCategoryReport';
-import './ReportsPage.css';
+import { Tab, Tabs, Box } from '@material-ui/core';
+import { PropTypes } from 'prop-types';
 
-class ReportsPage extends Component {
-  constructor(props) {
-    super(props);
-    this.handleSelect = this.handleSelect.bind(this);
-    this.state = {
-      key: 1
-    }
-  }
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
 
-  handleSelect(key) {
-    this.setState({key});
-  }
-
-  render() {
-    return (
-      <div className='reports-list'>
-        <h1>Reports</h1>
-          <Tabs
-            activeKey={this.state.key}
-            onSelect={this.handleSelect}
-            id="reports-tab"
-          >
-            <Tab eventKey={1} title="Net worth over time">
-              <NetWorthReport />
-            </Tab>           
-            <Tab eventKey={2} title="Expenses by category">
-              <ExpensesByCategoryReport />
-            </Tab>           
-            <Tab eventKey={3} title="Income breakdown">
-              No report yet
-            </Tab>           
-          </Tabs>
-      </div>
-    );
-  }
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          {children}
+        </Box>
+      )}
+    </div>
+  );
 }
 
-function mapStateToProps(state) {
-  return {
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired
+};
 
-  };
+export default function ReportsPage() {
+
+  const [value, setValue] = React.useState(0);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  }
+  return (
+    <div className='reports-list'>
+      <h1>Reports</h1>
+      <Tabs value={value} onChange={handleChange}>
+        <Tab label="Net worth over time" id='tab-0' />
+        <Tab label="Expenses by category" id='tab-1' />
+      </Tabs>
+      <TabPanel value={value} index={0}>
+        <NetWorthReport />
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        <ExpensesByCategoryReport />
+      </TabPanel>
+    </div>
+  );
 }
-
-export default connect(
-  mapStateToProps,
-)(ReportsPage);
