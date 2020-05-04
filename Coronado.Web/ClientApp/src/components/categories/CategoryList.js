@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import CategoryForm from './CategoryForm';
 import './CategoryList.css';
+import CustomTable from "../common/Table";
 import { find } from 'lodash';
 import { CategoryRow } from './CategoryRow';
 import Spinner from '../common/Spinner';
@@ -47,16 +48,9 @@ class CategoryList extends Component {
   
   render() {
     return (
-    <table className='table category-list table-striped'>
-      <thead>
-        <tr>
-          <th></th>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Parent</th>
-        </tr>
-      </thead>
-      <tbody>
+      <CustomTable
+        tableHeader={['', 'Name', 'Type', 'Parent']}
+      >
         <CategoryForm 
           show={this.state.show} 
           onClose={this.handleClose} 
@@ -72,8 +66,7 @@ class CategoryList extends Component {
           onEdit={() => this.startEditing(cat)} 
           onDelete={()=>this.deleteCategory(cat.categoryId, cat.name)} />
         )}
-      </tbody>
-    </table>
+      </CustomTable>
     );
   }
 }

@@ -19,7 +19,7 @@ class ShortcutHelper extends Component {
     
     Mousetrap.bind('?', this.showHelp);
     routes.filter(r => r.shortcut).map(route => {
-      Mousetrap.bind(route.shortcut, () => {
+      return Mousetrap.bind(route.shortcut, () => {
         this.props.history.push(route.path);
       });
     });

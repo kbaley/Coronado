@@ -1,17 +1,16 @@
 import React from 'react';
 import { DeleteIcon } from '../icons/DeleteIcon';
 import { EditIcon } from '../icons/EditIcon';
+import { CustomTableRow } from '../common/Table';
 
 export function CategoryRow({category, onEdit, onDelete, parent}) {
   return (
-    <tr>
-      <td>
+    <CustomTableRow
+      tableData={[category.name, category.type, parent]}
+      key={category.categoryId}
+    >
         <EditIcon onStartEditing={onEdit} />
         <DeleteIcon onDelete={onDelete} />
-      </td>
-      <td>{category.name}</td>
-      <td>{category.type}</td>
-      <td>{parent}</td>
-    </tr>
+    </CustomTableRow>
   );
 }

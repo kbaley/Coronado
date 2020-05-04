@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import * as actions from '../../actions/invoiceActions';
+import CustomTable from '../common/Table';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import InvoiceForm from './InvoiceForm';
 import { InvoiceRow } from './InvoiceRow';
 import Spinner from '../common/Spinner';
-import { Table, TableHead, TableRow, withStyles, TableBody, TableCell } from '@material-ui/core';
-import styles from "../../assets/jss/material-dashboard-react/components/tableStyle.js";
 
 class InvoiceList extends Component {
   constructor(props) {
@@ -58,41 +57,30 @@ class InvoiceList extends Component {
     const showInvoice = (invoice) => {
       return invoice.balance > 0 || this.props.showPaid[0];
     }
-    const { classes } = this.props;
     
     return (
-      <Table className={classes.table}>
-        <TableHead className={classes.primaryTableHeader}>
-          <TableRow className={classes.tableHeadRow}>
-            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}></TableCell>
-            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>Number</TableCell>
-            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>Date</TableCell>
-            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>Customer</TableCell>
-            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>Email</TableCell>
-            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>Balance</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <InvoiceForm 
-            show={this.state.show} 
-            onClose={this.handleClose} 
-            invoice={this.state.selectedInvoice} 
-            invoices={this.props.invoices}
-            customers={this.props.customers}
-            onSave={this.saveInvoice} />
-          { this.props.isLoading ? <tr><td colSpan="4"><Spinner /></td></tr> :
-            this.props.invoices.map(invoice => 
-          showInvoice(invoice) && <InvoiceRow 
-            key={invoice.invoiceId} 
-            invoice={invoice} 
-            onEdit={() => this.startEditing(invoice)} 
-            onDownload={() => this.downloadInvoice(invoice.invoiceId)}
-            onEmail={() => this.emailInvoice(invoice.invoiceId)}
-            onPreview={() => this.previewInvoice(invoice.invoiceId)}
-            onDelete={()=>this.deleteInvoice(invoice.invoiceId, invoice.invoiceNumber)} />
-          )}
-        </TableBody>
-      </Table>
+      <CustomTable
+        tableHeader={['', 'Number', 'Date', 'Customer', 'Email', 'Balance']}
+      >
+        <InvoiceForm 
+          show={this.state.show} 
+          onClose={this.handleClose} 
+          invoice={this.state.selectedInvoice} 
+          invoices={this.props.invoices}
+          customers={this.props.customers}
+          onSave={this.saveInvoice} />
+        { this.props.isLoading ? <tr><td colSpan="4"><Spinner /></td></tr> :
+          this.props.invoices.map(invoice => 
+        showInvoice(invoice) && <InvoiceRow 
+          key={invoice.invoiceId} 
+          invoice={invoice} 
+          onEdit={() => this.startEditing(invoice)} 
+          onDownload={() => this.downloadInvoice(invoice.invoiceId)}
+          onEmail={() => this.emailInvoice(invoice.invoiceId)}
+          onPreview={() => this.previewInvoice(invoice.invoiceId)}
+          onDelete={()=>this.deleteInvoice(invoice.invoiceId, invoice.invoiceNumber)} />
+        )}
+      </CustomTable>
     );
   }
 }
@@ -115,4 +103,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(withStyles(styles)(InvoiceList));
+)(InvoiceList);
