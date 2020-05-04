@@ -1,14 +1,38 @@
 import React, { Component } from 'react';
-import { Button,Modal, Table} from 'react-bootstrap';
 import Moment from 'react-moment';
 import { orderBy } from 'lodash';
-import {Icon} from "../icons/Icon";
+import { Icon } from "../icons/Icon";
+import { withStyles, Button, Dialog, DialogTitle, DialogContent, DialogActions, InputBase } from '@material-ui/core'
+import { fade } from '@material-ui/core/styles';
+import CustomTable, { CustomTableRow } from '../common/Table';
+
+const PriceInput = withStyles((theme) => ({
+  root: {
+    'label + &': {
+      marginTop: theme.spacing(3),
+    },
+  },
+  input: {
+    borderRadius: 4,
+    position: 'relative',
+    backgroundColor: theme.palette.common.white,
+    border: '1px solid #ced4da',
+    width: '100px',
+    padding: '5px 12px',
+    textAlign: 'right',
+    transition: theme.transitions.create(['border-color', 'box-shadow']),
+    '&:focus': {
+      boxShadow: `${fade(theme.palette.primary.main, 0.25)} 0 0 0 0.2rem`,
+      borderColor: theme.palette.primary.main,
+    },
+  }
+}))(InputBase);
 
 class TodaysPrices extends Component {
   displayName = TodaysPrices.name;
   constructor(props) {
     super(props);
-    this.savePrices = this.savePrices.bind(this);   
+    this.savePrices = this.savePrices.bind(this);
     this.handleChangePrice = this.handleChangePrice.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.showTodaysPrices = this.showTodaysPrices.bind(this);
@@ -21,27 +45,26 @@ class TodaysPrices extends Component {
   }
 
   componentDidUpdate() {
-    if (this.props.investments && this.props.investments.length > 0 
-        && this.props.investments.length !== this.state.investments.length ) 
-      {
-        this.setState({
-          investments: this.props.investments.map( i => {
-            var lastPrice = this.getLastPrice(i);
-            return {
-              investmentId: i.investmentId,
-              name: i.name,
-              symbol: i.symbol,
-              lastPriceDate: lastPrice.date,
-              lastPrice: lastPrice.price
-            }  
-          })
+    if (this.props.investments && this.props.investments.length > 0
+      && this.props.investments.length !== this.state.investments.length) {
+      this.setState({
+        investments: this.props.investments.map(i => {
+          var lastPrice = this.getLastPrice(i);
+          return {
+            investmentId: i.investmentId,
+            name: i.name,
+            symbol: i.symbol,
+            lastPriceDate: lastPrice.date,
+            lastPrice: lastPrice.price
+          }
         })
-      };
-    
-    }
+      })
+    };
+
+  }
 
   showTodaysPrices() {
-    this.setState({show:true});
+    this.setState({ show: true });
     return false;
   }
 
@@ -53,8 +76,8 @@ class TodaysPrices extends Component {
       };
     }
 
-    var lastPrice = orderBy(investment.historicalPrices, ['date'], ['desc'] )[0];
-    return (({date, price}) => ({date, price}))(lastPrice);
+    var lastPrice = orderBy(investment.historicalPrices, ['date'], ['desc'])[0];
+    return (({ date, price }) => ({ date, price }))(lastPrice);
   }
 
   handleKeyPress(e) {
@@ -67,63 +90,63 @@ class TodaysPrices extends Component {
   savePrices() {
     this.props.onSave(this.state.investments);
     this.setState({
-      investments: [ ],
+      investments: [],
       show: false
     });
   }
-  
+
   handleChangePrice(investmentIndex, e) {
     let investments = [...this.state.investments];
     investments[investmentIndex].lastPrice = e.target.value;
-    
+
     this.setState({
       investments
     });
   }
 
   handleClose() {
-    this.setState({show:false});
+    this.setState({ show: false });
   }
 
   render() {
-    
+    const { classes } = this.props;
     return (
       <span>
 
         <Icon glyph="dollar-sign" onClick={this.showTodaysPrices} title="Update todays prices" />
-        <Modal show={this.state.show} onHide={this.handleClose} autoFocus={false}>
-          <Modal.Header closeButton>
-            <Modal.Title>Today's Prices</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Table striped bordered>
-              <thead>
-                <tr>
-                  <th>Investment</th>
-                  <th>Last Price Date</th>
-                  <th>Price</th>
-                </tr>
-              </thead>
-              <tbody>
-              {this.state.investments && this.state.investments.map( (i, index) => {
+        <Dialog
+          onClose={this.handleClose}
+          open={this.state.show}
+        >
+          <DialogTitle>Today's Prices</DialogTitle>
+          <DialogContent>
+            <CustomTable
+              tableHeader={['Investment', 'Last Price Date', 'Price']}
+              headerAlignment={['inherit', 'inherit', 'right']}
+            >
+
+              {this.state.investments && this.state.investments.map((i, index) => {
                 return (
-                <tr key={i.investmentId}>
-                  <td>{i.symbol}</td>
-                  <td><Moment format="M/D/YYYY">{i.lastPriceDate}</Moment></td>
-                  <td>
-                    <input type="text" name="price" value={i.lastPrice}
-                      onChange={(e) => this.handleChangePrice(index, e)} />
-                  </td>
-                </tr>
+                  <CustomTableRow
+                    skipFirstCell={true}
+                    key={i.investmentId}
+                    tableData={[
+                      i.symbol,
+                      <Moment format="M/D/YYYY">{i.lastPriceDate}</Moment>,
+                      <PriceInput
+                        defaultValue={i.lastPrice}
+                        onChange={(e) => this.handleChangePrice(index, e)}
+                      />
+                    ]}
+                  />
                 );
               })}
-              </tbody>
-            </Table>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.savePrices}>Save</Button>
-          </Modal.Footer>
-        </Modal>
+            </CustomTable>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.savePrices} color="primary">Save</Button>
+          </DialogActions>
+        </Dialog>
       </span>
     );
   };
