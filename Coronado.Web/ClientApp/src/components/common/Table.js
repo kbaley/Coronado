@@ -7,7 +7,7 @@ const useStyles = makeStyles(styles);
 
 export function CustomTableRow(props) {
   const classes = useStyles();
-  const { tableData, key, skipFirstCell } = props;
+  const { tableData, skipFirstCell } = props;
   return (
     <TableRow className={classes.tableBodyRow}>
       {!skipFirstCell &&
@@ -15,11 +15,11 @@ export function CustomTableRow(props) {
           {props.children}
         </TableCell>
       }
-      {tableData.map(prop => {
+      {tableData.map((prop, key) => {
         return (
           <TableCell
             key={key}
-            classname={classes.tableCell}
+            className={classes.tableCell}
           >
             {prop}
           </TableCell>
@@ -30,8 +30,7 @@ export function CustomTableRow(props) {
 }
 
 CustomTableRow.propTypes = {
-  tableData: PropTypes.arrayOf(PropTypes.string),
-  key: PropTypes.string,
+  tableData: PropTypes.arrayOf(PropTypes.any),
   skipFirstCell: PropTypes.bool,
 }
 

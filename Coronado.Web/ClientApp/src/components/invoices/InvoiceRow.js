@@ -9,7 +9,6 @@ import { CustomTableRow } from '../common/Table';
 export function InvoiceRow({invoice, onEdit, onDelete, onDownload, onEmail, onPreview}) {
   return (
     <CustomTableRow
-      key={invoice.invoiceId}
       tableData={[
         invoice.invoiceNumber,
         new Date(invoice.date).toLocaleDateString(), 

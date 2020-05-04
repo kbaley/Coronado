@@ -71,7 +71,7 @@ class InvoiceList extends Component {
           customers={this.props.customers}
           onSave={this.saveInvoice} />
         { this.props.isLoading ? <tr><td colSpan="4"><Spinner /></td></tr> :
-          this.props.invoices.map(invoice => 
+          this.props.invoices.map((invoice, key) => 
         showInvoice(invoice) && <InvoiceRow 
           key={invoice.invoiceId} 
           invoice={invoice} 
