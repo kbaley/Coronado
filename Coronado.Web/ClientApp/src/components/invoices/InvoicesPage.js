@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import * as actions from '../../actions/invoiceActions';
-import { ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
 import { bindActionCreators } from 'redux';
 import NewInvoice from './NewInvoice';
 import { connect } from 'react-redux';
 import InvoiceList from "./InvoiceList";
 import UploadInvoiceTemplate from "./UploadInvoiceTemplate";
 import {Icon} from "../icons/Icon";
+import ToggleButton from '@material-ui/lab/ToggleButton';
 import './InvoicesPage.css';
 
 class InvoicesPage extends Component {
@@ -18,7 +18,7 @@ class InvoicesPage extends Component {
     this.handleChangeButton = this.handleChangeButton.bind(this);
     this.state = {
       showUploadForm: false,
-      showPaid: []
+      showPaid: false,
     }
   }
 
@@ -42,9 +42,15 @@ class InvoicesPage extends Component {
     return (
       <div>
         <div style={{float: "right", width: "350px", textAlign: "right", "marginRight": "30px"}}>
-          <ToggleButtonGroup className="show-all" type="checkbox" value={this.state.showPaid} onChange={this.handleChangeButton}>
-            <ToggleButton value={true}>Show Paid</ToggleButton>
-          </ToggleButtonGroup>
+          <ToggleButton
+            value="check"
+            selected={this.state.showPaid}
+            onChange={() => {
+              this.handleChangeButton(!this.state.showPaid);
+            }}
+          >
+            Show paid
+          </ToggleButton>
           <Icon className="show-template" glyph="upload" onClick={this.uploadTemplateForm} />
           <Icon className="show-template" glyph="external-link-alt" onClick={this.showTemplate} />
           <UploadInvoiceTemplate show={this.state.showUploadForm} onHide={() => this.setState({showUploadForm: false})}

@@ -55,7 +55,7 @@ class InvoiceList extends Component {
   
   render() {
     const showInvoice = (invoice) => {
-      return invoice.balance > 0 || this.props.showPaid[0];
+      return invoice.balance > 0 || this.props.showPaid;
     }
     
     return (
