@@ -3,7 +3,6 @@ import * as customerActions from '../../actions/customerActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import CustomerForm from './CustomerForm';
-import './CustomerList.css';
 import { find } from 'lodash';
 import { CustomerRow } from './CustomerRow';
 import Spinner from '../common/Spinner';

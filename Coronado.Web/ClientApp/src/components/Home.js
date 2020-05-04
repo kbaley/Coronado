@@ -6,7 +6,7 @@ import * as reportActions from '../actions/reportActions';
 import { bindActionCreators } from 'redux';
 import NetWorthReport from './reports_page/NetWorthReport';
 import moment from 'moment';
-import { withStyles, TableContainer, Table, TableBody, TableRow, TableCell, Paper } from '@material-ui/core';
+import { withStyles, Table, TableBody, TableRow, TableCell } from '@material-ui/core';
 
 const styles = (theme) => ({
   table: {
@@ -15,12 +15,10 @@ const styles = (theme) => ({
       fontSize: "1.25em",
       border: 0
     },
-    border: 0
-  },
-  tableContainer: {
+    border: 0,
     maxWidth: 550,
     marginBottom: 50,
-  }
+  },
 })
 
 class Home extends React.Component {
@@ -58,7 +56,6 @@ class Home extends React.Component {
     return (
       <div>
         <h2>Coronado Financial App for Me</h2>
-        <TableContainer component={Paper} elevation={0} className={classes.tableContainer}>
           <Table className={classes.table} size="small">
             <TableBody>
               <TableRow>
@@ -79,7 +76,6 @@ class Home extends React.Component {
               </TableRow>
             </TableBody>
           </Table>
-        </TableContainer>
         <NetWorthReport />
       </div>
   )}
