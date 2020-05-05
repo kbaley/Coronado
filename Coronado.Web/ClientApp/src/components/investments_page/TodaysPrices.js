@@ -109,7 +109,6 @@ class TodaysPrices extends Component {
   }
 
   render() {
-    const { classes } = this.props;
     return (
       <span>
 

@@ -1,40 +1,41 @@
 import React, { Component } from 'react';
-import { Button,Modal, Table} from 'react-bootstrap';
 import { DeleteIcon } from '../icons/DeleteIcon';
 import { CheckIcon } from '../icons/CheckIcon';
 import { MoneyFormat } from '../common/DecimalFormat';
 import Moment from 'react-moment';
-import {parseMmDdDate} from '../common/dateHelpers';
+import { parseMmDdDate } from '../common/dateHelpers';
 import { getEmptyGuid } from '../common/guidHelpers';
 import { orderBy } from 'lodash';
+import { Button, Dialog, DialogActions, DialogTitle, DialogContent } from '@material-ui/core';
+import CustomTable, { CustomTableRow } from '../common/Table';
 
 class InvestmentPriceHistory extends Component {
   displayName = InvestmentPriceHistory.name;
   constructor(props) {
     super(props);
-    this.savePrices = this.savePrices.bind(this);   
+    this.savePrices = this.savePrices.bind(this);
     this.savePrice = this.savePrice.bind(this);
     this.deletePrice = this.deletePrice.bind(this);
     this.handleChangeField = this.handleChangeField.bind(this);
     this.setFocus = this.setFocus.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.state = {
-      newInvestment: {date: '', price: 0},
-      investment: { },
-      prices: [ ]
+      newInvestment: { date: '', price: 0 },
+      investment: {},
+      prices: []
     };
   }
 
   componentDidUpdate() {
-    if (this.props.investment && this.props.investment.investmentId 
-        && this.props.investment.investmentId !== this.state.investment.investmentId ) {
+    if (this.props.investment && this.props.investment.investmentId
+      && this.props.investment.investmentId !== this.state.investment.investmentId) {
       this.setState({
         investment: {
-          investmentId: this.props.investment.investmentId, 
+          investmentId: this.props.investment.investmentId,
           name: this.props.investment.name,
           symbol: this.props.investment.symbol || '',
         },
-        prices: orderBy(this.props.investment.historicalPrices, ['date'], ['desc']).map( p => ({
+        prices: orderBy(this.props.investment.historicalPrices, ['date'], ['desc']).map(p => ({
           ...p,
           status: "Unchanged"
         }))
@@ -47,8 +48,8 @@ class InvestmentPriceHistory extends Component {
     if (priceIndex > -1) {
       var prices = [...this.state.prices];
       prices[priceIndex].status = "Deleted";
-      this.setState({prices});
-    } 
+      this.setState({ prices });
+    }
   }
 
   handleKeyPress(e) {
@@ -62,13 +63,13 @@ class InvestmentPriceHistory extends Component {
     this.savePrice();
     this.props.onSave(this.state.investment, this.state.prices);
     this.setState({
-      newInvestment: {date: '', price: 0},
-      investment: { },
-      prices: [ ]
+      newInvestment: { date: '', price: 0 },
+      investment: {},
+      prices: []
     });
     this.props.onClose();
   }
-  
+
   setFocus(e) {
     if (e) e.preventDefault();
     this.refs["inputDate"].focus();
@@ -78,69 +79,72 @@ class InvestmentPriceHistory extends Component {
   savePrice() {
     if (this.state.newInvestment.date === '' || this.state.newInvestment.price === '') return;
     var newPrice = {
-      date: parseMmDdDate(this.state.newInvestment.date).format(), 
+      date: parseMmDdDate(this.state.newInvestment.date).format(),
       price: this.state.newInvestment.price,
       investmentId: this.state.investment.investmentId,
       status: 'Added',
       investmentPriceId: getEmptyGuid()
     }
     this.state.prices.push(newPrice);
-    this.setState({newInvestment: {date: '', price: this.state.newInvestment.price }});
+    this.setState({ newInvestment: { date: '', price: this.state.newInvestment.price } });
     this.setFocus();
   }
 
   handleChangeField(e) {
     var name = e.target.name;
-    this.setState( { newInvestment: {...this.state.newInvestment, [name]: e.target.value } } );
+    this.setState({ newInvestment: { ...this.state.newInvestment, [name]: e.target.value } });
   }
 
   render() {
     return (
-      <Modal show={this.props.show} onHide={this.props.onClose} autoFocus={false}>
-        <Modal.Header closeButton>
-          <Modal.Title>{this.state.investment.name}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Table striped bordered>
-            <thead>
-              <tr>
-                <th>&nbsp;</th>
-                <th>Date</th>
-                <th>Price</th>
-              </tr>
-            </thead>
-            <tbody>
-            {this.state.prices && this.state.prices.map( (p, index) =>
+      <Dialog
+        onClose={this.props.onClose}
+        open={this.props.show}
+      >
+        <DialogTitle>{this.state.investment.name}</DialogTitle>
+        <DialogContent>
+          <CustomTable
+            tableHeader={['', 'Date', 'Price']}
+            headerAlignment={['', '', 'right']}
+          >
+            {this.state.prices && this.state.prices.map((p, index) =>
               p.status !== "Deleted" &&
-              <tr key={index}>
-                <td><DeleteIcon onDelete={() => this.deletePrice(p)} /></td>
-                <td><Moment format="M/D/YYYY">{p.date}</Moment></td>
-                <td><MoneyFormat amount={p.price} /></td>
-              </tr>
+              <CustomTableRow
+                key={index}
+                tableData={[
+                  <Moment format="M/D/YYYY">{p.date}</Moment>,
+                  <MoneyFormat amount={p.price} />
+                ]}>
+                <DeleteIcon onDelete={() => this.deletePrice(p)} />
+              </CustomTableRow>
             )}
-            <tr>
-              <td><CheckIcon onClick={this.savePrice} /></td>
-              <td><input 
-                type="text" 
-                name="date" 
-                ref="inputDate" 
-                autoFocus={true}
-                value={this.state.newInvestment.date} onChange={this.handleChangeField} /></td>
-              <td style={{"textAlign": "right"}}>
-                <input type="text" 
-                  name="price" 
-                  style={{"textAlign": "right"}}
+            <CustomTableRow
+              tableData={[
+                <input
+                  type="text"
+                  name="date"
+                  ref="inputDate"
+                  autoFocus={true}
+                  value={this.state.newInvestment.date} onChange={this.handleChangeField} />,
+                <input type="text"
+                  name="price"
+                  style={{ "textAlign": "right" }}
                   onKeyPress={this.handleKeyPress}
                   value={this.state.newInvestment.price} onChange={this.handleChangeField} />
-                </td>
-            </tr>
+              ]}
+            >
+              <CheckIcon onClick={this.savePrice} />
+            </CustomTableRow>
+          </CustomTable>
+          <table striped bordered>
+            <tbody>
             </tbody>
-          </Table>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={this.savePrices}>Save</Button>
-        </Modal.Footer>
-      </Modal>
+          </table>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.savePrices} color="primary">Save</Button>
+        </DialogActions>
+      </Dialog>
     );
   };
 }
