@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button } from 'react-bootstrap';
+import { Button } from '@material-ui/core';
 import { bindActionCreators } from 'redux';
 import * as transactionActions from '../../actions/transactionActions';
 
