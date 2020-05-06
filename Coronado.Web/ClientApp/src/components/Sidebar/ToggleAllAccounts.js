@@ -2,9 +2,17 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as navListActions from '../../actions/navListActions'
-import './DeleteAccount.css';
 import { withStyles, Button } from '@material-ui/core';
-import styles from '../../assets/jss/material-dashboard-react/components/sidebarStyle.js';
+
+const infoColor = ["#4682b4", "#26c6da", "#00acc1", "#00d3ee"];
+const styles = theme => ({
+  blue: {
+    backgroundColor: infoColor[0],
+    "&:hover,&:focus": {
+      backgroundColor: infoColor[0],
+    }
+  },
+});
 
 class ToggleAllAccounts extends Component {
 

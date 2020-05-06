@@ -8,39 +8,14 @@ import { MoneyFormat } from '../common/DecimalFormat';
 import Spinner from '../common/Spinner';
 import { filter } from 'lodash';
 import { SidebarMenuItem } from './SidebarMenuItem';
-import CreditCardIcon from '@material-ui/icons/CreditCard';
-import DirectionsCarIcon from '@material-ui/icons/DirectionsCar';
-import HouseIcon from '@material-ui/icons/House';
-import AttachMoneyIcon from '@material-ui/icons/AttachMoney'
-import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
-import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
-import MoneyIcon from '@material-ui/icons/Money';
 import NewAccount from '../account_page/NewAccount';
-import ToggleAllAccounts from '../account_page/ToggleAllAccounts';
+import ToggleAllAccounts from './ToggleAllAccounts';
 import { Toolbar, withStyles, List } from '@material-ui/core';
+import getIcon from './AccountNavListIcons';
 
 const styles = theme => ({
 
 });
-
-function getIcon(accountType) {
-  switch (accountType) {
-    case "Credit Card":
-      return CreditCardIcon;
-    case "Asset":
-      return DirectionsCarIcon;
-    case "Mortgage":
-      return HouseIcon;
-    case "Investment":
-      return AttachMoneyIcon;
-    case "Loan":
-      return MoneyIcon;
-    case "Cash":
-      return AccountBalanceWalletIcon;
-    default:
-      return AccountBalanceIcon;
-  }
-}
 
 class AccountNavList extends Component {
   displayName = AccountNavList.name;
