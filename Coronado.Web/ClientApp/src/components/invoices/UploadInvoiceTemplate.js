@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import * as actions from '../../actions/invoiceActions';
-import { Button, Modal, Form, FormGroup, Col } from 'react-bootstrap';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import './NewInvoice.css';
+import { Button, Dialog, DialogTitle, DialogActions, DialogContent } from '@material-ui/core';
 
 export class NewInvoice extends Component {
   constructor(props) {
@@ -11,13 +10,15 @@ export class NewInvoice extends Component {
     this.uploadTemplate = this.uploadTemplate.bind(this);
     this.handleSelectedFile = this.handleSelectedFile.bind(this);
     this.state = {  
-      selectedFile: null
+      selectedFile: null,
+      filename: 'No file selected'
     };
   }
 
   handleSelectedFile(event) {
     this.setState({
-      selectedFile: event.target.files[0]
+      selectedFile: event.target.files[0],
+      filename: event.target.files[0].name
     })
   }
 
@@ -28,33 +29,34 @@ export class NewInvoice extends Component {
   render() {
     return (
       <span>
-        <Modal show={this.props.show} onHide={this.props.onHide}>
-          <Modal.Header closeButton>
-            <Modal.Title>Invoice Template</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <FormGroup>
-                <Col as={Form.Label} sm={3}>Select file:</Col>
-                <Col sm={9}>
-                  <input type="file" name="selectedFile" onChange={this.handleSelectedFile} />
-                </Col>
-              </FormGroup>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
+        <Dialog
+          onClose={this.props.onHide}
+          open={this.props.show}
+          fullWidth={true}
+          maxWidth={'sm'}
+        >
+          <DialogTitle>Invoice Template</DialogTitle>
+          <DialogContent>
+            <input 
+              type="file" 
+              name="selectedFile" 
+              id='selectedFile'
+              onChange={this.handleSelectedFile}
+              style={{ display: 'none' }}
+            />
+            <label htmlFor='selectedFile'>
+              <Button variant="outlined" component="span">Select file</Button>
+            </label>
+            <label style={{marginLeft: 20}}>
+              {this.state.filename}
+            </label>
+          </DialogContent>
+          <DialogActions>
             <Button onClick={this.uploadTemplate}>Upload</Button>
-          </Modal.Footer>
-        </Modal>  
+          </DialogActions>
+        </Dialog>
       </span>);
   };
-}
-
-function mapStateToProps(state) {
-  return {
-    invoices: state.invoices,
-    customers: state.customers
-  }
 }
 
 function mapDispatchToProps(dispatch) {
@@ -64,6 +66,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(NewInvoice);

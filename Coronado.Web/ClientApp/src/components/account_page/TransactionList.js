@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import TransactionRow from './TransactionRow';
 import './TransactionList.css';
 import NewTransactionRow from './NewTransactionRow';
-import { Table } from 'react-bootstrap';
+import CustomTable from '../common/Table';
 
 class TransactionList extends Component {
   displayName = TransactionList.name;
@@ -23,28 +23,17 @@ class TransactionList extends Component {
   render() {
         
     return (
-    <Table className='transactionList' striped>
-      <thead>
-        <tr>
-          <th></th>
-          <th>Date</th>
-          <th>Vendor</th>
-          <th>Category</th>
-          <th>Description</th>
-          <th>Debit</th>
-          <th>Credit</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
+      <CustomTable
+        tableHeader={['', 'Date', 'Vendor', 'Category', 'Description', 'Debit', 'Credit', '']}
+      >
         <NewTransactionRow 
           account={this.props.account} />
         {this.props.transactions ? this.props.transactions.map(trx => 
         <TransactionRow key={trx.transactionId} transaction={trx} 
           onDelete={() => this.deleteTransaction(trx.transactionId)} />
         ) : <tr/>}
-      </tbody>
-    </Table>);
+      </CustomTable>
+    );
   }
 }
 
