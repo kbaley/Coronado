@@ -24,6 +24,7 @@ class ExpensesByCategoryReport extends Component {
   
   render() {
     const { classes } = this.props;
+    console.log(classes);
     return (
       <div style={{margin: "10px"}}>
         <h4>Expenses By Category</h4>

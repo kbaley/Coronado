@@ -2,7 +2,7 @@ import React from 'react';
 import './Layout.css';
 import NotificationsComponent from './Notifications';
 import ShortcutHelper from './common/ShortcutHelper';
-import Sidebar from './Sidebar';
+import Sidebar from './Sidebar/Sidebar';
 import { makeStyles } from '@material-ui/core/styles';
 import NavBar from './NavBar';
 

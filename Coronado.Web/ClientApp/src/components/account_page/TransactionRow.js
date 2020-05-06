@@ -6,13 +6,14 @@ import * as transactionActions from '../../actions/transactionActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { CategorySelect } from '../common/CategorySelect';
-import './TransactionRow.css';
 import { CheckIcon } from '../icons/CheckIcon';
 import { CancelIcon } from '../icons/CancelIcon';
 import { MoneyInput } from '../common/MoneyInput';
 import * as Mousetrap from 'mousetrap';
 import { getCategoriesForDropdown } from "../../selectors/selectors.js";
 import VendorField from '../common/VendorField';
+import { TableRow, TableCell, withStyles } from '@material-ui/core';
+import styles from "../../assets/jss/material-dashboard-react/components/tableStyle.js";
 
 class TransactionRow extends Component {
   constructor(props) {
@@ -100,56 +101,58 @@ class TransactionRow extends Component {
 
   render() {
     const trx = this.props.transaction;
+    const { classes } = this.props;
+    console.log(classes.tableBodyRow);
     return (
       this.state.isEditing ? 
-      <tr className="transactionRow">
-        <td>
+      <TableRow className={classes.tableBodyRow}>
+        <TableCell className={classes.tableCell}>
           <CheckIcon onClick={this.updateTransaction} className="icon" />
           <CancelIcon onCancel={this.cancelEditing} />
-        </td>
-        <td>
+        </TableCell>
+        <TableCell className={classes.tableCell}>
         <input type="text" name="transactionDate" 
           onChange={this.handleChangeField}
           onKeyPress={this.handleKeyPress}
           value={this.state.trx.transactionDate} />
-        </td>
-        <td>
+        </TableCell>
+        <TableCell className={classes.tableCell}>
           <VendorField vendors={this.props.vendors} value={this.state.trx.vendor} onVendorChanged={this.handleChangeVendor} />
-        </td>
-        <td>
+        </TableCell>
+        <TableCell className={classes.tableCell}>
             <CategorySelect 
               selectedCategory={this.state.selectedCategory} 
               categories={this.props.categories}
               selectedAccount={trx.accountId}
               onCategoryChanged={this.handleChangeCategory} />
-        </td>
-        <td>
+        </TableCell>
+        <TableCell className={classes.tableCell}>
             <input type="text" name="description" onChange={this.handleChangeField}
                 value={this.state.trx.description} onKeyPress={this.handleKeyPress} />
-        </td>
-        <td>
+        </TableCell>
+        <TableCell className={classes.tableCell}>
           <MoneyInput name="debit" value={this.state.trx.debit} 
             onChange={this.handleChangeField} onKeyPress={this.handleKeyPress} />
-        </td>
-        <td>
+        </TableCell>
+        <TableCell className={classes.tableCell}>
           <MoneyInput name="credit" value={this.state.trx.credit} 
-            onChange={this.handleChangeField} onKeyPress={this.handleKeyPress} /></td>
-        <td></td>
-      </tr> :
+            onChange={this.handleChangeField} onKeyPress={this.handleKeyPress} /></TableCell>
+        <TableCell className={classes.tableCell}></TableCell>
+      </TableRow> :
 
-      <tr>
-        <td>
+      <TableRow className={classes.tableBodyRow}>
+        <TableCell className={classes.tableCell}>
             <EditIcon onStartEditing={this.startEditing} className="icon" />
             <DeleteIcon onDelete={this.props.onDelete} />
-        </td>
-        <td>{new Date(trx.transactionDate).toLocaleDateString()}</td>
-        <td title={trx.vendor}>{trx.vendor}</td>
-        <td title={trx.categoryDisplay}>{trx.categoryDisplay}</td>
-        <td title={trx.description}>{trx.description}</td>
-        <td><DecimalFormat isDebit={true} amount={trx.debit} /></td>
-        <td><DecimalFormat isCredit={true} amount={trx.credit} /></td>
-        <td><MoneyFormat amount={trx.runningTotal} /></td>
-      </tr>
+        </TableCell>
+        <TableCell className={classes.tableCell}>{new Date(trx.transactionDate).toLocaleDateString()}</TableCell>
+        <TableCell title={trx.vendor} className={classes.tableCell}>{trx.vendor}</TableCell>
+        <TableCell title={trx.categoryDisplay} className={classes.tableCell}>{trx.categoryDisplay}</TableCell>
+        <TableCell title={trx.description} className={classes.tableCell}>{trx.description}</TableCell>
+        <TableCell className={classes.tableCell}><DecimalFormat isDebit={true} amount={trx.debit} /></TableCell>
+        <TableCell className={classes.tableCell}><DecimalFormat isCredit={true} amount={trx.credit} /></TableCell>
+        <TableCell className={classes.tableCell}><MoneyFormat amount={trx.runningTotal} /></TableCell>
+      </TableRow>
     );
   }
 }
@@ -170,4 +173,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(TransactionRow);
+)(withStyles(styles)(TransactionRow));
