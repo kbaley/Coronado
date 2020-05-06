@@ -3,15 +3,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as navListActions from '../../actions/navListActions'
 import { withStyles, Button } from '@material-ui/core';
+import hexToRgb from '../../theme/palette';
 
-const infoColor = ["#4682b4", "#26c6da", "#00acc1", "#00d3ee"];
 const styles = theme => ({
-  blue: {
-    backgroundColor: infoColor[0],
-    "&:hover,&:focus": {
-      backgroundColor: infoColor[0],
-    }
-  },
+  background: {
+    backgroundColor: theme.palette.blue,
+  }
 });
 
 class ToggleAllAccounts extends Component {
@@ -30,7 +27,7 @@ class ToggleAllAccounts extends Component {
     const { classes } = this.props;
     var text = this.props.showAllAccounts ? "Hide inactive" : "Show all"
     return (
-        <Button onClick={this.toggle} className={classes.blue} size="small">
+        <Button onClick={this.toggle} className={classes.background} size="small">
           {text}
         </Button>
     );

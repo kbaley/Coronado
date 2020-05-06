@@ -6,9 +6,24 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import SettingsIcon from '@material-ui/icons/Settings';
 import routes from '../routes';
 
-import styles from '../assets/jss/material-dashboard-react/components/headerStyle.js';
 import { Link } from 'react-router-dom';
 
+const styles = theme => ({
+  appBar: {
+    backgroundColor: "transparent",
+    boxShadow: "none",
+    width: "100%",
+    padding: "10px 0",
+    display: "block"
+  },
+  container: {
+    paddingRight: "15px",
+    minHeight: "50px"
+  },
+  flex: {
+    flex: 1
+  },
+});
 const useStyles = makeStyles(styles);
 
 export default function Header() {
@@ -38,7 +53,6 @@ export default function Header() {
               variant="outlined"
               color="default"
               startIcon={React.createElement(route.icon)}
-              className={classes.button}
               component={Link}
               to={route.path}
             >

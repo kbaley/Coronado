@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
     width: drawerWidth,
   },
   root: {
-    backgroundColor: theme.palette.gray[2],
+    backgroundColor: theme.palette.blue,
     display: 'flex',
     height: '100%',
     flexDirection: 'column',

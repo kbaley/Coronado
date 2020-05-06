@@ -1,10 +1,8 @@
 import React from 'react';
 import { CurrencyFormat } from "../common/CurrencyFormat";
 import { TableRow, TableCell, makeStyles } from '@material-ui/core';
-import styles from "../../assets/jss/material-dashboard-react/components/tableStyle.js";
 
 const useStyles = makeStyles({
-  ...styles,
   footer: {
     fontSize: "18px",
     fontWeight: 500,

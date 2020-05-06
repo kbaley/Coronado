@@ -13,7 +13,10 @@ import * as Mousetrap from 'mousetrap';
 import { getCategoriesForDropdown } from "../../selectors/selectors.js";
 import VendorField from '../common/VendorField';
 import { TableRow, TableCell, withStyles } from '@material-ui/core';
-import styles from "../../assets/jss/material-dashboard-react/components/tableStyle.js";
+
+const styles = theme => ({
+
+});
 
 class TransactionRow extends Component {
   constructor(props) {

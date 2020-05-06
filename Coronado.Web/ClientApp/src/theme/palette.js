@@ -26,52 +26,33 @@ const hexToRgb = input => {
   );
 };
 
-const infoColor = ["#4682b4", "#26c6da", "#00acc1", "#00d3ee"];
 const white = '#FFFFFF';
 const black = '#000000';
 const gray = [
+  "#eee",
+  "#e7e7e7",
+  "#DDD",
+  "#D2D2D2",
+  "#b4b4b4",
+  "#AAA",
+  "#a9afbb",
   "#999",
   "#777",
-  "#3C4858",
-  "#AAAAAA",
-  "#D2D2D2",
-  "#DDD",
-  "#b4b4b4",
   "#555555",
+  "#3C4858",
   "#333",
-  "#a9afbb",
-  "#eee",
-  "#e7e7e7"
 ];
 
-const blue = {
-    backgroundColor: "#4682b4",
-    boxShadow:
-      "0 12px 20px -10px rgba(" +
-      hexToRgb(infoColor[0]) +
-      ",.28), 0 4px 20px 0 rgba(" +
-      hexToRgb(black) +
-      ",.12), 0 7px 8px -5px rgba(" +
-      hexToRgb(infoColor[0]) +
-      ",.2)",
-    "&:hover,&:focus": {
-      backgroundColor: infoColor[0],
-      boxShadow:
-        "0 12px 20px -10px rgba(" +
-        hexToRgb(infoColor[0]) +
-        ",.28), 0 4px 20px 0 rgba(" +
-        hexToRgb(black) +
-        ",.12), 0 7px 8px -5px rgba(" +
-        hexToRgb(infoColor[0]) +
-        ",.2)"
-    }
-  };
+const blue = "#4682b4";
+const green = "#4caf50";
+
 export default {
-  infoColor,
   black,
   white,
   gray,
   blue,
+  green,
+  hexToRgb,
   primary: {
     contrastText: white,
     dark: colors.indigo[900],

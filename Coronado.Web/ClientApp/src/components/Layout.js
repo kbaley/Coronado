@@ -6,14 +6,28 @@ import Sidebar from './Sidebar/Sidebar';
 import { makeStyles } from '@material-ui/core/styles';
 import NavBar from './NavBar';
 
-import styles from '../assets/jss/material-dashboard-react/layouts/adminStyle.js';
+const styles = theme => ({
+
+  mainPanel: {
+    [theme.breakpoints.up("md")]: {
+      width: `calc(100% - 350px)`
+    },
+    float: "right",
+    width: "100%",
+  },
+  content: {
+    padding: "0 15px 30px",
+    marginTop: "50px",
+    minHeight: "calc(100vh - 123px)"
+  },
+});
 
 const useStyles = makeStyles(styles);
 
 export default function Layout(props) {
   const classes = useStyles();
   return (
-    <div className={classes.wrapper}>
+    <div>
       <Sidebar />
       <div className={classes.mainPanel}>
         <NavBar />

@@ -6,7 +6,15 @@ import * as Mousetrap from 'mousetrap';
 import { AccountForm } from './AccountForm';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Button, withStyles } from '@material-ui/core';
-import styles from '../../assets/jss/material-dashboard-react/components/sidebarStyle.js';
+
+const styles = theme => ({
+  newAccount: {
+    margin: "5px 5px 5px 15px"
+  },
+  button: {
+    backgroundColor: theme.palette.green
+  }
+});
 
 class NewAccount extends Component {
   displayName = NewAccount.name
@@ -44,7 +52,7 @@ class NewAccount extends Component {
     const { classes } = this.props;
     return (
       <div className={classes.newAccount}>
-        <Button onClick={this.newAccount} className={classes.green} size="small">
+        <Button onClick={this.newAccount} className={classes.button} size="small">
           <AddCircleIcon />
           <span style={{"marginLeft": "5px"}}>New Account</span>
         </Button>

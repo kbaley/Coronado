@@ -1,17 +1,13 @@
 import React from 'react';
-import { Table, TableHead, TableRow, TableBody, TableCell, makeStyles } from '@material-ui/core';
-import styles from "../../assets/jss/material-dashboard-react/components/tableStyle.js";
+import { Table, TableHead, TableRow, TableBody, TableCell } from '@material-ui/core';
 import { PropTypes } from 'prop-types';
 
-const useStyles = makeStyles(styles);
-
 export function CustomTableRow(props) {
-  const classes = useStyles();
   const { tableData, skipFirstCell } = props;
   return (
-    <TableRow className={classes.tableBodyRow}>
+    <TableRow>
       {!skipFirstCell &&
-        <TableCell className={classes.tableCell}>
+        <TableCell>
           {props.children}
         </TableCell>
       }
@@ -19,7 +15,6 @@ export function CustomTableRow(props) {
         return (
           <TableCell
             key={key}
-            className={classes.tableCell}
           >
             {prop}
           </TableCell>
@@ -36,19 +31,17 @@ CustomTableRow.propTypes = {
 
 export default function CustomTable(props) {
 
-  const classes = useStyles();
   const { tableHeader, className, headerAlignment } = props;
 
   return (
-    <Table className={classes.table + " " + className}>
-      <TableHead className={classes.primaryTableHeader}>
-        <TableRow className={classes.tableHeadRow}>
+    <Table className={className}>
+      <TableHead>
+        <TableRow>
           {tableHeader.map((prop, key) => {
             return (
               <TableCell
                 key={key}
                 align={headerAlignment ? headerAlignment[key] : 'inherit' }
-                className={classes.tableCell + " " + classes.tableHeadCell}
               >
                 {prop}
               </TableCell>
