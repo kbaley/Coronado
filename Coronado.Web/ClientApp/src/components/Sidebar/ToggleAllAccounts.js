@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as navListActions from '../../actions/navListActions'
 import { withStyles, Button } from '@material-ui/core';
-import hexToRgb from '../../theme/palette';
 
 const styles = theme => ({
   background: {

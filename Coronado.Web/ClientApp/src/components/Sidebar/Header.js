@@ -1,6 +1,5 @@
 ﻿import React from 'react';
-import PropTypes from 'prop-types';
-import { makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { NavLink } from 'react-router-dom';
 import NetWorth from './NetWorth';
 import { List, ListItem, ListItemText } from '@material-ui/core';
@@ -42,11 +41,11 @@ export default function Header(props) {
   const classes = useStyles();
   return (
     <NavLink to={'/'} className={classNames(classes.logo, classes.item)}>
-    <List className={classes.list}>
-      <ListItem className={classNames(classes.logoLink, classes.itemLink)}>
-        <ListItemText primary="Coronado" disableTypography={true}/>
-        <NetWorth />
-      </ListItem>
+      <List className={classes.list}>
+        <ListItem className={classNames(classes.logoLink, classes.itemLink)}>
+          <ListItemText primary="Coronado" disableTypography={true} />
+          <NetWorth />
+        </ListItem>
       </List>
     </NavLink>
   );

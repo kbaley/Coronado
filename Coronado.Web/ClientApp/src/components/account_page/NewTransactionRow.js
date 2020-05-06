@@ -8,6 +8,10 @@ import * as transactionActions from '../../actions/transactionActions';
 import { connect } from 'react-redux';
 import { getCategoriesForDropdown } from "../../selectors/selectors";
 import VendorField from '../common/VendorField';
+import { withStyles, TableRow, TableCell } from '@material-ui/core';
+
+const styles = theme => ({
+});
 
 export class NewTransactionRow extends Component {
   constructor(props) {
@@ -189,29 +193,29 @@ export class NewTransactionRow extends Component {
 
   render() {
     return (
-      <tr key="new-transaction" className="new-transaction">
-        <td>
+      <TableRow>
+        <TableCell>
           <CheckIcon onClick={this.saveTransaction} />
-        </td>
-        <td><input type="text" name="transactionDate" ref="inputDate"
-          value={this.state.trx.transactionDate} onChange={this.handleChangeField} /></td>
-        <td>
+        </TableCell>
+        <TableCell><input type="text" name="transactionDate" ref="inputDate"
+          value={this.state.trx.transactionDate} onChange={this.handleChangeField} /></TableCell>
+        <TableCell>
           <VendorField vendors={this.props.vendors} value={this.state.trx.vendor} onVendorChanged={this.handleChangeVendor} />
-        </td>
-        <td>
+        </TableCell>
+        <TableCell>
           <CategorySelect
             selectedCategory={this.state.selectedCategory}
             onCategoryChanged={this.handleChangeCategory}
             selectedAccount={this.state.trx.accountId}
             categories={this.props.categories} />
-        </td>
-        <td><input type="text" name="description" value={this.state.trx.description} onChange={this.handleChangeField} /></td>
-        <td><input type="text" name="debit" value={this.state.trx.debit}
-          onChange={this.handleChangeDebit} onKeyPress={this.handleKeyPress} /></td>
-        <td><input type="text" name="credit" value={this.state.trx.credit}
-          onChange={this.handleChangeField} onKeyPress={this.handleKeyPress} /></td>
-        <td></td>
-      </tr>
+        </TableCell>
+        <TableCell><input type="text" name="description" value={this.state.trx.description} onChange={this.handleChangeField} /></TableCell>
+        <TableCell><input type="text" name="debit" value={this.state.trx.debit}
+          onChange={this.handleChangeDebit} onKeyPress={this.handleKeyPress} /></TableCell>
+        <TableCell><input type="text" name="credit" value={this.state.trx.credit}
+          onChange={this.handleChangeField} onKeyPress={this.handleKeyPress} /></TableCell>
+        <TableCell></TableCell>
+      </TableRow>
     )
   }
 }
@@ -233,4 +237,4 @@ export function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(NewTransactionRow);
+)(withStyles(styles)(NewTransactionRow));

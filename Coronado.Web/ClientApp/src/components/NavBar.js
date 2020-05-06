@@ -43,7 +43,7 @@ export default function Header() {
   }
 
   return (
-    <AppBar className={classes.appBar}>
+    <AppBar className={classes.appBar} position="sticky">
       <Toolbar className={classes.container}>
         <div className={classes.flex}></div>
         <div>

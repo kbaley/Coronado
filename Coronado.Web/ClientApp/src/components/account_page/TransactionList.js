@@ -5,7 +5,39 @@ import { connect } from 'react-redux';
 import TransactionRow from './TransactionRow';
 import './TransactionList.css';
 import NewTransactionRow from './NewTransactionRow';
-import CustomTable from '../common/Table';
+import { Table, TableHead, TableRow, TableBody, TableCell, withStyles } from '@material-ui/core';
+
+const styles = theme => ({
+  transactionTable: {
+    width: "100%",
+    "& td": {
+      padding: "8px",
+    },
+    "& td:nth-child(1)": {
+      width: 100,
+      maxWidth: 100,
+    },
+    "& td:nth-child(2)": {
+      width: 110,
+      maxWidth: 110,
+    },
+    "& td:nth-child(3)": {
+      maxWidth: 130,
+    },
+    "& td:nth-child(4)": {
+      maxWidth: 180,
+    },
+    "& td:nth-child(5)": {
+    },
+    "& td:nth-child(6), & td:nth-child(7), & td:nth-child(8)": {
+      width: 100,
+      maxWidth: 100,
+    },
+    "& input": {
+      width: "100%",
+    }
+  }
+})
 
 class TransactionList extends Component {
   displayName = TransactionList.name;
@@ -15,24 +47,36 @@ class TransactionList extends Component {
     this.state = {
     }
   }
-  
+
   deleteTransaction(transactionId) {
-      this.props.actions.deleteTransaction(transactionId);
+    this.props.actions.deleteTransaction(transactionId);
   }
 
   render() {
-        
+    const { classes } = this.props;
     return (
-      <CustomTable
-        tableHeader={['', 'Date', 'Vendor', 'Category', 'Description', 'Debit', 'Credit', '']}
-      >
-        <NewTransactionRow 
-          account={this.props.account} />
-        {this.props.transactions ? this.props.transactions.map(trx => 
-        <TransactionRow key={trx.transactionId} transaction={trx} 
-          onDelete={() => this.deleteTransaction(trx.transactionId)} />
-        ) : <tr/>}
-      </CustomTable>
+      <Table className={classes.transactionTable}>
+        <TableHead>
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell>Date</TableCell>
+            <TableCell>Vendor</TableCell>
+            <TableCell>Category</TableCell>
+            <TableCell>Description</TableCell>
+            <TableCell>Debit</TableCell>
+            <TableCell>Credit</TableCell>
+            <TableCell></TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <NewTransactionRow
+            account={this.props.account} />
+          {this.props.transactions ? this.props.transactions.map(trx =>
+            <TransactionRow key={trx.transactionId} transaction={trx}
+              onDelete={() => this.deleteTransaction(trx.transactionId)} />
+          ) : <tr />}
+        </TableBody>
+      </Table>
     );
   }
 }
@@ -54,4 +98,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(TransactionList);
+)(withStyles(styles)(TransactionList));

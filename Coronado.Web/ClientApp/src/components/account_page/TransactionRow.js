@@ -15,7 +15,11 @@ import VendorField from '../common/VendorField';
 import { TableRow, TableCell, withStyles } from '@material-ui/core';
 
 const styles = theme => ({
-
+  overflow: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  }
 });
 
 class TransactionRow extends Component {
@@ -105,56 +109,55 @@ class TransactionRow extends Component {
   render() {
     const trx = this.props.transaction;
     const { classes } = this.props;
-    console.log(classes.tableBodyRow);
     return (
       this.state.isEditing ? 
-      <TableRow className={classes.tableBodyRow}>
-        <TableCell className={classes.tableCell}>
+      <TableRow>
+        <TableCell>
           <CheckIcon onClick={this.updateTransaction} className="icon" />
           <CancelIcon onCancel={this.cancelEditing} />
         </TableCell>
-        <TableCell className={classes.tableCell}>
+        <TableCell>
         <input type="text" name="transactionDate" 
           onChange={this.handleChangeField}
           onKeyPress={this.handleKeyPress}
           value={this.state.trx.transactionDate} />
         </TableCell>
-        <TableCell className={classes.tableCell}>
+        <TableCell>
           <VendorField vendors={this.props.vendors} value={this.state.trx.vendor} onVendorChanged={this.handleChangeVendor} />
         </TableCell>
-        <TableCell className={classes.tableCell}>
+        <TableCell>
             <CategorySelect 
               selectedCategory={this.state.selectedCategory} 
               categories={this.props.categories}
               selectedAccount={trx.accountId}
               onCategoryChanged={this.handleChangeCategory} />
         </TableCell>
-        <TableCell className={classes.tableCell}>
+        <TableCell>
             <input type="text" name="description" onChange={this.handleChangeField}
                 value={this.state.trx.description} onKeyPress={this.handleKeyPress} />
         </TableCell>
-        <TableCell className={classes.tableCell}>
+        <TableCell>
           <MoneyInput name="debit" value={this.state.trx.debit} 
             onChange={this.handleChangeField} onKeyPress={this.handleKeyPress} />
         </TableCell>
-        <TableCell className={classes.tableCell}>
+        <TableCell>
           <MoneyInput name="credit" value={this.state.trx.credit} 
             onChange={this.handleChangeField} onKeyPress={this.handleKeyPress} /></TableCell>
-        <TableCell className={classes.tableCell}></TableCell>
+        <TableCell></TableCell>
       </TableRow> :
 
-      <TableRow className={classes.tableBodyRow}>
-        <TableCell className={classes.tableCell}>
+      <TableRow>
+        <TableCell>
             <EditIcon onStartEditing={this.startEditing} className="icon" />
             <DeleteIcon onDelete={this.props.onDelete} />
         </TableCell>
-        <TableCell className={classes.tableCell}>{new Date(trx.transactionDate).toLocaleDateString()}</TableCell>
-        <TableCell title={trx.vendor} className={classes.tableCell}>{trx.vendor}</TableCell>
-        <TableCell title={trx.categoryDisplay} className={classes.tableCell}>{trx.categoryDisplay}</TableCell>
-        <TableCell title={trx.description} className={classes.tableCell}>{trx.description}</TableCell>
-        <TableCell className={classes.tableCell}><DecimalFormat isDebit={true} amount={trx.debit} /></TableCell>
-        <TableCell className={classes.tableCell}><DecimalFormat isCredit={true} amount={trx.credit} /></TableCell>
-        <TableCell className={classes.tableCell}><MoneyFormat amount={trx.runningTotal} /></TableCell>
+        <TableCell>{new Date(trx.transactionDate).toLocaleDateString()}</TableCell>
+        <TableCell title={trx.vendor} className={classes.overflow}>{trx.vendor}</TableCell>
+        <TableCell title={trx.categoryDisplay} className={classes.overflow}>{trx.categoryDisplay}</TableCell>
+        <TableCell title={trx.description}>{trx.description}</TableCell>
+        <TableCell><DecimalFormat isDebit={true} amount={trx.debit} /></TableCell>
+        <TableCell><DecimalFormat isCredit={true} amount={trx.credit} /></TableCell>
+        <TableCell><MoneyFormat amount={trx.runningTotal} /></TableCell>
       </TableRow>
     );
   }

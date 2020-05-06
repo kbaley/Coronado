@@ -1,7 +1,6 @@
 ﻿import React from 'react';
-import PropTypes from 'prop-types';
 import AccountNavList from './AccountNavList';
-import { Drawer, List } from '@material-ui/core';
+import { Drawer } from '@material-ui/core';
 import { makeStyles} from '@material-ui/core/styles';
 import Header from './Header';
 
@@ -9,9 +8,9 @@ const drawerWidth = 350;
 const useStyles = makeStyles(theme => ({
   drawer: {
     width: drawerWidth,
+    backgroundColor: theme.palette.blue,
   },
   root: {
-    backgroundColor: theme.palette.blue,
     display: 'flex',
     height: '100%',
     flexDirection: 'column',
