@@ -7,7 +7,6 @@ import { parseMmDdDate } from '../common/dateHelpers';
 import { getEmptyGuid } from '../common/guidHelpers';
 import { orderBy } from 'lodash';
 import { Button, Dialog, DialogActions, DialogTitle, DialogContent, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import CustomTable, { CustomTableRow } from '../common/Table';
 
 class InvestmentPriceHistory extends Component {
   displayName = InvestmentPriceHistory.name;
