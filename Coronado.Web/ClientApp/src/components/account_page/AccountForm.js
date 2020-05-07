@@ -1,5 +1,20 @@
 import React, { Component } from 'react';
-import { Button, Modal, Form, FormControl, FormGroup, Col, ToggleButtonGroup, ToggleButton, Row } from 'react-bootstrap';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogActions, 
+  Button, 
+  Grid, 
+  TextField, 
+  Select, 
+  MenuItem, 
+  FormControl, 
+  InputLabel, 
+  Checkbox, 
+  FormControlLabel 
+} from '@material-ui/core';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 export class AccountForm extends Component {
   constructor(props) {
@@ -17,6 +32,7 @@ export class AccountForm extends Component {
         currency: 'USD', 
         mortgageType: 'fixedPayment',
         mortgagePayment: '',
+        accountType: 'Cash',
         startDate: new Date().toLocaleDateString() }
     };
   }
@@ -52,8 +68,9 @@ export class AccountForm extends Component {
     this.setState({ account: { ...this.state.account, accountType: e.target.value } });
   }
 
-  handleChangeMortgageType(e) {
-    this.setState({ account: { ...this.state.account, mortgageType: e } } );
+  handleChangeMortgageType(e, newMortgageType) {
+    console.log(e);
+    this.setState({ account: { ...this.state.account, mortgageType: newMortgageType } } );
   }
 
   onSave() {
@@ -66,92 +83,120 @@ export class AccountForm extends Component {
   }
   render() {
     return (
-    <Modal size="lg" show={this.props.show} onHide={this.props.onClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>New account</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>
-          <FormGroup as={Row}>
-            <Col as={Form.Label} sm={3}>Account Name</Col>
-            <Col sm={9}>
-              <FormControl autoFocus type="text" ref="inputName" name="name" value={this.state.account.name} onChange={this.handleChange} />
-            </Col>
-          </FormGroup>
-          <FormGroup as={Row}>
-            <Col as={Form.Label} sm={3}>Vendor</Col>
-            <Col sm={9}>
-              <FormControl type="text" name="vendor" value={this.state.account.vendor} onChange={this.handleChange} />
-            </Col>
-          </FormGroup>
-          <FormGroup as={Row}>
-            <Col as={Form.Label} sm={3}>Account Type</Col>
-            <Col sm={9}>
-              <FormControl as="select" name="accountType" 
-                  onChange={this.handleChangeType} value={this.state.account.accountType}>
-                <option>Select...</option>
-                {this.props.accountTypes ? this.props.accountTypes.map(t => 
-                <option key={t} value={t}>{t}</option>
-                ) : <option>Select...</option>}
-              </FormControl>
-            </Col>
-          </FormGroup>
+    <Dialog 
+      maxWidth="sm" 
+      fullWidth={true}
+      open={this.props.show} 
+      onClose={this.props.onClose}
+    >
+      <DialogContent>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <TextField
+              autoFocus
+              name="name"
+              label="Account Name"
+              fullWidth={true}
+              value={this.state.account.name}
+              onChange={this.handleChange}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              name="vendor"
+              label="Vendor"
+              fullWidth={true}
+              value={this.state.account.vendor}
+              onChange={this.handleChange}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <FormControl>
+            <InputLabel id="account-type">Account Type</InputLabel>
+            <Select
+              labelId="account-type"
+              value={this.state.account.accountType}
+              style={{minWidth: 100}}
+              onChange={this.handleChangeType}
+            >
+              {this.props.accountTypes ? this.props.accountTypes.map((t,i) => 
+              <MenuItem key={i} value={t}>{t}</MenuItem>
+              ) : <MenuItem>Select...</MenuItem>}
+            </Select>
+            </FormControl>
+          </Grid>
           {this.state.newAccount &&
-          <FormGroup as={Row}>
-            <Col as={Form.Label} sm={3}>Starting Balance</Col>
-            <Col sm={3}>
-              <FormControl type="number" name="startingBalance" value={this.state.account.startingBalance} onChange={this.handleChange} />
-            </Col>
-          </FormGroup>
-          }
-          {this.state.newAccount &&
-          <FormGroup as={Row}>
-            <Col as={Form.Label} sm={3}>Starting Date</Col>
-            <Col sm={5}>
-              <FormControl type="text" name="startDate" value={this.state.account.startDate} onChange={this.handleChange} placeholder="mm/dd/yyyy" />
-            </Col>
-          </FormGroup>
-          }
-          <FormGroup as={Row}>
-            <Col as={Form.Label} sm={3}>Currency</Col>
-            <Col sm={3}>
-              <FormControl type="text" name="currency" value={this.state.account.currency} onChange={this.handleChange} />
-            </Col>
-          </FormGroup>
-          <FormGroup as={Row}>
-            <Col as={Form.Label} sm={3}>Hidden?</Col>
-            <Col sm={3}>
-              <Form.Check 
-                type='checkbox' 
-                checked={this.state.account.isHidden}
+          <Grid item xs={4}>
+              <TextField
+                fullWidth={true}
+                name="startingBalance"
+                label="Starting Balance"
+                value={this.state.account.startingBalance}
                 onChange={this.handleChange}
-                name='isHidden' />
-            </Col>
-          </FormGroup>
-          {this.state.account.accountType === "Mortgage" &&
-          <React.Fragment>
-            <FormGroup as={Row}>
-              <Col as={Form.Label} sm={3}>Monthly Payment</Col>
-              <Col sm={3}>
-                <FormControl type="text" name="mortgagePayment" value={this.state.account.mortgagePayment} onChange={this.handleChange} />
-              </Col>
-            </FormGroup>
-            <FormGroup as={Row}>
-              <Col as={Form.Label} sm={3}>Mortgage Type</Col>
-              <Col sm={9}>
-                <ToggleButtonGroup type="radio" value={this.state.account.mortgageType} onChange={this.handleChangeMortgageType} name="mortgageType">
+              />
+          </Grid>
+          }
+          {this.state.newAccount &&
+          <Grid item xs={4}>
+              <TextField
+                fullWidth={true}
+                name="startDate"
+                label="Starting Date"
+                value={this.state.account.startDate}
+                onChange={this.handleChange}
+              />
+          </Grid>
+          }
+          <Grid item xs={4}>
+            <TextField
+              name="currency"
+              label="Currency"
+              value={this.state.account.currency}
+              onChange={this.handleChange}
+            />
+          </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name='isHidden'
+                    checked={this.state.account.isHidden}
+                    onChange={this.handleChange}
+                  />
+                }
+                label="Account is hidden"
+              />
+            </Grid>
+            {this.state.account.accountType === "Mortgage" &&
+            <React.Fragment>
+            <Grid item xs={4}>
+              <TextField
+                name="mortgagePayment"
+                label="Mortgage Payment"
+                fullWidth={true}
+                value={this.state.account.mortgagePayment}
+                onChange={this.handleChange}
+              />
+            </Grid>
+            <Grid item xs={8}>
+                <ToggleButtonGroup 
+                  exclusive
+                  value={this.state.account.mortgageType} 
+                  onChange={this.handleChangeMortgageType} 
+                  name="mortgageType"
+                >
                   <ToggleButton value={'fixedPayment'}>Fixed Payment</ToggleButton>
                   <ToggleButton value={'fixedPrincipal'}>Fixed Principal</ToggleButton>
                 </ToggleButtonGroup>
-              </Col>
-            </FormGroup>
-          </React.Fragment>  
-          }
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
+            </Grid>
+            </React.Fragment>
+            }
+        </Grid>
+      </DialogContent>
+      <DialogActions>
         <Button onClick={this.onSave}>Save</Button>
-      </Modal.Footer>
-    </Modal>);
+      </DialogActions>
+    </Dialog>
+    );
   }
 }

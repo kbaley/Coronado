@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dialog, DialogTitle, DialogContent, Grid, TextField, DialogActions, Button } from '@material-ui/core';
+import { Dialog, DialogContent, Grid, TextField, DialogActions, Button } from '@material-ui/core';
 
 class CustomerForm extends Component {
   displayName = CustomerForm.name;
@@ -48,7 +48,6 @@ class CustomerForm extends Component {
         onClose={this.props.onClose}
         open={this.props.show}
       >
-        <DialogTitle>Customer</DialogTitle>
         <DialogContent>
           <Grid container spacing={2}>
             <Grid item xs={7}>

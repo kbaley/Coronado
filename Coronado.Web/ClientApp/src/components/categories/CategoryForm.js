@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Dialog, DialogTitle, Grid, TextField, Select, MenuItem, 
+import { Button, Dialog, Grid, TextField, Select, MenuItem, 
   DialogContent, DialogActions, InputLabel, FormControl } from '@material-ui/core';
 
 class CategoryForm extends Component {
@@ -52,7 +52,6 @@ class CategoryForm extends Component {
         fullWidth={true}
         maxWidth="sm"
       >
-        <DialogTitle>New category</DialogTitle>
         <DialogContent>
         <Grid container spacing={2}>
           <Grid item xs={4}>

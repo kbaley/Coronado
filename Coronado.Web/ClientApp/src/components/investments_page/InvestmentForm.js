@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, TextField, FormControlLabel, Checkbox, MenuItem } from '@material-ui/core';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogActions, 
+  Button, 
+  Grid, 
+  TextField, 
+  FormControlLabel, 
+  Checkbox, 
+  MenuItem 
+} from '@material-ui/core';
 
 class InvestmentForm extends Component {
   displayName = InvestmentForm.name;
@@ -53,7 +63,6 @@ class InvestmentForm extends Component {
         fullWidth={true}
         maxWidth={'sm'}
       >
-        <DialogTitle>Investment</DialogTitle>
         <DialogContent>
           <Grid container spacing={2}>
             <Grid item xs={8}>
