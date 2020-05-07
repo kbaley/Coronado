@@ -1,8 +1,19 @@
 import React, { Component } from 'react';
-import { Button, Modal, Form, FormControl, FormGroup, Col, Row } from 'react-bootstrap';
 import InvoiceLineItems from "./InvoiceLineItems";
 import { filter, findIndex } from "lodash";
 import {v4 as uuidv4 } from 'uuid';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogActions, 
+  Button, 
+  Grid, 
+  TextField, 
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControl,
+} from '@material-ui/core';
 
 class InvoiceForm extends Component {
   displayName = InvoiceForm.name;
@@ -15,7 +26,12 @@ class InvoiceForm extends Component {
   }
   initialState = {
       newInvoice: true,
-      invoice: { date: new Date().toLocaleDateString(), invoiceNumber: '', lineItems: [Object.assign({}, this.blankLineItem)] }
+      invoice: { 
+        date: new Date().toLocaleDateString(), 
+        invoiceNumber: '', 
+        customerId: '',
+        lineItems: [Object.assign({}, this.blankLineItem)] 
+      }
     };
   constructor(props) {
     super(props);
@@ -97,63 +113,66 @@ class InvoiceForm extends Component {
 
   render() {
     return (
-      <Modal size="lg" show={this.props.show} onHide={this.props.onClose} >
-        <Modal.Header closeButton>
-          <Modal.Title>Invoice</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <FormGroup as={Row}>
-              <Col as={Form.Label} sm={3}>Number</Col>
-              <Col sm={2}>
-                <FormControl autoFocus
-                  type="text"
-                  name="invoiceNumber"
-                  value={this.state.invoice.invoiceNumber}
+      <Dialog 
+        maxWidth="sm" 
+        open={this.props.show} 
+        onClose={this.props.onClose}
+        fullWidth={true}
+      >
+        <DialogContent>
+          <Grid container spacing={2}>
+            <Grid item xs={3}>
+              <TextField
+                autoFocus
+                fullWidth={true}
+                name="invoiceNumber"
+                label="Invoice Number"
+                value={this.state.invoice.invoiceNumber}
+                onChange={this.handleChangeField}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                fullWidth={true}
+                name="date"
+                label="Invoice Date"
+                value={this.state.invoice.date}
+                onChange={this.handleChangeField}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl>
+                <InputLabel id="invoice-customer">Customer</InputLabel>
+                <Select
+                  labelId="invoice-customer"
+                  name="customerId"
+                  value={this.state.invoice.customerId}
+                  style={{ minWidth: 150 }}
                   onChange={this.handleChangeField}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup as={Row}>
-              <Col as={Form.Label} sm={3}>Date</Col>
-              <Col sm={2}>
-                <FormControl
-                  type="text"
-                  name="date" ref="inputName"
-                  value={this.state.invoice.date}
-                  onChange={this.handleChangeField}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup as={Row}>
-              <Col as={Form.Label} sm={3}>Customer</Col>
-              <Col sm={5}>
-                <FormControl as="select" name="customerId" value={this.state.invoice.customerId}
-                  onChange={this.handleChangeField}>
-                  <option key="0" value="">Select...</option>
+                >
+                  <MenuItem value={''}>Select...</MenuItem>
                   {this.props.customers ? this.props.customers.map(c =>
-                    <option key={c.customerId} value={c.customerId}>{c.name}</option>
-                  ) : <option></option>}
-                </FormControl>
-              </Col>
-            </FormGroup>
-            <FormGroup as={Row}>
-              <Col as={Form.Label} sm={3}>Line items</Col>
-              <Col sm={9}>
+                    <MenuItem value={c.customerId} key={c.customerId}>{c.name}</MenuItem>
+                  ) : <MenuItem>Select...</MenuItem>
+                  }
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+
                 <InvoiceLineItems 
                   lineItems={filter(this.state.invoice.lineItems, li => li.status !== "Deleted")} 
                   onLineItemChanged={this.handleLineItemChanged} 
                   onNewItemAdded={this.handleLineItemAdded}
                   onLineItemDeleted={this.handleLineItemDeleted}
                   />
-              </Col>
-            </FormGroup>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
           <Button onClick={this.saveInvoice}>Save</Button>
-        </Modal.Footer>
-      </Modal>
+        </DialogActions>
+      </Dialog>
     );
   };
 }
