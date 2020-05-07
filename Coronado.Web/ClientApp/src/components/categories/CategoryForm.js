@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Button,Modal,Form,FormControl,FormGroup,Col, Row } from 'react-bootstrap';
-import '../common/Forms.css';
+import { Button, Dialog, DialogTitle, Grid, TextField, Select, MenuItem, 
+  DialogContent, DialogActions, InputLabel, FormControl } from '@material-ui/core';
 
 class CategoryForm extends Component {
   displayName = CategoryForm.name;
@@ -46,51 +46,56 @@ class CategoryForm extends Component {
   }
   render() {
     return (
-      <Modal dialogClassName="category-form" show={this.props.show} onHide={this.props.onClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>New category</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <FormGroup as={Row}>
-              <Col as={Form.Label} sm={4}>Category Name</Col>
-              <Col sm={8}>
-            <FormControl
-              type="text" autoFocus
-              name="name" ref="inputName"
+      <Dialog
+        onClose={this.props.onClose}
+        open={this.props.show}
+        fullWidth={true}
+        maxWidth="sm"
+      >
+        <DialogTitle>New category</DialogTitle>
+        <DialogContent>
+        <Grid container spacing={2}>
+          <Grid item xs={4}>
+            <TextField
+              autoFocus
+              name="name"
+              label="Category name"
               value={this.state.category.name}
               onChange={this.handleChangeField}
             />
-              </Col>
-            </FormGroup>
-            <FormGroup as={Row}>
-              <Col as={Form.Label} sm={4}>Type</Col>
-              <Col sm={5}>
-                <FormControl type="text" value={this.state.category.type}
-                  name="type"
-                  onChange={this.handleChangeField}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup as={Row}>
-              <Col as={Form.Label} sm={4}>Parent Category</Col>
-              <Col sm={5}>
-                <FormControl as="select" name="parentCategory" value={this.state.category.parentCategoryId}
-                    onChange={this.handleChangeParent}>
-                  <option key="0" value="">None</option>
-                  {this.props.categories ? this.props.categories.map(c => 
-                  (c.categoryId !== this.state.category.categoryId) &&
-                  <option key={c.categoryId} value={c.categoryId}>{c.name}</option>
-                  ) : <option>Select...</option>}
-                </FormControl>
-              </Col>
-            </FormGroup>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              name="type"
+              label="Type"
+              value={this.state.category.type}
+              onChange={this.handleChangeField}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <FormControl>
+            <InputLabel id="parent-category">Parent category</InputLabel>
+            <Select
+              labelId="parent-category"
+              value={this.state.category.parentCategoryId}
+              style={{minWidth: 150}}
+              onChange={this.handleChangeParent}
+            >
+              <MenuItem value={''}>None</MenuItem>
+              {this.props.categories ? this.props.categories.map(c => 
+              (c.categoryId !== this.state.category.categoryId) &&
+                <MenuItem value={c.categoryId} key={c.categoryId}>{c.name}</MenuItem>
+                ) : <MenuItem>Select...</MenuItem>
+              }
+            </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
+        </DialogContent>
+        <DialogActions>
           <Button onClick={this.saveCategory}>Save</Button>
-        </Modal.Footer>
-      </Modal>
+        </DialogActions>
+      </Dialog>
     );
   };
 }
