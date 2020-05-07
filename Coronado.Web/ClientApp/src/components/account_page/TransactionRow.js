@@ -19,6 +19,11 @@ const styles = theme => ({
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
+  },
+  input: {
+    height: 27,
+    fontSize: 14,
+    fontFamily: "Roboto, Helvetica, Arial, sans-serif",
   }
 });
 
@@ -119,6 +124,7 @@ class TransactionRow extends Component {
         <TableCell>
         <input type="text" name="transactionDate" 
           onChange={this.handleChangeField}
+          className={classes.input}
           onKeyPress={this.handleKeyPress}
           value={this.state.trx.transactionDate} />
         </TableCell>
@@ -134,14 +140,15 @@ class TransactionRow extends Component {
         </TableCell>
         <TableCell>
             <input type="text" name="description" onChange={this.handleChangeField}
+          className={classes.input}
                 value={this.state.trx.description} onKeyPress={this.handleKeyPress} />
         </TableCell>
         <TableCell>
-          <MoneyInput name="debit" value={this.state.trx.debit} 
+          <MoneyInput name="debit" value={this.state.trx.debit} className={classes.input} 
             onChange={this.handleChangeField} onKeyPress={this.handleKeyPress} />
         </TableCell>
         <TableCell>
-          <MoneyInput name="credit" value={this.state.trx.credit} 
+          <MoneyInput name="credit" value={this.state.trx.credit} className={classes.input}
             onChange={this.handleChangeField} onKeyPress={this.handleKeyPress} /></TableCell>
         <TableCell></TableCell>
       </TableRow> :

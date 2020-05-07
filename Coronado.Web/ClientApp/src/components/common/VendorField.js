@@ -19,58 +19,37 @@ const renderSuggestion = suggestion => (
   </div>
 );
 
-export default class VendorField extends React.Component {
-  constructor(props) {
-    super();
-
-    this.state = {
-      value: props.value,
-      suggestions: []
-    };
-  }
+export default function VendorField(props) {
+  const [value, setValue] = React.useState(props.value);
+  const [suggestions, setSuggestions] = React.useState([]);
+  const { vendors, onVendorChanged } = props;
   
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.value !== this.state.value) {
-      this.setState({value: this.props.value});
-    }
-  }
-  
-
-  onChange = (_, { newValue }) => {
-    this.setState({
-      value: newValue
-    });
-    this.props.onVendorChanged(newValue);
+  const onChange = (_, { newValue }) => {
+    setValue(newValue)
+    onVendorChanged(newValue);
   };
-
-  onSuggestionsFetchRequested = ({ value }) => {
-    this.setState({
-      suggestions: getSuggestions(value, this.props.vendors)
-    });
-  };
-
-  onSuggestionsClearRequested = () => {
-    this.setState({
-      suggestions: []
-    });
-  };
-
-  render() {
 
     const inputProps = {
-      value: this.state.value,
-      onChange: this.onChange
+      value: value,
+      onChange: onChange
     };
+
+  const onSuggestionsFetchRequested = ({ value }) => {
+    setSuggestions(getSuggestions(value, vendors));
+    };
+
+  const onSuggestionsClearRequested = () => {
+    setSuggestions([]);
+  };
 
     return (
       <Autosuggest
-        suggestions={this.state.suggestions}
-        onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-        onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+        suggestions={suggestions}
+        onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+        onSuggestionsClearRequested={onSuggestionsClearRequested}
         getSuggestionValue={getSuggestionValue}
         renderSuggestion={renderSuggestion}
         inputProps={inputProps}
       />
     );
-  }
 }

@@ -11,6 +11,11 @@ import VendorField from '../common/VendorField';
 import { withStyles, TableRow, TableCell } from '@material-ui/core';
 
 const styles = theme => ({
+  input: {
+    height: 27,
+    fontSize: 14,
+    fontFamily: "Roboto, Helvetica, Arial, sans-serif",
+  }
 });
 
 export class NewTransactionRow extends Component {
@@ -192,12 +197,13 @@ export class NewTransactionRow extends Component {
   }
 
   render() {
+    const { classes } = this.props;
     return (
       <TableRow>
         <TableCell>
           <CheckIcon onClick={this.saveTransaction} />
         </TableCell>
-        <TableCell><input type="text" name="transactionDate" ref="inputDate"
+        <TableCell><input type="text" name="transactionDate" ref="inputDate" className={classes.input}
           value={this.state.trx.transactionDate} onChange={this.handleChangeField} /></TableCell>
         <TableCell>
           <VendorField vendors={this.props.vendors} value={this.state.trx.vendor} onVendorChanged={this.handleChangeVendor} />
@@ -209,11 +215,35 @@ export class NewTransactionRow extends Component {
             selectedAccount={this.state.trx.accountId}
             categories={this.props.categories} />
         </TableCell>
-        <TableCell><input type="text" name="description" value={this.state.trx.description} onChange={this.handleChangeField} /></TableCell>
-        <TableCell><input type="text" name="debit" value={this.state.trx.debit}
-          onChange={this.handleChangeDebit} onKeyPress={this.handleKeyPress} /></TableCell>
-        <TableCell><input type="text" name="credit" value={this.state.trx.credit}
-          onChange={this.handleChangeField} onKeyPress={this.handleKeyPress} /></TableCell>
+        <TableCell>
+          <input 
+            type="text" 
+            name="description" 
+            className={classes.input}
+            value={this.state.trx.description} 
+            onChange={this.handleChangeField} 
+          />
+        </TableCell>
+        <TableCell>
+          <input 
+            type="text" 
+            name="debit" 
+            className={classes.input}
+            value={this.state.trx.debit}
+            onChange={this.handleChangeDebit} 
+            onKeyPress={this.handleKeyPress} 
+          />
+        </TableCell>
+        <TableCell>
+          <input 
+            type="text" 
+            name="credit" 
+            className={classes.input}
+            value={this.state.trx.credit}
+            onChange={this.handleChangeField} 
+            onKeyPress={this.handleKeyPress} 
+          />
+        </TableCell>
         <TableCell></TableCell>
       </TableRow>
     )
