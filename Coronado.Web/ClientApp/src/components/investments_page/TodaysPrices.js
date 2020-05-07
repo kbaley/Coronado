@@ -69,7 +69,7 @@ class TodaysPrices extends Component {
   }
 
   getLastPrice(investment) {
-    if (!investment.historicalPrices || !investment.historicalPrices.length === 0) {
+    if (!investment.historicalPrices || investment.historicalPrices.length === 0) {
       return {
         date: new Date(),
         price: 0.00

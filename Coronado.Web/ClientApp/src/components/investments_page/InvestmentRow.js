@@ -3,24 +3,23 @@ import { DeleteIcon } from '../icons/DeleteIcon';
 import { EditIcon } from '../icons/EditIcon';
 import { Icon } from '../icons/Icon';
 import { MoneyFormat } from '../common/DecimalFormat';
-import { CustomTableRow } from '../common/Table';
+import { TableRow, TableCell } from '@material-ui/core';
 
 export function InvestmentRow({investment, onEdit, onDelete, openPriceHistory}) {
   
   return (
-    <CustomTableRow
-      tableData={[
-        investment.name,
-        investment.symbol,
-        investment.currency,
-        investment.shares,
-        <MoneyFormat amount={investment.lastPrice} />,
-        <MoneyFormat amount={investment.currentValue} />
-      ]}
-    >
+    <TableRow>
+      <TableCell>
       <EditIcon onStartEditing={onEdit} />
       <DeleteIcon onDelete={onDelete} />
       <Icon onClick={openPriceHistory} glyph="dollar-sign" title="Show historical prices" />
-    </CustomTableRow>
+      </TableCell>
+      <TableCell>{investment.name}</TableCell>
+      <TableCell>{investment.symbol}</TableCell>
+      <TableCell>{investment.currency}</TableCell>
+      <TableCell>{investment.shares}</TableCell>
+      <TableCell><MoneyFormat amount={investment.lastPrice} /></TableCell>
+      <TableCell><MoneyFormat amount={investment.currentValue} /></TableCell>
+    </TableRow>
   );
 }

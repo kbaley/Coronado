@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal, Form, FormControl, FormGroup, Col, Row } from 'react-bootstrap';
-import TextField from "../common/TextField";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, TextField, FormControlLabel, Checkbox, MenuItem } from '@material-ui/core';
 
 class InvestmentForm extends Component {
   displayName = InvestmentForm.name;
@@ -10,7 +9,7 @@ class InvestmentForm extends Component {
     this.handleChangeField = this.handleChangeField.bind(this);
     this.state = {
       newInvestment: true,
-      investment: { name: '', symbol: '', shares: 0, price: 0, currency: 'USD', dontRetrievePrices: false }
+      investment: { name: '', symbol: '', shares: '', price: '', currency: 'USD', dontRetrievePrices: false }
     };
   }
 
@@ -34,7 +33,7 @@ class InvestmentForm extends Component {
 
   saveInvestment() {
     this.props.onSave(this.state.investment);
-    this.setState({ investment: { name: '', symbol: '', shares: 0, price: 0, dontRetrievePrices: false } });
+    this.setState({ investment: { name: '', symbol: '', shares: '', price: '', currency: 'USD', dontRetrievePrices: false } });
     this.props.onClose();
   }
 
@@ -48,64 +47,82 @@ class InvestmentForm extends Component {
 
   render() {
     return (
-      <Modal size="lg" show={this.props.show} onHide={this.props.onClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Investment</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <FormGroup as={Row}>
-              <Col as={Form.Label} sm={3}>Name</Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text" autoFocus
-                  name="name" ref="inputName"
-                  value={this.state.investment.name}
-                  onChange={this.handleChangeField}
-                />
-              </Col>
-            </FormGroup>
-            <TextField width={4}
-              label="Symbol"
-              name="symbol"
-              value={this.state.investment.symbol}
-              onChange={this.handleChangeField}
-            />
-            <TextField width={4}
-              label="Starting Shares"
-              name="shares"
-              value={this.state.investment.shares}
-              onChange={this.handleChangeField}
-            />
-            <TextField width={4}
-              label="Starting Price"
-              name="price"
-              value={this.state.investment.price}
-              onChange={this.handleChangeField}
-            />
-            <TextField width={4}
-              label="Currency"
-              name="currency"
-              value={this.state.investment.currency}
-              onChange={this.handleChangeField}
-            />
-            <FormGroup as={Row}>
-              <Col as={Form.Label} sm={3}>Don't retrieve prices?</Col>
-              <Col sm={3}>
-                <Form.Check 
-                  type='checkbox' 
-                  name='dontRetrievePrices' 
-                  checked={this.state.investment.dontRetrievePrices}
-                  onChange={this.handleChangeField}
-                  style={{"marginTop": "8px"}} />
-              </Col>
-            </FormGroup>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
+      <Dialog
+        onClose={this.props.onClose}
+        open={this.props.show}
+        fullWidth={true}
+        maxWidth={'sm'}
+      >
+        <DialogTitle>Investment</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            <Grid item xs={8}>
+              <TextField
+                autoFocus
+                name="name"
+                label="Investment name"
+                fullWidth={true}
+                value={this.state.investment.name}
+                onChange={this.handleChangeField} />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="symbol"
+                label="Symbol"
+                fullWidth={true}
+                value={this.state.investment.symbol}
+                onChange={this.handleChangeField}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="shares"
+                label="Starting shares"
+                fullWidth={true}
+                value={this.state.investment.shares}
+                onChange={this.handleChangeField}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="price"
+                label="Starting price"
+                fullWidth={true}
+                value={this.state.investment.price}
+                onChange={this.handleChangeField}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                select
+                name="currency"
+                label="Currency"
+                fullWidth={true}
+                value={this.state.investment.currency}
+                onChange={this.handleChangeField}
+              >
+                <MenuItem value={'USD'}>USD</MenuItem>
+                <MenuItem value={'CAD'}>CAD</MenuItem>
+              </TextField>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name='dontRetrievePrices'
+                    checked={!this.state.dontRetrievePrices}
+                    onChange={this.handleChangeField}
+                  />
+                }
+                label="Retrieve prices?"
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
           <Button onClick={this.saveInvestment}>Save</Button>
-        </Modal.Footer>
-      </Modal>
+        </DialogActions>
+      </Dialog>
     );
   };
 }

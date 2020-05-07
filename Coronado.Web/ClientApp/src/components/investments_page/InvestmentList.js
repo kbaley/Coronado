@@ -9,7 +9,7 @@ import { InvestmentRow } from './InvestmentRow';
 import InvestmentsTotal from './InvestmentsTotal';
 import Spinner from '../common/Spinner';
 import InvestmentPriceHistory from './InvestmentPriceHistory';
-import CustomTable from '../common/Table';
+import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 
 class InvestmentList extends Component {
   constructor(props) {
@@ -66,10 +66,19 @@ class InvestmentList extends Component {
   
   render() {
     return (
-      <CustomTable
-        tableHeader={['', 'Name', 'Symbol', 'Currency', 'Shares', 'Last Price', 'Current Value']}
-        headerAlignment={['', '', '', '', '', 'right', 'right']}
-      >
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Symbol</TableCell>
+            <TableCell>Currency</TableCell>
+            <TableCell>Shares</TableCell>
+            <TableCell align={'right'}>Last Price</TableCell>
+            <TableCell align={'right'}>Current Value</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
         <InvestmentForm 
           show={this.state.show} 
           onClose={this.handleClose} 
@@ -94,7 +103,8 @@ class InvestmentList extends Component {
             investments={this.props.investments}
             currency={this.props.currency}
             currencies={this.props.currencies} />
-      </CustomTable>
+        </TableBody>
+      </Table>
     );
   }
 }
