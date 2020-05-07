@@ -6,7 +6,7 @@ import Moment from 'react-moment';
 import { parseMmDdDate } from '../common/dateHelpers';
 import { getEmptyGuid } from '../common/guidHelpers';
 import { orderBy } from 'lodash';
-import { Button, Dialog, DialogActions, DialogTitle, DialogContent } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogTitle, DialogContent, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import CustomTable, { CustomTableRow } from '../common/Table';
 
 class InvestmentPriceHistory extends Component {
@@ -103,43 +103,47 @@ class InvestmentPriceHistory extends Component {
       >
         <DialogTitle>{this.state.investment.name}</DialogTitle>
         <DialogContent>
-          <CustomTable
-            tableHeader={['', 'Date', 'Price']}
-            headerAlignment={['', '', 'right']}
-          >
-            {this.state.prices && this.state.prices.map((p, index) =>
-              p.status !== "Deleted" &&
-              <CustomTableRow
-                key={index}
-                tableData={[
-                  <Moment format="M/D/YYYY">{p.date}</Moment>,
-                  <MoneyFormat amount={p.price} />
-                ]}>
-                <DeleteIcon onDelete={() => this.deletePrice(p)} />
-              </CustomTableRow>
-            )}
-            <CustomTableRow
-              tableData={[
-                <input
-                  type="text"
-                  name="date"
-                  ref="inputDate"
-                  autoFocus={true}
-                  value={this.state.newInvestment.date} onChange={this.handleChangeField} />,
-                <input type="text"
-                  name="price"
-                  style={{ "textAlign": "right" }}
-                  onKeyPress={this.handleKeyPress}
-                  value={this.state.newInvestment.price} onChange={this.handleChangeField} />
-              ]}
-            >
-              <CheckIcon onClick={this.savePrice} />
-            </CustomTableRow>
-          </CustomTable>
-          <table striped bordered>
-            <tbody>
-            </tbody>
-          </table>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell>Date</TableCell>
+                <TableCell align={'right'}>Price</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {this.state.prices && this.state.prices.map((p, index) =>
+                p.status !== "Deleted" &&
+                <TableRow key={index}>
+                  <TableCell>
+                    <DeleteIcon onDelete={() => this.deletePrice(p)} />
+                  </TableCell>
+                  <TableCell><Moment format="M/D/YYYY">{p.date}</Moment></TableCell>
+                  <TableCell><MoneyFormat amount={p.price} /></TableCell>
+                </TableRow>
+              )}
+              <TableRow>
+                <TableCell>
+                  <CheckIcon onClick={this.savePrice} />
+                </TableCell>
+                <TableCell>
+                  <input
+                    type="text"
+                    name="date"
+                    ref="inputDate"
+                    autoFocus={true}
+                    value={this.state.newInvestment.date} onChange={this.handleChangeField} />
+                </TableCell>
+                <TableCell>
+                  <input type="text"
+                    name="price"
+                    style={{ "textAlign": "right" }}
+                    onKeyPress={this.handleKeyPress}
+                    value={this.state.newInvestment.price} onChange={this.handleChangeField} />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.savePrices} color="primary">Save</Button>

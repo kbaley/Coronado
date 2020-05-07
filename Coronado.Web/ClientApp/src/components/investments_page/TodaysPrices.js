@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import Moment from 'react-moment';
 import { orderBy } from 'lodash';
 import { Icon } from "../icons/Icon";
-import { withStyles, Button, Dialog, DialogTitle, DialogContent, DialogActions, InputBase } from '@material-ui/core'
+import { withStyles, Button, Dialog, DialogTitle, DialogContent, 
+  DialogActions, InputBase, Table, TableHead, TableRow, TableBody, TableCell } from '@material-ui/core'
 import { fade } from '@material-ui/core/styles';
-import CustomTable, { CustomTableRow } from '../common/Table';
 
 const PriceInput = withStyles((theme) => ({
   root: {
@@ -119,28 +119,31 @@ class TodaysPrices extends Component {
         >
           <DialogTitle>Today's Prices</DialogTitle>
           <DialogContent>
-            <CustomTable
-              tableHeader={['Investment', 'Last Price Date', 'Price']}
-              headerAlignment={['inherit', 'inherit', 'right']}
-            >
-
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Investment</TableCell>
+                  <TableCell>Last Price Date</TableCell>
+                  <TableCell align={'right'}>Price</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
               {this.state.investments && this.state.investments.map((i, index) => {
                 return (
-                  <CustomTableRow
-                    skipFirstCell={true}
-                    key={i.investmentId}
-                    tableData={[
-                      i.symbol,
-                      <Moment format="M/D/YYYY">{i.lastPriceDate}</Moment>,
+                  <TableRow key={i.investmentId}>
+                    <TableCell>{i.symbol}</TableCell>
+                    <TableCell><Moment format="M/D/YYYY">{i.lastPriceDate}</Moment></TableCell>
+                    <TableCell>
                       <PriceInput
                         defaultValue={i.lastPrice}
                         onChange={(e) => this.handleChangePrice(index, e)}
                       />
-                    ]}
-                  />
+                    </TableCell>
+                  </TableRow>
                 );
               })}
-            </CustomTable>
+              </TableBody>
+            </Table>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.savePrices} color="primary">Save</Button>
