@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Button,Modal,Form,FormControl,FormGroup,Col, Row } from 'react-bootstrap';
-import TextField from "../common/TextField";
+import { Dialog, DialogTitle, DialogContent, Grid, TextField, DialogActions, Button } from '@material-ui/core';
 
 class CustomerForm extends Component {
   displayName = CustomerForm.name;
@@ -43,53 +42,65 @@ class CustomerForm extends Component {
 
   render() {
     return (
-      <Modal size="lg" show={this.props.show} onHide={this.props.onClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Customer</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <FormGroup as={Row}>
-              <Col as={Form.Label} sm={3}>Name</Col>
-              <Col sm={9}>
-            <FormControl
-              type="text" autoFocus
-              name="name" ref="inputName"
-              value={this.state.customer.name}
-              onChange={this.handleChangeField}
-            />
-              </Col>
-            </FormGroup>
-            <TextField width={6}
-              label="Email"
-              name="email"
-              value={this.state.customer.email}
-              onChange={this.handleChangeField}
-            />
+      <Dialog
+        fullWidth={true}
+        maxWidth='sm'
+        onClose={this.props.onClose}
+        open={this.props.show}
+      >
+        <DialogTitle>Customer</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            <Grid item xs={7}>
+              <TextField
+                autoFocus
+                name="name"
+                fullWidth={true}
+                label="Customer name"
+                value={this.state.customer.name}
+                onChange={this.handleChangeField} />
+            </Grid>
+            <Grid item xs={5}>
+              <TextField
+                name="email"
+                fullWidth={true}
+                label="Email address"
+                value={this.state.customer.email}
+                onChange={this.handleChangeField} />
+            </Grid>
+            <Grid item xs={12}>
             <TextField
               label="Street Address"
               name="streetAddress"
+              fullWidth={true}
               value={this.state.customer.streetAddress}
               onChange={this.handleChangeField}
             />
-            <TextField width={4}
+            </Grid>
+            <Grid item xs={6}>
+            <TextField
               label="City"
               name="city"
+              fullWidth={true}
               value={this.state.customer.city}
               onChange={this.handleChangeField}
             />
-            <TextField width={4}
-              label="Region"
+            </Grid>
+            <Grid item xs={6}>
+            <TextField 
+              label="Province/State"
               name="region"
+              fullWidth={true}
               value={this.state.customer.region}
               onChange={this.handleChangeField}
             />
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
           <Button onClick={this.saveCustomer}>Save</Button>
-        </Modal.Footer>
-      </Modal>
+        </DialogActions>
+      </Dialog>
     );
   };
 }
