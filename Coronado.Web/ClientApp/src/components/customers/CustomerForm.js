@@ -6,7 +6,9 @@ export default function CustomerForm(props) {
   const { show, onClose, onSave } = props;
 
   React.useEffect(() => {
-    setCustomer({...props.customer});
+    if (props.customer) {
+      setCustomer({...props.customer});
+    }
   }, [props.customer])
 
   const saveCustomer = _ => {
@@ -17,7 +19,7 @@ export default function CustomerForm(props) {
 
   const handleChangeField = e => {
     var name = e.target.name;
-    setCustomer({...customer, [name]: e.target.value });
+    setCustomer({...customer, [name]: e.target.value});
   }
 
     return (
