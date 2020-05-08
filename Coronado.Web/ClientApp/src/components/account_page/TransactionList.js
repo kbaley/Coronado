@@ -11,11 +11,11 @@ const styles = theme => ({
   transactionTable: {
     width: "100%",
     "& td": {
-      padding: "8px",
+      padding: "0px",
     },
     "& td:nth-child(1)": {
-      width: 100,
-      maxWidth: 100,
+      width: 120,
+      maxWidth: 120,
     },
     "& td:nth-child(2)": {
       width: 110,

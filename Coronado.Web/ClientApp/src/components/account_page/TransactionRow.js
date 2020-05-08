@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { DeleteIcon } from '../icons/DeleteIcon';
-import { EditIcon } from '../icons/EditIcon';
 import { DecimalFormat, MoneyFormat } from '../common/DecimalFormat';
 import * as transactionActions from '../../actions/transactionActions';
 import { bindActionCreators } from 'redux';
@@ -12,7 +10,9 @@ import { MoneyInput } from '../common/MoneyInput';
 import * as Mousetrap from 'mousetrap';
 import { getCategoriesForDropdown } from "../../selectors/selectors.js";
 import VendorField from '../common/VendorField';
-import { TableRow, TableCell, withStyles } from '@material-ui/core';
+import { TableRow, TableCell, withStyles, IconButton } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 
 const styles = theme => ({
   overflow: {
@@ -24,6 +24,9 @@ const styles = theme => ({
     height: 27,
     fontSize: 14,
     fontFamily: "Roboto, Helvetica, Arial, sans-serif",
+  },
+  icon: {
+    transform: "scale(1)",
   }
 });
 
@@ -155,8 +158,12 @@ class TransactionRow extends Component {
 
       <TableRow>
         <TableCell>
-            <EditIcon onStartEditing={this.startEditing} className="icon" />
-            <DeleteIcon onDelete={this.props.onDelete} />
+            <IconButton onClick={this.props.onDelete} component="span">
+              <EditIcon className={classes.icon} fontSize="small" />
+            </IconButton>
+            <IconButton onClick={this.props.onDelete} component="span">
+              <DeleteIcon className={classes.icon} fontSize="small" />
+            </IconButton>
         </TableCell>
         <TableCell>{new Date(trx.transactionDate).toLocaleDateString()}</TableCell>
         <TableCell title={trx.vendor} className={classes.overflow}>{trx.vendor}</TableCell>

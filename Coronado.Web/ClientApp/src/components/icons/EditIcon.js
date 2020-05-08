@@ -1,11 +1,11 @@
 import React from 'react';
-import './EditIcon.css'
-import './Icon.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import MuiEditIcon from '@material-ui/icons/Edit';
+import { IconButton } from '@material-ui/core';
 
 export function EditIcon(props) {
-  const classes = `${props.className}`
   return (
-    <div className="edit-icon icon"><FontAwesomeIcon icon='pencil-alt' className={classes} onClick={props.onStartEditing} /></div>
+    <IconButton onClick={props.onStartEditing} component="span">
+      <MuiEditIcon onClick={props.onStartEditing} />
+    </IconButton>
   );
 }
