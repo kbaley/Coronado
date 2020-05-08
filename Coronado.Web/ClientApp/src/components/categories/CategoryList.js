@@ -3,11 +3,16 @@ import * as categoryActions from '../../actions/categoryActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import CategoryForm from './CategoryForm';
-import './CategoryList.css';
-import CustomTable from "../common/Table";
 import { find } from 'lodash';
 import { CategoryRow } from './CategoryRow';
 import Spinner from '../common/Spinner';
+import { 
+  Table, 
+  TableHead, 
+  TableBody,
+  TableRow, 
+  TableCell 
+} from '@material-ui/core';
 
 class CategoryList extends Component {
   constructor(props) {
@@ -48,15 +53,22 @@ class CategoryList extends Component {
   
   render() {
     return (
-      <CustomTable
-        tableHeader={['', 'Name', 'Type', 'Parent']}
-      >
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Type</TableCell>
+            <TableCell>Parent</TableCell>
+          </TableRow>
+        </TableHead>
         <CategoryForm 
           show={this.state.show} 
           onClose={this.handleClose} 
           category={this.state.selectedCategory} 
           categories={this.props.categories}
           onSave={this.saveCategory} />
+        <TableBody>
         { this.props.isLoading ? <tr><td colSpan="5"><Spinner /></td></tr> :
           this.props.categories.map(cat => 
         <CategoryRow 
@@ -66,7 +78,8 @@ class CategoryList extends Component {
           onEdit={() => this.startEditing(cat)} 
           onDelete={()=>this.deleteCategory(cat.categoryId, cat.name)} />
         )}
-      </CustomTable>
+        </TableBody>
+      </Table>
     );
   }
 }

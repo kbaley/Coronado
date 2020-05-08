@@ -1,16 +1,27 @@
 import React from 'react';
 import { DeleteIcon } from '../icons/DeleteIcon';
 import { EditIcon } from '../icons/EditIcon';
-import { CustomTableRow } from '../common/Table';
+import { TableRow, TableCell, makeStyles } from '@material-ui/core';
+
+const style = theme => ({
+  editCell: {
+    width: 110,
+  }
+})
+
+const useStyles = makeStyles(style);
 
 export function CategoryRow({category, onEdit, onDelete, parent}) {
+  const classes = useStyles();
   return (
-    <CustomTableRow
-      tableData={[category.name, category.type, parent]}
-      key={category.categoryId}
-    >
+    <TableRow>
+      <TableCell className={classes.editCell}>
         <EditIcon onStartEditing={onEdit} />
         <DeleteIcon onDelete={onDelete} />
-    </CustomTableRow>
+      </TableCell>
+      <TableCell>{category.name}</TableCell>
+      <TableCell>{category.type}</TableCell>
+      <TableCell>{parent}</TableCell>
+    </TableRow>
   );
 }

@@ -23,33 +23,33 @@ export default function VendorField(props) {
   const [value, setValue] = React.useState(props.value);
   const [suggestions, setSuggestions] = React.useState([]);
   const { vendors, onVendorChanged } = props;
-  
+
   const onChange = (_, { newValue }) => {
     setValue(newValue)
     onVendorChanged(newValue);
   };
 
-    const inputProps = {
-      value: value,
-      onChange: onChange
-    };
+  const inputProps = {
+    value: value,
+    onChange: onChange
+  };
 
   const onSuggestionsFetchRequested = ({ value }) => {
     setSuggestions(getSuggestions(value, vendors));
-    };
+  };
 
   const onSuggestionsClearRequested = () => {
     setSuggestions([]);
   };
 
-    return (
-      <Autosuggest
-        suggestions={suggestions}
-        onSuggestionsFetchRequested={onSuggestionsFetchRequested}
-        onSuggestionsClearRequested={onSuggestionsClearRequested}
-        getSuggestionValue={getSuggestionValue}
-        renderSuggestion={renderSuggestion}
-        inputProps={inputProps}
-      />
-    );
+  return (
+    <Autosuggest
+      suggestions={suggestions}
+      onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+      onSuggestionsClearRequested={onSuggestionsClearRequested}
+      getSuggestionValue={getSuggestionValue}
+      renderSuggestion={renderSuggestion}
+      inputProps={inputProps}
+    />
+  );
 }
