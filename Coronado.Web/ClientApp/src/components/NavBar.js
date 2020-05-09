@@ -10,11 +10,7 @@ import { Link } from 'react-router-dom';
 
 const styles = theme => ({
   appBar: {
-    backgroundColor: "transparent",
-    boxShadow: "none",
-    width: "100%",
-    padding: "10px 0",
-    display: "block"
+    backgroundColor: theme.palette.background.default,
   },
   container: {
     paddingRight: "15px",
@@ -43,7 +39,7 @@ export default function Header() {
   }
 
   return (
-    <AppBar className={classes.appBar} position="sticky">
+    <AppBar className={classes.appBar} position="sticky" elevation={1}>
       <Toolbar className={classes.container}>
         <div className={classes.flex}></div>
         <div>

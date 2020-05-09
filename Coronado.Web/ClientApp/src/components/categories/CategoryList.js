@@ -56,7 +56,7 @@ class CategoryList extends Component {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell></TableCell>
+            <TableCell style={{width: 130}}></TableCell>
             <TableCell>Name</TableCell>
             <TableCell>Type</TableCell>
             <TableCell>Parent</TableCell>
