@@ -55,7 +55,7 @@ class Home extends React.Component {
     
     return (
       <div>
-        <h2>Coronado Financial App for Me</h2>
+        <h1>Coronado Financial App for Me</h1>
           <Table className={classes.table} size="small">
             <TableBody>
               <TableRow>

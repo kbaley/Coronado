@@ -1,40 +1,55 @@
-import React, { Component } from 'react';
+import React from 'react';
 import * as reportActions from '../../actions/reportActions';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { CurrencyFormat } from '../common/CurrencyFormat';
-import CustomTable, { CustomTableRow } from '../common/Table';
-import { withStyles } from '@material-ui/core';
+import { CustomTableRow } from '../common/Table';
+import { 
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  makeStyles,
+} from '@material-ui/core';
 import moment from 'moment';
 
 const styles = (theme) => ({
   reportTable: {
-    width: "450px"
+    width: 450,
   }
 });
 
-class NetWorthReport extends Component {
+const useStyles = makeStyles(styles);
 
-  componentDidMount() {
-    this.props.actions.loadNetWorthReport();
-  }
+export default function NetWorthReport(props) {
+
+  const dispatch = useDispatch();
+  const report = useSelector(state => state.reports.netWorth);
+
+  React.useEffect(() => {
+    if (!report || report.length === 0)
+      dispatch(reportActions.loadNetWorthReport());
+  });
   
-  render() {
-    const { classes } = this.props;
+  const classes = useStyles();
     return (
       <div style={{margin: "10px"}}>
-        <h4>Net Worth</h4>
-        <CustomTable
-          className={classes.reportTable}
-          tableHeader={["Date", "Net worth", "Change"]}
-          headerAlignment={['inherit', 'right', 'right']}
-        >
-            {this.props.report.map( (r, index) => {
+        <h2>Net Worth</h2>
+        <Table className={classes.reportTable}>
+          <TableHead>
+            <TableRow>
+              <TableCell>Date</TableCell>
+              <TableCell>Net worth</TableCell>
+              <TableCell>Change</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {report.map( (r, index) => {
               const date = moment(r.date).format("MMMM YYYY");
               const value = CurrencyFormat({value: r.netWorth});
               const change = 
-                index < this.props.report.length - 1 
-                ? CurrencyFormat({value: r.netWorth - this.props.report[index + 1].netWorth})
+                index < report.length - 1 
+                ? CurrencyFormat({value: r.netWorth - report[index + 1].netWorth})
                 : null;
               return (
                 <CustomTableRow
@@ -44,25 +59,8 @@ class NetWorthReport extends Component {
                 </CustomTableRow>
               )
             })}
-        </CustomTable>
+          </TableBody>
+        </Table>
       </div>
     );
-  }
 }
-
-function mapStateToProps(state) {
-  return {
-    report: state.reports.netWorth
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-   return {
-     actions: bindActionCreators(reportActions, dispatch)
-   }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(NetWorthReport));
