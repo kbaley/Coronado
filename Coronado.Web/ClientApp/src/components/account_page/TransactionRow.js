@@ -4,8 +4,6 @@ import * as transactionActions from '../../actions/transactionActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { CategorySelect } from '../common/CategorySelect';
-import { CheckIcon } from '../icons/CheckIcon';
-import { CancelIcon } from '../icons/CancelIcon';
 import { MoneyInput } from '../common/MoneyInput';
 import * as Mousetrap from 'mousetrap';
 import { getCategoriesForDropdown } from "../../selectors/selectors.js";
@@ -13,6 +11,8 @@ import VendorField from '../common/VendorField';
 import { TableRow, TableCell, withStyles, IconButton } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import CheckIcon from '@material-ui/icons/Check'
+import CancelIcon from '@material-ui/icons/Cancel'
 
 const styles = theme => ({
   overflow: {
@@ -121,8 +121,12 @@ class TransactionRow extends Component {
       this.state.isEditing ? 
       <TableRow>
         <TableCell>
-          <CheckIcon onClick={this.updateTransaction} className="icon" />
-          <CancelIcon onCancel={this.cancelEditing} />
+            <IconButton onClick={this.updateTransaction} component="span">
+              <CheckIcon className={classes.icon} fontSize="small" />
+            </IconButton>
+            <IconButton onClick={this.cancelEditing} component="span">
+              <CancelIcon className={classes.icon} fontSize="small" />
+            </IconButton>
         </TableCell>
         <TableCell>
         <input type="text" name="transactionDate" 
@@ -158,7 +162,7 @@ class TransactionRow extends Component {
 
       <TableRow>
         <TableCell>
-            <IconButton onClick={this.props.onDelete} component="span">
+            <IconButton onClick={this.startEditing} component="span">
               <EditIcon className={classes.icon} fontSize="small" />
             </IconButton>
             <IconButton onClick={this.props.onDelete} component="span">
