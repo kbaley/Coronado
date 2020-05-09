@@ -59,14 +59,9 @@ class InvestmentsPage extends Component {
         <h3>USD</h3>
         <InvestmentList investments={filter(this.props.investments, i => i.currency === 'USD')} currency='USD' />
         <h3>CAD</h3>
-        <InvestmentList investments={filter(this.props.investments, i => i.currency === 'CAD')} currency='CAD' />
-        <table className='table investment-list'>
-          <tbody>
-            <React.Fragment>
-              <DisplayTotalRow text="Grand Total" value={getInvestmentsTotal()} />
-            </React.Fragment>
-          </tbody>
-        </table>
+        <InvestmentList investments={filter(this.props.investments, i => i.currency === 'CAD')} currency='CAD'>
+          <DisplayTotalRow text="Grand Total" value={getInvestmentsTotal()} />
+        </InvestmentList>
       </div>
     );
   }

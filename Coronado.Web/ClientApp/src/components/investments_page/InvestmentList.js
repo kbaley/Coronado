@@ -34,19 +34,19 @@ class InvestmentList extends Component {
   }
 
   openPriceHistory(investment) {
-    this.setState({showPriceHistory: true, selectedInvestment: investment});
+    this.setState({ showPriceHistory: true, selectedInvestment: investment });
   }
 
   handleClosePriceHistory() {
-    this.setState({showPriceHistory:false});
+    this.setState({ showPriceHistory: false });
   }
 
   startEditing(investment) {
-    this.setState({show:true, selectedInvestment: investment});
+    this.setState({ show: true, selectedInvestment: investment });
   }
 
   handleClose() {
-    this.setState({show:false});
+    this.setState({ show: false });
   }
 
   saveInvestment(investment) {
@@ -63,7 +63,7 @@ class InvestmentList extends Component {
     var investment = find(this.props.investments, c => c.investmentId === investmentId);
     return investment ? investment.name : '';
   }
-  
+
   render() {
     return (
       <Table>
@@ -79,30 +79,31 @@ class InvestmentList extends Component {
           </TableRow>
         </TableHead>
         <TableBody>
-        <InvestmentForm 
-          show={this.state.show} 
-          onClose={this.handleClose} 
-          investment={this.state.selectedInvestment} 
-          investments={this.props.investments}
-          onSave={this.saveInvestment} />
-        <InvestmentPriceHistory
-          show={this.state.showPriceHistory}
-          onClose={this.handleClosePriceHistory}
-          onSave={this.savePrices}
-          investment={this.state.selectedInvestment} />
-        { this.props.isLoading ? <tr><td colSpan="2"><Spinner /></td></tr> :
-          this.props.investments.map(i => 
-        <InvestmentRow 
-          key={i.investmentId} 
-          investment={i} 
-          onEdit={() => this.startEditing(i)} 
-          onDelete={()=>this.deleteInvestment(i.investmentId, i.name)} 
-          openPriceHistory={() => this.openPriceHistory(i)} />
-        )}
-        <InvestmentsTotal
+          <InvestmentForm
+            show={this.state.show}
+            onClose={this.handleClose}
+            investment={this.state.selectedInvestment}
+            investments={this.props.investments}
+            onSave={this.saveInvestment} />
+          <InvestmentPriceHistory
+            show={this.state.showPriceHistory}
+            onClose={this.handleClosePriceHistory}
+            onSave={this.savePrices}
+            investment={this.state.selectedInvestment} />
+          {this.props.isLoading ? <tr><td colSpan="2"><Spinner /></td></tr> :
+            this.props.investments.map(i =>
+              <InvestmentRow
+                key={i.investmentId}
+                investment={i}
+                onEdit={() => this.startEditing(i)}
+                onDelete={() => this.deleteInvestment(i.investmentId, i.name)}
+                openPriceHistory={() => this.openPriceHistory(i)} />
+            )}
+          <InvestmentsTotal
             investments={this.props.investments}
             currency={this.props.currency}
             currencies={this.props.currencies} />
+          {this.props.children}
         </TableBody>
       </Table>
     );
@@ -110,7 +111,7 @@ class InvestmentList extends Component {
 }
 
 function mapStateToProps(state) {
- 
+
   return {
     notifications: state.notifications,
     isLoading: state.loading.investments,
