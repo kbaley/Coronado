@@ -5,6 +5,7 @@ import { Icon } from "../icons/Icon";
 import { withStyles, Button, Dialog, DialogTitle, DialogContent, 
   DialogActions, InputBase, Table, TableHead, TableRow, TableBody, TableCell } from '@material-ui/core'
 import { fade } from '@material-ui/core/styles';
+import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 
 const PriceInput = withStyles((theme) => ({
   root: {
@@ -112,7 +113,11 @@ class TodaysPrices extends Component {
     return (
       <span>
 
-        <Icon glyph="dollar-sign" onClick={this.showTodaysPrices} title="Update todays prices" />
+        <Icon 
+          onClick={this.showTodaysPrices} 
+          title="Update todays prices" 
+          icon={<LocalOfferIcon />}
+        />
         <Dialog
           onClose={this.handleClose}
           open={this.state.show}

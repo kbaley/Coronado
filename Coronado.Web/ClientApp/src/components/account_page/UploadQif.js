@@ -3,6 +3,7 @@ import { Icon } from "../icons/Icon";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, withStyles } from '@material-ui/core';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import PublishIcon from '@material-ui/icons/Publish';
 
 const styles = theme => ({
   dialogPaper: {
@@ -56,7 +57,10 @@ class UploadQif extends Component {
     const { classes } = this.props;
     return (
       <Fragment>
-        <Icon className="upload-qif" glyph="upload" onClick={this.showUploadForm} />
+        <Icon 
+          onClick={this.showUploadForm} 
+          icon={<PublishIcon />}
+        />
         <Dialog
           onClose={this.closeUploadForm}
           open={this.state.show}

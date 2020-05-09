@@ -8,6 +8,8 @@ import UploadInvoiceTemplate from "./UploadInvoiceTemplate";
 import {Icon} from "../icons/Icon";
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import './InvoicesPage.css';
+import PublishIcon from '@material-ui/icons/Publish';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 class InvoicesPage extends Component {
   constructor(props) {
@@ -51,8 +53,14 @@ class InvoicesPage extends Component {
           >
             Show paid
           </ToggleButton>
-          <Icon className="show-template" glyph="upload" onClick={this.uploadTemplateForm} />
-          <Icon className="show-template" glyph="external-link-alt" onClick={this.showTemplate} />
+          <Icon 
+            onClick={this.uploadTemplateForm}
+            icon={<PublishIcon />}
+          />
+          <Icon 
+            onClick={this.showTemplate}
+            icon={<OpenInNewIcon />}
+          />
           <UploadInvoiceTemplate show={this.state.showUploadForm} onHide={() => this.setState({showUploadForm: false})}
             onUpload={this.uploadTemplate}/>
         </div>

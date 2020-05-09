@@ -1,6 +1,5 @@
 import React from 'react';
 import './CheckIcon.css';
-import './Icon.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export function CheckIcon(props) {

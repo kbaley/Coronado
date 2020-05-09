@@ -11,6 +11,8 @@ import { filter } from 'lodash';
 import DisplayTotalRow from './DisplayTotalRow';
 import { getInvestmentsTotal } from '../common/investmentHelpers';
 import { orderBy } from 'lodash';
+import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 
 class InvestmentsPage extends Component {
   constructor(props) {
@@ -38,8 +40,16 @@ class InvestmentsPage extends Component {
     return (
       <div>
         <div style={{float: "right", width: "150px", textAlign: "right"}}>
-          <Icon className="make-correcting-entry" glyph="exchange-alt" onClick={this.makeCorrectingEntries} title="Sync with Investments accont" />
-          <Icon className="make-correcting-entry" glyph="arrow-down" onClick={this.getLatestPrices} title="Get latest prices from Yahoo" />
+          <Icon 
+            onClick={this.makeCorrectingEntries} 
+            title="Sync with Investments accont" 
+            icon={<SwapHorizIcon />}
+          />
+          <Icon 
+            onClick={this.getLatestPrices} 
+            title="Get latest prices from Yahoo" 
+            icon={<CloudDownloadIcon />}
+          />
         </div>
         <h1>
           Investments <NewInvestment /> <TodaysPrices 

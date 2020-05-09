@@ -5,6 +5,9 @@ import { CurrencyFormat } from '../common/CurrencyFormat';
 import { NullableDate } from '../common/NullableDate';
 import { Icon } from '../icons/Icon';
 import { CustomTableRow } from '../common/Table';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import EmailIcon from '@material-ui/icons/Email';
+import LaunchIcon from '@material-ui/icons/Launch';
 
 export function InvoiceRow({invoice, onEdit, onDelete, onDownload, onEmail, onPreview}) {
   return (
@@ -18,9 +21,21 @@ export function InvoiceRow({invoice, onEdit, onDelete, onDownload, onEmail, onPr
       ]}>
         <EditIcon onStartEditing={onEdit} />
         <DeleteIcon onDelete={onDelete} />
-        <Icon onClick={onDownload} glyph="file-download" title="Download" />
-        <Icon onClick={onEmail} glyph="envelope" title="Email" />
-        <Icon onClick={onPreview} glyph="external-link-alt" title="Preview" />
+        <Icon 
+          onClick={onDownload} 
+          title="Download" 
+          icon={<GetAppIcon />}
+        />
+        <Icon 
+          onClick={onEmail} 
+          title="Email" 
+          icon={<EmailIcon />}
+        />
+        <Icon 
+          onClick={onPreview} 
+          title="Preview" 
+          icon={<LaunchIcon />}
+        />
       </CustomTableRow>
   );
 }

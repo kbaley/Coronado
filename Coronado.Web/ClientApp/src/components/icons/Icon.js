@@ -1,10 +1,17 @@
 import React from 'react';
-import './Icon.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconButton } from '@material-ui/core';
+import { PropTypes } from 'prop-types';
 
-export function Icon(props) {
-  const classes = `icon ${props.className}`
+export function Icon({ onClick, icon, title, ...rest}) {
   return (
-    <div className={classes}><FontAwesomeIcon icon={props.glyph} onClick={props.onClick} title={props.title || ""}/></div>
+    <IconButton onClick={onClick} component="span" title={title} {...rest} >
+      {icon}
+    </IconButton>
   );
+}
+
+Icon.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  icon: PropTypes.object,
 }
