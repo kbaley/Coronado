@@ -16,8 +16,8 @@ export function CategoryRow({category, onEdit, onDelete, parent}) {
   return (
     <TableRow>
       <TableCell className={classes.editCell}>
-        <EditIcon onStartEditing={onEdit} />
-        <DeleteIcon onDelete={onDelete} />
+        <EditIcon onStartEditing={onEdit} fontSize="small"/>
+        <DeleteIcon onDelete={onDelete} fontSize="small" />
       </TableCell>
       <TableCell>{category.name}</TableCell>
       <TableCell>{category.type}</TableCell>

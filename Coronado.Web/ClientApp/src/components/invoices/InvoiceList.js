@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import * as actions from '../../actions/invoiceActions';
-import CustomTable from '../common/Table';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import InvoiceForm from './InvoiceForm';
