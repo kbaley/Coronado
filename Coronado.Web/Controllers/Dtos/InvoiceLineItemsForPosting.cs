@@ -14,5 +14,6 @@ namespace Coronado.Web.Controllers.Dtos
         public string Description { get; set; }
         public string Status { get; set; }
         public Guid InvoiceId { get; set; }
+        public Guid CategoryId { get; set; }
     }
 }

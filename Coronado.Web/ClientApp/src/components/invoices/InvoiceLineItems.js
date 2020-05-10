@@ -2,7 +2,8 @@ import React from 'react';
 import { CurrencyFormat } from "../common/CurrencyFormat";
 import { NewIcon } from '../icons/NewIcon';
 import { DeleteIcon } from '../icons/DeleteIcon';
-import { 
+import { useSelector } from 'react-redux';
+import {
   Table,
   TableHead,
   TableBody,
@@ -10,6 +11,8 @@ import {
   TableCell,
   makeStyles,
   TextField,
+  Select,
+  MenuItem,
 } from '@material-ui/core';
 
 const styles = theme => ({
@@ -36,11 +39,20 @@ const useStyles = makeStyles(styles);
 
 const InvoiceLineItems = ({ lineItems, onLineItemChanged, onNewItemAdded, onLineItemDeleted }) => {
   const classes = useStyles();
+  const categories = useSelector(state => state.categories);
+
+  const onCategoryChange = (e, i) => {
+    console.log(e.target);
+    console.log(i);
+
+  }
+
   return (
     <Table className={classes.root}>
       <TableHead>
         <TableRow>
           <TableCell>Description</TableCell>
+          <TableCell>Category</TableCell>
           <TableCell>Quantity</TableCell>
           <TableCell>Unit Cost</TableCell>
           <TableCell align="right">Amount</TableCell>
@@ -48,7 +60,7 @@ const InvoiceLineItems = ({ lineItems, onLineItemChanged, onNewItemAdded, onLine
         </TableRow>
       </TableHead>
       <TableBody>
-        {lineItems && lineItems.map( li =>
+        {lineItems && lineItems.map(li =>
           <TableRow key={li.invoiceLineItemId}>
             <TableCell>
               <TextField
@@ -61,36 +73,52 @@ const InvoiceLineItems = ({ lineItems, onLineItemChanged, onNewItemAdded, onLine
                 onChange={(e) => onLineItemChanged(li.invoiceLineItemId, e.target.name, e.target.value)} />
             </TableCell>
             <TableCell>
-              <TextField
-                name="quantity"
-                fullWidth={true}
-                margin="dense"
+              <Select
+                value={li.categoryId ?? ""}
                 variant="outlined"
-                className={classes.input + " " + classes.quantity}
-                value={li.quantity}
-                onChange={(e) => onLineItemChanged(li.invoiceLineItemId, e.target.name, e.target.value)} />
-            </TableCell>
-            <TableCell>
-              <TextField
-                name="unitAmount"
-                value={li.unitAmount}
-                fullWidth={true}
+                name="categoryId"
                 margin="dense"
-                variant="outlined"
-                className={classes.input + " " + classes.unitAmount}
-                onChange={(e) => onLineItemChanged(li.invoiceLineItemId, e.target.name, e.target.value)} />
-            </TableCell>
-            <TableCell><CurrencyFormat value={li.quantity && li.unitAmount ? (li.quantity * li.unitAmount ) : 0} /></TableCell>
-            <TableCell>
-              <NewIcon onClick={onNewItemAdded} />
-              {lineItems.length > 1 &&
-              <DeleteIcon onDelete={() => onLineItemDeleted(li.invoiceLineItemId)} fontSize="sm" />
+                style={{ minWidth: 150 }}
+                onChange={(e) => onLineItemChanged(li.invoiceLineItemId, e.target.name, e.target.value)}
+              >
+                <MenuItem value={''}>None</MenuItem>
+              {categories ? categories.map(c =>
+                <MenuItem value={c.categoryId} key={c.categoryId}>{c.name}</MenuItem>
+              ) : <MenuItem>Select...</MenuItem>
               }
+                </Select>
             </TableCell>
+          <TableCell>
+            <TextField
+              name="quantity"
+              fullWidth={true}
+              margin="dense"
+              variant="outlined"
+              className={classes.input + " " + classes.quantity}
+              value={li.quantity}
+              onChange={(e) => onLineItemChanged(li.invoiceLineItemId, e.target.name, e.target.value)} />
+          </TableCell>
+          <TableCell>
+            <TextField
+              name="unitAmount"
+              value={li.unitAmount}
+              fullWidth={true}
+              margin="dense"
+              variant="outlined"
+              className={classes.input + " " + classes.unitAmount}
+              onChange={(e) => onLineItemChanged(li.invoiceLineItemId, e.target.name, e.target.value)} />
+          </TableCell>
+          <TableCell><CurrencyFormat value={li.quantity && li.unitAmount ? (li.quantity * li.unitAmount) : 0} /></TableCell>
+          <TableCell>
+            <NewIcon onClick={onNewItemAdded} />
+            {lineItems.length > 1 &&
+              <DeleteIcon onDelete={() => onLineItemDeleted(li.invoiceLineItemId)} fontSize="sm" />
+            }
+          </TableCell>
           </TableRow>
         )}
       </TableBody>
-    </Table>
+    </Table >
   );
 };
 
