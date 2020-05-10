@@ -62,12 +62,11 @@ class InvoiceList extends Component {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell></TableCell>
+            <TableCell style={{width: 260}}></TableCell>
             <TableCell>Number</TableCell>
             <TableCell>Date</TableCell>
             <TableCell>Customer</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Balance</TableCell>
+            <TableCell align="right">Balance</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

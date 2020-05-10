@@ -114,7 +114,7 @@ class InvoiceForm extends Component {
   render() {
     return (
       <Dialog 
-        maxWidth="sm" 
+        maxWidth="md" 
         open={this.props.show} 
         onClose={this.props.onClose}
         fullWidth={true}

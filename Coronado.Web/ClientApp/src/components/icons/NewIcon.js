@@ -1,10 +1,19 @@
 import React from 'react';
-import './NewIcon.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { IconButton } from '@material-ui/core';
+import { PropTypes } from 'prop-types';
 
-export function NewIcon(props) {
-  const classes = `new-icon icon ${props.className}`
+export function NewIcon({onClick, fontSize, ...rest}) {
   return (
-    <FontAwesomeIcon icon='plus-circle' className={classes} onClick={props.onClick}/>
+    <IconButton onClick={onClick} component="span" {...rest}>
+      <AddCircleIcon 
+        fontSize={fontSize ?? "default"}
+      />
+    </IconButton>
   );
+}
+
+NewIcon.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  fontSize: PropTypes.string
 }
