@@ -26,7 +26,7 @@ export function InvestmentRow({investment, onEdit, onDelete, openPriceHistory}) 
       <Icon 
         onClick={openPriceHistory} 
         title="Show historical prices" 
-        icon={<HistoryIcon />}
+        icon={<HistoryIcon fontSize="small" />}
       />
       </TableCell>
       <TableCell>{investment.name}</TableCell>

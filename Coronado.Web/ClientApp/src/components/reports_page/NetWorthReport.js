@@ -39,8 +39,8 @@ export default function NetWorthReport(props) {
           <TableHead>
             <TableRow>
               <TableCell>Date</TableCell>
-              <TableCell>Net worth</TableCell>
-              <TableCell>Change</TableCell>
+              <TableCell align="right">Net worth</TableCell>
+              <TableCell align="right">Change</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

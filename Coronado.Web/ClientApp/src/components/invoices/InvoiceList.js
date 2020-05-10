@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import InvoiceForm from './InvoiceForm';
 import { InvoiceRow } from './InvoiceRow';
 import Spinner from '../common/Spinner';
+import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 
 class InvoiceList extends Component {
   constructor(props) {
@@ -59,10 +60,18 @@ class InvoiceList extends Component {
     }
     
     return (
-      <CustomTable
-        tableHeader={['', 'Number', 'Date', 'Customer', 'Email', 'Balance']}
-        headerAlignment={['inherit', 'inherit', 'inherit', 'inherit', 'inherit', 'right']}
-      >
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell>Number</TableCell>
+            <TableCell>Date</TableCell>
+            <TableCell>Customer</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Balance</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
         <InvoiceForm 
           show={this.state.show} 
           onClose={this.handleClose} 
@@ -72,7 +81,8 @@ class InvoiceList extends Component {
           onSave={this.saveInvoice} />
         { this.props.isLoading ? <tr><td colSpan="4"><Spinner /></td></tr> :
           this.props.invoices.map((invoice, key) => 
-        showInvoice(invoice) && <InvoiceRow 
+        showInvoice(invoice) && 
+        <InvoiceRow 
           key={invoice.invoiceId} 
           invoice={invoice} 
           onEdit={() => this.startEditing(invoice)} 
@@ -81,7 +91,8 @@ class InvoiceList extends Component {
           onPreview={() => this.previewInvoice(invoice.invoiceId)}
           onDelete={()=>this.deleteInvoice(invoice.invoiceId, invoice.invoiceNumber)} />
         )}
-      </CustomTable>
+        </TableBody>
+      </Table>
     );
   }
 }

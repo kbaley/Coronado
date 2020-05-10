@@ -8,34 +8,34 @@ import { CustomTableRow } from '../common/Table';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import EmailIcon from '@material-ui/icons/Email';
 import LaunchIcon from '@material-ui/icons/Launch';
+import { TableRow, TableCell } from '@material-ui/core';
 
 export function InvoiceRow({invoice, onEdit, onDelete, onDownload, onEmail, onPreview}) {
   return (
-    <CustomTableRow
-      tableData={[
-        invoice.invoiceNumber,
-        new Date(invoice.date).toLocaleDateString(), 
-        invoice.customerName + " (" + invoice.customerEmail + ")",
-        NullableDate({date: invoice.lastSentToCustomer}),
-        CurrencyFormat({value: invoice.balance}) 
-      ]}>
-        <EditIcon onStartEditing={onEdit} />
-        <DeleteIcon onDelete={onDelete} />
+    <TableRow>
+      <TableCell>
+        <EditIcon onStartEditing={onEdit} fontSize="small" />
+        <DeleteIcon onDelete={onDelete} fontSize="small" />
         <Icon 
           onClick={onDownload} 
           title="Download" 
-          icon={<GetAppIcon />}
+          icon={<GetAppIcon fontSize="small" />}
         />
         <Icon 
           onClick={onEmail} 
           title="Email" 
-          icon={<EmailIcon />}
+          icon={<EmailIcon fontSize="small"/>}
         />
         <Icon 
           onClick={onPreview} 
           title="Preview" 
-          icon={<LaunchIcon />}
+          icon={<LaunchIcon fontSize="small"/>}
         />
-      </CustomTableRow>
+      </TableCell>
+      <TableCell>{invoice.invoiceNumber}</TableCell>
+      <TableCell>{new Date(invoice.date).toLocaleDateString()}</TableCell>
+      <TableCell>{invoice.customerName + " (" + invoice.customerEmail + ")" }</TableCell>
+      <TableCell><CurrencyFormat value={invoice.balance} /></TableCell>
+    </TableRow>
   );
 }
