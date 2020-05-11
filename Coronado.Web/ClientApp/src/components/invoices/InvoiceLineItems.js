@@ -41,12 +41,6 @@ const InvoiceLineItems = ({ lineItems, onLineItemChanged, onNewItemAdded, onLine
   const classes = useStyles();
   const categories = useSelector(state => state.categories);
 
-  const onCategoryChange = (e, i) => {
-    console.log(e.target);
-    console.log(i);
-
-  }
-
   return (
     <Table className={classes.root}>
       <TableHead>

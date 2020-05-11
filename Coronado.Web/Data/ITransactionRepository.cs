@@ -17,7 +17,8 @@ namespace Coronado.Web.Data
         void InsertRelatedTransaction(TransactionForDisplay first, TransactionForDisplay second);
         decimal GetNetWorthFor(DateTime date);
 
-        IEnumerable<dynamic> GetExpensesByCategory(DateTime start, DateTime end);
+        IEnumerable<dynamic> GetTransactionsByCategoryType(string categoryType, DateTime start, DateTime end);
         Task<IEnumerable<dynamic>> GetMonthlyTotalsForCategory(Guid categoryId, DateTime start, DateTime end);
+        IEnumerable<dynamic> GetInvoiceLineItemsIncomeTotals(DateTime start, DateTime end);
     }
 }

@@ -17,6 +17,7 @@ export default {
   reports: {
     netWorth: [],
     expensesByCategory: [],
+    income: [],
     dashboardStats: { }
   },
   transactionModel: {

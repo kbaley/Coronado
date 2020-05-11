@@ -15,6 +15,12 @@ export const reportReducer = (state = initialState.reports, action, deletedCusto
         expensesByCategory: action.report
       }
 
+    case actions.LOAD_INCOME_REPORT_SUCCESS:
+      return {
+        ...state,
+        income: action.report
+      }
+
     case actions.LOAD_DASHBOARD_STATS_SUCCESS:
         return {
           ...state,

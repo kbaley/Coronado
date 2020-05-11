@@ -32,6 +32,21 @@ class ReportApi {
     return response.json();
   }
 
+  static async getIncomeReport() {
+    const requestOptions = {
+      method: 'GET',
+      headers: authHeader()
+    }
+    const response = await fetch("api/Reports/Income", requestOptions);
+    if (!response.ok) {
+      if (response.status === 401) {
+        logout();
+        return [];
+      }
+    }
+    return response.json();
+  }
+
   static async getDashboardStats() {
     const requestOptions = {
       method: 'GET',

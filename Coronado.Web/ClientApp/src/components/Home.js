@@ -42,6 +42,8 @@ class Home extends React.Component {
     const desiredDate = moment(today).add(0 - month, 'M').startOf('M');
     const statsDate = moment(stats[month].date);
     
+    console.log(stats);
+    console.log(desiredDate);
     if (!statsDate.isSame(desiredDate)) return Currency(0);
     return Currency(stats[month].amount);
   }

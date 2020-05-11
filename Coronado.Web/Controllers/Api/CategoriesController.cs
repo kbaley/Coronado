@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Coronado.Web.Data;
@@ -24,7 +25,7 @@ namespace Coronado.Web.Controllers.Api
         [HttpGet]
         public IEnumerable<Category> GetCategory([FromQuery] UrlQuery query )
         {
-            return _context.Categories;
+            return _context.Categories.OrderBy(c => c.Name);
         }
 
         [HttpPut("{id}")]

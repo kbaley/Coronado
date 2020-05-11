@@ -3,6 +3,7 @@ import NetWorthReport from './NetWorthReport';
 import ExpensesByCategoryReport from './ExpensesByCategoryReport';
 import { Tab, Tabs, Box } from '@material-ui/core';
 import { PropTypes } from 'prop-types';
+import IncomeReport from './IncomeReport';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -41,12 +42,16 @@ export default function ReportsPage() {
       <Tabs value={value} onChange={handleChange}>
         <Tab label="Net worth over time" id='tab-0' />
         <Tab label="Expenses by category" id='tab-1' />
+        <Tab label="Income" id='tab-2' />
       </Tabs>
       <TabPanel value={value} index={0}>
         <NetWorthReport />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <ExpensesByCategoryReport />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <IncomeReport />
       </TabPanel>
     </div>
   );

@@ -36,16 +36,36 @@ namespace Coronado.Web.Controllers.Api
             }
             return Ok(netWorth);
         }
+        [HttpGet]
+        public IActionResult Income([FromQuery] int? year) 
+        {
+            var report = GetEntriesByCategoryType("Income");
+            return Ok(report );
+        }
+
+        public class CategoryTotals {
+            public dynamic Expenses { get; set; }
+            public dynamic MonthTotals { get; set; }
+        }
 
         [HttpGet]
         public IActionResult ExpensesByCategory([FromQuery] ReportQuery query) 
         {
+            var report = GetEntriesByCategoryType("Expense");
+            return Ok(report );
+        }
+        public dynamic GetEntriesByCategoryType(string categoryType)
+        {
             var report = new Dictionary<Guid, dynamic>();
             var numMonths = 8;
-            var categories = _context.Categories.Where(c => c.Type == "Expense").ToList();
+            var categories = _context.Categories.Where(c => c.Type == categoryType).ToList();
             var end = DateTime.Today.LastDayOfMonth();
             var start = end.AddMonths(0 - numMonths + 1).FirstDayOfMonth();
-            var expenses = _transactionRepo.GetExpensesByCategory(start, end).ToList();
+            var expenses = _transactionRepo.GetTransactionsByCategoryType(categoryType, start, end).ToList();
+            if (categoryType == "Income") {
+                var invoiceTotals = _transactionRepo.GetInvoiceLineItemsIncomeTotals(start, end);
+                expenses.AddRange(invoiceTotals);
+            }
 
             // Add categories with no expenses
             var missingCategories = categories.Where(c => expenses.All(e => e.categoryId != c.CategoryId)).ToList();
@@ -54,7 +74,7 @@ namespace Coronado.Web.Controllers.Api
                 expenses.Add(new { categoryId = category.CategoryId, categoryName = category.Name, total = 0.0M, expenses = new List<dynamic>()});
             }
             var monthTotals = new List<dynamic>();
-            for (int i = 0; i < numMonths; i++)
+            for (var i = 0; i < numMonths; i++)
             {
                 end = end.FirstDayOfMonth();
                 var total = expenses.Sum(e => ((IEnumerable<dynamic>)e.expenses).Where(x => x.date == end).Sum(x => (decimal)x.amount));
@@ -62,7 +82,10 @@ namespace Coronado.Web.Controllers.Api
 
                 end = end.AddMonths(-1);
             }
-            return Ok(new { expenses, monthTotals } );
+            return new CategoryTotals{
+                Expenses = expenses,
+                MonthTotals = monthTotals
+            };
         }
 
         [HttpGet]

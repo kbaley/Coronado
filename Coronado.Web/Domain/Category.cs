@@ -18,6 +18,7 @@ namespace Coronado.Web.Domain
         public string Type { get; set; }
 
         public Guid? ParentCategoryId { get; set; }
+        public Category ParentCategory { get; set; }
     }
 
 }

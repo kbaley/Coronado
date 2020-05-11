@@ -262,15 +262,50 @@ WHERE t.transaction_id=@transactionId;", new { transactionId });
             }
         }
 
-        public IEnumerable<dynamic> GetExpensesByCategory(DateTime start, DateTime end) 
+        public IEnumerable<dynamic> GetTransactionsByCategoryType(string categoryType, DateTime start, DateTime end) 
+        {
+            var amountPrefix = "";
+            if (categoryType == "Expense") {
+                amountPrefix = "0 - ";
+            }
+            using (var conn = Connection)
+            {
+                var sql = "SELECT t.category_id, c.name, " + amountPrefix + "sum(amount) as amount, EXTRACT(MONTH from t.transaction_date)::int as month, EXTRACT(YEAR from t.transaction_date)::int as year FROM transactions t " +
+                    "INNER JOIN categories c ON t.category_id = c.category_id " +
+                    "WHERE transaction_date > @start and transaction_date <= @end " +
+                    "AND c.Type = '" + categoryType + "' " +
+                    "GROUP BY t.category_id, c.name, EXTRACT(MONTH from t.transaction_date), EXTRACT(YEAR from t.transaction_date)";
+                var data = conn.Query(sql, new { start, end });
+
+                var results = data.GroupBy(x => x.category_id)
+                                .Select(x => new {
+                                    categoryId = x.Key,
+                                    categoryName = x.First().name,
+                                    total = x.Sum(e => (decimal)e.amount),
+                                    expenses = x.Select(e => new {
+                                        date = new DateTime(e.year, e.month, 1),
+                                        e.amount
+                                    })
+                                });
+                
+                return results;
+            }
+        }
+
+        public IEnumerable<dynamic> GetInvoiceLineItemsIncomeTotals(DateTime start, DateTime end) 
         {
             using (var conn = Connection)
             {
-                var sql = "SELECT t.category_id, c.name, 0 - sum(amount) as amount, EXTRACT(MONTH from t.transaction_date)::int as month, EXTRACT(YEAR from t.transaction_date)::int as year FROM transactions t " +
-                    "INNER JOIN categories c ON t.category_id = c.category_id " +
-                    "WHERE transaction_date > @start and transaction_date <= @end " +
-                    "AND c.Type = 'Expense' " +
-                    "GROUP BY t.category_id, c.name, EXTRACT(MONTH from t.transaction_date), EXTRACT(YEAR from t.transaction_date)";
+                var sql = @"
+                    SELECT ili.category_id, c.name, sum(ili.quantity * ili.unit_amount) as amount, EXTRACT(MONTH from i.date)::int as month, 
+                    EXTRACT(YEAR from i.date)::int as year 
+                    FROM invoice_line_items ili
+                    INNER JOIN categories c ON ili.category_id = c.category_id
+                    INNER JOIN invoices i
+                    ON ili.invoice_id = i.invoice_id
+                    WHERE i.date > @start and i.date <= @end
+                    AND c.Type = 'Income'
+                    GROUP BY ili.category_id, c.name, EXTRACT(MONTH from i.date), EXTRACT(YEAR from i.date)";
                 var data = conn.Query(sql, new { start, end });
 
                 var results = data.GroupBy(x => x.category_id)

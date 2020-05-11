@@ -17,6 +17,14 @@ export function loadExpensesByCategoryReportAction() {
   return {type: types.LOAD_EXPENSES_BY_CATEGORY_REPORT};
 }
 
+export function loadIncomeReportSuccess(report) {
+  return {type: types.LOAD_INCOME_REPORT_SUCCESS, report};
+}
+
+export function loadIncomeReportAction() {
+  return {type: types.LOAD_INCOME_REPORT};
+}
+
 export function loadDashboardStatsAction() {
   return {type: types.LOAD_DASHBOARD_STATS};
 }
@@ -38,6 +46,14 @@ export const loadExpensesByCategoryReport = () => {
     dispatch(loadExpensesByCategoryReportAction());
     const report = await ReportApi.getExpensesByCategoryReport();
     dispatch(loadExpensesByCategoryReportSuccess(report));
+  }
+}
+
+export const loadIncomeReport = () => {
+  return async (dispatch) => {
+    dispatch(loadIncomeReportAction());
+    const report = await ReportApi.getIncomeReport();
+    dispatch(loadIncomeReportSuccess(report));
   }
 }
 
