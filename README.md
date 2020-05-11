@@ -15,9 +15,9 @@ Plus I wanted to learn React.
 
 - Shortcut keys:
   - `n a`: New account
-  - `g c`: Go to categories page
-  - `g u`: Go to customers page
-  - `g i`: Go to invoices page
+  - `g n`: Go to invoices page
+  - `g i`: Go to investments page
+  - `g r`: Go to reports page
   - `g [1-9]`: Go to account page (too bad for you if you have more than 9 accounts)
   - `n c`: New category (when on categories page)
   - `n u`: New customer (when on customers page)
@@ -60,17 +60,19 @@ Multiple bank fees can be used. For example:
 
 > Transfer to chequing bf: 1.00 transfer fee bf: 0.15 tax on transfer fee
 
-This will add three transactions: the main one and two bank fees.
+This will add three transactions: the main one and two bank fees. 
 
 Of course, bank fee transactions can also be added manually as regular transactions with a category of "Bank Fees".
 
 ### Investments
 
-This section is more or less hard-coded to my current situation. It assumes all investments are in CAD and need to be converted to USD and that they can be looked up as mutual funds on globeandmail.com.
+Investments are for tracking holdings of stocks, ETFs, etc. Any changes on this page are not reflected in the net worth or other reports. I did this to simplify the reporting. Instead, the application half-expects there to be an account with type "Investment" somewhere. This is a holding account used to calculate reports (specifically the net worth an income reports) without having to dive into price histories for individual holdings.
 
-Investment prices are screenscraped a maximum of once per day from https://www.theglobeandmail.com/investing/markets/funds/{symbol}.CF/performance/. Same with the current USD->CAD rate from https://api.exchangeratesapi.io/latest/?base=USD&symbols=CAD. This gives you a total in CAD and in USD. From there, correcting entries can be made to the first account marked as an investment type so bring it in sync with the current value for the purpose of net worth reporting.
+The idea is this: keep track of your individual stocks in the investments page where you can add/remove investments and update the prices. It will support investments in either USD or CAD. Canadian holdings are converted to USD using https://api.exchangeratesapi.io. At regular intervals (preferably as close to the end of the month as possible), click the icon on the Investments page with two arrows. This will reconcile the current value of your investments with what is currently reported in your "Investment" account and create a reconciling entry using the built-in "gain/loss on investments" category. Which means the net worth report isn't always right up-to-the-minute but is close enough for my long-term sensibilities and during times of volatility, you can always click the reconciling entry button to bring it up-to-date.
 
-Currency and investment gain/loss are not reported separately in the correcting entry and Coronado does not store historical rates of investments or currency. I thought about this for a while and decided I didn't care about keeping the two concepts separate; Coronado tracks only the total value of investments in USD.
+One thing I sometimes do is, at the end of the month, delete all the intermediate ones during the month then click the reconcile button to create a single one. Only reason I do that is to reduce the number of "gain/loss" entries in the investment account.
+
+Investment price retrieval uses the Yahoo Finance RapidAPI service. Set the `RapidApiKey` value in `appSettings` to use this. Historical currency values are not stored though the app keeps track of investment prices (though not automatically).
 
 ## Still to come
 
@@ -83,7 +85,7 @@ Currency and investment gain/loss are not reported separately in the correcting 
 - nested categories
 - ~net worth report~
 - simple balance sheet
-- income report
+- ~simple income report~
 - ~income vs. expenses report~
 - reimbursable expenses (mark expenses as reimbursable so they can be tracked if they have been paid)
 - simple what-if mortgage analysis (e.g. effect of extra payment, effect of increased regular payments)
@@ -107,10 +109,10 @@ To migrate data, use `pg_dump` with `--data-only` and --column-inserts` to get a
 
 ### Why Dapper _and_ Entity Framework?
 
-I started with only EF. A few weeks in, I started hitting problems managing the interdependencies between my entities. Things like accounts having transactions which link to other accounts, etc. It's been a while since I've had to deal with a full ORM and I don't have the patience for it anymore so I switched to Dapper for some of the more complicated data access and cases where I need aggregate (e.g. account balances). EF6 remains for the simple stuff.
+I started with only EF. A few weeks in, I started hitting problems managing the interdependencies between my entities. Things like accounts having transactions which link to other accounts, etc. It's been a while since I've had to deal with a full ORM and I don't have the patience for it anymore so I switched to Dapper for some of the more complicated data access and cases where I need to aggregate (e.g. account balances). EF6 remains for the simple stuff.
 
 ### Deploying
 
 - `dotnet publish --configuration=Release`
 - Then deploy from VS Code from the Azure plugin in the left menu
-- At some vague point in the future, try to set this up in GitHub Actions or Travis
+- At some vague point in the future, try to set this up in GitHub Actions or Travis but honestly VS Code works well for a single developer and user
