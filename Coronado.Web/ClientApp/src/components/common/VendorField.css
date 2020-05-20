@@ -6,10 +6,9 @@
     width: 240px;
     height: 27px;
     padding: 10px 10px;
-    font-family: Helvetica, sans-serif;
     font-weight: 300;
     font-size: 14px;
-    font-family: "Roboto, Helvetica, Arial, sans-serif",
+    font-family: Roboto, Helvetica, Arial, sans-serif;
   }
   
   .react-autosuggest__input--focused {

@@ -14,8 +14,8 @@ const styles = theme => ({
       padding: "0px",
     },
     "& td:nth-child(1)": {
-      width: 120,
-      maxWidth: 120,
+      width: 95,
+      maxWidth: 95,
     },
     "& td:nth-child(2)": {
       width: 110,
