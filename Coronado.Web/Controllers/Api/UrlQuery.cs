@@ -11,6 +11,6 @@ namespace Coronado.Web.Controllers.Api
 
   public class ReportQuery
   {
-    
+      public int? Year { get; set; }
   }
 }

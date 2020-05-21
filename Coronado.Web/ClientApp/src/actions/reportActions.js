@@ -33,10 +33,10 @@ export function loadDashboardStatsSuccess(report) {
   return {type: types.LOAD_DASHBOARD_STATS_SUCCESS, report};
 }
 
-export const loadNetWorthReport = () => {
+export const loadNetWorthReport = (year) => {
   return async (dispatch) => {
     dispatch(loadNetWorthReportAction());
-    const report = await ReportApi.getNetWorthReport();
+    const report = await ReportApi.getNetWorthReport(year);
     dispatch(loadNetWorthReportSuccess(report));
   };
 }

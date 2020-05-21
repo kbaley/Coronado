@@ -2,12 +2,15 @@ import { authHeader } from './auth-header';
 import { logout } from "./authApi";
 
 class ReportApi {
-  static async getNetWorthReport() {
+  static async getNetWorthReport(year) {
     const requestOptions = {
       method: 'GET',
-      headers: authHeader()
+      headers: authHeader(),
     }
-    const response = await fetch("api/Reports/NetWorth", requestOptions);
+    if (!year) {
+      year = new Date().getFullYear();
+    }
+    const response = await fetch("api/Reports/NetWorth?year=" + year, requestOptions);
     if (!response.ok) {
       if (response.status === 401) {
         logout();

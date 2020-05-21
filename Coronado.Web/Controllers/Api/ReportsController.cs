@@ -28,8 +28,13 @@ namespace Coronado.Web.Controllers.Api
         {
             var netWorth = new List<dynamic>();
 
-            var numItems = 13;
+            var year = query.Year ?? DateTime.Today.Year;
             var date = DateTime.Today.LastDayOfMonth();
+            var numItems = DateTime.Today.Month + 1;
+            if (year != DateTime.Today.Year) {
+                numItems = 13;
+                date = new DateTime(year, 12, 31);
+            }
             for (var i = 0; i < numItems; i++) {
                 netWorth.Add(new {date, netWorth=_transactionRepo.GetNetWorthFor(date)});
                 date = date.AddMonths(-1).LastDayOfMonth();
