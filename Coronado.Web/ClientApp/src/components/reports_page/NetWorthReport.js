@@ -58,18 +58,22 @@ export default function NetWorthReport(props) {
             </TableHead>
             <TableBody>
               {report.map((r, index) => {
-                const date = moment(r.date).format("MMMM YYYY");
-                const value = CurrencyFormat({ value: r.netWorth });
-                const change =
-                  index < report.length - 1
-                    ? CurrencyFormat({ value: r.netWorth - report[index + 1].netWorth })
-                    : null;
                 return (
-                  <CustomTableRow
-                    key={index}
-                    skipFirstCell={true}
-                    tableData={[date, value, change]}>
-                  </CustomTableRow>
+                  <TableRow key={index}>
+                    <TableCell>
+                      {moment(r.date).format("MMMM YYYY")}
+                    </TableCell>
+                    <TableCell>
+                      <CurrencyFormat value={r.netWorth} />
+                    </TableCell>
+                    <TableCell>
+                      {
+                        index < report.length - 1
+                          ? CurrencyFormat({ value: r.netWorth - report[index + 1].netWorth })
+                          : null
+                      }
+                    </TableCell>
+                  </TableRow>
                 )
               })}
             </TableBody>

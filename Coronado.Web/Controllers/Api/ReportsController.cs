@@ -28,12 +28,10 @@ namespace Coronado.Web.Controllers.Api
         {
             var netWorth = new List<dynamic>();
 
-            var year = query.Year ?? DateTime.Today.Year;
-            var date = DateTime.Today.LastDayOfMonth();
+            var date = query.EndDate;
             var numItems = DateTime.Today.Month + 1;
-            if (year != DateTime.Today.Year) {
+            if (query.SelectedYear != DateTime.Today.Year) {
                 numItems = 13;
-                date = new DateTime(year, 12, 31);
             }
             for (var i = 0; i < numItems; i++) {
                 netWorth.Add(new {date, netWorth=_transactionRepo.GetNetWorthFor(date)});
@@ -42,7 +40,7 @@ namespace Coronado.Web.Controllers.Api
             return Ok(netWorth);
         }
         [HttpGet]
-        public IActionResult Income([FromQuery] int? year) 
+        public IActionResult Income([FromQuery] ReportQuery query) 
         {
             var report = GetEntriesByCategoryType("Income");
             return Ok(report );
@@ -107,9 +105,7 @@ namespace Coronado.Web.Controllers.Api
 
     public static class Extensions {
         public static DateTime LastDayOfMonth(this DateTime date) {
-            var lastDay = date.AddMonths(1);
-            lastDay = new DateTime(lastDay.Year, lastDay.Month, 1);
-            return lastDay.AddDays(-1);
+            return new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
         }
 
         public static DateTime FirstDayOfMonth(this DateTime date) {

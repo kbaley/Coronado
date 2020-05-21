@@ -31,7 +31,7 @@ class ExpensesByCategoryReport extends Component {
     const { classes } = this.props;
     return (
       <div style={{margin: "10px"}}>
-        <h4>Expenses By Category</h4>
+        <h2>Expenses By Category</h2>
         <Table>
           <TableHead>
             <TableRow>

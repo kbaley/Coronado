@@ -116,3 +116,41 @@ I started with only EF. A few weeks in, I started hitting problems managing the 
 - `dotnet publish --configuration=Release`
 - Then deploy from VS Code from the Azure plugin in the left menu
 - At some vague point in the future, try to set this up in GitHub Actions or Travis but honestly VS Code works well for a single developer and user
+
+### Backup/restore
+
+
+Backup:
+
+1) Right-click the database to backup in Azure and select Backup...
+2) Options:
+    - Filename: coronadoSchema.backup (If directory not specified, file is saved in the user directory)
+    - Only schema: Yes
+    - Blobs: Yes
+    - Do not save Owner: Yes
+    - Verbose messages: Yes
+3) Repeat for data with the following options:
+    - Filename: coronadoData.backup
+    - Only data: Yes
+    - Blobs: Yes
+    - Do not save Owner: Yes
+    - Verbose messages: Yes
+
+
+Restore:
+
+1) Delete existing database and create a new one with the same name
+2) Right-click the database and select Restore...
+3) Options:
+    - Only schema: Yes
+    - Do not save Owner: Yes
+    - Single transaction: Yes
+    - Verbose messages: Yes
+    - Exit on error: Yes
+4) Restore data options:
+    - Only data: Yes
+    - Do not save Owner: Yes
+    - Single transaction: Yes
+    - Disable Trigger: Yes
+    - Verbose messages: Yes
+    - Exit on error: Yes
