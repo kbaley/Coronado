@@ -1,6 +1,5 @@
 import React from 'react';
-import * as reportActions from '../../actions/reportActions';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { CurrencyFormat } from '../common/CurrencyFormat';
 import { CustomTableRow } from '../common/Table';
 import {
@@ -36,7 +35,6 @@ const useStyles = makeStyles(styles);
 
 export default function NetWorthReport(props) {
 
-  const dispatch = useDispatch();
   const report = useSelector(state => state.reports.netWorth);
   const reportReverse = [...report];
   reportReverse.reverse();
