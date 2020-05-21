@@ -69,7 +69,6 @@ export class AccountForm extends Component {
   }
 
   handleChangeMortgageType(e, newMortgageType) {
-    console.log(e);
     this.setState({ account: { ...this.state.account, mortgageType: newMortgageType } } );
   }
 

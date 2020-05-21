@@ -4,7 +4,7 @@ import { sumBy, filter } from 'lodash';
 import { Currency } from './common/CurrencyFormat';
 import * as reportActions from '../actions/reportActions';
 import { bindActionCreators } from 'redux';
-import NetWorthReport from './reports_page/NetWorthReport';
+import NetWorthGraph from './reports_page/NetWorthGraph';
 import moment from 'moment';
 import { withStyles, Table, TableBody, TableRow, TableCell } from '@material-ui/core';
 
@@ -41,9 +41,7 @@ class Home extends React.Component {
     const today = moment();
     const desiredDate = moment(today).add(0 - month, 'M').startOf('M');
     const statsDate = moment(stats[month].date);
-    
-    console.log(stats);
-    console.log(desiredDate);
+
     if (!statsDate.isSame(desiredDate)) return Currency(0);
     return Currency(stats[month].amount);
   }
@@ -54,34 +52,37 @@ class Home extends React.Component {
     var creditCards = filter(this.props.accounts, a => a.accountType === 'Credit Card');
     var liquidAssets = sumBy(bankAccounts, a => a.currentBalance);
     var ccTotal = sumBy(creditCards, c => c.currentBalance);
-    
+
     return (
       <div>
         <h1>Coronado Financial App for Me</h1>
-          <Table className={classes.table} size="small">
-            <TableBody>
-              <TableRow>
-                <TableCell>Liquid assets</TableCell>
-                <TableCell align="right">{Currency(liquidAssets)}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Credit cards</TableCell>
-                <TableCell align="right">{Currency(ccTotal)}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Investment change this month</TableCell>
-                <TableCell align="right">{this.getGainLossForMonth(0)}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Investment change last month</TableCell>
-                <TableCell align="right">{this.getGainLossForMonth(1)}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        <NetWorthReport />
+        <Table className={classes.table} size="small">
+          <TableBody>
+            <TableRow>
+              <TableCell>Liquid assets</TableCell>
+              <TableCell align="right">{Currency(liquidAssets)}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Credit cards</TableCell>
+              <TableCell align="right">{Currency(ccTotal)}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Investment change this month</TableCell>
+              <TableCell align="right">{this.getGainLossForMonth(0)}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Investment change last month</TableCell>
+              <TableCell align="right">{this.getGainLossForMonth(1)}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+        <div style={{"width": "50%"}}>
+          <NetWorthGraph />
+        </div>
       </div>
-  )}
-} 
+    )
+  }
+}
 
 function mapStateToProps(state) {
   return {
@@ -92,9 +93,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-   return {
-     actions: bindActionCreators(reportActions, dispatch)
-   }
+  return {
+    actions: bindActionCreators(reportActions, dispatch)
+  }
 }
 
 export default connect(
