@@ -19,6 +19,9 @@ const styles = theme => ({
   flex: {
     flex: 1
   },
+  topBarButton: {
+    margin: "0 5px",
+  }
 });
 const useStyles = makeStyles(styles);
 
@@ -47,6 +50,7 @@ export default function Header() {
             return (<Button
               key={index}
               variant="outlined"
+              className={classes.topBarButton}
               color="default"
               startIcon={React.createElement(route.icon)}
               component={Link}
