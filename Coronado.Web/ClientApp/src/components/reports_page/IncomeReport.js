@@ -26,12 +26,12 @@ class IncomeReport extends Component {
       return <CurrencyFormat value={foundExpense.amount} />;
     return <span></span>;
   }
-  
+
   render() {
     const { classes } = this.props;
     return (
       <div style={{margin: "10px"}}>
-        <h4>Expenses By Category</h4>
+        <h2>Income</h2>
         <Table>
           <TableHead>
             <TableRow>

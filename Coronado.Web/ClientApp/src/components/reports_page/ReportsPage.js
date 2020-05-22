@@ -4,6 +4,7 @@ import ExpensesByCategoryReport from './ExpensesByCategoryReport';
 import { Tab, Tabs, Box } from '@material-ui/core';
 import { PropTypes } from 'prop-types';
 import IncomeReport from './IncomeReport';
+import { Link } from 'react-router-dom';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -30,19 +31,22 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired
 };
 
-export default function ReportsPage() {
+export default function ReportsPage(props) {
 
-  const [value, setValue] = React.useState(0);
-  const handleChange = (event, newValue) => {
+  const allTabs = ['/reports', '/reports/expenses', '/reports/income']
+  const selectedTab = allTabs.indexOf(props.history.location.pathname);
+  const [value, setValue] = React.useState(selectedTab);
+  const handleChange = (_, newValue) => {
     setValue(newValue);
   }
+
   return (
     <div className='reports-list'>
       <h1>Reports</h1>
       <Tabs value={value} onChange={handleChange}>
-        <Tab label="Net worth over time" id='tab-0' />
-        <Tab label="Expenses by category" id='tab-1' />
-        <Tab label="Income" id='tab-2' />
+        <Tab label="Net worth over time" id='tab-0' component={Link} to={allTabs[0]} />
+        <Tab label="Expenses by category" id='tab-1' component={Link} to={allTabs[1]} />
+        <Tab label="Income" id='tab-2' component={Link} to={allTabs[2]} />
       </Tabs>
       <TabPanel value={value} index={0}>
         <NetWorthReport />

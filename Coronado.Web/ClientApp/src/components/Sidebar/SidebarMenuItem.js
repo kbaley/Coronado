@@ -21,7 +21,7 @@ const styles = theme => ({
     textDecoration: "none",
     "&:hover,&:focus,&:visited,&": {
       color: theme.palette.white
-    }
+    },
   },
   itemIcon: {
     width: "24px",
@@ -37,7 +37,7 @@ const styles = theme => ({
   itemText: {
     margin: "0",
     lineHeight: "30px",
-    fontSize: "14px",
+    fontSize: "15px",
     color: theme.palette.white
   },
 });
@@ -53,7 +53,9 @@ export function SidebarMenuItem(props) {
       to={to}
       className={classes.item}
     >
-      <ListItem button className={classes.itemLink}>
+      <ListItem 
+        button 
+        className={classes.itemLink}>
         {typeof icon === "string" ? (
           <Icon className={classes.itemIcon}>{icon}</Icon>
         ) : (
@@ -62,7 +64,7 @@ export function SidebarMenuItem(props) {
           })
         )}
         <ListItemText primary={primary} className={classes.itemText} disableTypography={true} />
-        <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>
+        <ListItemSecondaryAction className={classes.itemText}>{secondary}</ListItemSecondaryAction>
       </ListItem>
     </NavLink>
   )
