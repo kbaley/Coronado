@@ -21,7 +21,7 @@ class IncomeReport extends Component {
   }
 
   getExpense = (expense, month) => {
-    var foundExpense = find(expense.expenses, (e) => { return e.date === month.date});
+    var foundExpense = find(expense.amounts, (e) => { return e.date === month.date});
     if (foundExpense)
       return <CurrencyFormat value={foundExpense.amount} />;
     return <span></span>;

@@ -262,7 +262,7 @@ WHERE t.transaction_id=@transactionId;", new { transactionId });
             }
         }
 
-        public IEnumerable<dynamic> GetTransactionsByCategoryType(string categoryType, DateTime start, DateTime end) 
+        public IEnumerable<CategoryTotal> GetTransactionsByCategoryType(string categoryType, DateTime start, DateTime end) 
         {
             var amountPrefix = "";
             if (categoryType == "Expense") {
@@ -278,21 +278,18 @@ WHERE t.transaction_id=@transactionId;", new { transactionId });
                 var data = conn.Query(sql, new { start, end });
 
                 var results = data.GroupBy(x => x.category_id)
-                                .Select(x => new {
-                                    categoryId = x.Key,
-                                    categoryName = x.First().name,
-                                    total = x.Sum(e => (decimal)e.amount),
-                                    expenses = x.Select(e => new {
-                                        date = new DateTime(e.year, e.month, 1),
-                                        e.amount
-                                    })
+                                .Select(x => new CategoryTotal
+                                {
+                                    CategoryId = x.Key,
+                                    CategoryName = x.First().name,
+                                    Amounts = x.Select(e => new DateAndAmount(e.year, e.month, e.amount)).ToList()
                                 });
                 
                 return results;
             }
         }
 
-        public IEnumerable<dynamic> GetInvoiceLineItemsIncomeTotals(DateTime start, DateTime end) 
+        public IEnumerable<CategoryTotal> GetInvoiceLineItemsIncomeTotals(DateTime start, DateTime end) 
         {
             using (var conn = Connection)
             {
@@ -309,14 +306,10 @@ WHERE t.transaction_id=@transactionId;", new { transactionId });
                 var data = conn.Query(sql, new { start, end });
 
                 var results = data.GroupBy(x => x.category_id)
-                                .Select(x => new {
-                                    categoryId = x.Key,
-                                    categoryName = x.First().name,
-                                    total = x.Sum(e => (decimal)e.amount),
-                                    expenses = x.Select(e => new {
-                                        date = new DateTime(e.year, e.month, 1),
-                                        e.amount
-                                    })
+                                .Select(x => new CategoryTotal {
+                                    CategoryId = x.Key,
+                                    CategoryName = x.First().name,
+                                    Amounts = x.Select(e => new DateAndAmount(e.year, e.month, e.amount)).ToList()
                                 });
                 
                 return results;

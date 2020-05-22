@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Coronado.Web.Domain;
 using System.Threading.Tasks;
+using Coronado.Web.Controllers.Dtos;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -47,7 +48,7 @@ namespace Coronado.Web.Controllers.Api
         }
 
         public class CategoryTotals {
-            public dynamic Expenses { get; set; }
+            public IEnumerable<CategoryTotal> Expenses { get; set; }
             public dynamic MonthTotals { get; set; }
         }
 
@@ -67,20 +68,33 @@ namespace Coronado.Web.Controllers.Api
             var expenses = _transactionRepo.GetTransactionsByCategoryType(categoryType, start, end).ToList();
             if (categoryType == "Income") {
                 var invoiceTotals = _transactionRepo.GetInvoiceLineItemsIncomeTotals(start, end);
-                expenses.AddRange(invoiceTotals);
+                foreach (var item in invoiceTotals)
+                {
+                    var match = expenses.SingleOrDefault(e => e.CategoryId == item.CategoryId);
+                    if (match == null) {
+                        expenses.Add(item);
+                    } else {
+                        match.Merge(item);
+                    }
+                }
             }
+            expenses.ForEach(e => e.Total = e.Amounts.Sum(a => a.Amount));
 
             // Add categories with no expenses
-            var missingCategories = categories.Where(c => expenses.All(e => e.categoryId != c.CategoryId)).ToList();
+            var missingCategories = categories.Where(c => expenses.All(e => e.CategoryId != c.CategoryId)).ToList();
             foreach (var category in missingCategories)
             {
-                expenses.Add(new { categoryId = category.CategoryId, categoryName = category.Name, total = 0.0M, expenses = new List<dynamic>()});
+                expenses.Add(new CategoryTotal{ 
+                    CategoryId = category.CategoryId, 
+                    CategoryName = category.Name, 
+                    Total = 0.0M,
+                    Amounts = new List<DateAndAmount>()});
             }
             var monthTotals = new List<dynamic>();
             for (var i = 0; i < numMonths; i++)
             {
                 end = end.FirstDayOfMonth();
-                var total = expenses.Sum(e => ((IEnumerable<dynamic>)e.expenses).Where(x => x.date == end).Sum(x => (decimal)x.amount));
+                var total = expenses.Sum(e => e.Amounts.Where(x => x.Date == end).Sum(x => x.Amount));
                 monthTotals.Add(new { date = end, total });
 
                 end = end.AddMonths(-1);

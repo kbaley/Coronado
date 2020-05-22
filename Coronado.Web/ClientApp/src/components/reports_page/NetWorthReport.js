@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { CurrencyFormat } from '../common/CurrencyFormat';
-import { CustomTableRow } from '../common/Table';
 import {
   Table,
   TableHead,
