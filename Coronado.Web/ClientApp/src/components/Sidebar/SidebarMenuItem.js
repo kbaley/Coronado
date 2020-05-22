@@ -45,7 +45,7 @@ const styles = theme => ({
 const useStyles = makeStyles(styles);
 
 export function SidebarMenuItem(props) {
-  const { icon, primary, to, secondary } = props;
+  const { icon, primary, to, secondary, selected } = props;
   const classes = useStyles();
 
   return (
@@ -55,6 +55,7 @@ export function SidebarMenuItem(props) {
     >
       <ListItem 
         button 
+        selected={selected}
         className={classes.itemLink}>
         {typeof icon === "string" ? (
           <Icon className={classes.itemIcon}>{icon}</Icon>

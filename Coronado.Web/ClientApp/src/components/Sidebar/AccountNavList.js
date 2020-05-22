@@ -54,6 +54,8 @@ class AccountNavList extends Component {
 
   render() {
     const { classes } = this.props;
+    const { history } = this.props;
+    const pathname = history.location.pathname;
     return (
       <List className={classes.list}>
         <Toolbar disableGutters={true} className={classes.toolbar} >
@@ -65,6 +67,7 @@ class AccountNavList extends Component {
             <SidebarMenuItem
               key={index}
               to={'/account/' + account.accountId}
+              selected={'/account/' + account.accountId === pathname}
               primary={account.name}
               secondary={<MoneyFormat amount={account.currentBalance} />}
               icon={getIcon(account.accountType)} />
