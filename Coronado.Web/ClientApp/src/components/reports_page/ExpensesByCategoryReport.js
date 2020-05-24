@@ -32,11 +32,13 @@ class ExpensesByCategoryReport extends Component {
     return (
       <div style={{margin: "10px"}}>
         <h2>Expenses By Category</h2>
+        <div style={{"width": "50%"}}>
         {this.props.report && this.props.report.expenses &&
         <ExpensesByCategoryChart 
           data={this.props.report}
         />
         }
+        </div>
         <Table>
           <TableHead>
             <TableRow>

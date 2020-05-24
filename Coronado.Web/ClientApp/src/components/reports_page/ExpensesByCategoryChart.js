@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import { sumBy } from 'lodash';
+import { sumBy, orderBy } from 'lodash';
 import {
   ResponsiveContainer,
   PieChart,
@@ -32,27 +32,31 @@ const useStyles = makeStyles(styles);
 
 export default function ExpensesByCategoryChart({data}) {
 
+  const otherThreshold = 0.03;
   const currentYear = new Date().getFullYear();
   const dispatch = useDispatch();
-  const report = [];
+  let report = [];
   const total = sumBy(data.expenses, e => e.total);
   let rest = 0.0;
   data.expenses.map(e => {
-    if (e.total / total > 0.03) {
-      report.push(Object.assign({}, e));
+    if (e.total / total >= otherThreshold) {
+      report.push(Object.assign({percentage: e.total / total}, e));
     } else {
       rest += e.total;
     }
   });
+  report = orderBy(report, ['total'], ['asc']);
   if (rest > 0) {
     report.push({
       categoryName: "Other",
-      total: rest
+      total: rest,
+      percentage: 0,  // affects the color and I want this to be lighter
     });
   }
+  console.log(report);
   const [selectedYear, setSelectedYear] = React.useState(currentYear);
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+  const COLORS = ['rgba(70, 130, 180, 1)', 'rgba(70, 130, 180, 0.75)', 'rgba(70, 130, 180, 0.5)', 'rgba(70, 130, 180, 0.25)'];
 
   const goToPreviousYear = () => {
     goToYear(selectedYear - 1);
@@ -65,6 +69,19 @@ export default function ExpensesByCategoryChart({data}) {
   const goToYear = (year) => {
     setSelectedYear(year);
     dispatch(reportActions.loadNetWorthReport(year));
+  }
+
+  const renderLabel = (entry) => {
+    return (
+      <text
+        x={entry.x}
+        y={entry.y}
+        fill={COLORS[0]}
+        textAnchor={entry.textAnchor}
+      >
+        {entry.categoryName}
+      </text>
+    );
   }
 
   const classes = useStyles();
@@ -100,11 +117,24 @@ export default function ExpensesByCategoryChart({data}) {
             data={report} 
             labelLine={false}
             paddingAngle={1}
-            label={(entry) => entry.categoryName}
-            fill="#4682b4" 
+            label={renderLabel}
           >
             {
-              report.map((_, index) => <Cell fill={COLORS[index % COLORS.length]} />)
+              report.map((entry, index) => {
+                let colorIndex = COLORS.length - 1;
+                if (entry.percentage > 0.1) {
+                  colorIndex = 0;
+                } else if (entry.percentage > 0.07) {
+                  colorIndex = 1;
+                } else if (entry.percentage > 0.04) {
+                  colorIndex = 2;
+                }
+                return(
+                <Cell 
+                  key={index} 
+                  fill={COLORS[colorIndex]}
+                />
+              )})
             }
           </Pie>
         </PieChart>
