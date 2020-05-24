@@ -5,8 +5,8 @@ import { bindActionCreators } from 'redux';
 import { orderBy, find } from 'lodash';
 import Moment from 'react-moment';
 import { CurrencyFormat } from '../common/CurrencyFormat';
-import './ExpensesByCategoryReport.css';
 import { withStyles, Table, TableHead, TableRow, TableCell, TableBody, TableFooter } from '@material-ui/core';
+import ExpensesByCategoryChart from './ExpensesByCategoryChart';
 
 const styles = theme => ({
   total: {
@@ -32,6 +32,11 @@ class ExpensesByCategoryReport extends Component {
     return (
       <div style={{margin: "10px"}}>
         <h2>Expenses By Category</h2>
+        {this.props.report && this.props.report.expenses &&
+        <ExpensesByCategoryChart 
+          data={this.props.report}
+        />
+        }
         <Table>
           <TableHead>
             <TableRow>
