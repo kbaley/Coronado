@@ -1,6 +1,4 @@
 import React from 'react';
-import * as reportActions from '../../actions/reportActions';
-import { bindActionCreators } from 'redux';
 import { orderBy, find } from 'lodash';
 import Moment from 'react-moment';
 import { CurrencyFormat } from '../common/CurrencyFormat';
@@ -13,8 +11,6 @@ import {
   TableFooter,
   makeStyles
 } from '@material-ui/core';
-import ExpensesByCategoryChart from './ExpensesByCategoryChart';
-import { useDispatch, useSelector } from 'react-redux';
 
 const styles = theme => ({
   total: {
@@ -24,16 +20,9 @@ const styles = theme => ({
 
 const useStyles = makeStyles(styles);
 
-export default function ExpensesByCategoryReport() {
+export default function ExpensesByCategoryReport({ data } ) {
 
-  const report = useSelector(state => state.reports.expensesByCategory);
-  const dispatch = useDispatch();
-
-  React.useEffect(() => {
-    if (!report || report.length === 0)
-      dispatch(reportActions.loadExpensesByCategoryReport());
-  });
-
+  const report = data; 
 
   const getExpense = (expense, month) => {
     var foundExpense = find(expense.amounts, (e) => { return e.date === month.date });
@@ -44,15 +33,6 @@ export default function ExpensesByCategoryReport() {
 
   const classes = useStyles();
   return (
-    <div style={{ margin: "10px" }}>
-      <h2>Expenses By Category</h2>
-      <div style={{ "width": "50%" }}>
-        {report && report.expenses &&
-          <ExpensesByCategoryChart
-            data={report}
-          />
-        }
-      </div>
       <Table>
         <TableHead>
           <TableRow>
@@ -95,18 +75,5 @@ export default function ExpensesByCategoryReport() {
           </TableRow>
         </TableFooter>
       </Table>
-    </div>
   );
-}
-
-function mapStateToProps(state) {
-  return {
-    report: state.reports.expensesByCategory
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(reportActions, dispatch)
-  }
 }
