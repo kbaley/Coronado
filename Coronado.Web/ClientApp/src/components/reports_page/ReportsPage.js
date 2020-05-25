@@ -1,10 +1,10 @@
 import React from 'react';
-import NetWorthReport from './NetWorthReport';
 import { Tab, Tabs, Box } from '@material-ui/core';
 import { PropTypes } from 'prop-types';
 import IncomeReport from './IncomeReport';
 import { Link } from 'react-router-dom';
 import ExpensesByCategoryPage from './ExpensesByCategoryPage';
+import NetWorthPage from './NetWorthPage';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -49,7 +49,7 @@ export default function ReportsPage(props) {
         <Tab label="Income" id='tab-2' component={Link} to={allTabs[2]} />
       </Tabs>
       <TabPanel value={value} index={0}>
-        <NetWorthReport />
+        <NetWorthPage />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <ExpensesByCategoryPage />

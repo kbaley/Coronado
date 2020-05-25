@@ -38,7 +38,8 @@ namespace Coronado.Web.Controllers.Api
                 netWorth.Add(new {date, netWorth=_transactionRepo.GetNetWorthFor(date)});
                 date = date.AddMonths(-1).LastDayOfMonth();
             }
-            return Ok(netWorth);
+
+            return Ok(new { report = netWorth, year = query.SelectedYear});
         }
         [HttpGet]
         public IActionResult Income([FromQuery] ReportQuery query) 

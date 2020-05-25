@@ -31,6 +31,7 @@ class Home extends React.Component {
 
   componentDidMount() {
     this.props.actions.loadDashboardStats();
+    this.props.actions.loadNetWorthReport();
   }
 
   getGainLossForMonth(month) {
@@ -77,7 +78,11 @@ class Home extends React.Component {
           </TableBody>
         </Table>
         <div style={{"width": "50%"}}>
-          <NetWorthGraph />
+          {this.props.netWorthReport.report && 
+          <NetWorthGraph 
+            report={this.props.netWorthReport.report}
+          />
+          }
         </div>
       </div>
     )
@@ -88,7 +93,8 @@ function mapStateToProps(state) {
   return {
     accounts: state.accounts,
     dashboardStats: state.reports.dashboardStats,
-    isLoadingData: state.loading ? state.loading.accounts : true
+    isLoadingData: state.loading ? state.loading.accounts : true,
+    netWorthReport: state.reports.netWorth,
   }
 }
 
