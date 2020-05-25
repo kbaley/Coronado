@@ -53,6 +53,7 @@ export default function ExpensesByCategoryChart({data}) {
         <PieChart
         >
           <Pie 
+            animationDuration={500}
             dataKey="total" 
             data={report} 
             labelLine={false}
