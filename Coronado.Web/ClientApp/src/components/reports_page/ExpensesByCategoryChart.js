@@ -53,7 +53,6 @@ export default function ExpensesByCategoryChart({data}) {
         <PieChart
         >
           <Pie 
-            isAnimationActive={false} // See https://github.com/recharts/recharts/issues/929
             dataKey="total" 
             data={report} 
             labelLine={false}
