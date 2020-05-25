@@ -43,7 +43,10 @@ namespace Coronado.Web.Controllers.Api
         [HttpGet]
         public IActionResult Income([FromQuery] ReportQuery query) 
         {
-            var report = GetEntriesByCategoryType("Income");
+            var year = query.Year ?? DateTime.Today.Year;
+            var end = new DateTime(year, 12, 31);
+            var start = new DateTime(DateTime.Today.Year, 1, 1);
+            var report = GetEntriesByCategoryType("Income", start, end);
             return Ok(report );
         }
 
@@ -55,16 +58,16 @@ namespace Coronado.Web.Controllers.Api
         [HttpGet]
         public IActionResult ExpensesByCategory([FromQuery] ReportQuery query) 
         {
-            var report = GetEntriesByCategoryType("Expense");
+            var year = query.Year ?? DateTime.Today.Year;
+            var end = new DateTime(year, 12, 31);
+            var start = new DateTime(DateTime.Today.Year, 1, 1);
+            var report = GetEntriesByCategoryType("Expense", start, end);
             return Ok(report );
         }
-        public dynamic GetEntriesByCategoryType(string categoryType)
+        public dynamic GetEntriesByCategoryType(string categoryType, DateTime start, DateTime end)
         {
             var report = new Dictionary<Guid, dynamic>();
-            var numMonths = 8;
             var categories = _context.Categories.Where(c => c.Type == categoryType).ToList();
-            var end = DateTime.Today.LastDayOfMonth();
-            var start = end.AddMonths(0 - numMonths + 1).FirstDayOfMonth();
             var expenses = _transactionRepo.GetTransactionsByCategoryType(categoryType, start, end).ToList();
             if (categoryType == "Income") {
                 var invoiceTotals = _transactionRepo.GetInvoiceLineItemsIncomeTotals(start, end);
@@ -79,6 +82,7 @@ namespace Coronado.Web.Controllers.Api
                 }
             }
             expenses.ForEach(e => e.Total = e.Amounts.Sum(a => a.Amount));
+            expenses = expenses.OrderByDescending(e => e.Total).ToList();
 
             // Add categories with no expenses
             var missingCategories = categories.Where(c => expenses.All(e => e.CategoryId != c.CategoryId)).ToList();
@@ -91,6 +95,7 @@ namespace Coronado.Web.Controllers.Api
                     Amounts = new List<DateAndAmount>()});
             }
             var monthTotals = new List<dynamic>();
+            var numMonths = end.Month - start.Month + 1; // Assumes we aren't spanning years
             for (var i = 0; i < numMonths; i++)
             {
                 end = end.FirstDayOfMonth();

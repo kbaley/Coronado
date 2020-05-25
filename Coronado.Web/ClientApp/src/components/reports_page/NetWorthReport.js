@@ -32,7 +32,7 @@ const styles = (theme) => ({
 
 const useStyles = makeStyles(styles);
 
-export default function NetWorthReport(props) {
+export default function NetWorthReport() {
 
   const report = useSelector(state => state.reports.netWorth);
   const reportReverse = [...report];

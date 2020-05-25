@@ -1,12 +1,4 @@
 import React from 'react';
-import * as reportActions from '../../actions/reportActions';
-import { useDispatch } from 'react-redux';
-import {
-  makeStyles,
-  Button,
-} from '@material-ui/core';
-import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { sumBy, orderBy } from 'lodash';
 import {
   ResponsiveContainer,
@@ -15,26 +7,9 @@ import {
   Cell,
 } from 'recharts';
 
-const styles = (theme) => ({
-  navigation: {
-    width: "100%",
-    height: 30,
-  },
-  prevYear: {
-    float: "left",
-  },
-  nextYear: {
-    float: "right",
-  },
-});
-
-const useStyles = makeStyles(styles);
-
 export default function ExpensesByCategoryChart({data}) {
 
   const otherThreshold = 0.03;
-  const currentYear = new Date().getFullYear();
-  const dispatch = useDispatch();
   let report = [];
   const total = sumBy(data.expenses, e => e.total);
   let rest = 0.0;
@@ -44,6 +19,7 @@ export default function ExpensesByCategoryChart({data}) {
     } else {
       rest += e.total;
     }
+    return e;
   });
   report = orderBy(report, ['total'], ['asc']);
   if (rest > 0) {
@@ -53,23 +29,8 @@ export default function ExpensesByCategoryChart({data}) {
       percentage: 0,  // affects the color and I want this to be lighter
     });
   }
-  console.log(report);
-  const [selectedYear, setSelectedYear] = React.useState(currentYear);
 
   const COLORS = ['rgba(70, 130, 180, 1)', 'rgba(70, 130, 180, 0.75)', 'rgba(70, 130, 180, 0.5)', 'rgba(70, 130, 180, 0.25)'];
-
-  const goToPreviousYear = () => {
-    goToYear(selectedYear - 1);
-  }
-
-  const goToNextYear = () => {
-    goToYear(selectedYear + 1);
-  }
-
-  const goToYear = (year) => {
-    setSelectedYear(year);
-    dispatch(reportActions.loadNetWorthReport(year));
-  }
 
   const renderLabel = (entry) => {
     return (
@@ -84,28 +45,8 @@ export default function ExpensesByCategoryChart({data}) {
     );
   }
 
-  const classes = useStyles();
   return (
     <div style={{ margin: "10px" }}>
-      <div className={classes.navigation}>
-        <div className={classes.prevYear}>
-          <Button
-            onClick={goToPreviousYear}
-            startIcon={<KeyboardArrowLeftIcon />}
-          >
-            {selectedYear - 1}
-          </Button>
-        </div>
-        <div className={classes.nextYear}>
-          <Button
-            onClick={goToNextYear}
-            endIcon={<KeyboardArrowRightIcon />}
-            disabled={selectedYear >= currentYear}
-          >
-            {selectedYear + 1}
-          </Button>
-        </div>
-      </div>
       {report && 
       <ResponsiveContainer width="100%" aspect={4.0/3.0}>
 
