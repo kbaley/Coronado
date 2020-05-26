@@ -6,7 +6,17 @@ import * as reportActions from '../actions/reportActions';
 import { bindActionCreators } from 'redux';
 import NetWorthGraph from './reports_page/NetWorthGraph';
 import moment from 'moment';
-import { withStyles, Table, TableBody, TableRow, TableCell } from '@material-ui/core';
+import { 
+  withStyles, 
+  Table, 
+  TableBody, 
+  TableRow, 
+  TableCell,
+  Grid,
+  Typography,
+} from '@material-ui/core';
+import ExpensesByCategoryChart from './reports_page/ExpensesByCategoryChart';
+import IncomeChart from './reports_page/IncomeChart';
 
 const styles = (theme) => ({
   table: {
@@ -76,9 +86,20 @@ class Home extends React.Component {
             </TableRow>
           </TableBody>
         </Table>
-        <div style={{"width": "50%"}}>
-          <NetWorthGraph />
-        </div>
+        <Grid container spacing={2}>
+          <Grid item xs={4}>
+            <h2>Net worth</h2>
+            <NetWorthGraph />
+          </Grid>
+          <Grid item xs={4}>
+            <h2>Expenses</h2>
+            <ExpensesByCategoryChart />
+          </Grid>
+          <Grid item xs={4}>
+            <h2>Income</h2>
+            <IncomeChart />
+          </Grid>
+        </Grid>
       </div>
     )
   }

@@ -6,14 +6,25 @@ import {
   Pie,
   Cell,
 } from 'recharts';
+import * as reportActions from '../../actions/reportActions';
+import { useDispatch, useSelector } from 'react-redux';
 
-export default function ExpensesByCategoryChart({data}) {
+export default function ExpensesByCategoryChart() {
 
   const otherThreshold = 0.03;
+  const data = useSelector(state => state.reports.expensesByCategory);
   let report = [];
   const total = sumBy(data.expenses, e => e.total);
+  const dispatch = useDispatch();
+  const expenseReport = data.expenses || [];
+
+  React.useEffect(() => {
+    if (!report || report.length === 0)
+      dispatch(reportActions.loadExpensesByCategoryReport());
+  });
+
   let rest = 0.0;
-  data.expenses.map(e => {
+  expenseReport.map(e => {
     if (e.total / total >= otherThreshold) {
       report.push(Object.assign({percentage: e.total / total}, e));
     } else {
@@ -53,7 +64,7 @@ export default function ExpensesByCategoryChart({data}) {
         <PieChart
         >
           <Pie 
-            animationDuration={500}
+            isAnimationActive={false}
             dataKey="total" 
             data={report} 
             labelLine={false}

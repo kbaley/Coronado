@@ -11,12 +11,10 @@ export default function NetWorthPage() {
     <div style={{ margin: "10px" }}>
       <h2>Net Worth</h2>
       <Grid container spacing={2}>
-        <Grid item xs={7}>
-
-          <NetWorthGraph />
-          }
-        </Grid>
         <Grid item xs={5}>
+          <NetWorthGraph />
+        </Grid>
+        <Grid item xs={7}>
           <NetWorthReport />
         </Grid>
       </Grid>

@@ -11,6 +11,7 @@ import {
   TableFooter,
   makeStyles
 } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 
 const styles = theme => ({
   total: {
@@ -20,9 +21,9 @@ const styles = theme => ({
 
 const useStyles = makeStyles(styles);
 
-export default function ExpensesByCategoryReport({ data } ) {
+export default function ExpensesByCategoryReport() {
 
-  const report = data; 
+  const report = useSelector(state => state.reports.expensesByCategory);
 
   const getExpense = (expense, month) => {
     var foundExpense = find(expense.amounts, (e) => { return e.date === month.date });

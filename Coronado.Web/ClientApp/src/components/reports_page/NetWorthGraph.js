@@ -20,6 +20,8 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { useSelector, useDispatch } from 'react-redux';
 
 const styles = (theme) => ({
+  graph: {
+  },
   navigation: {
     width: "100%",
     textAlign: "center",
@@ -77,7 +79,7 @@ export default function NetWorthGraph() {
   }
 
   const formatXAxis = (tickItem) => {
-    return moment(tickItem).format('MMM YY');
+    return moment(tickItem).format('MMM');
   };
 
   const formatYAxis = (tickItem) => {
@@ -114,7 +116,11 @@ export default function NetWorthGraph() {
               </Button>
             </div>
           </div>
-      <ResponsiveContainer width="100%" aspect={4.0/3.0}>
+      <ResponsiveContainer 
+        width="100%" 
+        className={classes.graph}
+        aspect={4.0/3.0}
+      >
         <BarChart
           data={reportReverse}
         >
