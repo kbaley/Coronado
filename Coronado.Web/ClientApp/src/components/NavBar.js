@@ -10,7 +10,6 @@ import { Link } from 'react-router-dom';
 
 const styles = theme => ({
   appBar: {
-    backgroundColor: theme.palette.background.default,
   },
   container: {
     paddingRight: "15px",
@@ -21,6 +20,9 @@ const styles = theme => ({
   },
   topBarButton: {
     margin: "0 5px",
+  },
+  menuIcon: {
+    color: theme.palette.white,
   }
 });
 const useStyles = makeStyles(styles);
@@ -49,7 +51,7 @@ export default function Header() {
           {routes.filter(r => r.isTopBar).map((route, index) => {
             return (<Button
               key={index}
-              variant="outlined"
+              variant="contained"
               className={classes.topBarButton}
               color="default"
               startIcon={React.createElement(route.icon)}
@@ -59,7 +61,7 @@ export default function Header() {
               {route.name}
             </Button>
           )})}
-          <IconButton variant="contained" onClick={openMenu}>
+          <IconButton variant="contained" onClick={openMenu} className={classes.menuIcon}>
             <SettingsIcon />
           </IconButton>
           <Menu

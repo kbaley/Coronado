@@ -13,7 +13,6 @@ import {
   TableRow, 
   TableCell,
   Grid,
-  Typography,
 } from '@material-ui/core';
 import ExpensesByCategoryChart from './reports_page/ExpensesByCategoryChart';
 import IncomeChart from './reports_page/IncomeChart';
