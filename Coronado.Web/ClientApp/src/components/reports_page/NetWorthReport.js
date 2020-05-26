@@ -9,6 +9,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 
 const styles = (theme) => ({
   reportTable: {
@@ -29,7 +30,10 @@ const styles = (theme) => ({
 
 const useStyles = makeStyles(styles);
 
-export default function NetWorthReport({report}) {
+export default function NetWorthReport() {
+
+  const reportData = useSelector(state => state.reports.netWorth);
+  const report = reportData.report || [];
 
   const classes = useStyles();
   return (
