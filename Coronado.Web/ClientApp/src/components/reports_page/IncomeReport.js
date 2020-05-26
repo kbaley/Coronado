@@ -1,5 +1,4 @@
 import React from 'react';
-import * as reportActions from '../../actions/reportActions';
 import { orderBy, find } from 'lodash';
 import Moment from 'react-moment';
 import { CurrencyFormat } from '../common/CurrencyFormat';
@@ -12,7 +11,7 @@ import {
   TableFooter,
   makeStyles,
 } from '@material-ui/core';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const styles = theme => ({
   total: {
@@ -24,12 +23,6 @@ const useStyles = makeStyles(styles);
 
 export default function IncomeReport() {
   const report = useSelector(state => state.reports.income);
-  const dispatch = useDispatch();
-
-  React.useEffect(() => {
-    if (!report || report.length === 0)
-      dispatch(reportActions.loadIncomeReport());
-  });
 
   const getExpense = (expense, month) => {
     var foundExpense = find(expense.amounts, (e) => { return e.date === month.date });
@@ -40,12 +33,10 @@ export default function IncomeReport() {
 
   const classes = useStyles();
   return (
-    <div style={{ margin: "10px" }}>
-      <h2>Income</h2>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Expense</TableCell>
+            <TableCell></TableCell>
             {report.monthTotals && orderBy(report.monthTotals, ['date'], ['desc']).map((e, i) =>
               <TableCell
                 key={i}
@@ -84,6 +75,5 @@ export default function IncomeReport() {
           </TableRow>
         </TableFooter>
       </Table>
-    </div>
   );
 }
