@@ -6,8 +6,10 @@ import {
   PieChart,
   Pie,
   Cell,
+  Tooltip,
 } from 'recharts';
 import { useSelector, useDispatch } from 'react-redux';
+import { Currency } from '../common/CurrencyFormat';
 
 export default function IncomeChart() {
 
@@ -91,6 +93,7 @@ export default function IncomeChart() {
               )})
             }
           </Pie>
+          <Tooltip formatter={(value) => [Currency(value)]} />
         </PieChart>
       </ResponsiveContainer>
       }

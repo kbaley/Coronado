@@ -5,9 +5,11 @@ import {
   PieChart,
   Pie,
   Cell,
+  Tooltip,
 } from 'recharts';
 import * as reportActions from '../../actions/reportActions';
 import { useDispatch, useSelector } from 'react-redux';
+import { Currency } from '../common/CurrencyFormat';
 
 export default function ExpensesByCategoryChart() {
 
@@ -89,6 +91,7 @@ export default function ExpensesByCategoryChart() {
               )})
             }
           </Pie>
+          <Tooltip formatter={(value) => [Currency(value)]} />
         </PieChart>
       </ResponsiveContainer>
       }
