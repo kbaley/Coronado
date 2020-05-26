@@ -20,12 +20,15 @@ class ReportApi {
     return response.json();
   }
 
-  static async getExpensesByCategoryReport() {
+  static async getExpensesByCategoryReport(year) {
     const requestOptions = {
       method: 'GET',
       headers: authHeader()
     }
-    const response = await fetch("api/Reports/ExpensesByCategory", requestOptions);
+    if (!year) {
+      year = new Date().getFullYear();
+    }
+    const response = await fetch("api/Reports/ExpensesByCategory?year=" + year, requestOptions);
     if (!response.ok) {
       if (response.status === 401) {
         logout();
@@ -35,12 +38,15 @@ class ReportApi {
     return response.json();
   }
 
-  static async getIncomeReport() {
+  static async getIncomeReport(year) {
     const requestOptions = {
       method: 'GET',
       headers: authHeader()
     }
-    const response = await fetch("api/Reports/Income", requestOptions);
+    if (!year) {
+      year = new Date().getFullYear();
+    }
+    const response = await fetch("api/Reports/Income?year=" + year, requestOptions);
     if (!response.ok) {
       if (response.status === 401) {
         logout();

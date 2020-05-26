@@ -13,48 +13,22 @@ import {
 } from 'recharts';
 import {
   makeStyles,
-  Button,
 } from '@material-ui/core';
-import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { useSelector, useDispatch } from 'react-redux';
+import DateNavigation from './DateNavigation';
 
 const styles = (theme) => ({
   graph: {
   },
-  navigation: {
-    width: "100%",
-    textAlign: "center",
-  },
-  prevYear: {
-    display: "inline-block"
-  },
-  nextYear: {
-    display: "inline-block"
-  },
-  selectedYearContainer: {
-    display: "inline-block",
-  },
-  selectedYear: {
-    fontSize: "30px",
-    padding: "6px 20px",
-    display: "inline-flex",
-    fontWeight: 500,
-    verticalAlign: "middle",
-  }
 });
 
 const useStyles = makeStyles(styles);
 
-
 export default function NetWorthGraph() {
 
-  const currentYear = new Date().getFullYear();
   const reportData = useSelector(state => state.reports.netWorth);
   const report = reportData.report || [];
-  console.log(report);
   const dispatch = useDispatch();
-  const [selectedYear, setSelectedYear] = React.useState(currentYear);
   const classes = useStyles();
   const reportReverse = [...report];
   reportReverse.pop();
@@ -65,16 +39,7 @@ export default function NetWorthGraph() {
       dispatch(reportActions.loadNetWorthReport());
   });
 
-  const goToPreviousYear = () => {
-    goToYear(selectedYear - 1);
-  }
-
-  const goToNextYear = () => {
-    goToYear(selectedYear + 1);
-  }
-
   const goToYear = (year) => {
-    setSelectedYear(year);
     dispatch(reportActions.loadNetWorthReport(year));
   }
 
@@ -92,30 +57,7 @@ export default function NetWorthGraph() {
 
   return (
     <div style={{ margin: "10px" }}>
-          <div className={classes.navigation}>
-            <div className={classes.prevYear}>
-              <Button
-                onClick={goToPreviousYear}
-                startIcon={<KeyboardArrowLeftIcon />}
-              >
-                {selectedYear - 1}
-              </Button>
-            </div>
-            <div className={classes.selectedYearContainer}>
-              <span className={classes.selectedYear}>
-                {selectedYear}
-              </span>
-            </div>
-            <div className={classes.nextYear}>
-              <Button
-                onClick={goToNextYear}
-                endIcon={<KeyboardArrowRightIcon />}
-                disabled={selectedYear >= currentYear}
-              >
-                {selectedYear + 1}
-              </Button>
-            </div>
-          </div>
+      <DateNavigation goToYear={goToYear} />
       <ResponsiveContainer 
         width="100%" 
         className={classes.graph}

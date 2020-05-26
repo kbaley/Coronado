@@ -46,7 +46,7 @@ namespace Coronado.Web.Controllers.Api
         {
             var year = query.Year ?? DateTime.Today.Year;
             var end = new DateTime(year, 12, 31);
-            var start = new DateTime(DateTime.Today.Year, 1, 1);
+            var start = new DateTime(year, 1, 1);
             var report = GetEntriesByCategoryType("Income", start, end);
             return Ok(report );
         }
@@ -61,7 +61,7 @@ namespace Coronado.Web.Controllers.Api
         {
             var year = query.Year ?? DateTime.Today.Year;
             var end = new DateTime(year, 12, 31);
-            var start = new DateTime(DateTime.Today.Year, 1, 1);
+            var start = new DateTime(year, 1, 1);
             var report = GetEntriesByCategoryType("Expense", start, end);
             return Ok(report );
         }

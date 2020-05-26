@@ -10,6 +10,7 @@ import {
 import * as reportActions from '../../actions/reportActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Currency } from '../common/CurrencyFormat';
+import DateNavigation from './DateNavigation';
 
 export default function ExpensesByCategoryChart() {
 
@@ -45,6 +46,10 @@ export default function ExpensesByCategoryChart() {
 
   const COLORS = ['rgba(70, 130, 180, 1)', 'rgba(70, 130, 180, 0.75)', 'rgba(70, 130, 180, 0.5)', 'rgba(70, 130, 180, 0.25)'];
 
+  const goToYear = (year) => {
+    dispatch(reportActions.loadExpensesByCategoryReport(year));
+  }
+
   const renderLabel = (entry) => {
     return (
       <text
@@ -60,6 +65,7 @@ export default function ExpensesByCategoryChart() {
 
   return (
     <div style={{ margin: "10px" }}>
+      <DateNavigation goToYear={goToYear} />
       {report && 
       <ResponsiveContainer width="100%" aspect={4.0/3.0}>
 

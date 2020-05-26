@@ -10,6 +10,7 @@ import {
 } from 'recharts';
 import { useSelector, useDispatch } from 'react-redux';
 import { Currency } from '../common/CurrencyFormat';
+import DateNavigation from './DateNavigation';
 
 export default function IncomeChart() {
 
@@ -43,9 +44,11 @@ export default function IncomeChart() {
     });
   }
 
-  console.log(data);
-
   const COLORS = ['rgba(70, 130, 180, 1)', 'rgba(70, 130, 180, 0.75)', 'rgba(70, 130, 180, 0.5)', 'rgba(70, 130, 180, 0.25)'];
+
+  const goToYear = (year) => {
+    dispatch(reportActions.loadIncomeReport(year));
+  }
 
   const renderLabel = (entry) => {
     return (
@@ -62,6 +65,7 @@ export default function IncomeChart() {
 
   return (
     <div style={{ margin: "10px" }}>
+      <DateNavigation goToYear={goToYear} />
       {report && 
       <ResponsiveContainer width="100%" aspect={4.0/3.0}>
 

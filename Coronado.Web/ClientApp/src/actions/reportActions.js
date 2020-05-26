@@ -41,18 +41,18 @@ export const loadNetWorthReport = (year) => {
   };
 }
 
-export const loadExpensesByCategoryReport = () => {
+export const loadExpensesByCategoryReport = (year) => {
   return async (dispatch) => {
     dispatch(loadExpensesByCategoryReportAction());
-    const report = await ReportApi.getExpensesByCategoryReport();
+    const report = await ReportApi.getExpensesByCategoryReport(year);
     dispatch(loadExpensesByCategoryReportSuccess(report));
   }
 }
 
-export const loadIncomeReport = () => {
+export const loadIncomeReport = (year) => {
   return async (dispatch) => {
     dispatch(loadIncomeReportAction());
-    const report = await ReportApi.getIncomeReport();
+    const report = await ReportApi.getIncomeReport(year);
     dispatch(loadIncomeReportSuccess(report));
   }
 }
