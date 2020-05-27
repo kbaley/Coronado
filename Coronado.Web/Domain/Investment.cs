@@ -50,6 +50,9 @@ namespace Coronado.Web.Domain
         public decimal Shares { get; set; }
         public decimal Price { get; set; }
         public DateTime Date { get; set; }
+
+        public Guid TransactionId { get; set; }
+        public Transaction Transaction { get; set; }
     }
 
     [Table("investment_prices")]

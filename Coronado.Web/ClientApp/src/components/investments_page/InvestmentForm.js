@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogActions, 
-  Button, 
-  Grid, 
-  TextField, 
-  FormControlLabel, 
-  Checkbox, 
-  MenuItem 
+import {
+  Dialog,
+  DialogContent,
+  DialogActions,
+  Button,
+  Grid,
+  TextField,
+  FormControlLabel,
+  Checkbox,
+  MenuItem,
+  Tooltip
 } from '@material-ui/core';
 
 class InvestmentForm extends Component {
@@ -117,11 +118,13 @@ class InvestmentForm extends Component {
             <Grid item xs={12}>
               <FormControlLabel
                 control={
-                  <Checkbox
-                    name='dontRetrievePrices'
-                    checked={!this.state.dontRetrievePrices}
-                    onChange={this.handleChangeField}
-                  />
+                  <Tooltip title="Check this to include the investment when downloading the daily prices">
+                    <Checkbox
+                      name='dontRetrievePrices'
+                      checked={!this.state.dontRetrievePrices}
+                      onChange={this.handleChangeField}
+                    />
+                  </Tooltip>
                 }
                 label="Retrieve prices?"
               />
