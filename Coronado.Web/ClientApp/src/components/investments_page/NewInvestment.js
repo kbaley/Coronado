@@ -12,6 +12,7 @@ export class NewInvestment extends Component {
     super(props);
     this.showForm = this.showForm.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.saveInvestment = this.saveInvestment.bind(this);
     this.state = { show: false, 
         investment: {name: '', symbol: '', shares: 0, price: 0.00, url: ''}
     };
@@ -33,12 +34,29 @@ export class NewInvestment extends Component {
   handleClose() {
     this.setState({show:false});
   }
+
+  saveInvestment(investment) {
+    this.props.actions.purchaseInvestment(investment);
+  }
+
   render() {
+    
     return (<span>
         <NewIcon onClick={this.showForm} className="new-investment"/>
-        <InvestmentForm show={this.state.show} onClose={this.handleClose} onSave={this.props.actions.createInvestment} />
+        <InvestmentForm 
+          show={this.state.show} 
+          onClose={this.handleClose} 
+          accounts={this.props.accounts}
+          onSave={this.saveInvestment} 
+        />
       </span>);
   };
+}
+
+function mapStateToProps(state) {
+  return {
+    accounts: state.accounts.filter(a => !a.isHidden),
+  }
 }
 
 function mapDispatchToProps(dispatch) {
@@ -48,6 +66,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(NewInvestment);

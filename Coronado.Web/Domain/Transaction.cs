@@ -27,5 +27,13 @@ namespace Coronado.Web.Domain
         public Transaction RelatedTransaction { get; set; }
         public Guid? InvoiceId { get; set; }
         public Invoice Invoice { get; set; }
+        public TRANSACTION_TYPE TransactionType { get; set; }
+    }
+
+    public enum TRANSACTION_TYPE {
+        REGULAR,
+        TRANSFER,
+        INVOICE_PAYMENT,
+        INVESTMENT
     }
 }

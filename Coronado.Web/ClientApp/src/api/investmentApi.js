@@ -26,7 +26,7 @@ class InvestmentApi {
     return response.json();
   }
 
-  static async createInvestment(investment) {
+  static async purchaseInvestment(investment) {
     const response = await fetch('/api/Investments', {
       method: 'POST',
       headers: defaultHeaders(),

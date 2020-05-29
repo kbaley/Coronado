@@ -1,4 +1,5 @@
 using System;
+using Coronado.Web.Domain;
 
 namespace Coronado.Web.Controllers.Dtos
 {
@@ -19,15 +20,11 @@ namespace Coronado.Web.Controllers.Dtos
         public Guid? RelatedTransactionId { get; set; }
         public string RelatedAccountName { get; set; }
         public Guid? RelatedAccountId { get; set; }
-
         public DateTime EnteredDate { get; set; }
-
         public bool IsReconciled { get; set; }
         public Guid? InvoiceId { get; set; }
         public string InvoiceNumber { get; set; }
-
-        public decimal RunningTotal { get; set; }
-
+        public TRANSACTION_TYPE TransactionType { get; set; }
         public void SetAmount() {
             Amount = Debit.HasValue ? (0 - Debit.Value) : Credit.Value;
         }

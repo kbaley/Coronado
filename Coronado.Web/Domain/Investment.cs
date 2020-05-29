@@ -40,33 +40,6 @@ namespace Coronado.Web.Domain
 
     }
 
-    [Table("investment_transactions")]
-    public class InvestmentTransaction
-    {
-        [Key]
-        public Guid InvestmentTransactionId { get; set; }
-        [Required]
-        public Guid InvestmentId {get; set; }
-        public decimal Shares { get; set; }
-        public decimal Price { get; set; }
-        public DateTime Date { get; set; }
-
-        public Guid TransactionId { get; set; }
-        public Transaction Transaction { get; set; }
-    }
-
-    [Table("investment_prices")]
-    public class InvestmentPrice
-    {
-        [Key]
-        [Column("investment_price_id")]
-        public Guid InvestmentPriceId { get; set; }
-        [Required]
-        public Guid InvestmentId { get; set; }
-        public DateTime Date { get; set; }
-        public decimal Price { get; set; }
-    }
-
     public static class InvestmentExtensions {
         public static decimal GetLastPrice(this Investment investment) {
             if (investment.HistoricalPrices == null || investment.HistoricalPrices.Count == 0) return 0;

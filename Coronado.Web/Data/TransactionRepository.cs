@@ -28,9 +28,12 @@ namespace Coronado.Web.Data
                     {
                         // Check for a related transaction
                         var transaction = conn.QuerySingle<TransactionForDisplay>(
-                @"SELECT invoice_id, related_transaction_id, amount
+                @"SELECT invoice_id, related_transaction_id, amount, transaction_type
     FROM transactions
     WHERE transaction_id = @TransactionId", new { transactionId });
+                        if (transaction.TransactionType == TRANSACTION_TYPE.INVESTMENT) {
+                            conn.Execute("DELETE FROM investment_transactions WHERE transaction_id = @TransactionId", new { transactionId }, trx);
+                        }
                         var relatedTransactionId = transaction.RelatedTransactionId;
                         if (relatedTransactionId != null && relatedTransactionId != Guid.Empty)
                         {
@@ -139,9 +142,9 @@ namespace Coronado.Web.Data
                     {
                         conn.Execute(
                         @"INSERT INTO transactions (transaction_id, account_id, vendor, description, is_reconciled, transaction_date, category_id,
-                    entered_date, amount, related_transaction_id, invoice_id)
+                    entered_date, amount, related_transaction_id, invoice_id, transaction_type)
                     VALUES (@TransactionId, @AccountId, @Vendor, @Description, @IsReconciled, @TransactionDate, @CategoryId,
-                    @EnteredDate, @Amount, @RelatedTransactionId, @InvoiceId)
+                    @EnteredDate, @Amount, @RelatedTransactionId, @InvoiceId, @TransactionType)
                 ", transaction, trx);
                         if (transaction.InvoiceId.HasValue)
                         {
@@ -208,17 +211,19 @@ WHERE t.account_id=@AccountId;", new { AccountId = accountId });
                 foreach (var transaction in transactions)
                 {
                     transaction.SetDebitAndCredit();
-                    if (transaction.RelatedTransactionId.HasValue)
-                    {
-                        transaction.CategoryDisplay = "TRANSFER: " + transaction.RelatedAccountName;
-                    }
-                    else if (transaction.InvoiceId.HasValue)
-                    {
-                        transaction.CategoryDisplay = "PAYMENT: " + transaction.InvoiceNumber;
-                    }
-                    else
-                    {
-                        transaction.CategoryDisplay = transaction.CategoryName;
+                    switch (transaction.TransactionType) {
+                        case TRANSACTION_TYPE.REGULAR:
+                            transaction.CategoryDisplay = transaction.CategoryName;
+                            break;
+                        case TRANSACTION_TYPE.INVOICE_PAYMENT:
+                            transaction.CategoryDisplay = "PAYMENT: " + transaction.InvoiceNumber;
+                            break;
+                        case TRANSACTION_TYPE.TRANSFER:
+                            transaction.CategoryDisplay = "TRANSFER: " + transaction.RelatedAccountName;
+                            break;
+                        case TRANSACTION_TYPE.INVESTMENT:
+                            transaction.CategoryDisplay = "INVESTMENT";
+                            break;
                     }
                 }
                 return transactions;
@@ -242,14 +247,6 @@ LEFT JOIN accounts a1
 ON t1.account_id = a1.account_id
 WHERE t.transaction_id=@transactionId;", new { transactionId });
                 transaction.SetDebitAndCredit();
-                if (transaction.RelatedTransactionId.HasValue)
-                {
-                    transaction.CategoryDisplay = "TRF: " + transaction.RelatedAccountName;
-                }
-                else
-                {
-                    transaction.CategoryDisplay = transaction.CategoryName;
-                }
                 return transaction;
             }
         }

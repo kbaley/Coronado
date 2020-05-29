@@ -23,6 +23,7 @@ namespace Coronado.Web.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Configuration> Configurations { get; set; }
         public DbSet<InvestmentPrice> InvestmentPrices { get; set; }
+        public DbSet<InvestmentTransaction> InvestmentTransactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

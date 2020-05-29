@@ -1,14 +1,10 @@
 import React from 'react';
-import { Currency } from '../common/CurrencyFormat';
-import * as reportActions from '../../actions/reportActions';
-import moment from 'moment';
 import {
   makeStyles,
   Button,
 } from '@material-ui/core';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import { useSelector, useDispatch } from 'react-redux';
 
 const styles = (theme) => ({
   navigation: {

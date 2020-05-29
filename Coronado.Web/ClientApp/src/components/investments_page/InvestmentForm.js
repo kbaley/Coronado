@@ -9,7 +9,10 @@ import {
   FormControlLabel,
   Checkbox,
   MenuItem,
-  Tooltip
+  Tooltip,
+  FormControl,
+  InputLabel,
+  Select,
 } from '@material-ui/core';
 
 class InvestmentForm extends Component {
@@ -20,7 +23,16 @@ class InvestmentForm extends Component {
     this.handleChangeField = this.handleChangeField.bind(this);
     this.state = {
       newInvestment: true,
-      investment: { name: '', symbol: '', shares: '', price: '', currency: 'USD', dontRetrievePrices: false }
+      investment: { 
+        name: '', 
+        symbol: '', 
+        shares: '', 
+        price: '', 
+        date: new Date().toLocaleDateString(),
+        currency: 'USD', 
+        dontRetrievePrices: false,
+        accountId: '',
+      }
     };
   }
 
@@ -36,6 +48,8 @@ class InvestmentForm extends Component {
           shares: this.props.investment.shares || 0,
           price: this.props.investment.price || 0.00,
           currency: this.props.investment.currency || 'USD',
+          date: new Date().toLocaleDateString(),
+          accountId: this.props.investment.transaction ? this.props.investment.transaction.accountId : '',
           dontRetrievePrices: this.props.investment.dontRetrievePrices
         }
       });
@@ -44,7 +58,18 @@ class InvestmentForm extends Component {
 
   saveInvestment() {
     this.props.onSave(this.state.investment);
-    this.setState({ investment: { name: '', symbol: '', shares: '', price: '', currency: 'USD', dontRetrievePrices: false } });
+    this.setState({ 
+      investment: { 
+        name: '', 
+        symbol: '', 
+        shares: '', 
+        price: '', 
+        currency: 'USD', 
+        dontRetrievePrices: false ,
+        date: new Date().toLocaleDateString(),
+        accountId: '',
+      } 
+    });
     this.props.onClose();
   }
 
@@ -66,7 +91,7 @@ class InvestmentForm extends Component {
       >
         <DialogContent>
           <Grid container spacing={2}>
-            <Grid item xs={8}>
+            <Grid item xs={7}>
               <TextField
                 autoFocus
                 name="name"
@@ -75,7 +100,7 @@ class InvestmentForm extends Component {
                 value={this.state.investment.name}
                 onChange={this.handleChangeField} />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <TextField
                 name="symbol"
                 label="Symbol"
@@ -84,25 +109,7 @@ class InvestmentForm extends Component {
                 onChange={this.handleChangeField}
               />
             </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="shares"
-                label="Starting shares"
-                fullWidth={true}
-                value={this.state.investment.shares}
-                onChange={this.handleChangeField}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="price"
-                label="Starting price"
-                fullWidth={true}
-                value={this.state.investment.price}
-                onChange={this.handleChangeField}
-              />
-            </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={2}>
               <TextField
                 select
                 name="currency"
@@ -115,7 +122,52 @@ class InvestmentForm extends Component {
                 <MenuItem value={'CAD'}>CAD</MenuItem>
               </TextField>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={4}>
+              <TextField
+                name="shares"
+                label="Shares"
+                fullWidth={true}
+                value={this.state.investment.shares}
+                onChange={this.handleChangeField}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="price"
+                label="Price"
+                fullWidth={true}
+                value={this.state.investment.price}
+                onChange={this.handleChangeField}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="date"
+                label="Date"
+                fullWidth={true}
+                value={this.state.investment.date}
+                onChange={this.handleChangeField}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl>
+                <InputLabel id="source-account">Account</InputLabel>
+                <Select
+                  labelId="source-account"
+                  name="accountId"
+                  style={{"width": "250px"}}
+                  value={this.state.investment.accountId}
+                  onChange={this.handleChangeField}
+                >
+                  <MenuItem value={''}>None</MenuItem>
+                  {this.props.accounts ? this.props.accounts.map(a =>
+                    <MenuItem value={a.accountId} key={a.accountId}>{a.name}</MenuItem>
+                  ) : <MenuItem>Select...</MenuItem>
+                  }
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={6}>
               <FormControlLabel
                 control={
                   <Tooltip title="Check this to include the investment when downloading the daily prices">

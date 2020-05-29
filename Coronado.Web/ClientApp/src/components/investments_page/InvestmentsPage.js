@@ -70,7 +70,7 @@ class InvestmentsPage extends Component {
 function mapStateToProps(state) {
   return {
     investments: state.investments,
-    currencies: state.currencies
+    currencies: state.currencies,
   };
 }
 

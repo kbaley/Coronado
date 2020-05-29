@@ -1,6 +1,6 @@
 import initialState from './initialState';
 import * as actions from "../constants/investmentActionTypes";
-import { cloneDeep, find } from 'lodash';
+import { cloneDeep, find, findIndex } from 'lodash';
 
 export const investmentReducer = (state = initialState.investments, action, deletedInvestments) => {
   switch (action.type) {
@@ -18,11 +18,17 @@ export const investmentReducer = (state = initialState.investments, action, dele
         Object.assign({}, deletedInvestment)
       ];
       
-    case actions.CREATE_INVESTMENT_SUCCESS:
-      return [
-        ...state,
-        Object.assign({}, action.investment),
-      ];
+    case actions.PURCHASE_INVESTMENT_SUCCESS:
+      const investments = cloneDeep(state);
+      const index = findIndex(investments, i => i.investmentId === action.investment.investmentId);
+      if (index > -1) {
+        return investments.splice(index, 1, action.investment);
+      } else {
+        return [
+          ...state,
+          Object.assign({}, action.investment),
+        ];
+      }
       
     case actions.UPDATE_INVESTMENT_SUCCESS:
       return [

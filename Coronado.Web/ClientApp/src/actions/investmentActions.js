@@ -12,8 +12,8 @@ export function loadInvestmentsAction() {
   return {type: types.LOAD_INVESTMENTS};
 }
 
-export function createInvestmentSuccess(investment) {
-  return {type: types.CREATE_INVESTMENT_SUCCESS, investment};
+export function purchaseInvestmentSuccess(investment) {
+  return {type: types.PURCHASE_INVESTMENT_SUCCESS, investment};
 }
 
 export function updateInvestmentSuccess(investment) {
@@ -116,10 +116,10 @@ export const updatePriceHistory = (investment, prices) => {
   }
 }
 
-export const createInvestment = (investment) => {
+export const purchaseInvestment = (investment) => {
   return async (dispatch) => {
-    const newInvestment = await InvestmentApi.createInvestment(investment);
-    dispatch(createInvestmentSuccess(newInvestment));
+    const newInvestment = await InvestmentApi.purchaseInvestment(investment);
+    dispatch(purchaseInvestmentSuccess(newInvestment));
   }
 }
 

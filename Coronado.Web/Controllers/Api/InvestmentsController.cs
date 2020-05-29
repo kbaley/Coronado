@@ -22,15 +22,18 @@ namespace Coronado.Web.Controllers.Api
         private readonly ILogger<InvestmentsController> _logger;
         private readonly IInvestmentPriceParser _priceParser;
         private readonly IMapper _mapper;
+        private readonly IAccountRepository _accountRepo;
         private readonly CoronadoDbContext _context;
 
         public InvestmentsController(CoronadoDbContext context, ITransactionRepository transactionRepo,
-            ILogger<InvestmentsController> logger, IInvestmentPriceParser priceParser, IMapper mapper)
+            ILogger<InvestmentsController> logger, IInvestmentPriceParser priceParser, IMapper mapper,
+            IAccountRepository accountRepo)
         {
             _transactionRepo = transactionRepo;
             _logger = logger;
             _priceParser = priceParser;
             _mapper = mapper;
+            _accountRepo = accountRepo;
             _context = context;
         }
 
@@ -195,14 +198,62 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostInvestment([FromBody] InvestmentForListDto investment)
+        public async Task<IActionResult> PostInvestment([FromBody] InvestmentForListDto investmentDto)
         {
-            if (investment.InvestmentId == null || investment.InvestmentId == Guid.Empty) investment.InvestmentId = Guid.NewGuid();
-            var investmentMapped = _mapper.Map<Investment>(investment);
-            _context.Investments.Add(investmentMapped);
-            await _context.SaveChangesAsync();
+            var investment = await _context.Investments.SingleOrDefaultAsync(i => i.Symbol == investmentDto.Symbol).ConfigureAwait(false);
+            if (investment == null) {
+                investmentDto.InvestmentId = Guid.NewGuid();
+                var mappedInvestment = _mapper.Map<Investment>(investmentDto);
+                investment = _context.Investments.Add(mappedInvestment).Entity;
+            }
+            var buySell = investmentDto.Shares > 0 ? "Buy share" : "Sell share";
+            if (investmentDto.Shares != 1) buySell += "s";
+            var description = $"Investment: {buySell} of {investmentDto.Symbol} at {investmentDto.Price}";
+            var investmentAccount = await _context.Accounts.FirstAsync(a => a.AccountType == "Investment").ConfigureAwait(false);
+            var enteredDate = DateTime.Now;
+            var investmentAccountTransaction = new Transaction {
+                TransactionId = Guid.NewGuid(),
+                AccountId = investmentAccount.AccountId,
+                Amount = investmentDto.Shares * investmentDto.Price,
+                TransactionDate = investmentDto.Date,
+                EnteredDate = enteredDate,
+                TransactionType = TRANSACTION_TYPE.INVESTMENT,
+                Description = description
+            };
+            var transaction = new Transaction {
+                TransactionId = Guid.NewGuid(),
+                AccountId = investmentDto.AccountId,
+                Amount = -investmentDto.Shares * investmentDto.Price,
+                TransactionDate = investmentDto.Date,
+                EnteredDate = enteredDate,
+                TransactionType = TRANSACTION_TYPE.INVESTMENT,
+                Description = description,
+                RelatedTransactionId = investmentAccountTransaction.TransactionId
+            };
+            var investmentTransaction = new InvestmentTransaction {
+                InvestmentTransactionId = Guid.NewGuid(),
+                InvestmentId = investment.InvestmentId,
+                Shares = investmentDto.Shares,
+                Price = investmentDto.Price,
+                Date = investmentDto.Date,
+                TransactionId = transaction.TransactionId
+            };
+            _context.Transactions.Add(investmentAccountTransaction);
+            _context.Transactions.Add(transaction);
+            _context.InvestmentTransactions.Add(investmentTransaction);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+            investmentAccountTransaction.RelatedTransactionId = transaction.TransactionId;
+            _context.Update(investmentAccountTransaction);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
 
-            return CreatedAtAction("PostInvestment", new { id = investment.InvestmentId }, investmentMapped);
+            var accountBalances = _accountRepo.GetAccountBalances().Select(a => new {a.AccountId, a.CurrentBalance});
+            return CreatedAtAction("PostInvestment", new { id = investment.InvestmentId }, 
+                new {
+                    investment,
+                    investmentTransaction,
+                    accountBalances
+                }
+            );
         }
 
         [HttpDelete("{id}")]

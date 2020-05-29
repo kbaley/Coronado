@@ -2,6 +2,7 @@ import initialState from './initialState';
 import { cloneDeep, find, each, sortBy } from 'lodash'; 
 import * as actions from "../constants/accountActionTypes.js";
 import * as transactionActions from "../constants/transactionActionTypes";
+import * as investmentActions from "../constants/investmentActionTypes";
 
 export const accountReducer = (state = initialState.accounts, action, deletedAccounts) => {
 
@@ -35,6 +36,7 @@ export const accountReducer = (state = initialState.accounts, action, deletedAcc
     case transactionActions.CREATE_TRANSACTION_SUCCESS:
     case transactionActions.UPDATE_TRANSACTION_SUCCESS:
     case transactionActions.DELETE_TRANSACTION_SUCCESS:
+    case investmentActions.PURCHASE_INVESTMENT_SUCCESS:
       return setAccountBalances(state, action.accountBalances);
       
     default:
