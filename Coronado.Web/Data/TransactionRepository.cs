@@ -15,9 +15,50 @@ namespace Coronado.Web.Data
     public class TransactionRepository : BaseRepository, ITransactionRepository
     {
         private const int PAGE_SIZE = 100;
-        public TransactionRepository(IConfiguration config) : base(config) { }
+        private readonly CoronadoDbContext _context;
 
-        public void Delete(Guid transactionId)
+        public TransactionRepository(IConfiguration config, CoronadoDbContext context) : base(config)
+        {
+            _context = context;
+        }
+
+        public void Delete(Guid transactionId) {
+            var transaction = _context.Transactions.Find(transactionId);
+            if (transaction.InvoiceId.HasValue) {
+                var invoice = _context.Invoices
+                    .Include(i => i.LineItems)
+                    .Single(i => i.InvoiceId == transaction.InvoiceId.Value);
+                var payments = _context.Transactions
+                    .Where(t => t.InvoiceId == invoice.InvoiceId && t.TransactionId != transactionId)
+                    .Sum(t => t.Amount);
+                invoice.Balance = invoice.LineItems.Sum(li => li.Amount) - payments;
+                _context.Invoices.Update(invoice);
+            } 
+            var transfers = _context.Transfers
+                .Where(t => t.LeftTransactionId == transactionId || t.RightTransactionId == transactionId)
+                .ToList();
+            var deletedTransactions = new List<Guid>();
+            foreach (var transfer in transfers)
+            {
+                Transaction trx;
+                if (!deletedTransactions.Contains(transfer.RightTransactionId)) {
+                    trx = _context.Transactions.Find(transfer.RightTransactionId);
+                    _context.Transactions.Remove(trx);
+                    deletedTransactions.Add(transfer.RightTransactionId);
+                }
+                if (!deletedTransactions.Contains(transfer.LeftTransactionId)) {
+                    trx = _context.Transactions.Find(transfer.LeftTransactionId);
+                    if (trx != null) _context.Transactions.Remove(trx);
+                    deletedTransactions.Add(transfer.LeftTransactionId);
+                }
+                _context.Transfers.Remove(transfer);
+            }
+            if (!deletedTransactions.Contains(transactionId))
+                _context.Transactions.Remove(transaction);
+            _context.SaveChanges();
+        }
+
+        public void xDelete(Guid transactionId)
         {
             using (var conn = Connection)
             {
@@ -28,21 +69,22 @@ namespace Coronado.Web.Data
                     {
                         // Check for a related transaction
                         var transaction = conn.QuerySingle<TransactionForDisplay>(
-                @"SELECT invoice_id, related_transaction_id, amount, transaction_type
+                @"SELECT invoice_id, amount, transaction_type
     FROM transactions
     WHERE transaction_id = @TransactionId", new { transactionId });
                         if (transaction.TransactionType == TRANSACTION_TYPE.INVESTMENT) {
                             conn.Execute("DELETE FROM investment_transactions WHERE transaction_id = @TransactionId", new { transactionId }, trx);
                         }
-                        var relatedTransactionId = transaction.RelatedTransactionId;
-                        if (relatedTransactionId != null && relatedTransactionId != Guid.Empty)
-                        {
-                            // Related transaction exists; delete it first (after clearing the FK relationship)
-                            conn.Execute("UPDATE transactions SET related_transaction_id = null WHERE transaction_id = @TransactionId",
-                                new { transactionId }, trx);
-                            conn.Execute("DELETE FROM transactions WHERE related_transaction_id = @TransactionId",
-                                new { transactionId }, trx);
-                        }
+                        conn.Execute("DELETE FROM transfers WHERE left_transaction_id=@TransactionId OR right_transaction_id = @TransactionId", new { transactionId }, trx);
+                        // var relatedTransactionId = transaction.RelatedTransactionId;
+                        // if (relatedTransactionId != null && relatedTransactionId != Guid.Empty)
+                        // {
+                        //     // Related transaction exists; delete it first (after clearing the FK relationship)
+                        //     conn.Execute("UPDATE transactions SET related_transaction_id = null WHERE transaction_id = @TransactionId",
+                        //         new { transactionId }, trx);
+                        //     conn.Execute("DELETE FROM transactions WHERE related_transaction_id = @TransactionId",
+                        //         new { transactionId }, trx);
+                        // }
                         conn.Execute("DELETE FROM transactions WHERE transaction_id = @TransactionId", new { transactionId }, trx);
                         if (transaction.InvoiceId.HasValue)
                         {
@@ -194,15 +236,17 @@ namespace Coronado.Web.Data
             using (IDbConnection dbConnection = Connection)
             {
                 var transactions = dbConnection.Query<TransactionForDisplay>(
-        @"SELECT t.*, a.name as AccountName, c.name as CategoryName, a1.account_id as RelatedAccountId, a1.name as RelatedAccountName,
+        @"SELECT t.*, t1.transaction_id as RelatedTransactionId, a.name as AccountName, c.name as CategoryName, a1.account_id as RelatedAccountId, a1.name as RelatedAccountName,
     i.invoice_number
 FROM transactions t
 LEFT JOIN accounts a
 ON t.account_id = a.account_id
 LEFT JOIN categories c
 ON t.category_id = c.category_id
+LEFT JOIN transfers tr1
+ON t.transaction_id = tr1.left_transaction_id
 LEFT JOIN transactions t1
-ON t.related_transaction_id = t1.transaction_id
+ON tr1.right_transaction_id = t1.transaction_id
 LEFT JOIN accounts a1
 ON t1.account_id = a1.account_id
 LEFT JOIN invoices i
@@ -235,14 +279,16 @@ WHERE t.account_id=@AccountId;", new { AccountId = accountId });
             using (IDbConnection dbConnection = Connection)
             {
                 var transaction = dbConnection.QuerySingle<TransactionForDisplay>(
-        @"SELECT t.*, a.name as AccountName, c.name as CategoryName, a1.account_id as RelatedAccountId, a1.name as RelatedAccountName
+        @"SELECT t.*, tr.right_transaction_id as RelatedTransactionId, a.name as AccountName, c.name as CategoryName, a1.account_id as RelatedAccountId, a1.name as RelatedAccountName
 FROM transactions t
 LEFT JOIN accounts a
 ON t.account_id = a.account_id
 LEFT JOIN categories c
 ON t.category_id = c.category_id
+LEFT JOIN transfers tr
+ON t.transaction_id = tr.left_transaction_id
 LEFT JOIN transactions t1
-ON t.related_transaction_id = t1.transaction_id
+ON tr.right_transaction_id = t1.transaction_id
 LEFT JOIN accounts a1
 ON t1.account_id = a1.account_id
 WHERE t.transaction_id=@transactionId;", new { transactionId });

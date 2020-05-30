@@ -43,9 +43,15 @@ GROUP BY account_id"
             return category;
         }
 
-        public async static Task RemoveById<T>(this DbSet<T> items, Guid id) where T : class
+        public async static Task RemoveByIdAsync<T>(this DbSet<T> items, Guid id) where T : class
         {
             var item = await items.FindAsync(id).ConfigureAwait(false);
+            items.Remove(item);
+        }
+
+        public static void RemoveById<T>(this DbSet<T> items, Guid id) where T : class
+        {
+            var item = items.Find(id);
             items.Remove(item);
         }
 

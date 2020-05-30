@@ -24,6 +24,7 @@ namespace Coronado.Web.Data
         public DbSet<Configuration> Configurations { get; set; }
         public DbSet<InvestmentPrice> InvestmentPrices { get; set; }
         public DbSet<InvestmentTransaction> InvestmentTransactions { get; set; }
+        public DbSet<Transfer> Transfers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

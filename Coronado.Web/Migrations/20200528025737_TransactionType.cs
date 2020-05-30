@@ -11,6 +11,20 @@ namespace Coronado.Web.Migrations
                 table: "transactions",
                 nullable: false,
                 defaultValue: 0);
+
+            migrationBuilder.Sql(@"
+                UPDATE transactions SET transaction_type=0;
+            ");
+
+            migrationBuilder.Sql(@"
+                UPDATE transactions SET transaction_type=1
+                WHERE related_transaction_id IS NOT NULL;
+            ");
+
+            migrationBuilder.Sql(@"
+                UPDATE transactions SET transaction_type=2
+                WHERE invoice_id IS NOT NULL;
+            ");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

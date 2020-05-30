@@ -50,7 +50,7 @@ namespace Coronado.Web.Controllers.Api
                 var mappedLineItem = _mapper.Map<InvoiceLineItem>(item);
                 switch (item.Status.ToLower()) {
                     case "deleted":
-                        await _context.InvoiceLineItems.RemoveById(item.InvoiceLineItemId).ConfigureAwait(false);
+                        await _context.InvoiceLineItems.RemoveByIdAsync(item.InvoiceLineItemId).ConfigureAwait(false);
                         break;
                     case "added":
                         _context.InvoiceLineItems.Add(mappedLineItem);

@@ -118,7 +118,7 @@ namespace Coronado.Web.Controllers.Api
             {
                 if (priceDto.Status == "Deleted")
                 {
-                    await _context.InvestmentPrices.RemoveById(priceDto.InvestmentPriceId).ConfigureAwait(false);
+                    await _context.InvestmentPrices.RemoveByIdAsync(priceDto.InvestmentPriceId).ConfigureAwait(false);
                 }
                 else if (priceDto.Status == "Added")
                 {
@@ -227,8 +227,7 @@ namespace Coronado.Web.Controllers.Api
                 TransactionDate = investmentDto.Date,
                 EnteredDate = enteredDate,
                 TransactionType = TRANSACTION_TYPE.INVESTMENT,
-                Description = description,
-                RelatedTransactionId = investmentAccountTransaction.TransactionId
+                Description = description
             };
             var investmentTransaction = new InvestmentTransaction {
                 InvestmentTransactionId = Guid.NewGuid(),
@@ -241,9 +240,16 @@ namespace Coronado.Web.Controllers.Api
             _context.Transactions.Add(investmentAccountTransaction);
             _context.Transactions.Add(transaction);
             _context.InvestmentTransactions.Add(investmentTransaction);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-            investmentAccountTransaction.RelatedTransactionId = transaction.TransactionId;
-            _context.Update(investmentAccountTransaction);
+            _context.Transfers.Add(new Transfer {
+                TransferId = Guid.NewGuid(),
+                LeftTransactionId = transaction.TransactionId,
+                RightTransactionId = investmentAccountTransaction.TransactionId
+            });
+            _context.Transfers.Add(new Transfer {
+                TransferId = Guid.NewGuid(),
+                RightTransactionId = transaction.TransactionId,
+                LeftTransactionId = investmentAccountTransaction.TransactionId
+            });
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
             var accountBalances = _accountRepo.GetAccountBalances().Select(a => new {a.AccountId, a.CurrentBalance});
