@@ -9,6 +9,7 @@ using System.Data;
 using Coronado.Web.Domain;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace Coronado.Web.Data
 {
@@ -16,24 +17,38 @@ namespace Coronado.Web.Data
     {
         private const int PAGE_SIZE = 100;
         private readonly CoronadoDbContext _context;
+        private readonly IMapper _mapper;
 
-        public TransactionRepository(IConfiguration config, CoronadoDbContext context) : base(config)
+        public TransactionRepository(IConfiguration config, CoronadoDbContext context, IMapper mapper) : base(config)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public void Delete(Guid transactionId) {
+        private void UpdateInvoiceBalance(Guid? invoiceId, Guid? transactionId = null)
+        {
+            if (!invoiceId.HasValue) return;
+            Func<Transaction, bool> Matches = (transaction) => {
+                if (transactionId.HasValue) {
+                    return transaction.InvoiceId == invoiceId.Value && transaction.TransactionId != transactionId.Value; 
+                }
+               return transaction.InvoiceId == invoiceId.Value;
+            };
+
+            var invoice = _context.Invoices
+                .Include(i => i.LineItems)
+                .Single(i => i.InvoiceId == invoiceId.Value);
+            var payments = _context.Transactions
+                .Where(Matches)
+                .Sum(t => t.Amount);
+            invoice.Balance = invoice.LineItems.Sum(li => li.Amount) - payments;
+            _context.Invoices.Update(invoice);
+        }
+
+        public void Delete(Guid transactionId)
+        {
             var transaction = _context.Transactions.Find(transactionId);
-            if (transaction.InvoiceId.HasValue) {
-                var invoice = _context.Invoices
-                    .Include(i => i.LineItems)
-                    .Single(i => i.InvoiceId == transaction.InvoiceId.Value);
-                var payments = _context.Transactions
-                    .Where(t => t.InvoiceId == invoice.InvoiceId && t.TransactionId != transactionId)
-                    .Sum(t => t.Amount);
-                invoice.Balance = invoice.LineItems.Sum(li => li.Amount) - payments;
-                _context.Invoices.Update(invoice);
-            } 
+            UpdateInvoiceBalance(transaction.InvoiceId, transactionId);
             var transfers = _context.Transfers
                 .Where(t => t.LeftTransactionId == transactionId || t.RightTransactionId == transactionId)
                 .ToList();
@@ -41,12 +56,14 @@ namespace Coronado.Web.Data
             foreach (var transfer in transfers)
             {
                 Transaction trx;
-                if (!deletedTransactions.Contains(transfer.RightTransactionId)) {
+                if (!deletedTransactions.Contains(transfer.RightTransactionId))
+                {
                     trx = _context.Transactions.Find(transfer.RightTransactionId);
                     _context.Transactions.Remove(trx);
                     deletedTransactions.Add(transfer.RightTransactionId);
                 }
-                if (!deletedTransactions.Contains(transfer.LeftTransactionId)) {
+                if (!deletedTransactions.Contains(transfer.LeftTransactionId))
+                {
                     trx = _context.Transactions.Find(transfer.LeftTransactionId);
                     if (trx != null) _context.Transactions.Remove(trx);
                     deletedTransactions.Add(transfer.LeftTransactionId);
@@ -58,89 +75,21 @@ namespace Coronado.Web.Data
             _context.SaveChanges();
         }
 
-        public void xDelete(Guid transactionId)
-        {
-            using (var conn = Connection)
-            {
-                conn.Open();
-                using (var trx = conn.BeginTransaction())
-                {
-                    try
-                    {
-                        // Check for a related transaction
-                        var transaction = conn.QuerySingle<TransactionForDisplay>(
-                @"SELECT invoice_id, amount, transaction_type
-    FROM transactions
-    WHERE transaction_id = @TransactionId", new { transactionId });
-                        if (transaction.TransactionType == TRANSACTION_TYPE.INVESTMENT) {
-                            conn.Execute("DELETE FROM investment_transactions WHERE transaction_id = @TransactionId", new { transactionId }, trx);
-                        }
-                        conn.Execute("DELETE FROM transfers WHERE left_transaction_id=@TransactionId OR right_transaction_id = @TransactionId", new { transactionId }, trx);
-                        // var relatedTransactionId = transaction.RelatedTransactionId;
-                        // if (relatedTransactionId != null && relatedTransactionId != Guid.Empty)
-                        // {
-                        //     // Related transaction exists; delete it first (after clearing the FK relationship)
-                        //     conn.Execute("UPDATE transactions SET related_transaction_id = null WHERE transaction_id = @TransactionId",
-                        //         new { transactionId }, trx);
-                        //     conn.Execute("DELETE FROM transactions WHERE related_transaction_id = @TransactionId",
-                        //         new { transactionId }, trx);
-                        // }
-                        conn.Execute("DELETE FROM transactions WHERE transaction_id = @TransactionId", new { transactionId }, trx);
-                        if (transaction.InvoiceId.HasValue)
-                        {
-                            UpdateInvoice(transaction.InvoiceId.Value, conn, trx);
-                        }
-                        trx.Commit();
-                    }
-                    catch
-                    {
-                        trx.Rollback();
-                        throw;
-                    }
-                    finally
-                    {
-                        conn.Close();
-                    }
-                }
-            }
-        }
-
         public void Update(TransactionForDisplay transaction)
         {
-            using (var conn = Connection)
-            {
-                conn.Open();
-                using (var trx = conn.BeginTransaction())
-                {
-                    try
-                    {
-                        conn.Execute(
-                            @"UPDATE transactions
-                SET account_id = @AccountId, vendor = @Vendor, description = @Description, is_reconciled = @IsReconciled, 
-                transaction_date = @TransactionDate, category_id = @CategoryId, amount = @Amount, 
-                related_transaction_id = @RelatedTransactionId, invoice_id = @InvoiceId
-                WHERE transaction_id = @TransactionId", transaction);
-                        if (transaction.InvoiceId.HasValue)
-                        {
-                            UpdateInvoice(transaction.InvoiceId.Value, conn, trx);
-                        }
-                        if (transaction.CategoryId.HasValue)
-                        {
-                            UpdateVendor(transaction.Vendor, transaction.CategoryId.Value, conn, trx);
-                        }
-                        trx.Commit();
-                    }
-                    catch
-                    {
-                        trx.Rollback();
-                    }
-                    finally
-                    {
-                        conn.Close();
-                    }
+            var dbTransaction = _context.Transactions.Find(transaction.TransactionId);
+            dbTransaction.AccountId = transaction.AccountId.Value;
+            dbTransaction.Vendor = transaction.Vendor;
+            dbTransaction.Description = transaction.Description;
+            dbTransaction.IsReconciled = transaction.IsReconciled;
+            dbTransaction.InvoiceId = transaction.InvoiceId;
+            dbTransaction.TransactionDate = transaction.TransactionDate;
+            dbTransaction.CategoryId = transaction.CategoryId;
+            dbTransaction.Amount = transaction.Amount;
 
-                }
-            }
+            _context.Transactions.Update(dbTransaction);
+            UpdateInvoiceBalance(transaction.InvoiceId);
+            AddOrUpdateVendor(transaction.Vendor, transaction.CategoryId);
         }
 
         private void UpdateInvoice(Guid invoiceId, IDbConnection conn, IDbTransaction trx)
@@ -154,6 +103,23 @@ namespace Coronado.Web.Data
                 SELECT SUM(-amount) FROM transactions WHERE invoice_id = @InvoiceId) items)
             WHERE invoice_id = @InvoiceId",
                 new { InvoiceId = invoiceId }, trx);
+        }
+
+        private void AddOrUpdateVendor(string vendorName, Guid? categoryId) 
+        {
+            if (!categoryId.HasValue) return;
+            if (string.IsNullOrWhiteSpace(vendorName)) return;
+            var vendor = _context.Vendors.SingleOrDefault(v => v.Name.ToLower() == vendorName.ToLower());
+            if (vendor == null) {
+                vendor = new Vendor {
+                    VendorId = Guid.NewGuid(),
+                    Name = vendorName,
+                    LastTransactionCategoryId = categoryId.Value
+                };
+                _context.Vendors.Add(vendor);
+            } else {
+                vendor.LastTransactionCategoryId = categoryId.Value;
+            }
         }
 
         private void UpdateVendor(string vendorName, Guid categoryId, IDbConnection conn, IDbTransaction trx)
@@ -173,45 +139,68 @@ namespace Coronado.Web.Data
             }
         }
 
-        public void Insert(TransactionForDisplay transaction)
+        public void Insert(TransactionForDisplay transactionDto)
         {
-            using (var conn = Connection)
-            {
-                conn.Open();
-                using (var trx = conn.BeginTransaction())
-                {
-                    try
-                    {
-                        conn.Execute(
-                        @"INSERT INTO transactions (transaction_id, account_id, vendor, description, is_reconciled, transaction_date, category_id,
-                    entered_date, amount, related_transaction_id, invoice_id, transaction_type)
-                    VALUES (@TransactionId, @AccountId, @Vendor, @Description, @IsReconciled, @TransactionDate, @CategoryId,
-                    @EnteredDate, @Amount, @RelatedTransactionId, @InvoiceId, @TransactionType)
-                ", transaction, trx);
-                        if (transaction.InvoiceId.HasValue)
-                        {
-                            UpdateInvoice(transaction.InvoiceId.Value, conn, trx);
-                        }
-                        if (transaction.CategoryId.HasValue)
-                        {
-                            UpdateVendor(transaction.Vendor, transaction.CategoryId.Value, conn, trx);
-                        }
-                        trx.Commit();
-                    }
-                    catch
-                    {
-                        trx.Rollback();
-                        throw;
-                    }
-                    finally
-                    {
-                        conn.Close();
-                    }
-                }
+            var transaction = transactionDto.ShallowMap();
+            _context.Transactions.Add(transaction);
+            UpdateInvoiceBalance(transaction.InvoiceId);
+            AddOrUpdateVendor(transactionDto.Vendor, transactionDto.CategoryId);
+            if (transactionDto.TransactionType == TRANSACTION_TYPE.TRANSFER) {
+                var rightTransaction = transactionDto.ShallowMap();
+                rightTransaction.TransactionId = Guid.NewGuid();
+                rightTransaction.AccountId = transactionDto.RelatedAccountId.Value;
+                rightTransaction.Amount = 0 - transactionDto.Amount;
+                _context.Transactions.Add(rightTransaction);
+                _context.Transfers.Add(new Transfer {
+                    TransferId = Guid.NewGuid(),
+                    LeftTransactionId = transaction.TransactionId,
+                    RightTransactionId = rightTransaction.TransactionId
+                });
+                _context.Transfers.Add(new Transfer {
+                    TransferId = Guid.NewGuid(),
+                    RightTransactionId = transaction.TransactionId,
+                    LeftTransactionId = rightTransaction.TransactionId
+                });
             }
+            _context.SaveChanges();
+            // using (var conn = Connection)
+            // {
+            //     conn.Open();
+            //     using (var trx = conn.BeginTransaction())
+            //     {
+            //         try
+            //         {
+            //             conn.Execute(
+            //             @"INSERT INTO transactions (transaction_id, account_id, vendor, description, is_reconciled, transaction_date, category_id,
+            //         entered_date, amount, related_transaction_id, invoice_id, transaction_type)
+            //         VALUES (@TransactionId, @AccountId, @Vendor, @Description, @IsReconciled, @TransactionDate, @CategoryId,
+            //         @EnteredDate, @Amount, @RelatedTransactionId, @InvoiceId, @TransactionType)
+            //     ", transaction, trx);
+            //             if (transaction.InvoiceId.HasValue)
+            //             {
+            //                 UpdateInvoice(transaction.InvoiceId.Value, conn, trx);
+            //             }
+            //             if (transaction.CategoryId.HasValue)
+            //             {
+            //                 UpdateVendor(transaction.Vendor, transaction.CategoryId.Value, conn, trx);
+            //             }
+            //             trx.Commit();
+            //         }
+            //         catch
+            //         {
+            //             trx.Rollback();
+            //             throw;
+            //         }
+            //         finally
+            //         {
+            //             conn.Close();
+            //         }
+            //     }
+            // }
         }
 
-        public TransactionListModel GetByAccount(Guid accountId, int? page) {
+        public TransactionListModel GetByAccount(Guid accountId, int? page)
+        {
             var thePage = page ?? 0;
             var allTransactions = GetByAccount(accountId)
                 .OrderByDescending(t => t.TransactionDate)
@@ -222,7 +211,8 @@ namespace Coronado.Web.Data
             var restOfTransactions = allTransactions
                 .Skip(PAGE_SIZE * (thePage + 1));
             var startingBalance = restOfTransactions.Sum(t => t.Amount);
-            var model = new TransactionListModel {
+            var model = new TransactionListModel
+            {
                 Transactions = transactions,
                 StartingBalance = startingBalance,
                 RemainingTransactionCount = restOfTransactions.Count(),
@@ -233,82 +223,45 @@ namespace Coronado.Web.Data
 
         public IEnumerable<TransactionForDisplay> GetByAccount(Guid accountId)
         {
-            using (IDbConnection dbConnection = Connection)
-            {
-                var transactions = dbConnection.Query<TransactionForDisplay>(
-        @"SELECT t.*, t1.transaction_id as RelatedTransactionId, a.name as AccountName, c.name as CategoryName, a1.account_id as RelatedAccountId, a1.name as RelatedAccountName,
-    i.invoice_number
-FROM transactions t
-LEFT JOIN accounts a
-ON t.account_id = a.account_id
-LEFT JOIN categories c
-ON t.category_id = c.category_id
-LEFT JOIN transfers tr1
-ON t.transaction_id = tr1.left_transaction_id
-LEFT JOIN transactions t1
-ON tr1.right_transaction_id = t1.transaction_id
-LEFT JOIN accounts a1
-ON t1.account_id = a1.account_id
-LEFT JOIN invoices i
-ON t.invoice_id = i.invoice_id
-WHERE t.account_id=@AccountId;", new { AccountId = accountId });
-                foreach (var transaction in transactions)
-                {
-                    transaction.SetDebitAndCredit();
-                    switch (transaction.TransactionType) {
-                        case TRANSACTION_TYPE.REGULAR:
-                            transaction.CategoryDisplay = transaction.CategoryName;
-                            break;
-                        case TRANSACTION_TYPE.INVOICE_PAYMENT:
-                            transaction.CategoryDisplay = "PAYMENT: " + transaction.InvoiceNumber;
-                            break;
-                        case TRANSACTION_TYPE.TRANSFER:
-                            transaction.CategoryDisplay = "TRANSFER: " + transaction.RelatedAccountName;
-                            break;
-                        case TRANSACTION_TYPE.INVESTMENT:
-                            transaction.CategoryDisplay = "INVESTMENT";
-                            break;
-                    }
-                }
-                return transactions;
-            }
+            var transactions = _context.Transactions
+                .Include(t => t.LeftTransfer)
+                .Include(t => t.LeftTransfer.RightTransaction)
+                .Include(t => t.LeftTransfer.RightTransaction.Account)
+                .Include(t => t.Category)
+                .Include(t => t.Account)
+                .Where(t => t.AccountId == accountId)
+                .Select(t => _mapper.Map<TransactionForDisplay>(t))
+                .ToList();
+            transactions.ForEach(t => t.SetDebitAndCredit());
+            return transactions;
         }
 
         public TransactionForDisplay Get(Guid transactionId)
         {
-            using (IDbConnection dbConnection = Connection)
-            {
-                var transaction = dbConnection.QuerySingle<TransactionForDisplay>(
-        @"SELECT t.*, tr.right_transaction_id as RelatedTransactionId, a.name as AccountName, c.name as CategoryName, a1.account_id as RelatedAccountId, a1.name as RelatedAccountName
-FROM transactions t
-LEFT JOIN accounts a
-ON t.account_id = a.account_id
-LEFT JOIN categories c
-ON t.category_id = c.category_id
-LEFT JOIN transfers tr
-ON t.transaction_id = tr.left_transaction_id
-LEFT JOIN transactions t1
-ON tr.right_transaction_id = t1.transaction_id
-LEFT JOIN accounts a1
-ON t1.account_id = a1.account_id
-WHERE t.transaction_id=@transactionId;", new { transactionId });
-                transaction.SetDebitAndCredit();
-                return transaction;
-            }
+            var transaction = _context.Transactions
+                .Include(t => t.LeftTransfer)
+                .Include(t => t.LeftTransfer.RightTransaction)
+                .Include(t => t.LeftTransfer.RightTransaction.Account)
+                .Include(t => t.Category)
+                .Include(t => t.Account)
+                .SingleOrDefault(t => t.TransactionId == transactionId);
+            var mapped = _mapper.Map<TransactionForDisplay>(transaction);
+            mapped.SetDebitAndCredit();
+            return mapped;
         }
 
         public decimal GetNetWorthFor(DateTime date)
         {
-            using (var conn = Connection)
-            {
-                return conn.ExecuteScalar<decimal>("SELECT SUM(amount) FROM transactions WHERE transaction_date <= @date", new { date });
-            }
+            return _context.Transactions
+                .Where(t => t.TransactionDate <= date)
+                .Sum(t => t.Amount);
         }
 
-        public IEnumerable<CategoryTotal> GetTransactionsByCategoryType(string categoryType, DateTime start, DateTime end) 
+        public IEnumerable<CategoryTotal> GetTransactionsByCategoryType(string categoryType, DateTime start, DateTime end)
         {
             var amountPrefix = "";
-            if (categoryType == "Expense") {
+            if (categoryType == "Expense")
+            {
                 amountPrefix = "0 - ";
             }
             using (var conn = Connection)
@@ -327,12 +280,12 @@ WHERE t.transaction_id=@transactionId;", new { transactionId });
                                     CategoryName = x.First().name,
                                     Amounts = x.Select(e => new DateAndAmount(e.year, e.month, e.amount)).ToList()
                                 });
-                
+
                 return results;
             }
         }
 
-        public IEnumerable<CategoryTotal> GetInvoiceLineItemsIncomeTotals(DateTime start, DateTime end) 
+        public IEnumerable<CategoryTotal> GetInvoiceLineItemsIncomeTotals(DateTime start, DateTime end)
         {
             using (var conn = Connection)
             {
@@ -349,12 +302,13 @@ WHERE t.transaction_id=@transactionId;", new { transactionId });
                 var data = conn.Query(sql, new { start, end });
 
                 var results = data.GroupBy(x => x.category_id)
-                                .Select(x => new CategoryTotal {
+                                .Select(x => new CategoryTotal
+                                {
                                     CategoryId = x.Key,
                                     CategoryName = x.First().name,
                                     Amounts = x.Select(e => new DateAndAmount(e.year, e.month, e.amount)).ToList()
                                 });
-                
+
                 return results;
             }
         }
@@ -377,7 +331,8 @@ WHERE t.transaction_id=@transactionId;", new { transactionId });
                     AND t.category_id = @categoryId
                     GROUP BY EXTRACT(MONTH from t.transaction_date), EXTRACT(YEAR from t.transaction_date)";
                 var data = await conn.QueryAsync(sql, new { start, end, categoryId }).ConfigureAwait(false);
-                var results = data.Select(e => new {
+                var results = data.Select(e => new
+                {
                     date = new DateTime(e.year, e.month, 1),
                     e.amount
                 }).OrderByDescending(r => r.date);

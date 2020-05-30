@@ -24,7 +24,9 @@ namespace Coronado.Web.Controllers.Dtos
                 .ReverseMap()
                 .ForMember(dest => dest.Customer, opt => opt.Ignore());
             CreateMap<Account, AccountForPosting>().ReverseMap();
-            CreateMap<Transaction, TransactionForDisplay>();
+            CreateMap<Transaction, TransactionForDisplay>()
+                .ForMember(t => t.CategoryDisplay, opt => opt.MapFrom(src => src.GetCategoryDisplay()))
+                .ReverseMap();
 
             // Useful for visualizing an AutoMapper mapping
             // var config = new MapperConfiguration(cfg => cfg
@@ -34,5 +36,6 @@ namespace Coronado.Web.Controllers.Dtos
             // var readable = execPlan.ToReadableString();
             // System.Console.WriteLine(readable);
         }
+
     }    
 }

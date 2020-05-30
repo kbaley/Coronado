@@ -1,20 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Coronado.Web.Domain
 {
-
-    [Table("transfers")]
-    public class Transfer
-    {
-        [Key]
-        public Guid TransferId { get; set; }
-        public Guid LeftTransactionId { get; set; }
-        public Guid RightTransactionId { get; set; }
-        public Transaction LeftTransaction { get; set; }
-        public Transaction RightTransaction { get; set; }
-    }
 
     [Table("transactions")]
     public class Transaction
@@ -33,13 +23,28 @@ namespace Coronado.Web.Domain
         public DateTime TransactionDate { get; set; }
         public Category Category { get; set; }
         public Guid? CategoryId { get; set; }
-        public DateTime EnteredDate {get;set;} = DateTime.Now;
+        public DateTime EnteredDate { get; set; } = DateTime.Now;
         public Guid? InvoiceId { get; set; }
         public Invoice Invoice { get; set; }
         public TRANSACTION_TYPE TransactionType { get; set; }
+        public Transfer LeftTransfer { get; set; }
+        public Transfer RightTransfer { get; set; }
+
+        public string GetCategoryDisplay()
+        {
+            return TransactionType switch
+            {
+                TRANSACTION_TYPE.REGULAR => Category == null ? "" : Category.Name,
+                TRANSACTION_TYPE.INVOICE_PAYMENT => Invoice == null ? "PAYMENT" : "PAYMENT: " + Invoice.InvoiceNumber,
+                TRANSACTION_TYPE.TRANSFER => LeftTransfer == null ? "TRANSFER" : "TRANSFER: " + LeftTransfer.RightTransaction.Account.Name,
+                TRANSACTION_TYPE.INVESTMENT => "INVESTMENT",
+                _ => "",
+            };
+        }
     }
 
-    public enum TRANSACTION_TYPE {
+    public enum TRANSACTION_TYPE
+    {
         REGULAR,
         TRANSFER,
         INVOICE_PAYMENT,

@@ -25,16 +25,39 @@ namespace Coronado.Web.Controllers.Dtos
         public Guid? InvoiceId { get; set; }
         public string InvoiceNumber { get; set; }
         public TRANSACTION_TYPE TransactionType { get; set; }
-        public void SetAmount() {
+        public void SetAmount()
+        {
             Amount = Debit.HasValue ? (0 - Debit.Value) : Credit.Value;
         }
 
-        public void SetDebitAndCredit() {
-            if (Amount < 0) {
+        public void SetDebitAndCredit()
+        {
+            if (Amount < 0)
+            {
                 Debit = 0 - Amount;
-            } else {
+            }
+            else
+            {
                 Credit = Amount;
             }
+        }
+
+        // Creates a shallow copy of a transaction with none of the objects mapped
+        public Transaction ShallowMap()
+        {
+            return new Transaction
+            {
+                TransactionId = TransactionId,
+                AccountId = AccountId.Value,
+                TransactionDate = TransactionDate,
+                TransactionType = TransactionType,
+                CategoryId = CategoryId,
+                Vendor = Vendor,
+                Description = Description,
+                Amount = Amount,
+                IsReconciled = IsReconciled,
+                InvoiceId = InvoiceId
+            };
         }
     }
 }

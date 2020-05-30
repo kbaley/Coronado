@@ -29,6 +29,12 @@ namespace Coronado.Web.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<Transaction>()
+                .HasOne(a => a.LeftTransfer)
+                .WithOne(t => t.LeftTransaction);
+            builder.Entity<Transaction>()
+                .HasOne(a => a.RightTransfer)
+                .WithOne(t => t.RightTransaction);
 
             foreach (var entity in builder.Model.GetEntityTypes())
             {
