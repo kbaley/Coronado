@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Coronado.Web.Controllers.Dtos;
+using Coronado.Web.Domain;
 using Coronado.Web.Models;
 
 namespace Coronado.Web.Data
@@ -11,7 +12,7 @@ namespace Coronado.Web.Data
         TransactionListModel GetByAccount(Guid accountId, int? page);
         IEnumerable<TransactionForDisplay> GetByAccount(Guid accountId);
         void Insert(TransactionForDisplay transaction);
-        void Update(TransactionForDisplay transaction);
+        Transaction Update(TransactionForDisplay transaction);
         void Delete(Guid transactionId);
         TransactionForDisplay Get(Guid transactionId);
         void InsertRelatedTransaction(TransactionForDisplay first, TransactionForDisplay second);

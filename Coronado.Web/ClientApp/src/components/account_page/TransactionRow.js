@@ -55,7 +55,10 @@ class TransactionRow extends Component {
   startEditing() {
     this.setState({
         isEditing: true,
-        selectedCategory: this.props.transaction.categoryId,
+        selectedCategory: {
+          categoryId: this.props.transaction.categoryId,
+          name: this.props.transaction.categoryName
+        }
     });
     Mousetrap.bind('esc', this.cancelEditing);
   }
@@ -103,8 +106,12 @@ class TransactionRow extends Component {
 
   handleChangeCategory(category) {
     this.setState( {
-      trx: {...this.state.trx, categoryId: category.categoryId },
-      selectedCategory: category.categoryId
+      trx: {...this.state.trx, categoryId: category.categoryId, categoryDisplay: category.name },
+      selectedCategory: {
+        categoryId: category.categoryId,
+        name: category.name
+      }
+
     });
   }
 

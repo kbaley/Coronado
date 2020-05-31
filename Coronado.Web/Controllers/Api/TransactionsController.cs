@@ -84,7 +84,6 @@ namespace Coronado.Web.Controllers.Api
                 var invoice = _context.FindInvoiceEager(transaction.InvoiceId.Value);
                 invoiceDto = _mapper.Map<InvoiceForPosting>(invoice);    
             }
-
             return Ok(new { transaction, originalAmount, accountBalances = _accountRepo.GetAccountBalances(), invoiceDto });
         }
 

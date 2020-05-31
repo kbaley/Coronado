@@ -49,7 +49,9 @@ class AccountApi {
 
   static async createTransaction(transaction, transactionType) {
     var url = "/api/Transactions";
-    if (transactionType === "Transfer") url = "/api/Transfers"
+    if (transactionType === "Transfer") {
+      transaction.transactionType = "TRANSFER";
+    }
     if (transactionType === "Mortgage") url = "/api/Mortgages"
     const response = await fetch(url, {
       method: 'POST',

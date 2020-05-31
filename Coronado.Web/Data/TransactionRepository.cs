@@ -28,11 +28,13 @@ namespace Coronado.Web.Data
         private void UpdateInvoiceBalance(Guid? invoiceId, Guid? transactionId = null)
         {
             if (!invoiceId.HasValue) return;
-            Func<Transaction, bool> Matches = (transaction) => {
-                if (transactionId.HasValue) {
-                    return transaction.InvoiceId == invoiceId.Value && transaction.TransactionId != transactionId.Value; 
+            Func<Transaction, bool> Matches = (transaction) =>
+            {
+                if (transactionId.HasValue)
+                {
+                    return transaction.InvoiceId == invoiceId.Value && transaction.TransactionId != transactionId.Value;
                 }
-               return transaction.InvoiceId == invoiceId.Value;
+                return transaction.InvoiceId == invoiceId.Value;
             };
 
             var invoice = _context.Invoices
@@ -45,39 +47,40 @@ namespace Coronado.Web.Data
             _context.Invoices.Update(invoice);
         }
 
+        private void DeleteTransfersFor(Transaction transaction) {
+            if (transaction.LeftTransfer != null) {
+                _context.Transactions.Remove(transaction.LeftTransfer.RightTransaction);
+                _context.Transfers.Remove(transaction.LeftTransfer);
+                _context.Transfers.Remove(transaction.RightTransfer);
+            }
+        }
+
         public void Delete(Guid transactionId)
         {
-            var transaction = _context.Transactions.Find(transactionId);
+            var transaction = _context.Transactions
+                .Include(t => t.LeftTransfer)
+                .Include(t => t.RightTransfer)
+                .Include(t => t.LeftTransfer.RightTransaction)
+                .Single(t => t.TransactionId == transactionId);
             UpdateInvoiceBalance(transaction.InvoiceId, transactionId);
-            var transfers = _context.Transfers
-                .Where(t => t.LeftTransactionId == transactionId || t.RightTransactionId == transactionId)
-                .ToList();
-            var deletedTransactions = new List<Guid>();
-            foreach (var transfer in transfers)
-            {
-                Transaction trx;
-                if (!deletedTransactions.Contains(transfer.RightTransactionId))
-                {
-                    trx = _context.Transactions.Find(transfer.RightTransactionId);
-                    _context.Transactions.Remove(trx);
-                    deletedTransactions.Add(transfer.RightTransactionId);
-                }
-                if (!deletedTransactions.Contains(transfer.LeftTransactionId))
-                {
-                    trx = _context.Transactions.Find(transfer.LeftTransactionId);
-                    if (trx != null) _context.Transactions.Remove(trx);
-                    deletedTransactions.Add(transfer.LeftTransactionId);
-                }
-                _context.Transfers.Remove(transfer);
+            _context.Transactions.Remove(transaction);
+            if (transaction.LeftTransfer != null) {
+                _context.Transactions.Remove(transaction.LeftTransfer.RightTransaction);
+                _context.Transfers.Remove(transaction.LeftTransfer);
+                _context.Transfers.Remove(transaction.RightTransfer);
             }
-            if (!deletedTransactions.Contains(transactionId))
-                _context.Transactions.Remove(transaction);
             _context.SaveChanges();
         }
 
-        public void Update(TransactionForDisplay transaction)
+        public Transaction Update(TransactionForDisplay transaction)
         {
-            var dbTransaction = _context.Transactions.Find(transaction.TransactionId);
+            var dbTransaction = _context.Transactions
+                .Include(t => t.LeftTransfer)
+                .Include(t => t.Category)
+                .Include(t => t.LeftTransfer.RightTransaction)
+                .Include(t => t.RightTransfer)
+                .Single(t => t.TransactionId == transaction.TransactionId);
+            var oldTransactionType = dbTransaction.TransactionType;
             dbTransaction.AccountId = transaction.AccountId.Value;
             dbTransaction.Vendor = transaction.Vendor;
             dbTransaction.Description = transaction.Description;
@@ -86,56 +89,70 @@ namespace Coronado.Web.Data
             dbTransaction.TransactionDate = transaction.TransactionDate;
             dbTransaction.CategoryId = transaction.CategoryId;
             dbTransaction.Amount = transaction.Amount;
+            if (oldTransactionType != transaction.TransactionType)
+            {
+                // Hoo-boy, here we go...
+
+                switch (oldTransactionType)
+                {
+                    case TRANSACTION_TYPE.REGULAR:
+                        // Nothing to correct
+                        break;
+                    case TRANSACTION_TYPE.TRANSFER:
+                        // Delete transfer and related transaction
+                        DeleteTransfersFor(dbTransaction);
+                        break;
+                    case TRANSACTION_TYPE.INVOICE_PAYMENT:
+                        // Nothing to do for now
+                        break;
+                    case TRANSACTION_TYPE.INVESTMENT:
+                        // Delete investment transaction, transfer, and related transaction
+                        break;
+                }
+                switch (transaction.TransactionType)
+                {
+                    case TRANSACTION_TYPE.REGULAR:
+                        // Nothing to correct
+                        break;
+                    case TRANSACTION_TYPE.TRANSFER:
+                        // Add transfer and related transaction
+                        CreateTransferFrom(transaction, dbTransaction.TransactionId);
+                        break;
+                    case TRANSACTION_TYPE.INVOICE_PAYMENT:
+                        // Nothing to do for now
+                        break;
+                    case TRANSACTION_TYPE.INVESTMENT:
+                        // Nothing to do; it's not possible to change a transaction to an investment one in the UI
+                        break;
+                }
+
+            }
 
             _context.Transactions.Update(dbTransaction);
             UpdateInvoiceBalance(transaction.InvoiceId);
             AddOrUpdateVendor(transaction.Vendor, transaction.CategoryId);
+            _context.SaveChanges();
+            return dbTransaction;
         }
 
-        private void UpdateInvoice(Guid invoiceId, IDbConnection conn, IDbTransaction trx)
-        {
-            conn.Execute(
-                @"UPDATE invoices
-            SET balance = (SELECT SUM(line_items) FROM (
-                SELECT quantity * unit_amount as line_items FROM invoice_line_items
-                WHERE invoice_id = @InvoiceId
-                UNION ALL
-                SELECT SUM(-amount) FROM transactions WHERE invoice_id = @InvoiceId) items)
-            WHERE invoice_id = @InvoiceId",
-                new { InvoiceId = invoiceId }, trx);
-        }
-
-        private void AddOrUpdateVendor(string vendorName, Guid? categoryId) 
+        private void AddOrUpdateVendor(string vendorName, Guid? categoryId)
         {
             if (!categoryId.HasValue) return;
             if (string.IsNullOrWhiteSpace(vendorName)) return;
             var vendor = _context.Vendors.SingleOrDefault(v => v.Name.ToLower() == vendorName.ToLower());
-            if (vendor == null) {
-                vendor = new Vendor {
+            if (vendor == null)
+            {
+                vendor = new Vendor
+                {
                     VendorId = Guid.NewGuid(),
                     Name = vendorName,
                     LastTransactionCategoryId = categoryId.Value
                 };
                 _context.Vendors.Add(vendor);
-            } else {
-                vendor.LastTransactionCategoryId = categoryId.Value;
-            }
-        }
-
-        private void UpdateVendor(string vendorName, Guid categoryId, IDbConnection conn, IDbTransaction trx)
-        {
-            if (string.IsNullOrWhiteSpace(vendorName)) return;
-            var vendor = conn.QuerySingleOrDefault<Vendor>("SELECT * from vendors WHERE name=@vendorName", new { vendorName }, trx);
-            if (vendor == null)
-            {
-                conn.Execute(@"INSERT INTO vendors (vendor_id, name, last_transaction_category_id)
-          VALUES (@VendorId, @VendorName, @CategoryId)", new { VendorId = Guid.NewGuid(), vendorName, categoryId }, trx);
             }
             else
             {
-                conn.Execute(@"UPDATE vendors
-          SET last_transaction_category_id = @categoryId
-          WHERE vendor_id = @VendorId", new { vendor.VendorId, categoryId }, trx);
+                vendor.LastTransactionCategoryId = categoryId.Value;
             }
         }
 
@@ -145,58 +162,32 @@ namespace Coronado.Web.Data
             _context.Transactions.Add(transaction);
             UpdateInvoiceBalance(transaction.InvoiceId);
             AddOrUpdateVendor(transactionDto.Vendor, transactionDto.CategoryId);
-            if (transactionDto.TransactionType == TRANSACTION_TYPE.TRANSFER) {
-                var rightTransaction = transactionDto.ShallowMap();
-                rightTransaction.TransactionId = Guid.NewGuid();
-                rightTransaction.AccountId = transactionDto.RelatedAccountId.Value;
-                rightTransaction.Amount = 0 - transactionDto.Amount;
-                _context.Transactions.Add(rightTransaction);
-                _context.Transfers.Add(new Transfer {
-                    TransferId = Guid.NewGuid(),
-                    LeftTransactionId = transaction.TransactionId,
-                    RightTransactionId = rightTransaction.TransactionId
-                });
-                _context.Transfers.Add(new Transfer {
-                    TransferId = Guid.NewGuid(),
-                    RightTransactionId = transaction.TransactionId,
-                    LeftTransactionId = rightTransaction.TransactionId
-                });
+            if (transactionDto.TransactionType == TRANSACTION_TYPE.TRANSFER)
+            {
+                CreateTransferFrom(transactionDto, transaction.TransactionId);
             }
             _context.SaveChanges();
-            // using (var conn = Connection)
-            // {
-            //     conn.Open();
-            //     using (var trx = conn.BeginTransaction())
-            //     {
-            //         try
-            //         {
-            //             conn.Execute(
-            //             @"INSERT INTO transactions (transaction_id, account_id, vendor, description, is_reconciled, transaction_date, category_id,
-            //         entered_date, amount, related_transaction_id, invoice_id, transaction_type)
-            //         VALUES (@TransactionId, @AccountId, @Vendor, @Description, @IsReconciled, @TransactionDate, @CategoryId,
-            //         @EnteredDate, @Amount, @RelatedTransactionId, @InvoiceId, @TransactionType)
-            //     ", transaction, trx);
-            //             if (transaction.InvoiceId.HasValue)
-            //             {
-            //                 UpdateInvoice(transaction.InvoiceId.Value, conn, trx);
-            //             }
-            //             if (transaction.CategoryId.HasValue)
-            //             {
-            //                 UpdateVendor(transaction.Vendor, transaction.CategoryId.Value, conn, trx);
-            //             }
-            //             trx.Commit();
-            //         }
-            //         catch
-            //         {
-            //             trx.Rollback();
-            //             throw;
-            //         }
-            //         finally
-            //         {
-            //             conn.Close();
-            //         }
-            //     }
-            // }
+        }
+
+        private void CreateTransferFrom(TransactionForDisplay transactionDto, Guid relatedTransactionId)
+        {
+            var rightTransaction = transactionDto.ShallowMap();
+            rightTransaction.TransactionId = Guid.NewGuid();
+            rightTransaction.AccountId = transactionDto.RelatedAccountId.Value;
+            rightTransaction.Amount = 0 - transactionDto.Amount;
+            _context.Transactions.Add(rightTransaction);
+            _context.Transfers.Add(new Transfer
+            {
+                TransferId = Guid.NewGuid(),
+                LeftTransactionId = relatedTransactionId,
+                RightTransactionId = rightTransaction.TransactionId
+            });
+            _context.Transfers.Add(new Transfer
+            {
+                TransferId = Guid.NewGuid(),
+                RightTransactionId = relatedTransactionId,
+                LeftTransactionId = rightTransaction.TransactionId
+            });
         }
 
         public TransactionListModel GetByAccount(Guid accountId, int? page)
