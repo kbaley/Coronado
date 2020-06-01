@@ -158,7 +158,7 @@ export class NewTransactionRow extends Component {
       mortgagePayment = relatedAccount.mortgagePayment;
     }
     if (categoryId.substring(0, 4) === "PMT:") {
-      transactionType = "INVOICE";
+      transactionType = "INVOICE_PAYMENT";
 
       invoiceId = selectedCategory.invoiceId;
       categoryId = '';

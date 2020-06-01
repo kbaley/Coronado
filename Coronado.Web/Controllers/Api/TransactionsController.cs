@@ -7,6 +7,7 @@ using Coronado.Web.Controllers.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using System.Threading.Tasks;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -82,13 +83,13 @@ namespace Coronado.Web.Controllers.Api
             if (transaction.InvoiceId.HasValue)
             {
                 var invoice = _context.FindInvoiceEager(transaction.InvoiceId.Value);
-                invoiceDto = _mapper.Map<InvoiceForPosting>(invoice);    
+                invoiceDto = _mapper.Map<InvoiceForPosting>(invoice);
             }
             return Ok(new { transaction, originalAmount, accountBalances = _accountRepo.GetAccountBalances(), invoiceDto });
         }
 
         [HttpPost]
-        public IActionResult PostTransaction([FromBody] TransactionForDisplay transaction)
+        public async Task<IActionResult> PostTransaction([FromBody] TransactionForDisplay transaction)
         {
             var transactions = new List<TransactionForDisplay>();
             if (transaction.TransactionId == null || transaction.TransactionId == Guid.Empty) transaction.TransactionId = Guid.NewGuid();
@@ -115,7 +116,7 @@ namespace Coronado.Web.Controllers.Api
             InvoiceForPosting invoiceDto = null;
             if (transaction.InvoiceId.HasValue)
             {
-                var invoice = _context.FindInvoiceEager(transaction.InvoiceId.Value);
+                var invoice = await _context.FindInvoiceEager(transaction.InvoiceId.Value).ConfigureAwait(false);
                 invoiceDto = _mapper.Map<InvoiceForPosting>(invoice);
             }
             var vendor = _context.Vendors.SingleOrDefault(v => v.Name == transaction.Vendor);
