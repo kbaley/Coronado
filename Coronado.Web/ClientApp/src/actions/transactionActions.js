@@ -70,10 +70,10 @@ export const updateTransaction = (transaction) => {
   }
 }
 
-export const createTransaction = (transaction, transactionType) => {
+export const createTransaction = (transaction) => {
   return async (dispatch) => {
 
-    const newTransaction = await TransactionApi.createTransaction(transaction, transactionType);
+    const newTransaction = await TransactionApi.createTransaction(transaction);
 
     dispatch(createTransactionSuccess(newTransaction));
   }

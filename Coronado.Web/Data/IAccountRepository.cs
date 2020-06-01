@@ -5,8 +5,7 @@ using Coronado.Web.Domain;
 namespace Coronado.Web.Data
 {
     public interface IAccountRepository {
-        IEnumerable<Account> GetAll();
-        Account Get(Guid accountId);
+        IEnumerable<Account> GetAllWithBalances();
         IEnumerable<Account> GetAccountBalances();
     }
 }

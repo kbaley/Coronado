@@ -33,14 +33,14 @@ namespace Coronado.Web.Controllers.Api
             _transactionRepo = transactionRepo;
             _logger = logger;
             _mapper = mapper;
-            _qifParser = new QifParser(context, accountRepo);
+            _qifParser = new QifParser(context);
         }
 
         // GET: api/Accounts
         [HttpGet]
         public IEnumerable<Account> GetAccounts()
         {
-            return _accountRepo.GetAll();
+            return _accountRepo.GetAllWithBalances();
         }
 
         [HttpPut("{id}")]
@@ -57,22 +57,9 @@ namespace Coronado.Web.Controllers.Api
         public IActionResult PostQif([FromForm] AccountQifViewModel model)
         {
             var transactions = _qifParser.Parse(model.File, model.AccountId, model.FromDate);
-            var relatedTransactions = transactions.Where(t => t.RelatedTransactionId.HasValue);
-            var unrelatedTransactions = transactions.Where(t => !t.RelatedTransactionId.HasValue);
-            foreach (var trx in unrelatedTransactions)
+            foreach (var trx in transactions)
             {
                 _transactionRepo.Insert(trx);
-            }
-            var processed = new List<Guid>();
-            foreach (var trx in relatedTransactions)
-            {
-                if (!processed.Contains(trx.TransactionId))
-                {
-                    var related = relatedTransactions.Single(t => t.TransactionId == trx.RelatedTransactionId.Value);
-                    _transactionRepo.InsertRelatedTransaction(trx, related);
-                    processed.Add(trx.TransactionId);
-                    processed.Add(related.TransactionId);
-                }
             }
             return CreatedAtAction("PostQif", new { id = model.AccountId }, transactions);
         }

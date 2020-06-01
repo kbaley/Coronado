@@ -5,18 +5,17 @@ using System.Linq;
 using Coronado.Web.Data;
 using Coronado.Web.Controllers.Dtos;
 using Microsoft.AspNetCore.Http;
+using Coronado.Web.Domain;
 
 namespace Coronado.Web.Controllers.Api
 {
     public class QifParser
     {
         private readonly CoronadoDbContext _context;
-        private readonly IAccountRepository _accountRepo;
 
-        public QifParser(CoronadoDbContext context, IAccountRepository accountRepo)
+        public QifParser(CoronadoDbContext context)
         {
             _context = context;
-            _accountRepo = accountRepo;
         }
 
         public IEnumerable<TransactionForDisplay> Parse(IFormFile file, Guid accountId, DateTime? fromDate)
@@ -74,6 +73,7 @@ namespace Coronado.Web.Controllers.Api
                 TransactionId = Guid.NewGuid(),
                 AccountId = accountId,
                 EnteredDate = DateTime.Now,
+                TransactionType = TRANSACTION_TYPE.REGULAR,
                 Vendor = ""
             };
             while (reader.Peek() >= 0)
@@ -88,25 +88,11 @@ namespace Coronado.Web.Controllers.Api
                             {
                                 if (trx.Vendor.StartsWith("Transfer :", StringComparison.CurrentCultureIgnoreCase))
                                 {
-
-                                    // For positive transfers, assume they've been handled elsewhere
-                                    if (trx.Amount > 0) break;
-                                    var accountName = trx.Vendor.Replace("Transfer : ", "");
-                                    var account = _accountRepo.GetAll().Single(a => a.Name == accountName);
-                                    var relatedTransaction = new TransactionForDisplay
-                                    {
-                                        TransactionId = Guid.NewGuid(),
-                                        AccountId = account.AccountId,
-                                        EnteredDate = trx.EnteredDate,
-                                        Amount = 0 - trx.Amount,
-                                        Description = trx.Description,
-                                        IsReconciled = trx.IsReconciled,
-                                        TransactionDate = trx.TransactionDate,
-                                        RelatedTransactionId = trx.TransactionId
-                                    };
+                                    var relatedAccountName = trx.Vendor.Replace("Transfer : ", "");
+                                    var relatedAccount = _context.Accounts.Single(a => a.Name == relatedAccountName);
+                                    trx.TransactionType = TRANSACTION_TYPE.TRANSFER;
+                                    trx.RelatedAccountId = relatedAccount.AccountId;
                                     trx.Vendor = "";
-                                    trx.RelatedTransactionId = relatedTransaction.TransactionId;
-                                    transactions.Add(relatedTransaction);
                                 }
                                 trx.SetDebitAndCredit();
                                 transactions.Add(trx);
@@ -116,6 +102,7 @@ namespace Coronado.Web.Controllers.Api
                                 TransactionId = Guid.NewGuid(),
                                 AccountId = accountId,
                                 EnteredDate = DateTime.Now,
+                                TransactionType = TRANSACTION_TYPE.REGULAR,
                                 Vendor = ""
                             };
                             break;

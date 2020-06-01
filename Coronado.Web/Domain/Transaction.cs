@@ -48,6 +48,7 @@ namespace Coronado.Web.Domain
         REGULAR,
         TRANSFER,
         INVOICE_PAYMENT,
-        INVESTMENT
+        INVESTMENT,
+        MORTGAGE_PAYMENT,
     }
 }

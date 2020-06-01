@@ -11,11 +11,10 @@ namespace Coronado.Web.Data
     {
         TransactionListModel GetByAccount(Guid accountId, int? page);
         IEnumerable<TransactionForDisplay> GetByAccount(Guid accountId);
-        void Insert(TransactionForDisplay transaction);
+        IEnumerable<Transaction> Insert(TransactionForDisplay transaction);
         Transaction Update(TransactionForDisplay transaction);
         void Delete(Guid transactionId);
         TransactionForDisplay Get(Guid transactionId);
-        void InsertRelatedTransaction(TransactionForDisplay first, TransactionForDisplay second);
         decimal GetNetWorthFor(DateTime date);
 
         IEnumerable<CategoryTotal> GetTransactionsByCategoryType(string categoryType, DateTime start, DateTime end);

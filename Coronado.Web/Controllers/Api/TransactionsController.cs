@@ -52,7 +52,6 @@ namespace Coronado.Web.Controllers.Api
             }
 
             var transaction = _transactionRepo.Get(id);
-            _transactionRepo.Delete(id);
             InvoiceForPosting invoiceDto = null;
             if (transaction.InvoiceId.HasValue)
             {
@@ -61,6 +60,7 @@ namespace Coronado.Web.Controllers.Api
                 _context.Entry(invoice).Reference(i => i.Customer).Load();
                 invoiceDto = _mapper.Map<InvoiceForPosting>(invoice);
             }
+            _transactionRepo.Delete(id);
 
             return Ok(new { transaction, accountBalances = _accountRepo.GetAccountBalances(), invoiceDto });
         }
@@ -94,7 +94,7 @@ namespace Coronado.Web.Controllers.Api
             if (transaction.TransactionId == null || transaction.TransactionId == Guid.Empty) transaction.TransactionId = Guid.NewGuid();
             if (transaction.AccountId == null)
             {
-                transaction.AccountId = _accountRepo.GetAll().Single(a => a.Name.Equals(transaction.AccountName, StringComparison.CurrentCultureIgnoreCase)).AccountId;
+                transaction.AccountId = _accountRepo.GetAllWithBalances().Single(a => a.Name.Equals(transaction.AccountName, StringComparison.CurrentCultureIgnoreCase)).AccountId;
             }
             transaction.SetAmount();
             transaction.EnteredDate = DateTime.Now;
@@ -103,7 +103,7 @@ namespace Coronado.Web.Controllers.Api
                 transaction.CategoryId = _context.GetOrCreateCategory(transaction.CategoryName).GetAwaiter().GetResult().CategoryId;
             }
 
-            var bankFeeTransactions = TransactionHelpers.GetBankFeeTransactions(transaction, _accountRepo, _context);
+            var bankFeeTransactions = TransactionHelpers.GetBankFeeTransactions(transaction, _context);
             transactions.Add(transaction);
             transactions.AddRange(bankFeeTransactions);
             foreach (var trx in transactions)

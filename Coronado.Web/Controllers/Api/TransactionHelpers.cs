@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using Coronado.Web.Data;
 using Coronado.Web.Controllers.Dtos;
+using Coronado.Web.Domain;
 
 namespace Coronado.Web.Controllers {
     class TransactionHelpers {
 
         public static IEnumerable<TransactionForDisplay> GetBankFeeTransactions(TransactionForDisplay newTransaction, 
-            IAccountRepository accountRepo, CoronadoDbContext context) {
+            CoronadoDbContext context) {
             var transactions = new List<TransactionForDisplay>();
             var description = newTransaction.Description;
 
             var category = context.GetOrCreateCategory("Bank Fees").GetAwaiter().GetResult();
-            var account = accountRepo.Get(newTransaction.AccountId.Value);
+            var vendor = context.Accounts.Find(newTransaction.AccountId.Value).Vendor;
             if (description.Contains("bf:", StringComparison.CurrentCultureIgnoreCase)) {
                 newTransaction.Description = description.Substring(0, description.IndexOf("bf:", StringComparison.CurrentCultureIgnoreCase));
                 var parsed = description.Substring(description.IndexOf("bf:", 0, StringComparison.CurrentCultureIgnoreCase));
@@ -30,7 +31,7 @@ namespace Coronado.Web.Controllers {
                             AccountId = newTransaction.AccountId,
                             CategoryId = category.CategoryId,
                             Description = bankFeeDescription,
-                            Vendor = account.Vendor,
+                            Vendor = vendor,
                             Amount = 0 - amount,
                             Debit = amount,
                             EnteredDate = newTransaction.EnteredDate

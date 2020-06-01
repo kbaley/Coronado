@@ -37,11 +37,12 @@ export class NewTransactionRow extends Component {
         accountId: props.account.accountId,
         credit: '',
         debit: '',
-        invoiceId: ''
+        invoiceId: '',
+        transactionType: 'REGULAR',
       },
       selectedCategory: {},
       categories: [],
-      transactionType: "Transaction",
+      transactionType: "REGULAR",
       mortgageType: '',
       mortgagePayment: ''
     }
@@ -112,7 +113,7 @@ export class NewTransactionRow extends Component {
   handleChangeDebit(e) {
     let credit = '';
     const debit = e.target.value;
-    if (this.state.transactionType === "Mortgage" && this.state.mortgageType === 'fixedPayment' && debit !== '') {
+    if (this.state.transactionType === "MORTGAGE_PAYMENT" && this.state.mortgageType === 'fixedPayment' && debit !== '') {
       credit = this.state.mortgagePayment - Number(debit);
     }
     this.setState({ trx: { ...this.state.trx, debit, credit } });
@@ -134,7 +135,7 @@ export class NewTransactionRow extends Component {
       return;
     }
     let categoryId = selectedCategory.categoryId;
-    let transactionType = "Transaction";
+    let transactionType = "REGULAR";
     let mortgageType = '';
     let mortgagePayment = '';
     let invoiceId = '';
@@ -143,12 +144,12 @@ export class NewTransactionRow extends Component {
     let credit = this.state.trx.credit;
     let relatedAccountId = '';
     if (categoryId.substring(0, 4) === "TRF:") {
-      transactionType = "Transfer";
+      transactionType = "TRANSFER";
       relatedAccountId = categoryId.substring(4);
       categoryId = '';
     }
     if (categoryId.substring(0, 4) === "MRG:") {
-      transactionType = "Mortgage";
+      transactionType = "MORTGAGE_PAYMENT";
       relatedAccountId = categoryId.substring(4);
       const relatedAccount = find(this.props.accounts, a => a.accountId === relatedAccountId);
       categoryId = '';
@@ -157,14 +158,14 @@ export class NewTransactionRow extends Component {
       mortgagePayment = relatedAccount.mortgagePayment;
     }
     if (categoryId.substring(0, 4) === "PMT:") {
-      transactionType = "Payment";
+      transactionType = "INVOICE";
 
       invoiceId = selectedCategory.invoiceId;
       categoryId = '';
       credit = selectedCategory.balance;
     }
     this.setState({
-      trx: { ...this.state.trx, categoryId, debit, credit, categoryDisplay, invoiceId, relatedAccountId },
+      trx: { ...this.state.trx, categoryId, debit, credit, categoryDisplay, invoiceId, relatedAccountId, transactionType },
       transactionType,
       mortgageType,
       mortgagePayment,
@@ -173,7 +174,7 @@ export class NewTransactionRow extends Component {
   }
 
   saveTransaction() {
-    this.props.actions.createTransaction(this.state.trx, this.state.transactionType);
+    this.props.actions.createTransaction(this.state.trx);
 
     this.setState(
       {
@@ -190,7 +191,7 @@ export class NewTransactionRow extends Component {
           relatedAccountId: ''
         },
         selectedCategory: { value: null },
-        transactionType: "Transaction",
+        transactionType: "REGULAR",
       }
     );
     this.setFocus();

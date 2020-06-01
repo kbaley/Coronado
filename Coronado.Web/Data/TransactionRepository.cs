@@ -107,6 +107,14 @@ namespace Coronado.Web.Data
                         break;
                     case TRANSACTION_TYPE.INVESTMENT:
                         // Delete investment transaction, transfer, and related transaction
+                        var investmentTransactions = _context.InvestmentTransactions
+                            .Where(t => t.TransactionId == dbTransaction.TransactionId).ToList();
+                        foreach (var item in investmentTransactions)
+                        {
+                            _context.InvestmentTransactions.Remove(item); 
+                        }
+                        DeleteTransfersFor(dbTransaction);
+                        
                         break;
                 }
                 switch (transaction.TransactionType)
@@ -156,10 +164,18 @@ namespace Coronado.Web.Data
             }
         }
 
-        public void Insert(TransactionForDisplay transactionDto)
+        public IEnumerable<Transaction> Insert(TransactionForDisplay transactionDto)
         {
+            var transactionList = new List<Transaction>();
             var transaction = transactionDto.ShallowMap();
+            transactionList.Add(transaction);
             _context.Transactions.Add(transaction);
+            var bankFeeTransactions = GetBankFeeTransactions(transactionDto);
+            foreach (var trx in bankFeeTransactions)
+            {
+                _context.Transactions.Add(trx);    
+            }
+            transactionList.AddRange(bankFeeTransactions);
             UpdateInvoiceBalance(transaction.InvoiceId);
             AddOrUpdateVendor(transactionDto.Vendor, transactionDto.CategoryId);
             if (transactionDto.TransactionType == TRANSACTION_TYPE.TRANSFER)
@@ -167,6 +183,7 @@ namespace Coronado.Web.Data
                 CreateTransferFrom(transactionDto, transaction.TransactionId);
             }
             _context.SaveChanges();
+            return transactionList;
         }
 
         private void CreateTransferFrom(TransactionForDisplay transactionDto, Guid relatedTransactionId)
@@ -193,20 +210,36 @@ namespace Coronado.Web.Data
         public TransactionListModel GetByAccount(Guid accountId, int? page)
         {
             var thePage = page ?? 0;
-            var allTransactions = GetByAccount(accountId)
+            var transactionList = _context.Transactions
+                .Include(t => t.LeftTransfer)
+                .Include(t => t.LeftTransfer.RightTransaction)
+                .Include(t => t.LeftTransfer.RightTransaction.Account)
+                .Include(t => t.Category)
+                .Include(t => t.Account)
+                .Where(t => t.AccountId == accountId)
                 .OrderByDescending(t => t.TransactionDate)
-                .ThenByDescending(t => t.EnteredDate);
+                .ThenByDescending(t => t.EnteredDate)
+                .Skip(PAGE_SIZE * thePage).Take(PAGE_SIZE)
+                .ToList();
+            var transactions = transactionList
+                .Select(t => _mapper.Map<TransactionForDisplay>(t))
+                .ToList();
 
-            var transactions = allTransactions
-                .Skip(PAGE_SIZE * thePage).Take(PAGE_SIZE);
-            var restOfTransactions = allTransactions
-                .Skip(PAGE_SIZE * (thePage + 1));
-            var startingBalance = restOfTransactions.Sum(t => t.Amount);
+            var remainingTransactionCount = _context.Transactions
+                .Count(t => t.AccountId == accountId) - transactions.Count();
+            var startingBalance = _context.Transactions
+                .Where(t => t.AccountId == accountId)
+                .OrderByDescending(t => t.TransactionDate)
+                .ThenByDescending(t => t.EnteredDate)
+                .Skip(PAGE_SIZE * (thePage + 1))
+                .Sum(t => t.Amount);
+            transactions.ForEach(t => t.SetDebitAndCredit());
+
             var model = new TransactionListModel
             {
                 Transactions = transactions,
                 StartingBalance = startingBalance,
-                RemainingTransactionCount = restOfTransactions.Count(),
+                RemainingTransactionCount = remainingTransactionCount,
                 Page = thePage
             };
             return model;
@@ -221,6 +254,8 @@ namespace Coronado.Web.Data
                 .Include(t => t.Category)
                 .Include(t => t.Account)
                 .Where(t => t.AccountId == accountId)
+                .OrderByDescending(t => t.TransactionDate)
+                .ThenByDescending(t => t.EnteredDate)
                 .Select(t => _mapper.Map<TransactionForDisplay>(t))
                 .ToList();
             transactions.ForEach(t => t.SetDebitAndCredit());
@@ -304,15 +339,6 @@ namespace Coronado.Web.Data
             }
         }
 
-        public void InsertRelatedTransaction(TransactionForDisplay first, TransactionForDisplay second)
-        {
-            first.RelatedTransactionId = null;
-            Insert(first);
-            Insert(second);
-            first.RelatedTransactionId = second.TransactionId;
-            Update(first);
-        }
-
         public async Task<IEnumerable<dynamic>> GetMonthlyTotalsForCategory(Guid categoryId, DateTime start, DateTime end)
         {
             using (var conn = Connection)
@@ -331,5 +357,42 @@ namespace Coronado.Web.Data
                 return results;
             }
         }
+
+        private IEnumerable<Transaction> GetBankFeeTransactions(TransactionForDisplay newTransaction)
+        {
+            var transactions = new List<Transaction>();
+            var description = newTransaction.Description;
+            if (!description.Contains("bf:", StringComparison.CurrentCultureIgnoreCase)) {
+                return transactions;
+            }
+
+            var category = _context.GetOrCreateCategory("Bank Fees").GetAwaiter().GetResult();
+            var vendor = _context.Accounts.Find(newTransaction.AccountId.Value).Vendor;
+                newTransaction.Description = description.Substring(0, description.IndexOf("bf:", StringComparison.CurrentCultureIgnoreCase));
+                var parsed = description.Substring(description.IndexOf("bf:", 0, StringComparison.CurrentCultureIgnoreCase));
+                while (parsed.StartsWith("bf:", StringComparison.CurrentCultureIgnoreCase)) {
+                    var next = parsed.IndexOf("bf:", 1, StringComparison.CurrentCultureIgnoreCase);
+                    if (next == -1) next = parsed.Length;
+                    var transactionData = parsed.Substring(3, next - 3).Trim().Split(" ");
+                    decimal amount;
+                    if (decimal.TryParse(transactionData[0], out amount)) {
+                        var bankFeeDescription = string.Join(" ", transactionData.Skip(1).ToArray());
+                        var transaction = new Transaction {
+                            TransactionId = Guid.NewGuid(),
+                            TransactionDate = newTransaction.TransactionDate,
+                            AccountId = newTransaction.AccountId.Value,
+                            CategoryId = category.CategoryId,
+                            Description = bankFeeDescription,
+                            Vendor = vendor,
+                            Amount = 0 - amount,
+                            EnteredDate = newTransaction.EnteredDate
+                        };
+                        transactions.Add(transaction);
+                    }
+                    parsed = parsed.Substring(next);
+                } 
+            return transactions;
+        }
+
     }
 }
