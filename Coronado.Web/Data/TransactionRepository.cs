@@ -219,6 +219,7 @@ namespace Coronado.Web.Data
                 .Where(t => t.AccountId == accountId)
                 .OrderByDescending(t => t.TransactionDate)
                 .ThenByDescending(t => t.EnteredDate)
+                .ThenBy(t => t.TransactionId)
                 .Skip(PAGE_SIZE * thePage).Take(PAGE_SIZE)
                 .ToList();
             var transactions = transactionList
@@ -231,7 +232,8 @@ namespace Coronado.Web.Data
                 .Where(t => t.AccountId == accountId)
                 .OrderByDescending(t => t.TransactionDate)
                 .ThenByDescending(t => t.EnteredDate)
-                .Skip(PAGE_SIZE * (thePage + 1))
+                .ThenBy(t => t.TransactionId)
+                .Skip(transactionList.Count())
                 .Sum(t => t.Amount);
             transactions.ForEach(t => t.SetDebitAndCredit());
 
