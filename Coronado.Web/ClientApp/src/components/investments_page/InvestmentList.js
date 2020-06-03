@@ -75,6 +75,7 @@ class InvestmentList extends Component {
             <TableCell>Currency</TableCell>
             <TableCell>Shares</TableCell>
             <TableCell align={'right'}>Last Price</TableCell>
+            <TableCell align={'right'}>Average Price</TableCell>
             <TableCell align={'right'}>Current Value</TableCell>
           </TableRow>
         </TableHead>

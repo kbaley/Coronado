@@ -34,6 +34,7 @@ export function InvestmentRow({investment, onEdit, onDelete, openPriceHistory}) 
       <TableCell>{investment.currency}</TableCell>
       <TableCell>{investment.shares}</TableCell>
       <TableCell><MoneyFormat amount={investment.lastPrice} /></TableCell>
+      <TableCell><MoneyFormat amount={investment.averagePrice} /></TableCell>
       <TableCell><MoneyFormat amount={investment.currentValue} /></TableCell>
     </TableRow>
   );

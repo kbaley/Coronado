@@ -15,18 +15,12 @@ namespace Coronado.Web.Domain
         public string Name { get; set; }
         public string Symbol { get; set; }
         public decimal Shares { get; set; }
-        public decimal AveragePrice { get; set; }
-        [NotMapped]
-        public decimal LastPrice { get; set; }
         public DateTime LastRetrieved { get; set; }
         public string Currency { get; set; }
         public bool DontRetrievePrices { get; set; }
         public List<InvestmentPrice> HistoricalPrices { get; set; }
         public List<InvestmentTransaction> Transactions { get; set; }
 
-        public bool CanLookUp() {
-            return !string.IsNullOrWhiteSpace(Symbol) && LastRetrieved < DateTime.Today;
-        }
         public decimal GetLastPriceAmount() {
             var lastPrice = GetLastPrice();
             return lastPrice == null ? 0.00m : lastPrice.Price;
@@ -38,15 +32,15 @@ namespace Coronado.Web.Domain
             return HistoricalPrices.OrderByDescending(p => p.Date).First();
         }
 
-    }
-
-    public static class InvestmentExtensions {
-        public static decimal GetLastPrice(this Investment investment) {
-            if (investment.HistoricalPrices == null || investment.HistoricalPrices.Count == 0) return 0;
-            var lastPrice = investment.HistoricalPrices
-                .OrderByDescending(p => p.Date)
-                .First();
-            return lastPrice.Price;
+        public decimal GetNumberOfShares() {
+            return Transactions.Sum(t => t.Shares);
         }
+
+        public decimal GetAveragePricePaid() {
+            var numShares = GetNumberOfShares();
+            if (numShares == 0) return 0;
+            return Transactions.Sum(t => t.Shares * t.Price) / numShares;
+        }
+
     }
 }
