@@ -45,7 +45,7 @@ export const deleteCustomer = (customerId, customerName) => {
   return async function(dispatch, getState) {
     const notificationOpts = {
       message: 'Customer ' + customerName + ' deleted',
-      position: 'br',
+      position: 'bl',
       onRemove: () => { deleteCustomerForReal(customerId, getState().deletedCustomers) },
       action: {
         label: 'Undo',

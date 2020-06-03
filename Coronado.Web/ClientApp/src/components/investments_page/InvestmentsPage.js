@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import * as investmentActions from '../../actions/investmentActions';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { useSelector, useDispatch } from 'react-redux';
 import NewInvestment from "./NewInvestment";
 import InvestmentList from "./InvestmentList";
 import TodaysPrices from "./TodaysPrices";
@@ -14,71 +13,48 @@ import { orderBy } from 'lodash';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 
-class InvestmentsPage extends Component {
-  constructor(props) {
-    super(props);
-    this.makeCorrectingEntries = this.makeCorrectingEntries.bind(this);
-    this.getLatestPrices = this.getLatestPrices.bind(this);
-    this.saveTodaysPrices = this.saveTodaysPrices.bind(this);
+export default function InvestmentsPage() {
+
+  const investments = useSelector(state => state.investments);
+  const dispatch = useDispatch();
+
+  const makeCorrectingEntries = () => {
+    dispatch(investmentActions.makeCorrectingEntries());
   }
 
-  makeCorrectingEntries() {
-    this.props.actions.makeCorrectingEntries();
+  const getLatestPrices = () => {
+    dispatch(investmentActions.getLatestPrices());
   }
 
-  getLatestPrices() {
-    this.props.actions.getLatestPrices();
+  const saveTodaysPrices = (investments) => {
+    dispatch(investmentActions.saveTodaysPrices(investments));
   }
 
-  saveTodaysPrices(investments) {
-    this.props.actions.saveTodaysPrices(investments);
-  }
-
-  render() {
     return (
       <div>
         <div style={{float: "right", width: "150px", textAlign: "right"}}>
           <Icon 
-            onClick={this.makeCorrectingEntries} 
+            onClick={makeCorrectingEntries} 
             title="Sync with Investments accont" 
             icon={<SwapHorizIcon />}
           />
           <Icon 
-            onClick={this.getLatestPrices} 
+            onClick={getLatestPrices} 
             title="Get latest prices from Yahoo" 
             icon={<CloudDownloadIcon />}
           />
         </div>
         <h1>
           Investments <NewInvestment /> <TodaysPrices 
-            investments={orderBy(this.props.investments, ['symbol'], ['asc'])} 
-            onSave={this.saveTodaysPrices} />
+            investments={orderBy(investments, ['symbol'], ['asc'])} 
+            onSave={saveTodaysPrices} />
         </h1>
         <h3>USD</h3>
-        <InvestmentList investments={filter(this.props.investments, i => i.currency === 'USD')} currency='USD' />
+        <InvestmentList investments={filter(investments, i => i.currency === 'USD')} currency='USD' />
         <h3>CAD</h3>
-        <InvestmentList investments={filter(this.props.investments, i => i.currency === 'CAD')} currency='CAD'>
+        <InvestmentList investments={filter(investments, i => i.currency === 'CAD')} currency='CAD'>
           <DisplayTotalRow text="Grand Total" value={getInvestmentsTotal()} />
         </InvestmentList>
       </div>
     );
-  }
 }
-
-function mapStateToProps(state) {
-  return {
-    investments: state.investments,
-    currencies: state.currencies,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(investmentActions, dispatch)
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(InvestmentsPage);

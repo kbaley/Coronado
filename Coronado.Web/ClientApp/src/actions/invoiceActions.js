@@ -54,7 +54,7 @@ export const emailInvoice = (invoiceId) => {
     const invoice = await InvoiceApi.emailInvoice(invoiceId);
     const notificationOpts = {
       message: 'Invoice ' + invoice.invoiceNumber + ' sent to ' + invoice.customer.email,
-      position: 'br'
+      position: 'bl'
     };
     dispatch(emailInvoiceSuccess(invoice));
     dispatch(info(notificationOpts));
@@ -65,7 +65,7 @@ export const deleteInvoice = (invoiceId, invoiceNumber) => {
   return async function(dispatch, getState) {
     const notificationOpts = {
       message: 'Invoice ' + invoiceNumber + ' deleted',
-      position: 'br',
+      position: 'bl',
       onRemove: () => { deleteInvoiceForReal(invoiceId, getState().deletedInvoices) },
       action: {
         label: 'Undo',

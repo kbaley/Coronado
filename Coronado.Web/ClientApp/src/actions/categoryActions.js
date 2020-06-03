@@ -38,7 +38,7 @@ export const deleteCategory = (categoryId, categoryName) => {
   return async function(dispatch, getState) {
     const notificationOpts = {
       message: 'Category ' + categoryName + ' deleted',
-      position: 'br',
+      position: 'bl',
       onRemove: () => { deleteCategoryForReal(categoryId, getState().deletedCategories) },
       action: {
         label: 'Undo',

@@ -43,7 +43,7 @@ export const getLatestPrices = () => {
         dispatch(loadInvestmentsSuccess(updatedInvestments));
       const notificationOpts = {
         message: message,
-        position: 'br',
+        position: 'bl',
         level: 'success',
         autoDismiss: 5,
         dismissible: 'click',
@@ -54,7 +54,7 @@ export const getLatestPrices = () => {
 
       const notificationOpts = {
         message: 'Something went wrong updating the prices',
-        position: 'br',
+        position: 'bl',
         level: 'warning',
         autoDismiss: 5,
         dismissible: 'click',
@@ -73,7 +73,7 @@ export const makeCorrectingEntries = () => {
 
       const notificationOpts = {
         message: 'The entry to sync the investments with the investment account has been created',
-        position: 'br',
+        position: 'bl',
         level: 'success',
         autoDismiss: 5,
         dismissible: 'click',
@@ -84,7 +84,7 @@ export const makeCorrectingEntries = () => {
     } else {
       const notificationOpts = {
         message: 'Either no entry is necessary or no investment account was found.',
-        position: 'br',
+        position: 'bl',
         level: 'warning',
         autoDismiss: 5,
         dismissible: 'click',
@@ -127,7 +127,7 @@ export const deleteInvestment = (investmentId, investmentName) => {
   return async function(dispatch, getState) {
     const notificationOpts = {
       message: 'Investment ' + investmentName + ' deleted',
-      position: 'br',
+      position: 'bl',
       onRemove: () => { deleteInvestmentForReal(investmentId, getState().deletedInvestments) },
       action: {
         label: 'Undo',
