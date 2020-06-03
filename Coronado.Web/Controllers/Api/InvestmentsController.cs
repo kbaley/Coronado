@@ -143,10 +143,10 @@ namespace Coronado.Web.Controllers.Api
             var currency = currencyController.GetExchangeRateFor("CAD").GetAwaiter().GetResult();
             var investmentsTotal = investments
                 .Where(i => i.Currency == "CAD").ToList()
-                .Sum(i => i.GetLastPriceAmount() * i.Shares / currency);
+                .Sum(i => i.GetCurrentValue() / currency);
             investmentsTotal += investments
                 .Where(i => i.Currency == "USD").ToList()
-                .Sum(i => i.GetLastPriceAmount() * i.Shares);
+                .Sum(i => i.GetCurrentValue());
             var investmentAccount = _context.Accounts.FirstOrDefault(a => a.AccountType == "Investment");
             if (investmentAccount == null)
                 return Ok();
@@ -263,15 +263,28 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        public IActionResult Delete([FromRoute] Guid id)
         {
-            var investment = await _context.Investments.FindAsync(id);
+            var investment = _context.Investments
+                .Include(i => i.Transactions)
+                .ThenInclude(t => t.Transaction)
+                .ThenInclude(t => t.LeftTransfer)
+                .ThenInclude(t => t.RightTransaction)
+                .ThenInclude(t => t.LeftTransfer)
+                .Single(i => i.InvestmentId == id);
+            foreach (var transaction in investment.Transactions)
+            {
+                _context.Transactions.Remove(transaction.Transaction.LeftTransfer.RightTransaction);
+                _context.Transactions.Remove(transaction.Transaction);
+                _context.Transfers.Remove(transaction.Transaction.LeftTransfer);
+                _context.Transfers.Remove(transaction.Transaction.LeftTransfer.RightTransaction.LeftTransfer);
+            }
             if (investment == null)
             {
                 return NotFound();
             }
             _context.Investments.Remove(investment);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return Ok(investment);
         }
     }

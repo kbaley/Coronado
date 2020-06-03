@@ -15,7 +15,6 @@ namespace Coronado.Web.Domain
         public string Name { get; set; }
         public string Symbol { get; set; }
         public decimal Shares { get; set; }
-        public DateTime LastRetrieved { get; set; }
         public string Currency { get; set; }
         public bool DontRetrievePrices { get; set; }
         public List<InvestmentPrice> HistoricalPrices { get; set; }
@@ -40,6 +39,10 @@ namespace Coronado.Web.Domain
             var numShares = GetNumberOfShares();
             if (numShares == 0) return 0;
             return Transactions.Sum(t => t.Shares * t.Price) / numShares;
+        }
+
+        public decimal GetCurrentValue() {
+            return GetNumberOfShares() * GetLastPriceAmount();
         }
 
     }
