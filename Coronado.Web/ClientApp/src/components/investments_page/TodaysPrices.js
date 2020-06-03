@@ -135,7 +135,7 @@ class TodaysPrices extends Component {
               <TableBody>
               {this.state.investments && this.state.investments.map((i, index) => {
                 return (
-                  <TableRow key={i.investmentId}>
+                  <TableRow key={index}>
                     <TableCell>{i.symbol}</TableCell>
                     <TableCell><Moment format="M/D/YYYY">{i.lastPriceDate}</Moment></TableCell>
                     <TableCell>

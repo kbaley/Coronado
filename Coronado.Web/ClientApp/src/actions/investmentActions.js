@@ -13,11 +13,11 @@ export function loadInvestmentsAction() {
 }
 
 export function purchaseInvestmentSuccess(investment) {
-  return {type: types.PURCHASE_INVESTMENT_SUCCESS, investment};
+  return {type: types.PURCHASE_INVESTMENT_SUCCESS, ...investment};
 }
 
 export function updateInvestmentSuccess(investment) {
-  return {type: types.UPDATE_INVESTMENT_SUCCESS, investment};
+  return {type: types.UPDATE_INVESTMENT_SUCCESS, ...investment};
 }
 
 export function makeCorrectingEntriesSuccess(correctingEntryModel) {
