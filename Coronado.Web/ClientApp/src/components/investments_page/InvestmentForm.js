@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   Dialog,
   DialogContent,
@@ -15,15 +15,8 @@ import {
   Select,
 } from '@material-ui/core';
 
-class InvestmentForm extends Component {
-  displayName = InvestmentForm.name;
-  constructor(props) {
-    super(props);
-    this.saveInvestment = this.saveInvestment.bind(this);
-    this.handleChangeField = this.handleChangeField.bind(this);
-    this.state = {
-      newInvestment: true,
-      investment: { 
+export default function InvestmentForm(props) {
+  const [investment, setInvestment] = React.useState({
         name: '', 
         symbol: '', 
         shares: '', 
@@ -32,34 +25,27 @@ class InvestmentForm extends Component {
         currency: 'USD', 
         dontRetrievePrices: false,
         accountId: '',
-      }
-    };
-  }
+  });
 
-  componentDidUpdate() {
-    if (this.props.investment && this.props.investment.investmentId
-      && this.props.investment.investmentId !== this.state.investment.investmentId) {
-      this.setState({
-        newInvestment: false,
-        investment: {
-          investmentId: this.props.investment.investmentId,
-          name: this.props.investment.name,
-          symbol: this.props.investment.symbol || '',
-          shares: this.props.investment.shares || 0,
-          price: this.props.investment.price || 0.00,
-          currency: this.props.investment.currency || 'USD',
+  React.useEffect(() => {
+    if (props.investment) {
+        setInvestment({
+          investmentId: props.investment.investmentId,
+          name: props.investment.name,
+          symbol: props.investment.symbol || '',
+          shares: props.investment.shares || 0,
+          price: props.investment.price || 0.00,
+          currency: props.investment.currency || 'USD',
           date: new Date().toLocaleDateString(),
-          accountId: this.props.investment.transaction ? this.props.investment.transaction.accountId : '',
-          dontRetrievePrices: this.props.investment.dontRetrievePrices
-        }
-      });
+          accountId: props.investment.transaction ? props.investment.transaction.accountId : '',
+          dontRetrievePrices: props.investment.dontRetrievePrices
+        });
     }
-  }
+  }, [props.investment]);
 
-  saveInvestment() {
-    this.props.onSave(this.state.investment);
-    this.setState({ 
-      investment: { 
+  const saveInvestment = () => {
+    props.onSave(investment);
+    setInvestment({ 
         name: '', 
         symbol: '', 
         shares: '', 
@@ -68,24 +54,22 @@ class InvestmentForm extends Component {
         dontRetrievePrices: false ,
         date: new Date().toLocaleDateString(),
         accountId: '',
-      } 
     });
-    this.props.onClose();
+    props.onClose();
   }
 
-  handleChangeField(e) {
+  const handleChangeField = (e) => {
     var name = e.target.name;
     var value = e.target.value;
     if (e.target.type === "checkbox")
       value = e.target.checked;
-    this.setState({ investment: { ...this.state.investment, [name]: value } });
+    setInvestment({ ...investment, [name]: value });
   }
 
-  render() {
     return (
       <Dialog
-        onClose={this.props.onClose}
-        open={this.props.show}
+        onClose={props.onClose}
+        open={props.show}
         fullWidth={true}
         maxWidth={'sm'}
       >
@@ -97,16 +81,16 @@ class InvestmentForm extends Component {
                 name="name"
                 label="Investment name"
                 fullWidth={true}
-                value={this.state.investment.name}
-                onChange={this.handleChangeField} />
+                value={investment.name}
+                onChange={handleChangeField} />
             </Grid>
             <Grid item xs={3}>
               <TextField
                 name="symbol"
                 label="Symbol"
                 fullWidth={true}
-                value={this.state.investment.symbol}
-                onChange={this.handleChangeField}
+                value={investment.symbol}
+                onChange={handleChangeField}
               />
             </Grid>
             <Grid item xs={2}>
@@ -115,8 +99,8 @@ class InvestmentForm extends Component {
                 name="currency"
                 label="Currency"
                 fullWidth={true}
-                value={this.state.investment.currency}
-                onChange={this.handleChangeField}
+                value={investment.currency}
+                onChange={handleChangeField}
               >
                 <MenuItem value={'USD'}>USD</MenuItem>
                 <MenuItem value={'CAD'}>CAD</MenuItem>
@@ -127,8 +111,8 @@ class InvestmentForm extends Component {
                 name="shares"
                 label="Shares"
                 fullWidth={true}
-                value={this.state.investment.shares}
-                onChange={this.handleChangeField}
+                value={investment.shares}
+                onChange={handleChangeField}
               />
             </Grid>
             <Grid item xs={4}>
@@ -136,8 +120,8 @@ class InvestmentForm extends Component {
                 name="price"
                 label="Price"
                 fullWidth={true}
-                value={this.state.investment.price}
-                onChange={this.handleChangeField}
+                value={investment.price}
+                onChange={handleChangeField}
               />
             </Grid>
             <Grid item xs={4}>
@@ -145,8 +129,8 @@ class InvestmentForm extends Component {
                 name="date"
                 label="Date"
                 fullWidth={true}
-                value={this.state.investment.date}
-                onChange={this.handleChangeField}
+                value={investment.date}
+                onChange={handleChangeField}
               />
             </Grid>
             <Grid item xs={6}>
@@ -156,11 +140,11 @@ class InvestmentForm extends Component {
                   labelId="source-account"
                   name="accountId"
                   style={{"width": "250px"}}
-                  value={this.state.investment.accountId}
-                  onChange={this.handleChangeField}
+                  value={investment.accountId}
+                  onChange={handleChangeField}
                 >
                   <MenuItem value={''}>None</MenuItem>
-                  {this.props.accounts ? this.props.accounts.map(a =>
+                  {props.accounts ? props.accounts.map(a =>
                     <MenuItem value={a.accountId} key={a.accountId}>{a.name}</MenuItem>
                   ) : <MenuItem>Select...</MenuItem>
                   }
@@ -173,8 +157,8 @@ class InvestmentForm extends Component {
                   <Tooltip title="Check this to include the investment when downloading the daily prices">
                     <Checkbox
                       name='dontRetrievePrices'
-                      checked={!this.state.dontRetrievePrices}
-                      onChange={this.handleChangeField}
+                      checked={!investment.dontRetrievePrices}
+                      onChange={handleChangeField}
                     />
                   </Tooltip>
                 }
@@ -184,11 +168,9 @@ class InvestmentForm extends Component {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.saveInvestment}>Save</Button>
+          <Button onClick={saveInvestment}>Save</Button>
         </DialogActions>
       </Dialog>
     );
-  };
 }
 
-export default InvestmentForm;

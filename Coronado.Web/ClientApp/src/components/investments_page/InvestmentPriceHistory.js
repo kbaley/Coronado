@@ -34,7 +34,7 @@ class InvestmentPriceHistory extends Component {
           name: this.props.investment.name,
           symbol: this.props.investment.symbol || '',
         },
-        prices: orderBy(this.props.investment.historicalPrices, ['date'], ['desc']).map(p => ({
+        prices: orderBy(this.props.investment.historicalPrices, ['date'], ['asc']).map(p => ({
           ...p,
           status: "Unchanged"
         }))

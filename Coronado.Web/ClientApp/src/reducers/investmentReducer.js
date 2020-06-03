@@ -22,7 +22,8 @@ export const investmentReducer = (state = initialState.investments, action, dele
       const investments = cloneDeep(state);
       const index = findIndex(investments, i => i.investmentId === action.investment.investmentId);
       if (index > -1) {
-        return investments.splice(index, 1, action.investment);
+        investments.splice(index, 1, action.investment);
+        return investments;
       } else {
         return [
           ...state,

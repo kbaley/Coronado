@@ -20,8 +20,6 @@ class InvestmentsPage extends Component {
     this.makeCorrectingEntries = this.makeCorrectingEntries.bind(this);
     this.getLatestPrices = this.getLatestPrices.bind(this);
     this.saveTodaysPrices = this.saveTodaysPrices.bind(this);
-    this.state = {
-    }
   }
 
   makeCorrectingEntries() {
