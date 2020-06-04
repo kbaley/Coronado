@@ -138,7 +138,9 @@ namespace Coronado.Web.Controllers.Api
         [Route("[action]")]
         public async Task<IActionResult> MakeCorrectingEntries()
         {
-            var investments = _context.Investments.Include(i => i.HistoricalPrices);
+            var investments = _context.Investments
+                .Include(i => i.HistoricalPrices)
+                .Include(i => i.Transactions);
             var currencyController = new CurrenciesController(_context);
             var currency = currencyController.GetExchangeRateFor("CAD").GetAwaiter().GetResult();
             var investmentsTotal = investments
