@@ -15,6 +15,7 @@ namespace Coronado.Web.Controllers.Dtos
                 .ForMember(i => i.Shares, opt => opt.MapFrom(src => src.GetNumberOfShares()))
                 .ForMember(i => i.CurrentValue, opt => opt.MapFrom(src => Math.Round(src.GetCurrentValue(), 2)))
                 .ReverseMap();  
+            CreateMap<Investment, InvestmentForUpdateDto>().ReverseMap();
             CreateMap<InvestmentPrice, InvestmentPriceDto>().ReverseMap();  
             CreateMap<InvestmentTransaction, InvestmentTransactionDto>()
                 .ForMember(i => i.AccountId, opt => opt.MapFrom(src => src.GetAccountId()))

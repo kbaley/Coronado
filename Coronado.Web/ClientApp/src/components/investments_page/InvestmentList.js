@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import InvestmentForm from './InvestmentForm';
 import './InvestmentList.css';
-import { find } from 'lodash';
+import { find, orderBy } from 'lodash';
 import { InvestmentRow } from './InvestmentRow';
 import InvestmentsTotal from './InvestmentsTotal';
 import Spinner from '../common/Spinner';
@@ -65,6 +65,7 @@ class InvestmentList extends Component {
   }
 
   render() {
+    var investments = orderBy(this.props.investments, ['symbol'], ['asc']);
     return (
       <Table>
         <TableHead>
@@ -92,7 +93,7 @@ class InvestmentList extends Component {
             onSave={this.savePrices}
             investment={this.state.selectedInvestment} />
           {this.props.isLoading ? <tr><td colSpan="2"><Spinner /></td></tr> :
-            this.props.investments.map(i =>
+            investments.map(i =>
               <InvestmentRow
                 key={i.investmentId}
                 investment={i}

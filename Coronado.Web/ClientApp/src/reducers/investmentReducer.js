@@ -33,8 +33,8 @@ export const investmentReducer = (state = initialState.investments, action, dele
       
     case actions.UPDATE_INVESTMENT_SUCCESS:
       return [
-        ...state.filter(i => i.investmentId !== action.investment.investmentId),
-        Object.assign({}, action.investment)
+        ...state.filter(i => i.investmentId !== action.investmentId),
+        Object.assign({}, action)
       ];
       
     default:

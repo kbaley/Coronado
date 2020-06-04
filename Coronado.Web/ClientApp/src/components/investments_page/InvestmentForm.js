@@ -21,6 +21,7 @@ export default function InvestmentForm(props) {
         symbol: '', 
         shares: '', 
         price: '', 
+        amount: '',
         date: new Date().toLocaleDateString(),
         currency: 'USD', 
         dontRetrievePrices: false,
@@ -35,6 +36,7 @@ export default function InvestmentForm(props) {
           symbol: props.investment.symbol || '',
           shares: props.investment.shares || 0,
           price: props.investment.price || 0.00,
+          amount: props.investment.shares && props.investment.price ? props.investment.shares * props.investment.price : 0,
           currency: props.investment.currency || 'USD',
           date: new Date().toLocaleDateString(),
           accountId: props.investment.transaction ? props.investment.transaction.accountId : '',
@@ -50,6 +52,7 @@ export default function InvestmentForm(props) {
         symbol: '', 
         shares: '', 
         price: '', 
+        amount: '',
         currency: 'USD', 
         dontRetrievePrices: false ,
         date: new Date().toLocaleDateString(),
@@ -63,9 +66,23 @@ export default function InvestmentForm(props) {
     var value = e.target.value;
     if (e.target.type === "checkbox")
       value = e.target.checked;
-    console.log(value);
-    console.log({ ...investment, [name]: value });
-    setInvestment({ ...investment, [name]: value });
+    var newState = { ...investment, [name]: value };
+    var amount = parseFloat(investment.amount) || 0;
+    var shares = parseFloat(investment.shares) || 0;
+    var price = parseFloat(investment.price) || 0;
+    if (name === "shares") {
+      amount = (price * (parseFloat(value) || 0)).toFixed(2);
+      newState.amount = amount;
+    } else if (name === "price") {
+      amount = (shares * (parseFloat(value) || 0)).toFixed(2);
+      newState.amount = amount;
+    } else if (name === "amount") {
+      if (shares !== 0) {
+        price = (parseFloat(value) || 0) / shares;
+        newState.price = price;
+      }
+    }
+    setInvestment(newState);
   }
 
     return (
@@ -108,6 +125,20 @@ export default function InvestmentForm(props) {
                 <MenuItem value={'CAD'}>CAD</MenuItem>
               </TextField>
             </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={
+                  <Tooltip title="Check this to exclude the investment when downloading the daily prices">
+                    <Checkbox
+                      name='dontRetrievePrices'
+                      checked={investment.dontRetrievePrices}
+                      onChange={handleChangeField}
+                    />
+                  </Tooltip>
+                }
+                label="Exclude when downloading prices?"
+              />
+            </Grid>
             <Grid item xs={4}>
               <TextField
                 name="shares"
@@ -128,6 +159,15 @@ export default function InvestmentForm(props) {
             </Grid>
             <Grid item xs={4}>
               <TextField
+                name="amount"
+                label="Amount"
+                fullWidth={true}
+                value={investment.amount}
+                onChange={handleChangeField}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
                 name="date"
                 label="Date"
                 fullWidth={true}
@@ -135,7 +175,7 @@ export default function InvestmentForm(props) {
                 onChange={handleChangeField}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={8}>
               <FormControl>
                 <InputLabel id="source-account">Account</InputLabel>
                 <Select
@@ -152,20 +192,6 @@ export default function InvestmentForm(props) {
                   }
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item xs={6}>
-              <FormControlLabel
-                control={
-                  <Tooltip title="Check this to exclude the investment when downloading the daily prices">
-                    <Checkbox
-                      name='dontRetrievePrices'
-                      checked={investment.dontRetrievePrices}
-                      onChange={handleChangeField}
-                    />
-                  </Tooltip>
-                }
-                label="Exclude when downloading prices?"
-              />
             </Grid>
           </Grid>
         </DialogContent>

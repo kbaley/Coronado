@@ -187,16 +187,20 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutInvestment([FromRoute] Guid id, [FromBody] InvestmentForListDto investment)
+        public async Task<IActionResult> PutInvestment([FromRoute] Guid id, [FromBody] InvestmentForUpdateDto investment)
         {
+            if (id != investment.InvestmentId) {
+                return BadRequest();
+            }
             var investmentMapped = _mapper.Map<Investment>(investment);
             _context.Entry(investmentMapped).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             await _context.Entry(investmentMapped).ReloadAsync().ConfigureAwait(false);
             await _context.Entry(investmentMapped).Collection(i => i.HistoricalPrices).LoadAsync().ConfigureAwait(false);
-            investment = _mapper.Map<InvestmentForListDto>(investmentMapped);
+            await _context.Entry(investmentMapped).Collection(i => i.Transactions).LoadAsync().ConfigureAwait(false);
+            var returnInvestment = _mapper.Map<InvestmentForListDto>(investmentMapped);
 
-            return Ok(investment);
+            return Ok(returnInvestment);
         }
 
         [HttpPost]
@@ -216,7 +220,7 @@ namespace Coronado.Web.Controllers.Api
             var investmentAccountTransaction = new Transaction {
                 TransactionId = Guid.NewGuid(),
                 AccountId = investmentAccount.AccountId,
-                Amount = investmentDto.Shares * investmentDto.Price,
+                Amount = Math.Round(investmentDto.Shares * investmentDto.Price, 2),
                 TransactionDate = investmentDto.Date,
                 EnteredDate = enteredDate,
                 TransactionType = TRANSACTION_TYPE.INVESTMENT,
@@ -225,7 +229,7 @@ namespace Coronado.Web.Controllers.Api
             var transaction = new Transaction {
                 TransactionId = Guid.NewGuid(),
                 AccountId = investmentDto.AccountId,
-                Amount = -investmentDto.Shares * investmentDto.Price,
+                Amount = 0 - Math.Round(investmentDto.Shares * investmentDto.Price, 2),
                 TransactionDate = investmentDto.Date,
                 EnteredDate = enteredDate,
                 TransactionType = TRANSACTION_TYPE.INVESTMENT,
