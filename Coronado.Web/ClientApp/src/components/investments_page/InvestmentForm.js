@@ -38,7 +38,7 @@ export default function InvestmentForm(props) {
           currency: props.investment.currency || 'USD',
           date: new Date().toLocaleDateString(),
           accountId: props.investment.transaction ? props.investment.transaction.accountId : '',
-          dontRetrievePrices: props.investment.dontRetrievePrices
+          dontRetrievePrices: props.investment.dontRetrievePrices,
         });
     }
   }, [props.investment]);
@@ -63,6 +63,8 @@ export default function InvestmentForm(props) {
     var value = e.target.value;
     if (e.target.type === "checkbox")
       value = e.target.checked;
+    console.log(value);
+    console.log({ ...investment, [name]: value });
     setInvestment({ ...investment, [name]: value });
   }
 
@@ -154,15 +156,15 @@ export default function InvestmentForm(props) {
             <Grid item xs={6}>
               <FormControlLabel
                 control={
-                  <Tooltip title="Check this to include the investment when downloading the daily prices">
+                  <Tooltip title="Check this to exclude the investment when downloading the daily prices">
                     <Checkbox
                       name='dontRetrievePrices'
-                      checked={!investment.dontRetrievePrices}
+                      checked={investment.dontRetrievePrices}
                       onChange={handleChangeField}
                     />
                   </Tooltip>
                 }
-                label="Retrieve prices?"
+                label="Exclude when downloading prices?"
               />
             </Grid>
           </Grid>
