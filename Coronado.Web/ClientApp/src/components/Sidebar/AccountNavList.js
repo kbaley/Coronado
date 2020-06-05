@@ -23,7 +23,11 @@ class AccountNavList extends Component {
   constructor(props) {
     super(props);
     this.goToAccount = this.goToAccount.bind(this);
-    this.state = { isLoading: true, accounts: props.accounts };
+    this.getBalance = this.getBalance.bind(this);
+    this.state = { 
+      isLoading: true, 
+      accounts: props.accounts,
+    };
   }
 
   componentDidUpdate() {
@@ -36,7 +40,7 @@ class AccountNavList extends Component {
       }
       this.setState({
         isLoading: false,
-        accounts: this.props.accounts
+        accounts: this.props.accounts,
       });
     }
   }
@@ -52,6 +56,13 @@ class AccountNavList extends Component {
     this.props.history.push('/account/' + this.props.accounts[key].accountId);
   }
 
+  getBalance(account) {
+    if (account.currency === "CAD") {
+      return this.props.currencies.CAD ? (account.currentBalance / this.props.currencies.CAD).toFixed(2) : account.currentBalance;
+    }
+    return account.currentBalance;
+  }
+
   render() {
     const { classes } = this.props;
     const { history } = this.props;
@@ -64,12 +75,12 @@ class AccountNavList extends Component {
         </Toolbar>
         {this.props.isLoadingData ? <Spinner /> :
           this.props.accounts.map((account, index) => (
-            <SidebarMenuItem
+              <SidebarMenuItem
               key={index}
               to={'/account/' + account.accountId}
               selected={'/account/' + account.accountId === pathname}
               primary={account.name}
-              secondary={<MoneyFormat amount={account.currentBalance} />}
+              secondary={<MoneyFormat amount={this.getBalance(account)} />}
               icon={getIcon(account.accountType)} />
           ))}
       </List>
@@ -81,7 +92,8 @@ function mapStateToProps(state) {
   return {
     accounts: state.showAllAccounts ? state.accounts : filter(state.accounts, a => !a.isHidden),
     isLoadingData: state.loading ? state.loading.accounts : true,
-    showAllAccounts: state.showAllAccounts
+    showAllAccounts: state.showAllAccounts,
+    currencies: state.currencies,
   }
 }
 
