@@ -17,8 +17,8 @@ namespace Coronado.Web.Domain
         public decimal Shares { get; set; }
         public string Currency { get; set; }
         public bool DontRetrievePrices { get; set; }
-        public List<InvestmentPrice> HistoricalPrices { get; set; }
-        public List<InvestmentTransaction> Transactions { get; set; }
+        public virtual ICollection<InvestmentPrice> HistoricalPrices { get; set; }
+        public virtual ICollection<InvestmentTransaction> Transactions { get; set; }
 
         public decimal GetLastPriceAmount() {
             var lastPrice = GetLastPrice();
@@ -26,7 +26,7 @@ namespace Coronado.Web.Domain
         }
 
         public InvestmentPrice GetLastPrice() {
-            if (HistoricalPrices == null || HistoricalPrices.Count == 0) return null;
+            if (HistoricalPrices == null || HistoricalPrices.Count() == 0) return null;
 
             return HistoricalPrices.OrderByDescending(p => p.Date).First();
         }

@@ -41,12 +41,22 @@ namespace Coronado.Web.Controllers.Api
         public IEnumerable<InvestmentForListDto> GetInvestments()
         {
             var investments = _context.Investments
-                .Include(i => i.HistoricalPrices)
-                .Include(i => i.Transactions)
+                .Select(i => new InvestmentForListDto{
+                    InvestmentId = i.InvestmentId,
+                    Name = i.Name,
+                    Symbol = i.Symbol,
+                    Shares = i.Transactions.Sum(t => t.Shares),
+                    LastPrice = i.HistoricalPrices.OrderByDescending(p => p.Date).First().Price,
+                    AveragePrice = i.Transactions.Sum(t => t.Shares * t.Price) / i.Transactions.Sum(t => t.Shares),
+                    Currency = i.Currency,
+                    DontRetrievePrices = i.DontRetrievePrices
+                })
                 .OrderBy(i => i.Name)
                 .ToList();
-            var dtos = investments.Select(i => _mapper.Map<InvestmentForListDto>(i));
-            return dtos;
+            investments.ForEach( i => {
+                i.CurrentValue = i.Shares * i.LastPrice;
+            });
+            return investments;
         }
 
         [HttpPost]
