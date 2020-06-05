@@ -10,13 +10,14 @@ import InvestmentPriceHistory from './InvestmentPriceHistory';
 import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 
-export default function InvestmentList(props) {
+export default function InvestmentList({investments, currency, children}) {
   const [show, setShow] = React.useState(false);
   const [selectedInvestment, setSelectedInvestment] = React.useState({});
   const [showPriceHistory, setShowPriceHistory] = React.useState(false);
   const currencies = useSelector(state => state.currencies);
   const isLoading = useSelector(state => state.isLoading);
   const dispatch = useDispatch();
+  const sortedInvestments = orderBy(investments, ['symbol'], ['asc']);
 
   const deleteInvestment = (investmentId, investmentName) => {
     dispatch(investmentActions.deleteInvestment(investmentId, investmentName));
@@ -50,7 +51,6 @@ export default function InvestmentList(props) {
     dispatch(investmentActions.updatePriceHistory(investment, prices));
   }
 
-  const investments = orderBy(props.investments, ['symbol'], ['asc']);
   return (
     <Table>
       <TableHead>
@@ -70,7 +70,7 @@ export default function InvestmentList(props) {
           show={show}
           onClose={handleClose}
           investment={selectedInvestment}
-          investments={props.investments}
+          investments={investments}
           onSave={saveInvestment} />
         <InvestmentPriceHistory
           show={showPriceHistory}
@@ -78,7 +78,7 @@ export default function InvestmentList(props) {
           onSave={savePrices}
           investment={selectedInvestment} />
         {isLoading ? <tr><td colSpan="2"><Spinner /></td></tr> :
-          investments.map(i =>
+          sortedInvestments.map(i =>
             <InvestmentRow
               key={i.investmentId}
               investment={i}
@@ -87,10 +87,10 @@ export default function InvestmentList(props) {
               openPriceHistory={() => openPriceHistory(i)} />
           )}
         <InvestmentsTotal
-          investments={props.investments}
-          currency={props.currency}
+          investments={investments}
+          currency={currency}
           currencies={currencies} />
-        {props.children}
+        {children}
       </TableBody>
     </Table>
   );

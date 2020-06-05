@@ -139,6 +139,7 @@ export default function InvestmentForm(props) {
               label="Exclude when downloading prices?"
             />
           </Grid>
+          {!investment.investmentId &&
           <React.Fragment>
             <Grid item xs={4}>
               <TextField
@@ -195,6 +196,7 @@ export default function InvestmentForm(props) {
               </FormControl>
             </Grid>
           </React.Fragment>
+          }
         </Grid>
       </DialogContent>
       <DialogActions>
