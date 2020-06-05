@@ -34,7 +34,7 @@ export default function InvestmentForm(props) {
         investmentId: props.investment.investmentId,
         name: props.investment.name,
         symbol: props.investment.symbol || '',
-        shares: props.investment.shares || 0,
+        shares: 0,
         price: props.investment.price || 0.00,
         amount: props.investment.shares && props.investment.price ? props.investment.shares * props.investment.price : 0,
         currency: props.investment.currency || 'USD',
@@ -94,108 +94,114 @@ export default function InvestmentForm(props) {
     >
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={7}>
-            <TextField
-              autoFocus
-              name="name"
-              label="Investment name"
-              fullWidth={true}
-              value={investment.name}
-              onChange={handleChangeField} />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              name="symbol"
-              label="Symbol"
-              fullWidth={true}
-              value={investment.symbol}
-              onChange={handleChangeField}
-            />
-          </Grid>
-          <Grid item xs={2}>
-            <TextField
-              select
-              name="currency"
-              label="Currency"
-              fullWidth={true}
-              value={investment.currency}
-              onChange={handleChangeField}
-            >
-              <MenuItem value={'USD'}>USD</MenuItem>
-              <MenuItem value={'CAD'}>CAD</MenuItem>
-            </TextField>
-          </Grid>
-          <Grid item xs={12}>
-            <FormControlLabel
-              control={
-                <Tooltip title="Check this to exclude the investment when downloading the daily prices">
-                  <Checkbox
-                    name='dontRetrievePrices'
-                    checked={investment.dontRetrievePrices}
-                    onChange={handleChangeField}
-                  />
-                </Tooltip>
-              }
-              label="Exclude when downloading prices?"
-            />
-          </Grid>
-          {!investment.investmentId &&
-          <React.Fragment>
-            <Grid item xs={4}>
-              <TextField
-                name="shares"
-                label="Shares"
-                fullWidth={true}
-                value={investment.shares}
-                onChange={handleChangeField}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="price"
-                label="Price"
-                fullWidth={true}
-                value={investment.price}
-                onChange={handleChangeField}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="amount"
-                label="Amount"
-                fullWidth={true}
-                value={investment.amount}
-                onChange={handleChangeField}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                name="date"
-                label="Date"
-                fullWidth={true}
-                value={investment.date}
-                onChange={handleChangeField}
-              />
-            </Grid>
-            <Grid item xs={8}>
-              <FormControl>
-                <InputLabel id="source-account">Account</InputLabel>
-                <Select
-                  labelId="source-account"
-                  name="accountId"
-                  style={{ "width": "250px" }}
-                  value={investment.accountId}
+            <React.Fragment>
+              <Grid item xs={7}>
+                <TextField
+                  autoFocus
+                  name="name"
+                  label="Investment name"
+                  fullWidth={true}
+                  value={investment.name}
+                  disabled={props.isBuying}
+                  onChange={handleChangeField} />
+              </Grid>
+              <Grid item xs={3}>
+                <TextField
+                  name="symbol"
+                  label="Symbol"
+                  fullWidth={true}
+                  disabled={props.isBuying}
+                  value={investment.symbol}
+                  onChange={handleChangeField}
+                />
+              </Grid>
+              <Grid item xs={2}>
+                <TextField
+                  select
+                  name="currency"
+                  label="Currency"
+                  fullWidth={true}
+                  disabled={props.isBuying}
+                  value={investment.currency}
                   onChange={handleChangeField}
                 >
-                  <MenuItem value={''}>None</MenuItem>
-                  {props.accounts ? props.accounts.map(a =>
-                    <MenuItem value={a.accountId} key={a.accountId}>{a.name}</MenuItem>
-                  ) : <MenuItem>Select...</MenuItem>
+                  <MenuItem value={'USD'}>USD</MenuItem>
+                  <MenuItem value={'CAD'}>CAD</MenuItem>
+                </TextField>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Tooltip title="Check this to exclude the investment when downloading the daily prices">
+                      <Checkbox
+                        name='dontRetrievePrices'
+                        disabled={props.isBuying}
+                        checked={investment.dontRetrievePrices}
+                        onChange={handleChangeField}
+                      />
+                    </Tooltip>
                   }
-                </Select>
-              </FormControl>
-            </Grid>
-          </React.Fragment>
+                  label="Exclude when downloading prices?"
+                />
+              </Grid>
+            </React.Fragment>
+          {(investment.investmentId === undefined || props.isBuying) &&
+            <React.Fragment>
+              <Grid item xs={4}>
+                <TextField
+                  name="shares"
+                  label="Shares"
+                  fullWidth={true}
+                  value={investment.shares}
+                  onChange={handleChangeField}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  name="price"
+                  label="Price"
+                  fullWidth={true}
+                  value={investment.price}
+                  onChange={handleChangeField}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  name="amount"
+                  label="Amount"
+                  fullWidth={true}
+                  value={investment.amount}
+                  onChange={handleChangeField}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  name="date"
+                  label="Date"
+                  fullWidth={true}
+                  value={investment.date}
+                  onChange={handleChangeField}
+                />
+              </Grid>
+              <Grid item xs={8}>
+                <FormControl>
+                  <InputLabel id="source-account">Account</InputLabel>
+                  <Select
+                    labelId="source-account"
+                    name="accountId"
+                    style={{ "width": "250px" }}
+                    value={investment.accountId}
+                    onChange={handleChangeField}
+                  >
+                    <MenuItem value={''}>None</MenuItem>
+                    {props.accounts ? props.accounts.map(a =>
+                      <MenuItem value={a.accountId} key={a.accountId}>{a.name}</MenuItem>
+                    ) : <MenuItem>Select...</MenuItem>
+                    }
+                  </Select>
+                </FormControl>
+              </Grid>
+            </React.Fragment>
           }
         </Grid>
       </DialogContent>

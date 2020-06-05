@@ -6,6 +6,7 @@ import { MoneyFormat } from '../common/DecimalFormat';
 import { TableRow, TableCell } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import HistoryIcon from '@material-ui/icons/History';
+import AddIcon from '@material-ui/icons/Add';
 
 const styles = theme => ({
   row: {
@@ -16,7 +17,7 @@ const styles = theme => ({
 })
 
 const useStyles = makeStyles(styles);
-export function InvestmentRow({investment, onEdit, onDelete, openPriceHistory}) {
+export function InvestmentRow({investment, onEdit, onDelete, openPriceHistory, onBuySell}) {
   const classes = useStyles(); 
   return (
     <TableRow className={classes.row}>
@@ -27,6 +28,11 @@ export function InvestmentRow({investment, onEdit, onDelete, openPriceHistory}) 
         onClick={openPriceHistory} 
         title="Show historical prices" 
         icon={<HistoryIcon fontSize="small" />}
+      />
+      <Icon 
+        onClick={onBuySell} 
+        title="Buy/sell shares in this investment" 
+        icon={<AddIcon fontSize="small" />}
       />
       </TableCell>
       <TableCell>{investment.name}</TableCell>

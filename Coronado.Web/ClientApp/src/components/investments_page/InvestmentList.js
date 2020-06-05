@@ -2,7 +2,7 @@ import React from 'react';
 import * as investmentActions from '../../actions/investmentActions';
 import InvestmentForm from './InvestmentForm';
 import './InvestmentList.css';
-import { find, orderBy } from 'lodash';
+import { orderBy } from 'lodash';
 import { InvestmentRow } from './InvestmentRow';
 import InvestmentsTotal from './InvestmentsTotal';
 import Spinner from '../common/Spinner';
@@ -14,8 +14,10 @@ export default function InvestmentList({investments, currency, children}) {
   const [show, setShow] = React.useState(false);
   const [selectedInvestment, setSelectedInvestment] = React.useState({});
   const [showPriceHistory, setShowPriceHistory] = React.useState(false);
+  const [isBuying, setIsBuying] = React.useState(false);
   const currencies = useSelector(state => state.currencies);
   const isLoading = useSelector(state => state.isLoading);
+  const accounts = useSelector(state => state.accounts);
   const dispatch = useDispatch();
   const sortedInvestments = orderBy(investments, ['symbol'], ['asc']);
 
@@ -35,20 +37,31 @@ export default function InvestmentList({investments, currency, children}) {
 
   const startEditing = (investment) => {
     setSelectedInvestment(investment);
+    setIsBuying(false);
     setShow(true);
   }
 
   const handleClose = () => {
     setShow(false);
-    setSelectedInvestment({});
   }
 
   const saveInvestment = (investment) => {
-    dispatch(investmentActions.updateInvestment(investment));
+    if (isBuying) {
+      dispatch(investmentActions.buySellInvestment(investment));
+    } else {
+      dispatch(investmentActions.updateInvestment(investment));
+    }
+    setIsBuying(false);
   }
 
   const savePrices = (investment, prices) => {
     dispatch(investmentActions.updatePriceHistory(investment, prices));
+  }
+
+  const buySell = (investment) => {
+    setSelectedInvestment(investment);
+    setIsBuying(true);
+    setShow(true);
   }
 
   return (
@@ -71,6 +84,8 @@ export default function InvestmentList({investments, currency, children}) {
           onClose={handleClose}
           investment={selectedInvestment}
           investments={investments}
+          isBuying={isBuying}
+          accounts={accounts}
           onSave={saveInvestment} />
         <InvestmentPriceHistory
           show={showPriceHistory}
@@ -84,6 +99,7 @@ export default function InvestmentList({investments, currency, children}) {
               investment={i}
               onEdit={() => startEditing(i)}
               onDelete={() => deleteInvestment(i.investmentId, i.name)}
+              onBuySell={() => buySell(i)}
               openPriceHistory={() => openPriceHistory(i)} />
           )}
         <InvestmentsTotal

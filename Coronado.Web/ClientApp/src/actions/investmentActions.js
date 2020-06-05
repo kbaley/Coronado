@@ -102,6 +102,13 @@ export const updateInvestment = (investment) => {
   }
 }
 
+export const buySellInvestment = (investment) => {
+  return async (dispatch) => {
+    const updatedInvestment = await InvestmentApi.buySellInvestment(investment);
+    dispatch(updateInvestmentSuccess(updatedInvestment));
+  }
+}
+
 export const saveTodaysPrices = (investments) => {
   return async (dispatch) => {
     const updatedInvestments = await InvestmentApi.saveTodaysPrices(investments);

@@ -44,6 +44,15 @@ class InvestmentApi {
     return response.json();
   }
 
+  static async buySellInvestment(investment) {
+    const response = await fetch('/api/Investments/BuySell', {
+      method: 'POST',
+      headers: defaultHeaders(),
+      body: JSON.stringify(investment)
+    });
+    return response.json();
+  }
+
   static async saveTodaysPrices(investments) {
     const response = await fetch('/api/Investments/SaveTodaysPrices', {
       method: 'POST',

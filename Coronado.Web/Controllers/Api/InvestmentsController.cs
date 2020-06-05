@@ -112,6 +112,17 @@ namespace Coronado.Web.Controllers.Api
 
         [HttpPost]
         [Route("[action]")]
+        public async Task<IActionResult> BuySell(InvestmentForListDto investmentDto) {
+
+            var investment = await _context.Investments.FindAsync(investmentDto.InvestmentId).ConfigureAwait(false);
+            await CreateInvestmentTransaction(investmentDto, investment).ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            return Ok(investment);
+        }
+
+        [HttpPost]
+        [Route("[action]")]
         public async Task<IActionResult> UpdatePriceHistory(InvestmentForListDto investment)
         {
             foreach (var priceDto in investment.HistoricalPrices)
@@ -207,17 +218,35 @@ namespace Coronado.Web.Controllers.Api
         public async Task<IActionResult> PostInvestment([FromBody] InvestmentForListDto investmentDto)
         {
             var investment = await _context.Investments.SingleOrDefaultAsync(i => i.Symbol == investmentDto.Symbol).ConfigureAwait(false);
-            if (investment == null) {
+            if (investment == null)
+            {
                 investmentDto.InvestmentId = Guid.NewGuid();
                 var mappedInvestment = _mapper.Map<Investment>(investmentDto);
                 investment = _context.Investments.Add(mappedInvestment).Entity;
             }
-            var buySell = investmentDto.Shares > 0 ? "Buy share" : "Sell share";
+            var investmentTransaction = await CreateInvestmentTransaction(investmentDto, investment).ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            var accountBalances = _accountRepo.GetAccountBalances().Select(a => new { a.AccountId, a.CurrentBalance });
+            return CreatedAtAction("PostInvestment", new { id = investment.InvestmentId },
+                new
+                {
+                    investment,
+                    investmentTransaction,
+                    accountBalances
+                }
+            );
+        }
+
+        private async Task<InvestmentTransaction> CreateInvestmentTransaction(InvestmentForListDto investmentDto, Investment investment)
+        {
+            var buySell = investmentDto.Shares > 0 ? $"Buy {investmentDto.Shares} share" : $"Sell {investmentDto.Shares} share";
             if (investmentDto.Shares != 1) buySell += "s";
             var description = $"Investment: {buySell} of {investmentDto.Symbol} at {investmentDto.Price}";
             var investmentAccount = await _context.Accounts.FirstAsync(a => a.AccountType == "Investment").ConfigureAwait(false);
             var enteredDate = DateTime.Now;
-            var investmentAccountTransaction = new Transaction {
+            var investmentAccountTransaction = new Transaction
+            {
                 TransactionId = Guid.NewGuid(),
                 AccountId = investmentAccount.AccountId,
                 Amount = Math.Round(investmentDto.Shares * investmentDto.Price, 2),
@@ -226,7 +255,8 @@ namespace Coronado.Web.Controllers.Api
                 TransactionType = TRANSACTION_TYPE.INVESTMENT,
                 Description = description
             };
-            var transaction = new Transaction {
+            var transaction = new Transaction
+            {
                 TransactionId = Guid.NewGuid(),
                 AccountId = investmentDto.AccountId,
                 Amount = 0 - Math.Round(investmentDto.Shares * investmentDto.Price, 2),
@@ -235,7 +265,8 @@ namespace Coronado.Web.Controllers.Api
                 TransactionType = TRANSACTION_TYPE.INVESTMENT,
                 Description = description
             };
-            var investmentTransaction = new InvestmentTransaction {
+            var investmentTransaction = new InvestmentTransaction
+            {
                 InvestmentTransactionId = Guid.NewGuid(),
                 InvestmentId = investment.InvestmentId,
                 Shares = investmentDto.Shares,
@@ -246,26 +277,19 @@ namespace Coronado.Web.Controllers.Api
             _context.Transactions.Add(investmentAccountTransaction);
             _context.Transactions.Add(transaction);
             _context.InvestmentTransactions.Add(investmentTransaction);
-            _context.Transfers.Add(new Transfer {
+            _context.Transfers.Add(new Transfer
+            {
                 TransferId = Guid.NewGuid(),
                 LeftTransactionId = transaction.TransactionId,
                 RightTransactionId = investmentAccountTransaction.TransactionId
             });
-            _context.Transfers.Add(new Transfer {
+            _context.Transfers.Add(new Transfer
+            {
                 TransferId = Guid.NewGuid(),
                 RightTransactionId = transaction.TransactionId,
                 LeftTransactionId = investmentAccountTransaction.TransactionId
             });
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-
-            var accountBalances = _accountRepo.GetAccountBalances().Select(a => new {a.AccountId, a.CurrentBalance});
-            return CreatedAtAction("PostInvestment", new { id = investment.InvestmentId }, 
-                new {
-                    investment,
-                    investmentTransaction,
-                    accountBalances
-                }
-            );
+            return investmentTransaction;
         }
 
         [HttpDelete("{id}")]
