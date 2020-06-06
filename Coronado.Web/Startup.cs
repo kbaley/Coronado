@@ -53,6 +53,7 @@ namespace Coronado.Web
             services.AddTransient<IAccountRepository, AccountRepository>();
             services.AddTransient<IInvestmentPriceParser, InvestmentPriceParser>();
             services.AddTransient<IInvestmentRetriever, InvestmentRetriever>();
+            services.AddTransient<IReportRepository, ReportRepository>();
             services.AddDbContext<CoronadoDbContext>(options =>
                 options.UseNpgsql(connectionString));
 

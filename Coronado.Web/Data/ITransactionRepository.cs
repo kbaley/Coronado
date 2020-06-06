@@ -15,10 +15,5 @@ namespace Coronado.Web.Data
         Transaction Update(TransactionForDisplay transaction);
         void Delete(Guid transactionId);
         TransactionForDisplay Get(Guid transactionId);
-        decimal GetNetWorthFor(DateTime date);
-
-        IEnumerable<CategoryTotal> GetTransactionsByCategoryType(string categoryType, DateTime start, DateTime end);
-        Task<IEnumerable<dynamic>> GetMonthlyTotalsForCategory(Guid categoryId, DateTime start, DateTime end);
-        IEnumerable<CategoryTotal> GetInvoiceLineItemsIncomeTotals(DateTime start, DateTime end);
     }
 }

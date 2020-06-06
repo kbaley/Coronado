@@ -4,7 +4,6 @@ using Coronado.Web.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
-using Coronado.Web.Domain;
 using System.Threading.Tasks;
 using Coronado.Web.Controllers.Dtos;
 
@@ -16,12 +15,12 @@ namespace Coronado.Web.Controllers.Api
     public class ReportsController : ControllerBase
     {
         private readonly CoronadoDbContext _context;
-        private readonly ITransactionRepository _transactionRepo;
+        private readonly IReportRepository _reportRepo;
 
-        public ReportsController(CoronadoDbContext context, ITransactionRepository transactionRepo)
+        public ReportsController(CoronadoDbContext context, IReportRepository reportRepo)
         {
             _context = context;
-            _transactionRepo = transactionRepo;
+            _reportRepo = reportRepo;
         }
 
         [HttpGet]
@@ -35,7 +34,7 @@ namespace Coronado.Web.Controllers.Api
                 numItems = 13;
             }
             for (var i = 0; i < numItems; i++) {
-                netWorth.Add(new {date, netWorth=_transactionRepo.GetNetWorthFor(date)});
+                netWorth.Add(new {date, netWorth=_reportRepo.GetNetWorthFor(date)});
                 date = date.AddMonths(-1).LastDayOfMonth();
             }
 
@@ -69,9 +68,9 @@ namespace Coronado.Web.Controllers.Api
         {
             var report = new Dictionary<Guid, dynamic>();
             var categories = _context.Categories.Where(c => c.Type == categoryType).ToList();
-            var expenses = _transactionRepo.GetTransactionsByCategoryType(categoryType, start, end).ToList();
+            var expenses = _reportRepo.GetTransactionsByCategoryType(categoryType, start, end).ToList();
             if (categoryType == "Income") {
-                var invoiceTotals = _transactionRepo.GetInvoiceLineItemsIncomeTotals(start, end);
+                var invoiceTotals = _reportRepo.GetInvoiceLineItemsIncomeTotals(start, end);
                 foreach (var item in invoiceTotals)
                 {
                     var match = expenses.SingleOrDefault(e => e.CategoryId == item.CategoryId);
@@ -118,7 +117,7 @@ namespace Coronado.Web.Controllers.Api
             var gainLossCategory = await _context.GetOrCreateCategory("Gain/loss on investments").ConfigureAwait(false);
             var end = DateTime.Today.LastDayOfMonth();
             var start = end.AddMonths(0 - numMonths).FirstDayOfMonth();
-            var expenses = await _transactionRepo.GetMonthlyTotalsForCategory(gainLossCategory.CategoryId, start, end).ConfigureAwait(false);
+            var expenses = await _reportRepo.GetMonthlyTotalsForCategory(gainLossCategory.CategoryId, start, end).ConfigureAwait(false);
             return Ok(expenses);
         }
     }
