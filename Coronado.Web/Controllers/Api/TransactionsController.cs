@@ -106,8 +106,9 @@ namespace Coronado.Web.Controllers.Api
 
             var addedTransactions = _transactionRepo.Insert(transaction);
             transactions.AddRange(addedTransactions.Select(t => _mapper.Map<TransactionForDisplay>(t)));
+            transactions.ForEach(t => t.SetDebitAndCredit());
 
-            var accountBalances = _accountRepo.GetAccountBalances().Select(a => new { a.AccountId, a.CurrentBalance });
+            var accountBalances = _accountRepo.GetAccountBalances();
             InvoiceForPosting invoiceDto = null;
             if (transaction.InvoiceId.HasValue)
             {

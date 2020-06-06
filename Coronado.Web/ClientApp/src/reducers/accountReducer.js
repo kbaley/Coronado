@@ -50,6 +50,7 @@ function setAccountBalances(state, accountBalances) {
   each(accounts, a => {
     const accountBalance = find(accountBalances, ab => ab.accountId === a.accountId);
     a.currentBalance = accountBalance ? accountBalance.currentBalance : 0;
+    a.currentBalanceInUsd = accountBalance ? accountBalance.currentBalanceInUsd : 0;
   });
   return accounts;
 }

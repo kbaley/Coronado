@@ -57,7 +57,7 @@ class AccountNavList extends Component {
   }
 
   getBalance(account) {
-    return account.currentBalanceInUsd;
+    return account.currentBalance;
   }
 
   render() {
@@ -77,7 +77,7 @@ class AccountNavList extends Component {
               to={'/account/' + account.accountId}
               selected={'/account/' + account.accountId === pathname}
               primary={account.name}
-              secondary={<MoneyFormat amount={this.getBalance(account)} />}
+              secondary={<MoneyFormat amount={account.currentBalance} />}
               icon={getIcon(account.accountType)} />
           ))}
       </List>

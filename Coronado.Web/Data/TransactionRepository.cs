@@ -175,6 +175,7 @@ namespace Coronado.Web.Data
             var cadExchangeRate = GetCadExchangeRate();
             var transactionList = new List<Transaction>();
             var transaction = transactionDto.ShallowMap();
+            transaction.Category = _context.Categories.Find(transaction.CategoryId);
             var exchangeRate = 1.0m;
             if (GetCurrencyFor(transaction.AccountId) == "CAD") {
                 exchangeRate = cadExchangeRate;
@@ -406,6 +407,7 @@ namespace Coronado.Web.Data
                             TransactionDate = newTransaction.TransactionDate,
                             AccountId = newTransaction.AccountId.Value,
                             CategoryId = category.CategoryId,
+                            Category = category,
                             Description = bankFeeDescription,
                             Vendor = vendor,
                             Amount = 0 - amount,
