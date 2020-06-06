@@ -95,7 +95,7 @@ namespace Coronado.Web.Controllers.Api
             if (transaction.TransactionId == null || transaction.TransactionId == Guid.Empty) transaction.TransactionId = Guid.NewGuid();
             if (transaction.AccountId == null)
             {
-                transaction.AccountId = _accountRepo.GetAllWithBalances().Single(a => a.Name.Equals(transaction.AccountName, StringComparison.CurrentCultureIgnoreCase)).AccountId;
+                transaction.AccountId = _context.Accounts.Single(a => a.Name.Equals(transaction.AccountName, StringComparison.CurrentCultureIgnoreCase)).AccountId;
             }
             transaction.SetAmount();
             transaction.EnteredDate = DateTime.Now;
@@ -104,13 +104,8 @@ namespace Coronado.Web.Controllers.Api
                 transaction.CategoryId = _context.GetOrCreateCategory(transaction.CategoryName).GetAwaiter().GetResult().CategoryId;
             }
 
-            var bankFeeTransactions = TransactionHelpers.GetBankFeeTransactions(transaction, _context);
-            transactions.Add(transaction);
-            transactions.AddRange(bankFeeTransactions);
-            foreach (var trx in transactions)
-            {
-                _transactionRepo.Insert(trx);
-            }
+            var addedTransactions = _transactionRepo.Insert(transaction);
+            transactions.AddRange(addedTransactions.Select(t => _mapper.Map<TransactionForDisplay>(t)));
 
             var accountBalances = _accountRepo.GetAccountBalances().Select(a => new { a.AccountId, a.CurrentBalance });
             InvoiceForPosting invoiceDto = null;

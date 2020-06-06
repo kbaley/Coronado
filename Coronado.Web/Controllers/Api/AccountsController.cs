@@ -38,9 +38,23 @@ namespace Coronado.Web.Controllers.Api
 
         // GET: api/Accounts
         [HttpGet]
-        public IEnumerable<Account> GetAccounts()
+        public IEnumerable<AccountWithBalance> GetAccounts()
         {
-            return _accountRepo.GetAllWithBalances();
+            var accounts = _context.Accounts
+                .Select( a => new AccountWithBalance {
+                    AccountId = a.AccountId,
+                    Name = a.Name,
+                    Currency = a.Currency,
+                    Vendor = a.Currency,
+                    AccountType = a.AccountType,
+                    MortgagePayment = a.MortgagePayment,
+                    MortgageType = a.MortgageType,
+                    DisplayOrder = a.DisplayOrder,
+                    IsHidden = a.IsHidden,
+                    CurrentBalance = a.Transactions.Sum(t => t.Amount),
+                    CurrentBalanceInUsd = a.Transactions.Sum(t => t.AmountInBaseCurrency)
+                });
+            return accounts;
         }
 
         [HttpPut("{id}")]

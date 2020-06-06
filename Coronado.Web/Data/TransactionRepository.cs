@@ -124,7 +124,7 @@ namespace Coronado.Web.Data
                         break;
                     case TRANSACTION_TYPE.TRANSFER:
                         // Add transfer and related transaction
-                        CreateTransferFrom(transaction, dbTransaction.TransactionId);
+                        CreateTransferFrom(transaction, dbTransaction.TransactionId, GetCadExchangeRate());
                         break;
                     case TRANSACTION_TYPE.INVOICE_PAYMENT:
                         // Nothing to do for now
@@ -164,15 +164,28 @@ namespace Coronado.Web.Data
             }
         }
 
+        private decimal GetCadExchangeRate() {
+            var currency = _context.Currencies.SingleOrDefault(c => c.Symbol == "CAD");
+            if (currency == null) return 1.0m;
+            return currency.PriceInUsd;
+        }
+
         public IEnumerable<Transaction> Insert(TransactionForDisplay transactionDto)
         {
+            var cadExchangeRate = GetCadExchangeRate();
             var transactionList = new List<Transaction>();
             var transaction = transactionDto.ShallowMap();
+            var exchangeRate = 1.0m;
+            if (GetCurrencyFor(transaction.AccountId) == "CAD") {
+                exchangeRate = cadExchangeRate;
+            };
+            transaction.AmountInBaseCurrency = Math.Round(transaction.Amount / exchangeRate, 2);
             transactionList.Add(transaction);
             _context.Transactions.Add(transaction);
             var bankFeeTransactions = GetBankFeeTransactions(transactionDto);
             foreach (var trx in bankFeeTransactions)
             {
+                trx.AmountInBaseCurrency = Math.Round(trx.Amount / exchangeRate, 2);
                 _context.Transactions.Add(trx);    
             }
             transactionList.AddRange(bankFeeTransactions);
@@ -180,18 +193,27 @@ namespace Coronado.Web.Data
             AddOrUpdateVendor(transactionDto.Vendor, transactionDto.CategoryId);
             if (transactionDto.TransactionType == TRANSACTION_TYPE.TRANSFER)
             {
-                CreateTransferFrom(transactionDto, transaction.TransactionId);
+                CreateTransferFrom(transactionDto, transaction.TransactionId, cadExchangeRate);
             }
             _context.SaveChanges();
             return transactionList;
         }
 
-        private void CreateTransferFrom(TransactionForDisplay transactionDto, Guid relatedTransactionId)
+        private string GetCurrencyFor(Guid accountId)
+        {
+            return _context.Accounts.Find(accountId).Currency;
+        }
+
+        private void CreateTransferFrom(TransactionForDisplay transactionDto, Guid relatedTransactionId, decimal cadExchangeRate)
         {
             var rightTransaction = transactionDto.ShallowMap();
             rightTransaction.TransactionId = Guid.NewGuid();
             rightTransaction.AccountId = transactionDto.RelatedAccountId.Value;
             rightTransaction.Amount = 0 - transactionDto.Amount;
+            rightTransaction.AmountInBaseCurrency = rightTransaction.Amount;
+            if (GetCurrencyFor(rightTransaction.AccountId) == "CAD") {
+                rightTransaction.AmountInBaseCurrency = Math.Round(rightTransaction.Amount / cadExchangeRate, 2);
+            }
             _context.Transactions.Add(rightTransaction);
             _context.Transfers.Add(new Transfer
             {
@@ -282,7 +304,7 @@ namespace Coronado.Web.Data
         {
             return _context.Transactions
                 .Where(t => t.TransactionDate <= date)
-                .Sum(t => t.Amount);
+                .Sum(t => t.AmountInBaseCurrency);
         }
 
         public IEnumerable<CategoryTotal> GetTransactionsByCategoryType(string categoryType, DateTime start, DateTime end)
@@ -294,7 +316,7 @@ namespace Coronado.Web.Data
             }
             using (var conn = Connection)
             {
-                var sql = "SELECT t.category_id, c.name, " + amountPrefix + "sum(amount) as amount, EXTRACT(MONTH from t.transaction_date)::int as month, EXTRACT(YEAR from t.transaction_date)::int as year FROM transactions t " +
+                var sql = "SELECT t.category_id, c.name, " + amountPrefix + "sum(amount_in_base_currency) as amount, EXTRACT(MONTH from t.transaction_date)::int as month, EXTRACT(YEAR from t.transaction_date)::int as year FROM transactions t " +
                     "INNER JOIN categories c ON t.category_id = c.category_id " +
                     "WHERE transaction_date > @start and transaction_date <= @end " +
                     "AND c.Type = '" + categoryType + "' " +
@@ -345,7 +367,7 @@ namespace Coronado.Web.Data
         {
             using (var conn = Connection)
             {
-                var sql = @"SELECT sum(amount) as amount, EXTRACT(MONTH from t.transaction_date)::int as month, EXTRACT(YEAR from t.transaction_date)::int as year FROM transactions t
+                var sql = @"SELECT sum(amount_in_base_currency) as amount, EXTRACT(MONTH from t.transaction_date)::int as month, EXTRACT(YEAR from t.transaction_date)::int as year FROM transactions t
                     WHERE transaction_date > @start and transaction_date <= @end
                     AND t.category_id = @categoryId
                     GROUP BY EXTRACT(MONTH from t.transaction_date), EXTRACT(YEAR from t.transaction_date)";

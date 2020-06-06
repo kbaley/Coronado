@@ -25,6 +25,7 @@ namespace Coronado.Web.Controllers.Dtos
         public Guid? InvoiceId { get; set; }
         public string InvoiceNumber { get; set; }
         public TRANSACTION_TYPE TransactionType { get; set; }
+        public decimal AmountInBaseCurrency { get; set; }
         public void SetAmount()
         {
             Amount = Debit.HasValue ? (0 - Debit.Value) : Credit.Value;
@@ -56,7 +57,8 @@ namespace Coronado.Web.Controllers.Dtos
                 Description = Description,
                 Amount = Amount,
                 IsReconciled = IsReconciled,
-                InvoiceId = InvoiceId
+                InvoiceId = InvoiceId,
+                AmountInBaseCurrency = AmountInBaseCurrency
             };
         }
     }

@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
-using Coronado.Web.Domain;
+using Coronado.Web.Controllers.Dtos;
 
 namespace Coronado.Web.Data
 {
     public interface IAccountRepository {
-        IEnumerable<Account> GetAllWithBalances();
-        IEnumerable<Account> GetAccountBalances();
+        IEnumerable<AccountIdAndBalance> GetAccountBalances();
     }
 }

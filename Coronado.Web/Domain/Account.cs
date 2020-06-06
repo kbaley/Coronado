@@ -14,6 +14,7 @@ namespace Coronado.Web.Domain
 
         public string Name { get; set; }
 
+        [NotMapped]
         public decimal CurrentBalance { get; set; }
 
         [DefaultValue(false)]

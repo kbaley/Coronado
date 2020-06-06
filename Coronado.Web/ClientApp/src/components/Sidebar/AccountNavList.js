@@ -57,10 +57,7 @@ class AccountNavList extends Component {
   }
 
   getBalance(account) {
-    if (account.currency === "CAD") {
-      return this.props.currencies.CAD ? (account.currentBalance / this.props.currencies.CAD).toFixed(2) : account.currentBalance;
-    }
-    return account.currentBalance;
+    return account.currentBalanceInUsd;
   }
 
   render() {

@@ -29,6 +29,7 @@ namespace Coronado.Web.Domain
         public TRANSACTION_TYPE TransactionType { get; set; }
         public Transfer LeftTransfer { get; set; }
         public Transfer RightTransfer { get; set; }
+        public decimal AmountInBaseCurrency { get; set; }
 
         public string GetCategoryDisplay()
         {
