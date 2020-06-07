@@ -19,21 +19,16 @@ namespace Coronado.Web.Controllers.Api
     public class InvestmentsController : ControllerBase
     {
         private readonly ITransactionRepository _transactionRepo;
-        private readonly ILogger<InvestmentsController> _logger;
         private readonly IInvestmentPriceParser _priceParser;
         private readonly IMapper _mapper;
-        private readonly IAccountRepository _accountRepo;
         private readonly CoronadoDbContext _context;
 
         public InvestmentsController(CoronadoDbContext context, ITransactionRepository transactionRepo,
-            ILogger<InvestmentsController> logger, IInvestmentPriceParser priceParser, IMapper mapper,
-            IAccountRepository accountRepo)
+            IInvestmentPriceParser priceParser, IMapper mapper)
         {
             _transactionRepo = transactionRepo;
-            _logger = logger;
             _priceParser = priceParser;
             _mapper = mapper;
-            _accountRepo = accountRepo;
             _context = context;
         }
 
@@ -196,7 +191,7 @@ namespace Coronado.Web.Controllers.Api
                 };
                 transaction.SetDebitAndCredit();
                 _transactionRepo.Insert(transaction);
-                var accountBalances = _context.Accounts.GetAccountBalances().Select(a => new { a.AccountId, a.CurrentBalance }).ToList();
+                var accountBalances = _context.Accounts.GetAccountBalances().ToList();
                 var transactions = new[] { transaction };
 
                 return CreatedAtAction("PostTransaction", new { id = transaction.TransactionId }, new { transactions, accountBalances });
@@ -237,7 +232,7 @@ namespace Coronado.Web.Controllers.Api
             var investmentTransaction = await CreateInvestmentTransaction(investmentDto, investment).ConfigureAwait(false);
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
-            var accountBalances = _accountRepo.GetAccountBalances().Select(a => new { a.AccountId, a.CurrentBalance });
+            var accountBalances = _context.Accounts.GetAccountBalances().ToList();
             return CreatedAtAction("PostInvestment", new { id = investment.InvestmentId },
                 new
                 {

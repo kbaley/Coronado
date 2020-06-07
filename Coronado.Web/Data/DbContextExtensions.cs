@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Coronado.Web.Controllers.Dtos;
 using Coronado.Web.Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,14 +10,23 @@ namespace Coronado.Web.Data
     public static class DbContextExtensions
     {
 
-        public static IQueryable<Account> GetAccountBalances(this DbSet<Account> accounts)
+        public static IQueryable<Account> etAccountBalances(this DbSet<Account> accounts)
         {
 
-            return accounts.FromSqlRaw<Account>(
+            return accounts.FromSqlRaw(
 @"SELECT account_id, sum(amount) as current_balance
 FROM Transactions
 GROUP BY account_id"
             );
+        }
+
+        public static IQueryable<AccountIdAndBalance> GetAccountBalances(this DbSet<Account> accounts) {
+            return accounts
+                .Select( a => new AccountIdAndBalance {
+                    AccountId = a.AccountId,
+                    CurrentBalance = a.Transactions.Sum(t => t.Amount),
+                    CurrentBalanceInUsd = a.Transactions.Sum(t => t.AmountInBaseCurrency)
+                });
         }
 
         public async static Task<Currency> FindBySymbol(this DbSet<Currency> currencies, string symbol)
@@ -46,12 +56,6 @@ GROUP BY account_id"
         public async static Task RemoveByIdAsync<T>(this DbSet<T> items, Guid id) where T : class
         {
             var item = await items.FindAsync(id).ConfigureAwait(false);
-            items.Remove(item);
-        }
-
-        public static void RemoveById<T>(this DbSet<T> items, Guid id) where T : class
-        {
-            var item = items.Find(id);
             items.Remove(item);
         }
 

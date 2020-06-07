@@ -19,19 +19,15 @@ namespace Coronado.Web.Controllers.Api
     public class AccountsController : ControllerBase
     {
         private readonly CoronadoDbContext _context;
-        private readonly IAccountRepository _accountRepo;
         private readonly ITransactionRepository _transactionRepo;
-        private readonly ILogger<AccountsController> _logger;
         private readonly IMapper _mapper;
         private readonly QifParser _qifParser;
 
-        public AccountsController(CoronadoDbContext context, IAccountRepository accountRepo,
-            ITransactionRepository transactionRepo, ILogger<AccountsController> logger, IMapper mapper)
+        public AccountsController(CoronadoDbContext context, 
+            ITransactionRepository transactionRepo, IMapper mapper)
         {
             _context = context;
-            _accountRepo = accountRepo;
             _transactionRepo = transactionRepo;
-            _logger = logger;
             _mapper = mapper;
             _qifParser = new QifParser(context);
         }

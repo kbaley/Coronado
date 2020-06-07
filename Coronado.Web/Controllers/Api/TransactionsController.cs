@@ -18,15 +18,13 @@ namespace Coronado.Web.Controllers.Api
     {
         private readonly CoronadoDbContext _context;
         private readonly ITransactionRepository _transactionRepo;
-        private readonly IAccountRepository _accountRepo;
         private readonly IMapper _mapper;
 
         public TransactionsController(CoronadoDbContext context, ITransactionRepository transactionRepo,
-            IAccountRepository accountRepo, IMapper mapper)
+            IMapper mapper)
         {
             _context = context;
             _transactionRepo = transactionRepo;
-            _accountRepo = accountRepo;
             _mapper = mapper;
         }
 
@@ -63,7 +61,7 @@ namespace Coronado.Web.Controllers.Api
             }
             _transactionRepo.Delete(id);
 
-            return Ok(new { transaction, accountBalances = _accountRepo.GetAccountBalances(), invoiceDto });
+            return Ok(new { transaction, accountBalances = _context.Accounts.GetAccountBalances().ToList(), invoiceDto });
         }
 
         [HttpPut("{id}")]
@@ -85,7 +83,11 @@ namespace Coronado.Web.Controllers.Api
                 var invoice = _context.FindInvoiceEager(transaction.InvoiceId.Value);
                 invoiceDto = _mapper.Map<InvoiceForPosting>(invoice);
             }
-            return Ok(new { transaction, originalAmount, accountBalances = _accountRepo.GetAccountBalances(), invoiceDto });
+            return Ok(new { transaction, 
+                originalAmount, 
+                accountBalances = _context.Accounts.GetAccountBalances().ToList(), 
+                invoiceDto 
+            });
         }
 
         [HttpPost]
@@ -108,7 +110,7 @@ namespace Coronado.Web.Controllers.Api
             transactions.AddRange(addedTransactions.Select(t => _mapper.Map<TransactionForDisplay>(t)));
             transactions.ForEach(t => t.SetDebitAndCredit());
 
-            var accountBalances = _accountRepo.GetAccountBalances();
+            var accountBalances = _context.Accounts.GetAccountBalances().ToList();
             InvoiceForPosting invoiceDto = null;
             if (transaction.InvoiceId.HasValue)
             {

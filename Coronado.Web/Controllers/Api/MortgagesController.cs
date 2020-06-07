@@ -17,14 +17,11 @@ namespace Coronado.Web.Controllers.Api
     {
         private readonly CoronadoDbContext _context;
         private readonly ITransactionRepository _transactionRepo;
-        private readonly IAccountRepository _accountRepo;
         
-        public MortgagesController(CoronadoDbContext context, ITransactionRepository transactionRepo,
-            IAccountRepository accountRepo)
+        public MortgagesController(CoronadoDbContext context, ITransactionRepository transactionRepo)
         {
             _context = context;
             _transactionRepo = transactionRepo;
-            _accountRepo = accountRepo;
         }
 
         [HttpPost]
