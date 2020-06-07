@@ -121,9 +121,6 @@ namespace Coronado.Web.Data
 
         private void UpdateAmount(Transaction dbTransaction, TransactionForDisplay transaction)
         {
-            // RULES
-            // For invoice payments, we do nothing and assume we get paid in the same currency as the invoice
-            // Investments are the same as transfers but we won't do anything with the underlying InvestmentTransaction
             if (dbTransaction.Amount == transaction.Amount) return;
 
             LoadCadExchangeRate();
@@ -210,11 +207,6 @@ namespace Coronado.Web.Data
         private string GetCurrencyFor(Guid accountId)
         {
             return _context.Accounts.Find(accountId).Currency;
-        }
-
-        private string GetCurrencyFor(Transaction transaction)
-        {
-            return _context.Accounts.Find(transaction.AccountId).Currency;
         }
 
         private void CreateTransferFrom(TransactionForDisplay transactionDto, Guid relatedTransactionId)
