@@ -77,9 +77,7 @@ namespace Coronado.Web.Data
         {
             var dbTransaction = _context.Transactions
                 .Include(t => t.Account)
-                .Include(t => t.LeftTransfer)
                 .Include(t => t.Category)
-                .Include(t => t.LeftTransfer.RightTransaction)
                 .Include(t => t.RightTransfer)
                 .Single(t => t.TransactionId == transaction.TransactionId);
             if (TransactionTypeChanged(transaction, dbTransaction))
@@ -124,55 +122,26 @@ namespace Coronado.Web.Data
         private void UpdateAmount(Transaction dbTransaction, TransactionForDisplay transaction)
         {
             // RULES
-            // For regular transactions, if this is a CAD account, also update the AmountInBaseCurrency
-            // For transfers, if both sides are USD, update the Amount and AmountInBaseCurrency for both sides
-            // For transfers, if one side is CAD, we update the AmountInBaseCurrency on both sides IFF
-            //     the USD side of the transaction has been updated. If the CAD side has been updated, we
-            //     leave AmountInBaseCurrency as is. I.e. the USD side is the source of truth.
-            // For transfers, if both sides are CAD, we update the AmountInBaseCurrency on both sides
             // For invoice payments, we do nothing and assume we get paid in the same currency as the invoice
             // Investments are the same as transfers but we won't do anything with the underlying InvestmentTransaction
             if (dbTransaction.Amount == transaction.Amount) return;
 
-            dbTransaction.Amount = transaction.Amount;
-
-            var accountCurrency = dbTransaction.Account.Currency;
             LoadCadExchangeRate();
+            TransactionAmountUpdater updater;
             switch (dbTransaction.TransactionType)
             {
                 case TRANSACTION_TYPE.REGULAR:
                 case TRANSACTION_TYPE.INVOICE_PAYMENT:
                 case TRANSACTION_TYPE.MORTGAGE_PAYMENT:
-                    dbTransaction.AmountInBaseCurrency = (accountCurrency == "CAD")
-                        ? Math.Round(dbTransaction.Amount / _cadExchangeRate, 2)
-                        : dbTransaction.Amount;
+                    updater = new TransactionAmountUpdaterRegular(dbTransaction, _cadExchangeRate);
+                    updater.UpdateAmount(transaction.Amount);
                     break;
                 case TRANSACTION_TYPE.TRANSFER:
                 case TRANSACTION_TYPE.INVESTMENT:
-                    var relatedTransaction = dbTransaction.LeftTransfer.RightTransaction;
-                    var relatedAccountCurrency = GetCurrencyFor(dbTransaction.LeftTransfer.RightTransaction);
-                    if (relatedAccountCurrency == "USD" && accountCurrency == "USD") {
-                        // Update the amounts and amounts in USD on both sides of the transaction
-                        dbTransaction.AmountInBaseCurrency = dbTransaction.Amount;
-                        relatedTransaction.Amount = 0 - dbTransaction.Amount;
-                        relatedTransaction.AmountInBaseCurrency = 0 - dbTransaction.Amount;
-                    } else
-                    if (relatedAccountCurrency == "CAD" && accountCurrency == "CAD") {
-                        // Update the amounts and amounts in USD on both sides of the transaction
-                        dbTransaction.AmountInBaseCurrency = Math.Round(dbTransaction.Amount / _cadExchangeRate, 2);
-                        relatedTransaction.Amount = 0 - dbTransaction.Amount;
-                        relatedTransaction.AmountInBaseCurrency = 0 - dbTransaction.AmountInBaseCurrency;
-                    } else if (accountCurrency == "USD" && relatedAccountCurrency == "CAD") {
-                        // Update the amounts in USD on both sides of the transaction
-                        // Leave the CAD amount as is in the related transaction
-                        dbTransaction.AmountInBaseCurrency = dbTransaction.Amount;
-                        relatedTransaction.AmountInBaseCurrency = 0 - dbTransaction.AmountInBaseCurrency;
-                    } else if (accountCurrency == "CAD" && relatedAccountCurrency == "USD") {
-                        // Just update the amount on this side of the transfer
-                        // Leave the amounts in USD as is on both sides
-                        // Leave the amount as is on the related transaction
-                    }
-                    
+                    _context.Entry(dbTransaction).Reference(t => t.LeftTransfer).Load();
+                    _context.Entry(dbTransaction.LeftTransfer).Reference(t => t.RightTransaction).Load();
+                    updater = new TransactionAmountUpdaterTransfer(dbTransaction, _cadExchangeRate);
+                    var relatedTransaction = updater.UpdateAmount(transaction.Amount);
                     _context.Transactions.Update(relatedTransaction);
                     break;
             }
