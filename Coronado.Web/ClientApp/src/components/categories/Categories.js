@@ -1,31 +1,19 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import CategoryList from './CategoryList';
 import NewCategory from './NewCategory';
 
-class Categories extends Component {
-  displayName = Categories.name;
+export default function Categories() {
 
-  render() {
-    
-    return (
-      <div>
-        <h1>
-          Categories
+  const categories = useSelector(state => state.categories);
+
+  return (
+    <div>
+      <h1>
+        Categories
           <NewCategory />
-        </h1>
-        <CategoryList categories={this.props.categories} />
-      </div>
-    );
-  }
+      </h1>
+      <CategoryList categories={categories} />
+    </div>
+  );
 }
-
-function mapStateToProps(state) {
-  return {
-    categories: state.categories,
-  }
-}
-
-export default connect(
-  mapStateToProps,
-)(Categories);

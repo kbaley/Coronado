@@ -1,9 +1,20 @@
 import React from 'react';
-import './CurrencyFormat.css';
+import { makeStyles } from '@material-ui/core';
 
+const styles = () => ({
+  currency: {
+    width: "100%",
+    textAlign: "right",
+    padding: "0 5px 0",
+    display: "inline-block",
+  }
+})
+
+const useStyles = makeStyles(styles);
 export function CurrencyFormat({value}) {
+  const classes = useStyles();
   return (
-    <span className="currency">
+    <span className={classes.currency}>
       {Currency(value)}
     </span>
   );

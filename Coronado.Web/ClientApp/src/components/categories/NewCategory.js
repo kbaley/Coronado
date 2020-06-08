@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
 import CategoryForm from './CategoryForm';
 import { NewIcon } from '../icons/NewIcon';
-import './NewCategory.css';
 
 export default function NewCategory() {
   const [show, setShow] = React.useState(false);
