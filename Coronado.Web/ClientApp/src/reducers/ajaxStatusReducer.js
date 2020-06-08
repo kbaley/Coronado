@@ -3,10 +3,22 @@ import * as categoryTypes from '../constants/categoryActionTypes';
 import * as customerTypes from '../constants/customerActionTypes';
 import * as investmentTypes from '../constants/investmentActionTypes';
 import * as invoiceTypes from '../constants/invoiceActionTypes';
+import * as transactionTypes from '../constants/transactionActionTypes';
+import * as selectAccountTypes from '../constants/selectAccountActionTypes';
 import initialState from './initialState';
 
 export const ajaxStatusReducer = (state = initialState.loading, action) => {
   switch (action.type) {
+    case selectAccountTypes.SELECT_ACCOUNT:
+      return {
+        ...state,
+        transactions: true,
+      }
+    case transactionTypes.LOAD_TRANSACTIONS_SUCCESS:
+      return {
+        ...state,
+        transactions: false,
+      }
     case invoiceTypes.LOAD_INVOICES:
       return {
         ...state,

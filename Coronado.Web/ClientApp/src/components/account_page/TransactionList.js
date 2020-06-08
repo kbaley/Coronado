@@ -6,6 +6,7 @@ import TransactionRow from './TransactionRow';
 import './TransactionList.css';
 import NewTransactionRow from './NewTransactionRow';
 import { Table, TableHead, TableRow, TableBody, TableCell, withStyles } from '@material-ui/core';
+import Spinner from '../common/Spinner';
 
 const styles = theme => ({
   transactionTable: {
@@ -71,10 +72,12 @@ class TransactionList extends Component {
         <TableBody>
           <NewTransactionRow
             account={this.props.account} />
-          {this.props.transactions ? this.props.transactions.map(trx =>
+        { this.props.isLoading ? <tr><td colSpan="8"><Spinner /></td></tr> :
+          this.props.transactions.map(trx =>
             <TransactionRow key={trx.transactionId} transaction={trx}
               onDelete={() => this.deleteTransaction(trx.transactionId)} />
-          ) : <tr />}
+          )
+        }
         </TableBody>
       </Table>
     );
@@ -85,7 +88,8 @@ function mapStateToProps(state) {
   return {
     categories: state.categories,
     accounts: state.accounts,
-    transactions: state.transactionModel.transactions
+    transactions: state.transactionModel.transactions,
+    isLoading: state.loading.transactions,
   }
 }
 
