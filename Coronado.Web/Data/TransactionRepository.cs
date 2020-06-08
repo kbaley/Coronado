@@ -23,36 +23,23 @@ namespace Coronado.Web.Data
             _mapper = mapper;
         }
 
-        private void UpdateInvoiceBalance(Guid? invoiceId, Guid? transactionId = null)
+        private void UpdateInvoiceBalance(Guid? invoiceId, Guid? transactionToIgnore = null)
         {
             if (!invoiceId.HasValue) return;
-            Func<Transaction, bool> Matches = (transaction) =>
-            {
-                if (transactionId.HasValue)
-                {
-                    return transaction.InvoiceId == invoiceId.Value && transaction.TransactionId != transactionId.Value;
-                }
-                return transaction.InvoiceId == invoiceId.Value;
-            };
 
-            var invoice = _context.Invoices
-                .Include(i => i.LineItems)
-                .Single(i => i.InvoiceId == invoiceId.Value);
-            var payments = _context.Transactions
-                .Where(Matches)
+            // Load all invoice transactions into the cache so that we can work locally.
+            // This is because we might have added or updated a related transaction that
+            // hasn't been committed to the database yet.
+            _context.Transactions
+                .Where(t => t.InvoiceId == invoiceId.Value)
+                .Load();
+            var invoice = _context.Invoices.Find(invoiceId.Value);
+            _context.Entry(invoice).Collection(i => i.LineItems).Load();
+            var payments = _context.Transactions.Local
+                .Where(t => t.InvoiceId == invoiceId.Value && (!transactionToIgnore.HasValue || t.TransactionId != transactionToIgnore.Value))
                 .Sum(t => t.Amount);
             invoice.Balance = invoice.LineItems.Sum(li => li.Amount) - payments;
             _context.Invoices.Update(invoice);
-        }
-
-        private void DeleteTransfersFor(Transaction transaction)
-        {
-            if (transaction.LeftTransfer != null)
-            {
-                _context.Transactions.Remove(transaction.LeftTransfer.RightTransaction);
-                _context.Transfers.Remove(transaction.LeftTransfer);
-                _context.Transfers.Remove(transaction.RightTransfer);
-            }
         }
 
         public void Delete(Guid transactionId)
@@ -114,7 +101,7 @@ namespace Coronado.Web.Data
             return true;
         }
 
-        private static bool TransactionTypeChanged(TransactionForDisplay transaction, Transaction dbTransaction)
+        private bool TransactionTypeChanged(TransactionForDisplay transaction, Transaction dbTransaction)
         {
             return dbTransaction.TransactionType != transaction.TransactionType;
         }
