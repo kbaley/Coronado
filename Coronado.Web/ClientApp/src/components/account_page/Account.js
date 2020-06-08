@@ -49,13 +49,13 @@ import { filter } from "lodash";
   deleteAccount() {
     var account = this.getSelectedAccount();
     this.props.actions.deleteAccount(account.accountId, account.name);
-    // if (this.props.accounts.length === 0) {
-    //   this.props.history.push('/');
-    // } else if (this.props.accounts[0].accountId === account.accountId) {
-    //   this.props.history.push('/account/' + this.props.accounts[1].accountId);
-    // } else {
-    //   this.props.history.push('/account/' + this.props.accounts[0].accountId);
-    // }
+    if (this.props.accounts.length === 0) {
+      this.props.history.push('/');
+    } else if (this.props.accounts[0].accountId === account.accountId) {
+      this.props.history.push('/account/' + this.props.accounts[1].accountId);
+    } else {
+      this.props.history.push('/account/' + this.props.accounts[0].accountId);
+    }
   }
   
   updateAccount(account) {

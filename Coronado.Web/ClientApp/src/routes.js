@@ -11,6 +11,7 @@ import LabelIcon from '@material-ui/icons/Label';
 import PeopleIcon from '@material-ui/icons/People';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import LocalAtmIcon from '@material-ui/icons/LocalAtm';
+import InvestmentPage from './components/investments_page/InvestmentPage';
 
 const routes = [
   {
@@ -60,7 +61,12 @@ const routes = [
   {
     name: 'Account',
     path: '/account/:accountId',
-    component: Account
+    component: Account,
+  },
+  {
+    name: 'Investment',
+    path: '/investment/:symbol',
+    component: InvestmentPage,
   },
   {
     name: 'Dashboard',

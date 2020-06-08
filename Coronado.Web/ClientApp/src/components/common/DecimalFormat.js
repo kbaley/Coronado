@@ -5,6 +5,10 @@ function format(number) {
   return Number(number).toLocaleString('en', {minimumFractionDigits: 2});
 }
 
+export function RawMoneyFormat({amount}) {
+  return format(amount);
+}
+
 export function DecimalFormat(props) {
   var amount = props.amount;
   if (amount <= 0) {

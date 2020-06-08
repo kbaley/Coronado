@@ -5,7 +5,6 @@ import NewInvestment from "./NewInvestment";
 import InvestmentList from "./InvestmentList";
 import TodaysPrices from "./TodaysPrices";
 import { Icon } from "../icons/Icon";
-import './InvestmentsPage.css';
 import { filter, sumBy } from 'lodash';
 import DisplayTotalRow from './DisplayTotalRow';
 import { orderBy } from 'lodash';

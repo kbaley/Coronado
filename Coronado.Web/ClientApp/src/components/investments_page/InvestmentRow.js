@@ -3,23 +3,39 @@ import { DeleteIcon } from '../icons/DeleteIcon';
 import { EditIcon } from '../icons/EditIcon';
 import { Icon } from '../icons/Icon';
 import { MoneyFormat } from '../common/DecimalFormat';
-import { TableRow, TableCell } from '@material-ui/core';
+import history from "../../history";
+import { 
+  TableRow, 
+  TableCell,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 
 const styles = theme => ({
   row: {
+    textDecoration: "none",
+    "&:hover": {
+      cursor: 'pointer',
+      backgroundColor: "#eee",
+    },
     "& td": {
       padding: 0,
     }
   }
 })
 
+const goToInvestment = (investment) => {
+  history.push('/investment/'+ investment.symbol);
+}
+
 const useStyles = makeStyles(styles);
 export function InvestmentRow({investment, onEdit, onDelete, openPriceHistory, onBuySell}) {
   const classes = useStyles(); 
   return (
-    <TableRow className={classes.row}>
+    <TableRow 
+      className={classes.row}
+      onClick={() => goToInvestment(investment)}
+    >
       <TableCell>
       <EditIcon onStartEditing={onEdit} fontSize="small" />
       <DeleteIcon onDelete={onDelete} fontSize="small" />
@@ -29,7 +45,9 @@ export function InvestmentRow({investment, onEdit, onDelete, openPriceHistory, o
         icon={<AddIcon fontSize="small" />}
       />
       </TableCell>
-      <TableCell>{investment.name}</TableCell>
+      <TableCell>
+          {investment.name}
+      </TableCell>
       <TableCell>{investment.symbol}</TableCell>
       <TableCell>{investment.currency}</TableCell>
       <TableCell>{investment.shares}</TableCell>
