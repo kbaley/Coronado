@@ -20,8 +20,6 @@ function InvestmentPage({match}) {
   const investments = useSelector(state => state.investments);
   const investment = find(investments, i => i.symbol === match.params.symbol) || { name: ''};
 
-  console.log(investment);
-
   return (
     <div>
       <h1>
