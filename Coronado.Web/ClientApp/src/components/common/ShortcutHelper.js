@@ -1,97 +1,72 @@
-import React, { Component } from 'react';
+import React from 'react';
 import * as Mousetrap from 'mousetrap';
 import './ShortcutHelper.css';
 import routes from '../../routes';
-import { withRouter } from 'react-router-dom';
-import { withStyles, Dialog, DialogTitle, TableContainer, Paper, Table, TableBody, TableRow, TableCell } from '@material-ui/core';
+import { Dialog, DialogTitle, Grid, makeStyles } from '@material-ui/core';
+import history from '../../history';
 
-const styles = theme => ({
-})
-
-class ShortcutHelper extends Component {
-  constructor(props) {
-    super(props);
-    this.showHelp = this.showHelp.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.state = { show: false };
+const styles = () => ({
+  grid: {
+    margin: 0,
+    padding: "0 10px",
+    width: "100%",
   }
-  componentDidMount() {
-    
-    Mousetrap.bind('?', this.showHelp);
+});
+  const useStyles = makeStyles(styles);
+
+export default function ShortcutHelper() {
+  const [ show, setShow ] = React.useState(false);
+  const classes = useStyles();
+
+  React.useEffect(() => {
+    Mousetrap.bind('?', showHelp);
     routes.filter(r => r.shortcut).map(route => {
       return Mousetrap.bind(route.shortcut, () => {
-        this.props.history.push(route.path);
+        history.push(route.path);
       });
     });
+  }, []);
+
+  const showHelp = () => {
+    setShow(true);
   }
-  showHelp() {
-    this.setState({ show: true });
+  const handleClose = () => {
+    setShow(false);
   }
-  handleClose() {
-    this.setState({ show: false });
-  }
-  render() {
-    const { classes } = this.props;
 
     return (
-      <Dialog onClose={this.handleClose}
-        open={this.state.show}
+      <Dialog onClose={handleClose}
+        open={show}
         fullWidth={true}
-        maxWidth={"md"}
+        maxWidth={"sm"}
       >
         <DialogTitle>Shortcuts</DialogTitle>
-        <TableContainer component={Paper}>
-          <Table className={classes.table}>
-            <TableBody>
-              <TableRow>
-                <TableCell>g [1-9]</TableCell>
-                <TableCell>Go to account</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>n a</TableCell>
-                <TableCell>New account</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>n t</TableCell>
-                <TableCell>(On an account listing) New transaction</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>g d</TableCell>
-                <TableCell>Go to the dashboard</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>g i</TableCell>
-                <TableCell>Go to the investments page</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>g r</TableCell>
-                <TableCell>Go to the reports page</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>g n</TableCell>
-                <TableCell>Go to the invoices page</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>n i</TableCell>
-                <TableCell>(On the invoices page) Create a new invoice</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>n c</TableCell>
-                <TableCell>(On the categories page) Create a new category</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell>Include <span style={{fontFamily: "monospace"}}>
+        <Grid container spacing={2} className={classes.grid}>
+          <Grid item xs={2}>g [1-9]</Grid>
+          <Grid item xs={10}>Go to account</Grid>
+          <Grid item xs={2}>n a</Grid>
+          <Grid item xs={10}>New account</Grid>
+                <Grid item xs={2}>n t</Grid>
+                <Grid item xs={10}>(On an account listing) New transaction</Grid>
+                <Grid item xs={2}>g d</Grid>
+                <Grid item xs={10}>Go to the dashboard</Grid>
+                <Grid item xs={2}>g i</Grid>
+                <Grid item xs={10}>Go to the investments page</Grid>
+                <Grid item xs={2}>g r</Grid>
+                <Grid item xs={10}>Go to the reports page</Grid>
+                <Grid item xs={2}>g n</Grid>
+                <Grid item xs={10}>Go to the invoices page</Grid>
+                <Grid item xs={2}>n i</Grid>
+                <Grid item xs={10}>(On the invoices page) Create a new invoice</Grid>
+                <Grid item xs={2}>n c</Grid>
+                <Grid item xs={10}>(On the categories page) Create a new category</Grid>
+                <Grid item xs={2}></Grid>
+                <Grid item xs={10}>Include <span style={{fontFamily: "monospace"}}>
                   bf: &lt;amount&gt; &lt;bank fee description&gt;</span> in a transaction description to 
                   automatically add one or more bank fee transactions<br/>
-                  E.g. <span style={{fontFamily: "monospace"}}>Payment for services bf: 35.00 transfer fee bf: 2.45 tax on fee</span></TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Dialog>
-    );
-  }
-}
+                  E.g. <span style={{fontFamily: "monospace"}}>Payment for services bf: 35.00 transfer fee bf: 2.45 tax on fee</span></Grid>
 
-export default withRouter((withStyles(styles)(ShortcutHelper)));
+        </Grid>
+        </Dialog>
+    );
+}

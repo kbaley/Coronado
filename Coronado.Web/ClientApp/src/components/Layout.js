@@ -37,7 +37,7 @@ export default function Layout(props) {
         </div>
       </div>
       <NotificationsComponent />
-      <ShortcutHelper history={props.history} />
+      <ShortcutHelper />
     </div>
   );
 };
