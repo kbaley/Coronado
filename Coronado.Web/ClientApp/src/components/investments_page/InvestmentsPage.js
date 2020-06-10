@@ -68,7 +68,7 @@ export default function InvestmentsPage() {
         />
         <Icon
           onClick={getLatestPrices}
-          title="Get latest prices from Yahoo"
+          title="Get latest prices"
           icon={<CloudDownloadIcon />}
         />
       </div>

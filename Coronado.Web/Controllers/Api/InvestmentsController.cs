@@ -77,7 +77,7 @@ namespace Coronado.Web.Controllers.Api
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<IEnumerable<InvestmentForListDto>> SaveTodaysPrices(IEnumerable<TodaysPriceDto> investments)
+        public async Task<InvestmentListModel> SaveTodaysPrices(IEnumerable<TodaysPriceDto> investments)
         {
             var investmentsFromDb = _context.Investments.ToList();
             foreach (var item in investments)
@@ -89,12 +89,12 @@ namespace Coronado.Web.Controllers.Api
                 }
             }
             await _context.SaveChangesAsync().ConfigureAwait(false);
-            return GetInvestments().Investments;
+            return GetInvestments();
         }
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<IEnumerable<InvestmentForListDto>> UpdateCurrentPrices()
+        public async Task<InvestmentListModel> UpdateCurrentPrices()
         {
             var mustUpdatePrices = _context.Investments
                 .Any(i => !i.DontRetrievePrices && i.LastPriceRetrievalDate < DateTime.Today);
@@ -103,8 +103,11 @@ namespace Coronado.Web.Controllers.Api
                 await _priceParser.UpdatePricesFor(_context).ConfigureAwait(false);
             }
             if (mustUpdatePrices)
-                return GetInvestments().Investments;
-            return new List<InvestmentForListDto>();
+                return GetInvestments();
+            return new InvestmentListModel{
+                Investments = new List<InvestmentForListDto>(),
+                PortfolioIrr = _context.Investments.GetAnnualizedIrr()
+            };
         }
 
         [HttpPost]

@@ -38,7 +38,6 @@ class TodaysPrices extends Component {
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.showTodaysPrices = this.showTodaysPrices.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.getLastPrice = this.getLastPrice.bind(this);
     this.state = {
       investments: [],
       show: false
@@ -50,13 +49,12 @@ class TodaysPrices extends Component {
       && this.props.investments.length !== this.state.investments.length) {
       this.setState({
         investments: this.props.investments.map(i => {
-          var lastPrice = this.getLastPrice(i);
           return {
             investmentId: i.investmentId,
             name: i.name,
             symbol: i.symbol,
-            lastPriceDate: lastPrice.date,
-            lastPrice: lastPrice.price
+            lastPriceDate: i.lastPriceRetrievalDate,
+            lastPrice: i.lastPrice
           }
         })
       })
@@ -67,18 +65,6 @@ class TodaysPrices extends Component {
   showTodaysPrices() {
     this.setState({ show: true });
     return false;
-  }
-
-  getLastPrice(investment) {
-    if (!investment.historicalPrices || investment.historicalPrices.length === 0) {
-      return {
-        date: new Date(),
-        price: 0.00
-      };
-    }
-
-    var lastPrice = orderBy(investment.historicalPrices, ['date'], ['desc'])[0];
-    return (({ date, price }) => ({ date, price }))(lastPrice);
   }
 
   handleKeyPress(e) {

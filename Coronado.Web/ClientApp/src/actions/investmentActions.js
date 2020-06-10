@@ -35,9 +35,9 @@ export const loadInvestments = () => {
 export const getLatestPrices = () => {
   return async (dispatch) => {
     const updatedInvestments = await InvestmentApi.getLatestPrices();
-    if (updatedInvestments && updatedInvestments !== "") {
+    if (updatedInvestments) {
       let message = 'Investments updated to latest prices.';
-      if (updatedInvestments.length === 0)
+      if (updatedInvestments.investments.length === 0)
         message = 'Investments have been updated already for today. No changes made.'
       else
         dispatch(loadInvestmentsSuccess(updatedInvestments));

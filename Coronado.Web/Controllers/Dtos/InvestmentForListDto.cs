@@ -16,7 +16,9 @@ namespace Coronado.Web.Controllers.Dtos
         public decimal CurrentValue { get; set; }
         public Guid AccountId { get; set; }
         public string AccountName { get; set; }
+        // Represents a price for buying and selling
         public decimal Price { get; set; }
+        // The date of a buy or sell
         public DateTime Date { get; set; }
         public double AnnualizedIrr { get; set; }
     }

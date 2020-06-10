@@ -5,6 +5,7 @@ import { cloneDeep, find, findIndex } from 'lodash';
 export const investmentReducer = (state = initialState.investments, action, deletedInvestments) => {
   switch (action.type) {
     case actions.LOAD_INVESTMENTS_SUCCESS:
+      console.log(action);
       return action.investments;
       
     case actions.DELETE_INVESTMENT:
