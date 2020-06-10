@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Coronado.Web.Controllers.Dtos;
@@ -27,6 +28,27 @@ GROUP BY account_id"
                     CurrentBalance = a.Transactions.Sum(t => t.Amount),
                     CurrentBalanceInUsd = a.Transactions.Sum(t => t.AmountInBaseCurrency)
                 });
+        }
+
+        public static double GetAnnualizedIrr(this DbSet<Investment> investments) {
+            var transactions = investments
+                .SelectMany(i => i.Transactions)
+                .OrderBy(t => t.Date)
+                .ToList();
+            var startDate = transactions.First().Date;
+            var payments = new List<double>();
+            var days = new List<double>();
+            foreach (var trx in transactions)
+            {
+                payments.Add(0 - (Convert.ToDouble(trx.Shares * trx.Price)));
+                days.Add((trx.Date - startDate).Days);
+            }
+            foreach (var investment in investments)
+            {
+                payments.Add(Convert.ToDouble(investment.GetCurrentValue()));
+                days.Add((DateTime.Today - startDate).Days);
+            }
+            return Irr.CalculateIrr(payments.ToArray(), days.ToArray());
         }
 
         public async static Task<Currency> FindBySymbol(this DbSet<Currency> currencies, string symbol)

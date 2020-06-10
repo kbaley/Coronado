@@ -4,8 +4,8 @@ import InvestmentApi from '../api/investmentApi';
 import { info } from 'react-notification-system-redux';
 import { authHeader } from '../api/auth-header';
 
-export function loadInvestmentsSuccess(investments) {
-  return {type: types.LOAD_INVESTMENTS_SUCCESS, investments};
+export function loadInvestmentsSuccess(loadInvestmentsResult) {
+  return {type: types.LOAD_INVESTMENTS_SUCCESS, ...loadInvestmentsResult};
 }
 
 export function loadInvestmentsAction() {

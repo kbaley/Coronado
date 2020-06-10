@@ -1,0 +1,12 @@
+using System;
+
+namespace Coronado.Web.Controllers.Dtos
+{
+    public class InvestmentForUpdateDto {
+        public Guid InvestmentId { get; set; }
+        public string Name { get; set; }
+        public string Symbol { get; set; }
+        public bool DontRetrievePrices { get; set; }
+        public string Currency { get; set; }
+    }
+}

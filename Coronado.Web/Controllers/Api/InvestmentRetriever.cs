@@ -46,9 +46,6 @@ namespace Coronado.Web.Controllers.Api
                 var frequency = "1d";
                 var end = (DateTime.UtcNow - DateTime.UnixEpoch).TotalSeconds;
                 var request = $"/get-historical-data?frequency={frequency}&filter=history&period1={start}&period2={end}&symbol={symbol}";
-                // var response = await client.GetAsync(request);
-                // response.EnsureSuccessStatusCode();
-                // var stringResult = await response.Content.ReadAsStringAsync();
                 var stringResult = System.IO.File.ReadAllText(@"moo.json");
                 return stringResult;
             }

@@ -17,6 +17,7 @@ import {reducer as notifications} from 'react-notification-system-redux';
 import { reportReducer } from "./reportReducer";
 import { currencyReducer } from "./currencyReducer";
 import { navListReducer } from "./navListReducer";
+import { portfolioStatsReducer } from "./portfolioStatsReducer";
 
 function rootReducer(state, action) {
   return {
@@ -38,7 +39,8 @@ function rootReducer(state, action) {
     reports: reportReducer(state.reports, action),
     loading: ajaxStatusReducer(state.loading, action),
     notifications: notifications(state.notifications, action),
-    showAllAccounts: navListReducer(state.showAllAccounts, action)
+    showAllAccounts: navListReducer(state.showAllAccounts, action),
+    portfolioStats: portfolioStatsReducer(state.portfolioStats, action),
   }
 }
 

@@ -47,7 +47,7 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpGet]
-        public IEnumerable<InvestmentForListDto> GetInvestments()
+        public InvestmentListModel GetInvestments()
         {
             var investments = _context.Investments
                 .Include(i => i.Transactions)
@@ -67,7 +67,12 @@ namespace Coronado.Web.Controllers.Api
             investments.ForEach( i => {
                 i.CurrentValue = i.Shares * i.LastPrice;
             });
-            return investments;
+            var totalIrr = _context.Investments.GetAnnualizedIrr();
+
+            return new InvestmentListModel {
+                Investments = investments,
+                PortfolioIrr = totalIrr
+            };
         }
 
         [HttpPost]
@@ -84,7 +89,7 @@ namespace Coronado.Web.Controllers.Api
                 }
             }
             await _context.SaveChangesAsync().ConfigureAwait(false);
-            return GetInvestments();
+            return GetInvestments().Investments;
         }
 
         [HttpPost]
@@ -98,7 +103,7 @@ namespace Coronado.Web.Controllers.Api
                 await _priceParser.UpdatePricesFor(_context).ConfigureAwait(false);
             }
             if (mustUpdatePrices)
-                return GetInvestments();
+                return GetInvestments().Investments;
             return new List<InvestmentForListDto>();
         }
 
@@ -111,31 +116,6 @@ namespace Coronado.Web.Controllers.Api
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
             return Ok(investment);
-        }
-
-        [HttpPost]
-        [Route("[action]")]
-        public IActionResult UpdatePriceHistory(InvestmentForListDto investment)
-        {
-            // foreach (var priceDto in investment.HistoricalPrices)
-            // {
-            //     if (priceDto.Status == "Deleted")
-            //     {
-            //         await _context.InvestmentPrices.RemoveByIdAsync(priceDto.InvestmentPriceId).ConfigureAwait(false);
-            //     }
-            //     else if (priceDto.Status == "Added")
-            //     {
-            //         priceDto.InvestmentPriceId = Guid.NewGuid();
-            //         var price = _mapper.Map<InvestmentPrice>(priceDto);
-            //         await _context.InvestmentPrices.AddAsync(price).ConfigureAwait(false);
-            //     }
-            // }
-            // await _context.SaveChangesAsync().ConfigureAwait(false);
-            // var investmentFromDb = await _context.Investments.FindAsync(investment.InvestmentId);
-            // await _context.Entry(investmentFromDb).Collection(i => i.HistoricalPrices).LoadAsync().ConfigureAwait(false);
-            // investment = _mapper.Map<InvestmentForListDto>(investmentFromDb);
-            // return CreatedAtAction("PostInvestment", new { id = investment.InvestmentId }, investment);
-            throw new NotImplementedException();
         }
 
         [HttpPost]

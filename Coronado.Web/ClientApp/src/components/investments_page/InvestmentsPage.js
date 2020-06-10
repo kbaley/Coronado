@@ -10,10 +10,22 @@ import DisplayTotalRow from './DisplayTotalRow';
 import { orderBy } from 'lodash';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
+import { Typography, makeStyles } from '@material-ui/core';
+import { PercentageFormat } from '../common/DecimalFormat';
+
+const styles = () => ({
+  irr: {
+    display: "inline-block",
+  }
+});
+
+const useStyles = makeStyles(styles);
 
 export default function InvestmentsPage() {
 
+  const classes = useStyles();
   const investments = useSelector(state => state.investments);
+  const portfolioStats = useSelector(state => state.portfolioStats);
   const currencies = useSelector(state => state.currencies);
   const dispatch = useDispatch();
 
@@ -42,7 +54,13 @@ export default function InvestmentsPage() {
 
   return (
     <div>
-      <div style={{ float: "right", width: "150px", textAlign: "right" }}>
+      <div style={{ float: "right", width: "250px", textAlign: "right" }}>
+        <Typography
+          variant="h4"
+          className={classes.irr}
+        >
+          <PercentageFormat amount={portfolioStats.irr} />
+        </Typography>
         <Icon
           onClick={makeCorrectingEntries}
           title="Sync with Investments accont"

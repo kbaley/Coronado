@@ -34,5 +34,8 @@ export default {
     investments: true
   },
   showAllAccounts: false,
+  portfolioStats: {
+    irr: 0.0,
+  },
 }
 
