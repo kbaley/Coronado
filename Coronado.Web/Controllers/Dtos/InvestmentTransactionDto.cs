@@ -8,7 +8,5 @@ namespace Coronado.Web.Controllers.Dtos
         public decimal Shares { get; set; }
         public decimal Price { get; set; }
         public DateTime Date { get; set; }
-        public Guid? AccountId { get; set; }
-        public string AccountName { get; set; }
     }
 }

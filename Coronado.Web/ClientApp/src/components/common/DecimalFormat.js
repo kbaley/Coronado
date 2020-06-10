@@ -2,11 +2,13 @@ import React from 'react';
 import './DecimalFormat.css';
 
 function format(number) {
-  return Number(number).toLocaleString('en', {minimumFractionDigits: 2});
+  return Number(number).toLocaleString('en', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 }
 
-export function RawMoneyFormat({amount}) {
-  return format(amount);
+export function PercentageFormat({amount}) {
+  return (
+  <span className="decimalAmount">{format(amount * 100)}%</span>
+  );
 }
 
 export function DecimalFormat(props) {

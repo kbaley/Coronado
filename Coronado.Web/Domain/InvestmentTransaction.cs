@@ -17,13 +17,5 @@ namespace Coronado.Web.Domain
 
         public Guid TransactionId { get; set; }
         public Transaction Transaction { get; set; }
-        public Guid? GetAccountId() {
-            if (Transaction == null) return null;
-            return Transaction.AccountId;
-        }
-        public string GetAccountName() {
-            if (Transaction == null) return null;
-            return Transaction.Account.Name;
-        }
     }
 }

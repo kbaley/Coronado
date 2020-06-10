@@ -5,7 +5,6 @@ using Coronado.Web.Data;
 using Coronado.Web.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging;
 using AutoMapper;
 using Coronado.Web.Controllers.Dtos;
 using System.Threading.Tasks;
@@ -32,10 +31,28 @@ namespace Coronado.Web.Controllers.Api
             _context = context;
         }
 
+        [HttpGet("{investmentId}")]
+        public async Task<ActionResult<InvestmentDetailDto>> Get(Guid investmentId) {
+            var investment = await _context.Investments.FindAsync(investmentId).ConfigureAwait(false);
+            if (investment == null) {
+                return NotFound();
+            }
+            await _context.Entry(investment).Collection(i => i.HistoricalPrices).LoadAsync().ConfigureAwait(false);
+            await _context.Entry(investment).Collection(i => i.Transactions).LoadAsync().ConfigureAwait(false);
+
+            var mappedInvestment = _mapper.Map<InvestmentDetailDto>(investment);
+            mappedInvestment.TotalPaid = Math.Round(investment.Transactions.Sum(t => t.Shares * t.Price), 2);
+            mappedInvestment.CurrentValue = Math.Round(mappedInvestment.AveragePrice * mappedInvestment.Shares);
+
+            return mappedInvestment;
+        }
+
         [HttpGet]
         public IEnumerable<InvestmentForListDto> GetInvestments()
         {
             var investments = _context.Investments
+                .Include(i => i.Transactions)
+                .Include(i => i.HistoricalPrices)
                 .Select(i => new InvestmentForListDto{
                     InvestmentId = i.InvestmentId,
                     Name = i.Name,
@@ -44,7 +61,8 @@ namespace Coronado.Web.Controllers.Api
                     LastPrice = i.HistoricalPrices.OrderByDescending(p => p.Date).First().Price,
                     AveragePrice = i.Transactions.Sum(t => t.Shares * t.Price) / i.Transactions.Sum(t => t.Shares),
                     Currency = i.Currency,
-                    DontRetrievePrices = i.DontRetrievePrices
+                    DontRetrievePrices = i.DontRetrievePrices,
+                    AnnualizedIrr = i.GetAnnualizedIrr()
                 })
                 .OrderBy(i => i.Name)
                 .ToList();

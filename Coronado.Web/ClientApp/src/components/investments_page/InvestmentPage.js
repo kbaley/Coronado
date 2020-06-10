@@ -1,10 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { find } from 'lodash';
 import { withRouter } from 'react-router-dom';
-import { Table, TableRow, Grid, Card, CardContent } from '@material-ui/core';
-import { MoneyFormat } from '../common/DecimalFormat';
+import { Grid, Card, CardContent } from '@material-ui/core';
+import { MoneyFormat, DecimalFormat, PercentageFormat } from '../common/DecimalFormat';
 import { makeStyles } from '@material-ui/core/styles';
+import InvestmentApi from '../../api/investmentApi';
+import { find } from 'lodash';
 
 const styles = theme => ({
   stats: {
@@ -17,8 +18,20 @@ const useStyles = makeStyles(styles);
 function InvestmentPage({match}) {
 
   const classes = useStyles();
+  const symbol = match.params.symbol;
   const investments = useSelector(state => state.investments);
-  const investment = find(investments, i => i.symbol === match.params.symbol) || { name: ''};
+  const matchingInvestment = find(investments, i => i.symbol === symbol);
+  const [investment, setInvestment] = React.useState({investmentId: '', name: '', symbol: ''});
+
+  React.useEffect(() => {
+    async function fetchInvestment() {
+      const loadedInvestment = await InvestmentApi.getInvestment(matchingInvestment.investmentId);
+      setInvestment(loadedInvestment);
+    }
+    if (matchingInvestment) {
+      fetchInvestment();  
+    }
+  }, [matchingInvestment]);
 
   return (
     <div>
@@ -35,7 +48,11 @@ function InvestmentPage({match}) {
         <Grid item xs={6}>Last price (date)</Grid>
         <Grid item xs={6}><MoneyFormat amount={investment.lastPrice} /></Grid>
         <Grid item xs={6}>Value</Grid>
-        <Grid item xs={6}><MoneyFormat amount={investment.lastPrice * investment.shares} /></Grid>
+        <Grid item xs={6}><MoneyFormat amount={investment.currentValue} /></Grid>
+        <Grid item xs={6}>Total return</Grid>
+        <Grid item xs={6}><PercentageFormat isCredit={true} amount={investment.totalReturn} /></Grid>
+        <Grid item xs={6}>Annualized return</Grid>
+        <Grid item xs={6}><PercentageFormat amount={investment.totalAnnualizedReturn} /></Grid>
       </Grid>
       </CardContent>
       </Card>

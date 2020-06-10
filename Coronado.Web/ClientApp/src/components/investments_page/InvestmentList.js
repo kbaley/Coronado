@@ -75,6 +75,7 @@ export default function InvestmentList({investments, currency, children}) {
           <TableCell>Shares</TableCell>
           <TableCell align={'right'}>Last Price</TableCell>
           <TableCell align={'right'}>Average Price</TableCell>
+          <TableCell align={'right'}>IRR</TableCell>
           <TableCell align={'right'}>Current Value</TableCell>
         </TableRow>
       </TableHead>

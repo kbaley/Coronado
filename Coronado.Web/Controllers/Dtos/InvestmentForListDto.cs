@@ -27,5 +27,6 @@ namespace Coronado.Web.Controllers.Dtos
         public string AccountName { get; set; }
         public decimal Price { get; set; }
         public DateTime Date { get; set; }
+        public double AnnualizedIrr { get; set; }
     }
 }

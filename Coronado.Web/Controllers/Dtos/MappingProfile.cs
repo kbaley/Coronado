@@ -18,8 +18,6 @@ namespace Coronado.Web.Controllers.Dtos
             CreateMap<Investment, InvestmentForUpdateDto>().ReverseMap();
             CreateMap<InvestmentPrice, InvestmentPriceDto>().ReverseMap();  
             CreateMap<InvestmentTransaction, InvestmentTransactionDto>()
-                .ForMember(i => i.AccountId, opt => opt.MapFrom(src => src.GetAccountId()))
-                .ForMember(i => i.AccountName, opt => opt.MapFrom(src => src.GetAccountName()))
                 .ReverseMap();
             CreateMap<InvoiceLineItem, InvoiceLineItemsForPosting>()
                 .ReverseMap();
@@ -30,6 +28,12 @@ namespace Coronado.Web.Controllers.Dtos
             CreateMap<Transaction, TransactionForDisplay>()
                 .ForMember(t => t.CategoryDisplay, opt => opt.MapFrom(src => src.GetCategoryDisplay()))
                 .ReverseMap();
+            CreateMap<Investment, InvestmentDetailDto>()
+                .ForMember(i => i.LastPrice, opt => opt.MapFrom(src => src.GetLastPriceAmount()))
+                .ForMember(i => i.AveragePrice, opt => opt.MapFrom(src => Math.Round(src.GetAveragePricePaid(), 2)))
+                .ForMember(i => i.TotalReturn, opt => opt.MapFrom(src => src.GetTotalReturn()))
+                .ForMember(i => i.TotalAnnualizedReturn, opt => opt.MapFrom(src => src.GetAnnualizedIrr()))
+                .ForMember(i => i.Shares, opt => opt.MapFrom(src => src.GetNumberOfShares()));
 
             // Useful for visualizing an AutoMapper mapping
             // var config = new MapperConfiguration(cfg => cfg

@@ -16,7 +16,7 @@ export default function DisplayTotalRow(props) {
   return (
       <TableRow className={classes.tableFooterRow}>
         <TableCell 
-          colSpan={7} 
+          colSpan={8} 
           align="right" 
           className={classes.tableCell + " " + classes.footer}
         >

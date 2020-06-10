@@ -2,7 +2,7 @@ import React from 'react';
 import { DeleteIcon } from '../icons/DeleteIcon';
 import { EditIcon } from '../icons/EditIcon';
 import { Icon } from '../icons/Icon';
-import { MoneyFormat } from '../common/DecimalFormat';
+import { MoneyFormat, PercentageFormat } from '../common/DecimalFormat';
 import history from "../../history";
 import { 
   TableRow, 
@@ -53,6 +53,7 @@ export function InvestmentRow({investment, onEdit, onDelete, openPriceHistory, o
       <TableCell>{investment.shares}</TableCell>
       <TableCell><MoneyFormat amount={investment.lastPrice} /></TableCell>
       <TableCell><MoneyFormat amount={investment.averagePrice} /></TableCell>
+      <TableCell><PercentageFormat amount={investment.annualizedIrr} /></TableCell>
       <TableCell><MoneyFormat amount={investment.currentValue} /></TableCell>
     </TableRow>
   );

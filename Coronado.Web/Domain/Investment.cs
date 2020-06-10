@@ -14,7 +14,6 @@ namespace Coronado.Web.Domain
         public Guid InvestmentId { get; set; }
         public string Name { get; set; }
         public string Symbol { get; set; }
-        public decimal Shares { get; set; }
         public string Currency { get; set; }
         public bool DontRetrievePrices { get; set; }
         public virtual ICollection<InvestmentPrice> HistoricalPrices { get; set; }
@@ -29,6 +28,28 @@ namespace Coronado.Web.Domain
             if (HistoricalPrices == null || HistoricalPrices.Count() == 0) return null;
 
             return HistoricalPrices.OrderByDescending(p => p.Date).First();
+        }
+
+        public decimal GetTotalReturn() {
+            var totalPaid = Transactions.Sum(t => t.Shares * t.Price);
+            var currentValue = GetCurrentValue();
+            return (currentValue - totalPaid) / currentValue;
+        }
+
+        public double GetAnnualizedIrr() {
+            if (Transactions.Count == 0) return 0.0;
+            var transactionsByDate = Transactions.OrderBy(t => t.Date);
+            var startDate = transactionsByDate.First().Date;
+            var payments = new List<double>();
+            var days = new List<double>();
+            foreach (var transaction in transactionsByDate)
+            {
+                payments.Add(-Convert.ToDouble(transaction.Shares) * Convert.ToDouble(transaction.Price));
+                days.Add((transaction.Date - startDate).Days);
+            }
+            payments.Add(Convert.ToDouble(GetCurrentValue()));
+            days.Add((DateTime.Today - startDate).Days);
+            return Irr.CalculateIrr(payments.ToArray(), days.ToArray());
         }
 
         public decimal GetNumberOfShares() {
