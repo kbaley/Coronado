@@ -6,14 +6,12 @@ import { orderBy } from 'lodash';
 import { InvestmentRow } from './InvestmentRow';
 import InvestmentsTotal from './InvestmentsTotal';
 import Spinner from '../common/Spinner';
-import InvestmentPriceHistory from './InvestmentPriceHistory';
 import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function InvestmentList({investments, currency, children}) {
   const [show, setShow] = React.useState(false);
   const [selectedInvestment, setSelectedInvestment] = React.useState({});
-  const [showPriceHistory, setShowPriceHistory] = React.useState(false);
   const [isBuying, setIsBuying] = React.useState(false);
   const currencies = useSelector(state => state.currencies);
   const isLoading = useSelector(state => state.isLoading);
@@ -23,16 +21,6 @@ export default function InvestmentList({investments, currency, children}) {
 
   const deleteInvestment = (investmentId, investmentName) => {
     dispatch(investmentActions.deleteInvestment(investmentId, investmentName));
-  }
-
-  const openPriceHistory = (investment) => {
-    setSelectedInvestment(investment);
-    setShowPriceHistory(true);
-  }
-
-  const handleClosePriceHistory = () => {
-    setShowPriceHistory(false);
-    setSelectedInvestment(false);
   }
 
   const startEditing = (investment) => {
@@ -52,10 +40,6 @@ export default function InvestmentList({investments, currency, children}) {
       dispatch(investmentActions.updateInvestment(investment));
     }
     setIsBuying(false);
-  }
-
-  const savePrices = (investment, prices) => {
-    dispatch(investmentActions.updatePriceHistory(investment, prices));
   }
 
   const buySell = (investment) => {
@@ -88,11 +72,6 @@ export default function InvestmentList({investments, currency, children}) {
           isBuying={isBuying}
           accounts={accounts}
           onSave={saveInvestment} />
-        <InvestmentPriceHistory
-          show={showPriceHistory}
-          onClose={handleClosePriceHistory}
-          onSave={savePrices}
-          investment={selectedInvestment} />
         {isLoading ? <tr><td colSpan="2"><Spinner /></td></tr> :
           sortedInvestments.map(i =>
             <InvestmentRow
@@ -101,7 +80,7 @@ export default function InvestmentList({investments, currency, children}) {
               onEdit={() => startEditing(i)}
               onDelete={() => deleteInvestment(i.investmentId, i.name)}
               onBuySell={() => buySell(i)}
-              openPriceHistory={() => openPriceHistory(i)} />
+            />
           )}
         <InvestmentsTotal
           investments={investments}

@@ -39,7 +39,7 @@ function ClickableTableCell({children, investment}) {
 }
 
 const useStyles = makeStyles(styles);
-export function InvestmentRow({investment, onEdit, onDelete, openPriceHistory, onBuySell}) {
+export function InvestmentRow({investment, onEdit, onDelete, onBuySell}) {
   const classes = useStyles(); 
   return (
     <TableRow 
@@ -58,17 +58,16 @@ export function InvestmentRow({investment, onEdit, onDelete, openPriceHistory, o
       <ClickableTableCell investment={investment}>{investment.symbol}</ClickableTableCell>
       <ClickableTableCell investment={investment}>{investment.currency}</ClickableTableCell>
       <ClickableTableCell investment={investment}>{investment.shares}</ClickableTableCell>
-      <ClickableTableCell
-      >
+      <ClickableTableCell investment={investment}>
         <MoneyFormat amount={investment.lastPrice} />
       </ClickableTableCell>
-      <ClickableTableCell>
+      <ClickableTableCell investment={investment}>
         <MoneyFormat amount={investment.averagePrice} />
       </ClickableTableCell>
-      <ClickableTableCell>
+      <ClickableTableCell investment={investment}>
         <PercentageFormat amount={investment.annualizedIrr} />
       </ClickableTableCell>
-      <ClickableTableCell>
+      <ClickableTableCell investment={investment}>
         <MoneyFormat amount={investment.currentValue} />
       </ClickableTableCell>
     </TableRow>
