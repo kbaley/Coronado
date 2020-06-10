@@ -28,13 +28,22 @@ const goToInvestment = (investment) => {
   history.push('/investment/'+ investment.symbol);
 }
 
+function ClickableTableCell({children, investment}) {
+  return (
+    <TableCell
+        onClick={() => goToInvestment(investment)}
+    >
+      {children}
+    </TableCell>
+  );
+}
+
 const useStyles = makeStyles(styles);
 export function InvestmentRow({investment, onEdit, onDelete, openPriceHistory, onBuySell}) {
   const classes = useStyles(); 
   return (
     <TableRow 
       className={classes.row}
-      onClick={() => goToInvestment(investment)}
     >
       <TableCell>
       <EditIcon onStartEditing={onEdit} fontSize="small" />
@@ -45,16 +54,23 @@ export function InvestmentRow({investment, onEdit, onDelete, openPriceHistory, o
         icon={<AddIcon fontSize="small" />}
       />
       </TableCell>
-      <TableCell>
-          {investment.name}
-      </TableCell>
-      <TableCell>{investment.symbol}</TableCell>
-      <TableCell>{investment.currency}</TableCell>
-      <TableCell>{investment.shares}</TableCell>
-      <TableCell><MoneyFormat amount={investment.lastPrice} /></TableCell>
-      <TableCell><MoneyFormat amount={investment.averagePrice} /></TableCell>
-      <TableCell><PercentageFormat amount={investment.annualizedIrr} /></TableCell>
-      <TableCell><MoneyFormat amount={investment.currentValue} /></TableCell>
+      <ClickableTableCell investment={investment}>{investment.name}</ClickableTableCell>
+      <ClickableTableCell investment={investment}>{investment.symbol}</ClickableTableCell>
+      <ClickableTableCell investment={investment}>{investment.currency}</ClickableTableCell>
+      <ClickableTableCell investment={investment}>{investment.shares}</ClickableTableCell>
+      <ClickableTableCell
+      >
+        <MoneyFormat amount={investment.lastPrice} />
+      </ClickableTableCell>
+      <ClickableTableCell>
+        <MoneyFormat amount={investment.averagePrice} />
+      </ClickableTableCell>
+      <ClickableTableCell>
+        <PercentageFormat amount={investment.annualizedIrr} />
+      </ClickableTableCell>
+      <ClickableTableCell>
+        <MoneyFormat amount={investment.currentValue} />
+      </ClickableTableCell>
     </TableRow>
   );
 }
