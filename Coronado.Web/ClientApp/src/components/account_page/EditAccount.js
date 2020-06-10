@@ -1,35 +1,27 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { AccountForm } from './AccountForm';
 import { EditIcon } from '../icons/EditIcon';
 import './EditAccount.css';
 
-class EditAccount extends Component {
-  constructor(props) {
-    super(props);
-    this.showForm = this.showForm.bind(this);
-    this.hideForm = this.hideForm.bind(this);
-    this.state = { show: false };
+export default function EditAccount({account, onUpdate, accountTypes}) {
+  const [ show, setShow ] = React.useState(false);
+
+  const showForm = () => {
+    setShow(true);
   }
-  showForm() {
-    this.setState({ show: true });
+  const hideForm = () => {
+    setShow(false);
   }
-  hideForm() {
-    this.setState({ show: false });
-  }
-  render() {
     return (
     <Fragment>
-      <EditIcon className="edit-account" onStartEditing={this.showForm} />
+      <EditIcon className="edit-account" onStartEditing={showForm} />
       <AccountForm 
-        show={this.state.show} 
-        onClose={this.hideForm} 
-        account={this.props.account} 
-        onSave={this.props.onUpdate}
-        accountTypes={this.props.accountTypes}
+        show={show} 
+        onClose={hideForm} 
+        account={account} 
+        onSave={onUpdate}
+        accountTypes={accountTypes}
       />
     </Fragment>
     );
-  }
 }
-
-export default EditAccount;

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Moment from 'react-moment';
-import { orderBy } from 'lodash';
 import { Icon } from "../icons/Icon";
 import { withStyles, Button, Dialog, DialogTitle, DialogContent, 
   DialogActions, InputBase, Table, TableHead, TableRow, TableBody, TableCell } from '@material-ui/core'
