@@ -64,7 +64,6 @@ function Account({ match }) {
   }
 
   const account = getSelectedAccount();
-  console.log(remainingTransactionCount);
 
   return (
     <div>

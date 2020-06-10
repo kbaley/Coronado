@@ -58,7 +58,7 @@ export default function NetWorthReport() {
               <TableCell>
                 {
                   index < report.length - 1
-                    ? CurrencyFormat({ value: r.netWorth - report[index + 1].netWorth })
+                    ? <CurrencyFormat value={r.netWorth - report[index + 1].netWorth} />
                     : null
                 }
               </TableCell>
