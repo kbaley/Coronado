@@ -7,6 +7,5 @@ namespace Coronado.Web.Controllers.Api
     public interface IInvestmentPriceParser
     {
         Task UpdatePricesFor(CoronadoDbContext context);
-        void UpdatePriceHistoryFor(Investment investment);
     }
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Grid, Card, CardContent } from '@material-ui/core';
-import { MoneyFormat, DecimalFormat, PercentageFormat } from '../common/DecimalFormat';
+import { MoneyFormat, PercentageFormat } from '../common/DecimalFormat';
 import { makeStyles } from '@material-ui/core/styles';
 import InvestmentApi from '../../api/investmentApi';
 import { find } from 'lodash';

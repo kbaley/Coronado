@@ -3,15 +3,17 @@ using System;
 using Coronado.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Coronado.Web.Migrations
 {
     [DbContext(typeof(CoronadoDbContext))]
-    partial class CoronadoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200610164253_AddPriceToInvestments")]
+    partial class AddPriceToInvestments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -205,6 +207,34 @@ namespace Coronado.Web.Migrations
                         .HasName("pk_investments");
 
                     b.ToTable("investments");
+                });
+
+            modelBuilder.Entity("Coronado.Web.Domain.InvestmentPrice", b =>
+                {
+                    b.Property<Guid>("InvestmentPriceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("investment_price_id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnName("date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("InvestmentId")
+                        .HasColumnName("investment_id")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnName("price")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("InvestmentPriceId")
+                        .HasName("pk_investment_prices");
+
+                    b.HasIndex("InvestmentId")
+                        .HasName("ix_investment_prices_investment_id");
+
+                    b.ToTable("investment_prices");
                 });
 
             modelBuilder.Entity("Coronado.Web.Domain.InvestmentTransaction", b =>
@@ -477,6 +507,16 @@ namespace Coronado.Web.Migrations
                         .WithMany()
                         .HasForeignKey("ParentCategoryId")
                         .HasConstraintName("fk_categories_categories_parent_category_id");
+                });
+
+            modelBuilder.Entity("Coronado.Web.Domain.InvestmentPrice", b =>
+                {
+                    b.HasOne("Coronado.Web.Domain.Investment", null)
+                        .WithMany("HistoricalPrices")
+                        .HasForeignKey("InvestmentId")
+                        .HasConstraintName("fk_investment_prices_investments_investment_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Coronado.Web.Domain.InvestmentTransaction", b =>

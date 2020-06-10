@@ -16,19 +16,9 @@ namespace Coronado.Web.Domain
         public string Symbol { get; set; }
         public string Currency { get; set; }
         public bool DontRetrievePrices { get; set; }
-        public virtual ICollection<InvestmentPrice> HistoricalPrices { get; set; }
         public virtual ICollection<InvestmentTransaction> Transactions { get; set; }
-
-        public decimal GetLastPriceAmount() {
-            var lastPrice = GetLastPrice();
-            return lastPrice == null ? 0.00m : lastPrice.Price;
-        }
-
-        public InvestmentPrice GetLastPrice() {
-            if (HistoricalPrices == null || HistoricalPrices.Count() == 0) return null;
-
-            return HistoricalPrices.OrderByDescending(p => p.Date).First();
-        }
+        public decimal LastPrice { get; set; }
+        public DateTime LastPriceRetrievalDate { get; set; }
 
         public decimal GetTotalReturn() {
             var totalPaid = Transactions.Sum(t => t.Shares * t.Price);
@@ -63,7 +53,7 @@ namespace Coronado.Web.Domain
         }
 
         public decimal GetCurrentValue() {
-            return GetNumberOfShares() * GetLastPriceAmount();
+            return GetNumberOfShares() * LastPrice;
         }
 
     }

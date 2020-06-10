@@ -22,7 +22,6 @@ namespace Coronado.Web.Data
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Configuration> Configurations { get; set; }
-        public DbSet<InvestmentPrice> InvestmentPrices { get; set; }
         public DbSet<InvestmentTransaction> InvestmentTransactions { get; set; }
         public DbSet<Transfer> Transfers { get; set; }
 

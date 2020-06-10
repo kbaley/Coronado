@@ -37,7 +37,6 @@ namespace Coronado.Web.Controllers.Api
             if (investment == null) {
                 return NotFound();
             }
-            await _context.Entry(investment).Collection(i => i.HistoricalPrices).LoadAsync().ConfigureAwait(false);
             await _context.Entry(investment).Collection(i => i.Transactions).LoadAsync().ConfigureAwait(false);
 
             var mappedInvestment = _mapper.Map<InvestmentDetailDto>(investment);
@@ -52,13 +51,12 @@ namespace Coronado.Web.Controllers.Api
         {
             var investments = _context.Investments
                 .Include(i => i.Transactions)
-                .Include(i => i.HistoricalPrices)
                 .Select(i => new InvestmentForListDto{
                     InvestmentId = i.InvestmentId,
                     Name = i.Name,
                     Symbol = i.Symbol,
                     Shares = i.Transactions.Sum(t => t.Shares),
-                    LastPrice = i.HistoricalPrices.OrderByDescending(p => p.Date).First().Price,
+                    LastPrice = i.LastPrice,
                     AveragePrice = i.Transactions.Sum(t => t.Shares * t.Price) / i.Transactions.Sum(t => t.Shares),
                     Currency = i.Currency,
                     DontRetrievePrices = i.DontRetrievePrices,
@@ -76,33 +74,13 @@ namespace Coronado.Web.Controllers.Api
         [Route("[action]")]
         public async Task<IEnumerable<InvestmentForListDto>> SaveTodaysPrices(IEnumerable<TodaysPriceDto> investments)
         {
-            var investmentsFromDb = _context.Investments
-                .Include(i => i.HistoricalPrices)
-                .ToList();
+            var investmentsFromDb = _context.Investments.ToList();
             foreach (var item in investments)
             {
-                var investmentToUpdate = investmentsFromDb.SingleOrDefault(i => i.InvestmentId == item.InvestmentId);
-                var lastPrice = investmentToUpdate.GetLastPrice();
-                // Don't update if the price is the same. This is not an accurate assumption but it allows updating
-                // a single price in the list without updating the others
-                if (lastPrice == null || lastPrice.Price != item.LastPrice)
-                {
-                    if (lastPrice == null || lastPrice.Date.Date != DateTime.Today)
-                    {
-                        lastPrice = new InvestmentPrice
-                        {
-                            InvestmentPriceId = Guid.NewGuid(),
-                            InvestmentId = item.InvestmentId,
-                            Date = DateTime.Today,
-                            Price = item.LastPrice
-                        };
-                        await _context.InvestmentPrices.AddAsync(lastPrice).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        lastPrice.Price = item.LastPrice;
-                        _context.InvestmentPrices.Update(lastPrice);
-                    }
+                var investment = investmentsFromDb.SingleOrDefault(i => i.InvestmentId == item.InvestmentId);
+                if (investment != null) {
+                    investment.LastPriceRetrievalDate = DateTime.Today;
+                    investment.LastPrice = item.LastPrice;
                 }
             }
             await _context.SaveChangesAsync().ConfigureAwait(false);
@@ -114,16 +92,7 @@ namespace Coronado.Web.Controllers.Api
         public async Task<IEnumerable<InvestmentForListDto>> UpdateCurrentPrices()
         {
             var mustUpdatePrices = _context.Investments
-                .Include(i => i.HistoricalPrices)
-                .ToList().Any(i =>
-                {
-                    if (i.HistoricalPrices == null) return true;
-                    if (i.DontRetrievePrices) return false;
-
-                    var lastPrice = i.HistoricalPrices.OrderBy(p => p.Date).LastOrDefault();
-                    if (lastPrice == null) return true;
-                    return lastPrice.Date < DateTime.Today;
-                });
+                .Any(i => !i.DontRetrievePrices && i.LastPriceRetrievalDate < DateTime.Today);
             if (mustUpdatePrices)
             {
                 await _priceParser.UpdatePricesFor(_context).ConfigureAwait(false);
@@ -146,26 +115,27 @@ namespace Coronado.Web.Controllers.Api
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> UpdatePriceHistory(InvestmentForListDto investment)
+        public IActionResult UpdatePriceHistory(InvestmentForListDto investment)
         {
-            foreach (var priceDto in investment.HistoricalPrices)
-            {
-                if (priceDto.Status == "Deleted")
-                {
-                    await _context.InvestmentPrices.RemoveByIdAsync(priceDto.InvestmentPriceId).ConfigureAwait(false);
-                }
-                else if (priceDto.Status == "Added")
-                {
-                    priceDto.InvestmentPriceId = Guid.NewGuid();
-                    var price = _mapper.Map<InvestmentPrice>(priceDto);
-                    await _context.InvestmentPrices.AddAsync(price).ConfigureAwait(false);
-                }
-            }
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-            var investmentFromDb = await _context.Investments.FindAsync(investment.InvestmentId);
-            await _context.Entry(investmentFromDb).Collection(i => i.HistoricalPrices).LoadAsync().ConfigureAwait(false);
-            investment = _mapper.Map<InvestmentForListDto>(investmentFromDb);
-            return CreatedAtAction("PostInvestment", new { id = investment.InvestmentId }, investment);
+            // foreach (var priceDto in investment.HistoricalPrices)
+            // {
+            //     if (priceDto.Status == "Deleted")
+            //     {
+            //         await _context.InvestmentPrices.RemoveByIdAsync(priceDto.InvestmentPriceId).ConfigureAwait(false);
+            //     }
+            //     else if (priceDto.Status == "Added")
+            //     {
+            //         priceDto.InvestmentPriceId = Guid.NewGuid();
+            //         var price = _mapper.Map<InvestmentPrice>(priceDto);
+            //         await _context.InvestmentPrices.AddAsync(price).ConfigureAwait(false);
+            //     }
+            // }
+            // await _context.SaveChangesAsync().ConfigureAwait(false);
+            // var investmentFromDb = await _context.Investments.FindAsync(investment.InvestmentId);
+            // await _context.Entry(investmentFromDb).Collection(i => i.HistoricalPrices).LoadAsync().ConfigureAwait(false);
+            // investment = _mapper.Map<InvestmentForListDto>(investmentFromDb);
+            // return CreatedAtAction("PostInvestment", new { id = investment.InvestmentId }, investment);
+            throw new NotImplementedException();
         }
 
         [HttpPost]
@@ -173,7 +143,6 @@ namespace Coronado.Web.Controllers.Api
         public async Task<IActionResult> MakeCorrectingEntries()
         {
             var investments = _context.Investments
-                .Include(i => i.HistoricalPrices)
                 .Include(i => i.Transactions);
             var currencyController = new CurrenciesController(_context);
             var currency = currencyController.GetExchangeRateFor("CAD").GetAwaiter().GetResult();
@@ -230,7 +199,6 @@ namespace Coronado.Web.Controllers.Api
             _context.Entry(investmentMapped).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             await _context.Entry(investmentMapped).ReloadAsync().ConfigureAwait(false);
-            await _context.Entry(investmentMapped).Collection(i => i.HistoricalPrices).LoadAsync().ConfigureAwait(false);
             await _context.Entry(investmentMapped).Collection(i => i.Transactions).LoadAsync().ConfigureAwait(false);
             var returnInvestment = _mapper.Map<InvestmentForListDto>(investmentMapped);
 

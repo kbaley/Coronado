@@ -10,13 +10,11 @@ namespace Coronado.Web.Controllers.Dtos
         public MappingProfile()
         {
             CreateMap<Investment, InvestmentForListDto>()
-                .ForMember(i => i.LastPrice, opt => opt.MapFrom(src => src.GetLastPriceAmount()))
                 .ForMember(i => i.AveragePrice, opt => opt.MapFrom(src => Math.Round(src.GetAveragePricePaid(), 2)))
                 .ForMember(i => i.Shares, opt => opt.MapFrom(src => src.GetNumberOfShares()))
                 .ForMember(i => i.CurrentValue, opt => opt.MapFrom(src => Math.Round(src.GetCurrentValue(), 2)))
                 .ReverseMap();  
             CreateMap<Investment, InvestmentForUpdateDto>().ReverseMap();
-            CreateMap<InvestmentPrice, InvestmentPriceDto>().ReverseMap();  
             CreateMap<InvestmentTransaction, InvestmentTransactionDto>()
                 .ReverseMap();
             CreateMap<InvoiceLineItem, InvoiceLineItemsForPosting>()
@@ -29,7 +27,6 @@ namespace Coronado.Web.Controllers.Dtos
                 .ForMember(t => t.CategoryDisplay, opt => opt.MapFrom(src => src.GetCategoryDisplay()))
                 .ReverseMap();
             CreateMap<Investment, InvestmentDetailDto>()
-                .ForMember(i => i.LastPrice, opt => opt.MapFrom(src => src.GetLastPriceAmount()))
                 .ForMember(i => i.AveragePrice, opt => opt.MapFrom(src => Math.Round(src.GetAveragePricePaid(), 2)))
                 .ForMember(i => i.TotalReturn, opt => opt.MapFrom(src => src.GetTotalReturn()))
                 .ForMember(i => i.TotalAnnualizedReturn, opt => opt.MapFrom(src => src.GetAnnualizedIrr()))
