@@ -3,17 +3,15 @@ using System;
 using Coronado.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Coronado.Web.Migrations
 {
     [DbContext(typeof(CoronadoDbContext))]
-    [Migration("20200606145430_AddTransactionCurrencyAmount")]
-    partial class AddTransactionCurrencyAmount
+    partial class CoronadoDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,10 +34,6 @@ namespace Coronado.Web.Migrations
                         .IsRequired()
                         .HasColumnName("currency")
                         .HasColumnType("text");
-
-                    b.Property<decimal>("CurrentBalance")
-                        .HasColumnName("current_balance")
-                        .HasColumnType("numeric");
 
                     b.Property<int>("DisplayOrder")
                         .HasColumnName("display_order")
@@ -194,10 +188,6 @@ namespace Coronado.Web.Migrations
                     b.Property<string>("Name")
                         .HasColumnName("name")
                         .HasColumnType("text");
-
-                    b.Property<decimal>("Shares")
-                        .HasColumnName("shares")
-                        .HasColumnType("numeric");
 
                     b.Property<string>("Symbol")
                         .HasColumnName("symbol")

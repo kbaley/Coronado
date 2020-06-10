@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Coronado.Web.Migrations
 {
     [DbContext(typeof(CoronadoDbContext))]
-    [Migration("20200412044721_InvestmentTransactions")]
-    partial class InvestmentTransactions
+    [Migration("20200610135342_Scaffolding")]
+    partial class Scaffolding
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,10 +36,6 @@ namespace Coronado.Web.Migrations
                         .IsRequired()
                         .HasColumnName("currency")
                         .HasColumnType("text");
-
-                    b.Property<decimal>("CurrentBalance")
-                        .HasColumnName("current_balance")
-                        .HasColumnType("numeric");
 
                     b.Property<int>("DisplayOrder")
                         .HasColumnName("display_order")
@@ -94,6 +90,9 @@ namespace Coronado.Web.Migrations
 
                     b.HasKey("CategoryId")
                         .HasName("pk_categories");
+
+                    b.HasIndex("ParentCategoryId")
+                        .HasName("ix_categories_parent_category_id");
 
                     b.ToTable("categories");
                 });
@@ -180,25 +179,17 @@ namespace Coronado.Web.Migrations
                         .HasColumnName("investment_id")
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("AveragePrice")
-                        .HasColumnName("average_price")
-                        .HasColumnType("numeric");
-
                     b.Property<string>("Currency")
                         .HasColumnName("currency")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("LastRetrieved")
-                        .HasColumnName("last_retrieved")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<bool>("DontRetrievePrices")
+                        .HasColumnName("dont_retrieve_prices")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .HasColumnName("name")
                         .HasColumnType("text");
-
-                    b.Property<decimal>("Shares")
-                        .HasColumnName("shares")
-                        .HasColumnType("numeric");
 
                     b.Property<string>("Symbol")
                         .HasColumnName("symbol")
@@ -261,11 +252,18 @@ namespace Coronado.Web.Migrations
                         .HasColumnName("shares")
                         .HasColumnType("numeric");
 
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnName("transaction_id")
+                        .HasColumnType("uuid");
+
                     b.HasKey("InvestmentTransactionId")
                         .HasName("pk_investment_transactions");
 
                     b.HasIndex("InvestmentId")
                         .HasName("ix_investment_transactions_investment_id");
+
+                    b.HasIndex("TransactionId")
+                        .HasName("ix_investment_transactions_transaction_id");
 
                     b.ToTable("investment_transactions");
                 });
@@ -318,6 +316,10 @@ namespace Coronado.Web.Migrations
                         .HasColumnName("invoice_line_item_id")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnName("category_id")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Description")
                         .HasColumnName("description")
                         .HasColumnType("text");
@@ -336,6 +338,9 @@ namespace Coronado.Web.Migrations
 
                     b.HasKey("InvoiceLineItemId")
                         .HasName("pk_invoice_line_items");
+
+                    b.HasIndex("CategoryId")
+                        .HasName("ix_invoice_line_items_category_id");
 
                     b.HasIndex("InvoiceId")
                         .HasName("ix_invoice_line_items_invoice_id");
@@ -358,6 +363,10 @@ namespace Coronado.Web.Migrations
                         .HasColumnName("amount")
                         .HasColumnType("numeric");
 
+                    b.Property<decimal>("AmountInBaseCurrency")
+                        .HasColumnName("amount_in_base_currency")
+                        .HasColumnType("numeric");
+
                     b.Property<Guid?>("CategoryId")
                         .HasColumnName("category_id")
                         .HasColumnType("uuid");
@@ -378,13 +387,13 @@ namespace Coronado.Web.Migrations
                         .HasColumnName("is_reconciled")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid?>("RelatedTransactionId")
-                        .HasColumnName("related_transaction_id")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnName("transaction_date")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("TransactionType")
+                        .HasColumnName("transaction_type")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Vendor")
                         .HasColumnName("vendor")
@@ -402,10 +411,36 @@ namespace Coronado.Web.Migrations
                     b.HasIndex("InvoiceId")
                         .HasName("ix_transactions_invoice_id");
 
-                    b.HasIndex("RelatedTransactionId")
-                        .HasName("ix_transactions_related_transaction_id");
-
                     b.ToTable("transactions");
+                });
+
+            modelBuilder.Entity("Coronado.Web.Domain.Transfer", b =>
+                {
+                    b.Property<Guid>("TransferId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("transfer_id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("LeftTransactionId")
+                        .HasColumnName("left_transaction_id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RightTransactionId")
+                        .HasColumnName("right_transaction_id")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("TransferId")
+                        .HasName("pk_transfers");
+
+                    b.HasIndex("LeftTransactionId")
+                        .IsUnique()
+                        .HasName("ix_transfers_left_transaction_id");
+
+                    b.HasIndex("RightTransactionId")
+                        .IsUnique()
+                        .HasName("ix_transfers_right_transaction_id");
+
+                    b.ToTable("transfers");
                 });
 
             modelBuilder.Entity("Coronado.Web.Domain.User", b =>
@@ -458,6 +493,14 @@ namespace Coronado.Web.Migrations
                     b.ToTable("vendors");
                 });
 
+            modelBuilder.Entity("Coronado.Web.Domain.Category", b =>
+                {
+                    b.HasOne("Coronado.Web.Domain.Category", "ParentCategory")
+                        .WithMany()
+                        .HasForeignKey("ParentCategoryId")
+                        .HasConstraintName("fk_categories_categories_parent_category_id");
+                });
+
             modelBuilder.Entity("Coronado.Web.Domain.InvestmentPrice", b =>
                 {
                     b.HasOne("Coronado.Web.Domain.Investment", null)
@@ -476,6 +519,13 @@ namespace Coronado.Web.Migrations
                         .HasConstraintName("fk_investment_transactions_investments_investment_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Coronado.Web.Domain.Transaction", "Transaction")
+                        .WithMany()
+                        .HasForeignKey("TransactionId")
+                        .HasConstraintName("fk_investment_transactions_transactions_transaction_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Coronado.Web.Domain.Invoice", b =>
@@ -490,6 +540,13 @@ namespace Coronado.Web.Migrations
 
             modelBuilder.Entity("Coronado.Web.Domain.InvoiceLineItem", b =>
                 {
+                    b.HasOne("Coronado.Web.Domain.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .HasConstraintName("fk_invoice_line_items_categories_category_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Coronado.Web.Domain.Invoice", "Invoice")
                         .WithMany("LineItems")
                         .HasForeignKey("InvoiceId")
@@ -501,7 +558,7 @@ namespace Coronado.Web.Migrations
             modelBuilder.Entity("Coronado.Web.Domain.Transaction", b =>
                 {
                     b.HasOne("Coronado.Web.Domain.Account", "Account")
-                        .WithMany()
+                        .WithMany("Transactions")
                         .HasForeignKey("AccountId")
                         .HasConstraintName("fk_transactions_accounts_account_id")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -516,11 +573,23 @@ namespace Coronado.Web.Migrations
                         .WithMany()
                         .HasForeignKey("InvoiceId")
                         .HasConstraintName("fk_transactions_invoices_invoice_id");
+                });
 
-                    b.HasOne("Coronado.Web.Domain.Transaction", "RelatedTransaction")
-                        .WithMany()
-                        .HasForeignKey("RelatedTransactionId")
-                        .HasConstraintName("fk_transactions_transactions_related_transaction_id");
+            modelBuilder.Entity("Coronado.Web.Domain.Transfer", b =>
+                {
+                    b.HasOne("Coronado.Web.Domain.Transaction", "LeftTransaction")
+                        .WithOne("LeftTransfer")
+                        .HasForeignKey("Coronado.Web.Domain.Transfer", "LeftTransactionId")
+                        .HasConstraintName("fk_transfers_transactions_left_transaction_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Coronado.Web.Domain.Transaction", "RightTransaction")
+                        .WithOne("RightTransfer")
+                        .HasForeignKey("Coronado.Web.Domain.Transfer", "RightTransactionId")
+                        .HasConstraintName("fk_transfers_transactions_right_transaction_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
