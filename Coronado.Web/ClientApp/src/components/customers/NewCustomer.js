@@ -1,53 +1,36 @@
-import React, { Component } from 'react';
+import React from 'react';
 import * as actions from '../../actions/customerActions';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
 import { NewIcon } from '../icons/NewIcon';
 import './NewCustomer.css';
 import CustomerForm from './CustomerForm';
 
-export class NewCustomer extends Component {
-  constructor(props) {
-    super(props);
-    this.showForm = this.showForm.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.state = { show: false, 
-        customer: {name: ''}
-    };
-  }
+export default function NewCustomer() {
+  const [ show, setShow ] = React.useState(false);
+  const dispatch = useDispatch();
 
-  componentDidMount() {
-      Mousetrap.bind('n u', this.showForm);
-  }
+  React.useEffect(() => {
+    Mousetrap.bind('n u', showForm);
 
-  componentWillUnmount() {
+    return function cleanup() {
       Mousetrap.unbind('n u');
+    }
+  })
+
+  const saveCustomer = (customer) => {
+    dispatch(actions.createCustomer(customer));
   }
 
-  showForm() {
-    this.setState({show:true});
-    return false;
+  const showForm = () => {
+    setShow(true);
   }
 
-  handleClose() {
-    this.setState({show:false});
+  const handleClose = () => {
+    setShow(false);
   }
-  render() {
     return (<span>
-        <NewIcon onClick={this.showForm} className="new-customer"/>
-        <CustomerForm show={this.state.show} onClose={this.handleClose} onSave={this.props.actions.createCustomer} />
+        <NewIcon onClick={showForm} className="new-customer"/>
+        <CustomerForm show={show} onClose={handleClose} onSave={saveCustomer} />
       </span>);
-  };
 }
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(actions, dispatch)
-  }
-}
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(NewCustomer);
