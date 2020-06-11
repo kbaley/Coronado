@@ -55,7 +55,6 @@ export default function InvestmentList({investments, currency, children}) {
           <TableCell></TableCell>
           <TableCell>Name</TableCell>
           <TableCell>Symbol</TableCell>
-          <TableCell>Currency</TableCell>
           <TableCell>Shares</TableCell>
           <TableCell align={'right'}>Last Price</TableCell>
           <TableCell align={'right'}>Average Price</TableCell>

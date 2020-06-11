@@ -16,6 +16,7 @@ namespace Coronado.Web.Controllers.Dtos
                 .ReverseMap();  
             CreateMap<Investment, InvestmentForUpdateDto>().ReverseMap();
             CreateMap<InvestmentTransaction, InvestmentTransactionDto>()
+                .ForMember(i => i.SourceAccountName, opt => opt.MapFrom(src => src.Transaction.Account.Name))
                 .ReverseMap();
             CreateMap<InvoiceLineItem, InvoiceLineItemsForPosting>()
                 .ReverseMap();

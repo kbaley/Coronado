@@ -33,7 +33,10 @@ namespace Coronado.Web.Controllers.Api
 
         [HttpGet("{investmentId}")]
         public async Task<ActionResult<InvestmentDetailDto>> Get(Guid investmentId) {
-            var investment = await _context.Investments.FindAsync(investmentId).ConfigureAwait(false);
+            var investment = await _context.Investments
+                .Include(i => i.Transactions)
+                .ThenInclude(t => t.Transaction.Account)
+                .SingleOrDefaultAsync(i => i.InvestmentId == investmentId).ConfigureAwait(false);
             if (investment == null) {
                 return NotFound();
             }

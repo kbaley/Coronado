@@ -56,7 +56,6 @@ export function InvestmentRow({investment, onEdit, onDelete, onBuySell}) {
       </TableCell>
       <ClickableTableCell investment={investment}>{investment.name}</ClickableTableCell>
       <ClickableTableCell investment={investment}>{investment.symbol}</ClickableTableCell>
-      <ClickableTableCell investment={investment}>{investment.currency}</ClickableTableCell>
       <ClickableTableCell investment={investment}>{investment.shares}</ClickableTableCell>
       <ClickableTableCell investment={investment}>
         <MoneyFormat amount={investment.lastPrice} />
