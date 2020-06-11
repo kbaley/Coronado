@@ -1,8 +1,8 @@
-﻿import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+﻿import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import * as navListActions from '../../actions/navListActions'
-import { withStyles, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
   background: {
@@ -10,42 +10,21 @@ const styles = theme => ({
   }
 });
 
-class ToggleAllAccounts extends Component {
+const useStyles = makeStyles(styles);
 
-  displayName = ToggleAllAccounts.name;
-  constructor(props) {
-    super(props);
-    this.toggle = this.toggle.bind(this);
+export default function ToggleAllAccounts() {
+  const dispatch = useDispatch();
+  const showAllAccounts = useSelector(state => state.showAllAccounts);
+
+  const toggle = () => {
+    dispatch(navListActions.toggleAllAccounts());
   }
 
-  toggle() {
-    this.props.actions.toggleAllAccounts();
-  }
-
-  render() {
-    const { classes } = this.props;
-    var text = this.props.showAllAccounts ? "Hide inactive" : "Show all"
+    const classes = useStyles();
+    var text = showAllAccounts ? "Hide inactive" : "Show all"
     return (
-        <Button onClick={this.toggle} className={classes.background} size="small">
+        <Button onClick={toggle} className={classes.background} size="small">
           {text}
         </Button>
     );
-  }
 }
-function mapStateToProps(state) {
-   return {
-     showAllAccounts: state.showAllAccounts
-   }
-}
-
-function mapDispatchToProps(dispatch) {
-   return {
-     actions: bindActionCreators({...navListActions}, dispatch)
-   }
-}
-
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(ToggleAllAccounts));
