@@ -1,71 +1,44 @@
-import React, { Component } from 'react';
+import React from 'react';
 import * as actions from '../../actions/investmentActions';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
 import { NewIcon } from '../icons/NewIcon';
 import './NewInvestment.css';
 import InvestmentForm from './InvestmentForm';
 
-export class NewInvestment extends Component {
-  constructor(props) {
-    super(props);
-    this.showForm = this.showForm.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.saveInvestment = this.saveInvestment.bind(this);
-    this.state = { show: false, 
-        investment: {name: '', symbol: '', shares: 0, price: 0.00, url: ''}
-    };
-  }
+export default function NewInvestment() {
+  const [ show, setShow ] = React.useState(false);
+  const dispatch = useDispatch();
+  const accounts = useSelector(state => state.accounts.filter(a => !a.isHidden));
 
-  componentDidMount() {
-      Mousetrap.bind('n v', this.showForm);
-  }
+  React.useEffect(() => {
+    Mousetrap.bind('n v', showForm);
 
-  componentWillUnmount() {
+    return function cleanup() {
       Mousetrap.unbind('n v');
-  }
+    }
+  })
 
-  showForm() {
-    this.setState({show:true});
+  const showForm = () => {
+    setShow(true);
     return false;
   }
 
-  handleClose() {
-    this.setState({show:false});
+  const handleClose = () => {
+    setShow(false);
   }
 
-  saveInvestment(investment) {
-    this.props.actions.purchaseInvestment(investment);
+  const saveInvestment = (investment) => {
+    dispatch(actions.purchaseInvestment(investment));
   }
 
-  render() {
-    
     return (<span>
-        <NewIcon onClick={this.showForm} className="new-investment"/>
+        <NewIcon onClick={showForm} className="new-investment"/>
         <InvestmentForm 
-          show={this.state.show} 
-          onClose={this.handleClose} 
-          accounts={this.props.accounts}
-          onSave={this.saveInvestment} 
+          show={show} 
+          onClose={handleClose} 
+          accounts={accounts}
+          onSave={saveInvestment} 
         />
       </span>);
   };
-}
-
-function mapStateToProps(state) {
-  return {
-    accounts: state.accounts.filter(a => !a.isHidden),
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(actions, dispatch)
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(NewInvestment);

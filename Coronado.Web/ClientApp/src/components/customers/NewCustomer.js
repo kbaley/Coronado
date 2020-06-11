@@ -24,6 +24,7 @@ export default function NewCustomer() {
 
   const showForm = () => {
     setShow(true);
+    return false;
   }
 
   const handleClose = () => {
