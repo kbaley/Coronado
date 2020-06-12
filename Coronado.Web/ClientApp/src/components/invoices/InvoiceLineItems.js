@@ -106,7 +106,7 @@ const InvoiceLineItems = ({ lineItems, onLineItemChanged, onNewItemAdded, onLine
           <TableCell>
             <NewIcon onClick={onNewItemAdded} />
             {lineItems.length > 1 &&
-              <DeleteIcon onDelete={() => onLineItemDeleted(li.invoiceLineItemId)} fontSize="sm" />
+              <DeleteIcon onDelete={() => onLineItemDeleted(li.invoiceLineItemId)} />
             }
           </TableCell>
           </TableRow>

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import InvoiceLineItems from "./InvoiceLineItems";
 import { filter, findIndex } from "lodash";
 import {v4 as uuidv4 } from 'uuid';
@@ -15,108 +15,94 @@ import {
   FormControl,
 } from '@material-ui/core';
 
-class InvoiceForm extends Component {
-  displayName = InvoiceForm.name;
-  blankLineItem = {
+export default function InvoiceForm(props) {
+  let blankLineItem = {
     description: '',
     quantity: '',
     unitAmount: '',
     status: 'Added',
     invoiceLineItemId: uuidv4()
   }
-  initialState = {
-      newInvoice: true,
-      invoice: { 
-        date: new Date().toLocaleDateString(), 
-        invoiceNumber: '', 
-        customerId: '',
-        lineItems: [Object.assign({}, this.blankLineItem)] 
-      }
-    };
-  constructor(props) {
-    super(props);
-    this.saveInvoice = this.saveInvoice.bind(this);
-    this.handleChangeField = this.handleChangeField.bind(this);
-    this.handleLineItemChanged = this.handleLineItemChanged.bind(this);
-    this.handleLineItemAdded = this.handleLineItemAdded.bind(this);
-    this.handleLineItemDeleted = this.handleLineItemDeleted.bind(this);
-    this.state = Object.assign({}, this.initialState);
-  }
+  const [ invoice, setInvoice ] = React.useState({ 
+    date: new Date().toLocaleDateString(), 
+    invoiceNumber: '',
+    customerId: '',
+    lineItems: [Object.assign({}, blankLineItem)],
+  });
 
-  componentDidUpdate() {
-    if (this.props.invoice && this.props.invoice.invoiceId && this.props.invoice.invoiceId !== this.state.invoice.invoiceId) {
-      this.setState({
-        newInvoice: false,
-        invoice: {
-          invoiceId: this.props.invoice.invoiceId,
-          invoiceNumber: this.props.invoice.invoiceNumber,
-          customerId: this.props.invoice.customerId,
-          lineItems: this.props.invoice.lineItems,
-          date: new Date(this.props.invoice.date).toLocaleDateString()
-        }
+  React.useEffect(() => {
+    if (props.invoice) {
+      setInvoice({ 
+          invoiceId: props.invoice.invoiceId,
+          invoiceNumber: props.invoice.invoiceNumber,
+          customerId: props.invoice.customerId,
+          lineItems: props.invoice.lineItems,
+          date: new Date(props.invoice.date).toLocaleDateString()
       });
     }
+  }, [props.invoice]);
+
+  const saveInvoice = () => {
+    props.onSave(invoice);
+    setInvoice({ 
+      date: new Date().toLocaleDateString(), 
+      invoiceNumber: '',
+      customerId: '',
+      lineItems: [Object.assign({}, blankLineItem)],
+    });
+    props.onClose();
   }
 
-  saveInvoice() {
-    this.props.onSave(this.state.invoice);
-    this.setState(Object.assign({}, this.initialState));
-    this.props.onClose();
-  }
-
-  handleChangeField(e) {
+  const handleChangeField = (e) => {
     var name = e.target.name;
-    this.setState({ invoice: { ...this.state.invoice, [name]: e.target.value } });
+    setInvoice({ 
+      ...invoice, 
+      [name]: e.target.value
+    })
   }
 
-  handleLineItemChanged(lineItemId, field, value) {
-    const index = findIndex(this.state.invoice.lineItems, li => li.invoiceLineItemId === lineItemId);
+  const handleLineItemChanged = (lineItemId, field, value) => {
+    const index = findIndex(invoice.lineItems, li => li.invoiceLineItemId === lineItemId);
     
-    const lineItems = this.state.invoice.lineItems;
+    const lineItems = invoice.lineItems;
     lineItems[index][field] = value;
     if (lineItems[index].status !== "Added")
       lineItems[index].status = "Updated";
-    this.setState({...this.state, invoice: {...this.state.invoice, lineItems}});
+    setInvoice({
+      ...invoice,
+      lineItems,
+    })
   }
 
-  handleLineItemAdded() {
-    const lineItems = this.state.invoice.lineItems;
+  const handleLineItemAdded = () => {
+    const lineItems = invoice.lineItems;
     
-    this.blankLineItem.invoiceLineItemId = uuidv4();
+    blankLineItem.invoiceLineItemId = uuidv4();
     
-    this.blankLineItem.invoiceId = this.state.invoice.invoiceId;
-    this.setState(
-      {...this.state, 
-        invoice: {
-          ...this.state.invoice, 
-          lineItems: [...lineItems, Object.assign({}, this.blankLineItem)]
-        }
-      }
-    );
-    this.blankLineItem.invoiceLineItemId = '';
-    this.blankLineItem.invoiceId = '';
+    blankLineItem.invoiceId = invoice.invoiceId;
+    setInvoice({
+      ...invoice,
+      lineItems: [...lineItems, Object.assign({}, blankLineItem)],
+    })
+    blankLineItem.invoiceLineItemId = '';
+    blankLineItem.invoiceId = '';
   }
 
-  handleLineItemDeleted(lineItemId) {
-    const index = findIndex(this.state.invoice.lineItems, li => li.invoiceLineItemId === lineItemId);
-    const lineItems = this.state.invoice.lineItems;
+  const handleLineItemDeleted = (lineItemId) => {
+    const index = findIndex(invoice.lineItems, li => li.invoiceLineItemId === lineItemId);
+    const lineItems = invoice.lineItems;
     lineItems[index].status = "Deleted";
-    this.setState(
-      {...this.state, 
-        invoice: {
-          ...this.state.invoice, 
-          lineItems
-        }
-      }
-    );
+    setInvoice({
+      ...invoice,
+      lineItems,
+    });
   }
 
-  render() {
     return (
       <Dialog 
         maxWidth="md" 
-        open={this.props.show} 
-        onClose={this.props.onClose}
+        open={props.show} 
+        onClose={props.onClose}
         fullWidth={true}
       >
         <DialogContent>
@@ -127,8 +113,8 @@ class InvoiceForm extends Component {
                 fullWidth={true}
                 name="invoiceNumber"
                 label="Invoice Number"
-                value={this.state.invoice.invoiceNumber}
-                onChange={this.handleChangeField}
+                value={invoice.invoiceNumber}
+                onChange={handleChangeField}
               />
             </Grid>
             <Grid item xs={3}>
@@ -136,8 +122,8 @@ class InvoiceForm extends Component {
                 fullWidth={true}
                 name="date"
                 label="Invoice Date"
-                value={this.state.invoice.date}
-                onChange={this.handleChangeField}
+                value={invoice.date}
+                onChange={handleChangeField}
               />
             </Grid>
             <Grid item xs={6}>
@@ -146,12 +132,12 @@ class InvoiceForm extends Component {
                 <Select
                   labelId="invoice-customer"
                   name="customerId"
-                  value={this.state.invoice.customerId}
+                  value={invoice.customerId}
                   style={{ minWidth: 150 }}
-                  onChange={this.handleChangeField}
+                  onChange={handleChangeField}
                 >
                   <MenuItem value={''}>Select...</MenuItem>
-                  {this.props.customers ? this.props.customers.map(c =>
+                  {props.customers ? props.customers.map(c =>
                     <MenuItem value={c.customerId} key={c.customerId}>{c.name}</MenuItem>
                   ) : <MenuItem>Select...</MenuItem>
                   }
@@ -161,20 +147,17 @@ class InvoiceForm extends Component {
             <Grid item xs={12}>
 
                 <InvoiceLineItems 
-                  lineItems={filter(this.state.invoice.lineItems, li => li.status !== "Deleted")} 
-                  onLineItemChanged={this.handleLineItemChanged} 
-                  onNewItemAdded={this.handleLineItemAdded}
-                  onLineItemDeleted={this.handleLineItemDeleted}
+                  lineItems={filter(invoice.lineItems, li => li.status !== "Deleted")} 
+                  onLineItemChanged={handleLineItemChanged} 
+                  onNewItemAdded={handleLineItemAdded}
+                  onLineItemDeleted={handleLineItemDeleted}
                   />
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.saveInvoice}>Save</Button>
+          <Button onClick={saveInvoice}>Save</Button>
         </DialogActions>
       </Dialog>
     );
-  };
 }
-
-export default InvoiceForm;
