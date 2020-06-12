@@ -1,61 +1,51 @@
-import React, { Component } from 'react';
+import React from 'react';
 import * as actions from '../../actions/invoiceActions';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import InvoiceForm from './InvoiceForm';
 import { InvoiceRow } from './InvoiceRow';
 import Spinner from '../common/Spinner';
 import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 
-class InvoiceList extends Component {
-  constructor(props) {
-    super(props);
-    this.deleteInvoice = this.deleteInvoice.bind(this);
-    this.startEditing = this.startEditing.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.saveInvoice = this.saveInvoice.bind(this);
-    this.downloadInvoice = this.downloadInvoice.bind(this);
-    this.emailInvoice = this.emailInvoice.bind(this);
-    this.previewInvoice = this.previewInvoice.bind(this);
-    this.state = {
-      show: false,
-      selectedInvoice: {}
-    }
+export default function InvoiceList({showPaid}) {
+  const [ show, setShow ] = React.useState(false);
+  const [ selectedInvoice, setSelectedInvoice ] = React.useState({});
+  const invoices = useSelector(state => state.invoices);
+  const customers = useSelector(state => state.customers);
+  const isLoading = useSelector(state => state.loading.invoices);
+  const dispatch = useDispatch();
+
+  const deleteInvoice = (invoiceId, invoiceNumber) => {
+    dispatch(actions.deleteInvoice(invoiceId, invoiceNumber));
   }
 
-  deleteInvoice(invoiceId, invoiceNumber) {
-    this.props.actions.deleteInvoice(invoiceId, invoiceNumber);
+  const startEditing = (invoice) => {
+    invoice = invoices.filter(i => i.invoiceId === invoice.invoiceId)[0];
+    setSelectedInvoice(invoice);
+    setShow(true);
   }
 
-  startEditing(invoice) {
-    invoice = this.props.invoices.filter(i => i.invoiceId === invoice.invoiceId)[0];
-    
-    this.setState({show:true, selectedInvoice: invoice});
+  const handleClose = () => {
+    setShow(false);
   }
 
-  handleClose() {
-    this.setState({show:false});
+  const saveInvoice = (invoice) => {
+    dispatch(actions.updateInvoice(invoice));
   }
 
-  saveInvoice(invoice) {
-    this.props.actions.updateInvoice(invoice);
-  }
-
-  downloadInvoice(invoiceId) {
+  const downloadInvoice = (invoiceId) => {
     window.open("/invoice/GeneratePDF?invoiceId=" + invoiceId);
   }
 
-  emailInvoice(invoiceId) {
-    this.props.actions.emailInvoice(invoiceId);
+  const emailInvoice = (invoiceId) => {
+    dispatch(actions.emailInvoice(invoiceId));
   }
 
-  previewInvoice(invoiceId) {
+  const previewInvoice = (invoiceId) => {
     window.open("/invoice/GenerateHTML?invoiceId=" + invoiceId);
   }
   
-  render() {
     const showInvoice = (invoice) => {
-      return invoice.balance > 0 || this.props.showPaid;
+      return invoice.balance > 0 || showPaid;
     }
     
     return (
@@ -71,46 +61,25 @@ class InvoiceList extends Component {
         </TableHead>
         <TableBody>
         <InvoiceForm 
-          show={this.state.show} 
-          onClose={this.handleClose} 
-          invoice={this.state.selectedInvoice} 
-          invoices={this.props.invoices}
-          customers={this.props.customers}
-          onSave={this.saveInvoice} />
-        { this.props.isLoading ? <tr><td colSpan="4"><Spinner /></td></tr> :
-          this.props.invoices.map((invoice, key) => 
+          show={show} 
+          onClose={handleClose} 
+          invoice={selectedInvoice} 
+          invoices={invoices}
+          customers={customers}
+          onSave={saveInvoice} />
+        { isLoading ? <tr><td colSpan="4"><Spinner /></td></tr> :
+          invoices.map((invoice, key) => 
         showInvoice(invoice) && 
         <InvoiceRow 
           key={invoice.invoiceId} 
           invoice={invoice} 
-          onEdit={() => this.startEditing(invoice)} 
-          onDownload={() => this.downloadInvoice(invoice.invoiceId)}
-          onEmail={() => this.emailInvoice(invoice.invoiceId)}
-          onPreview={() => this.previewInvoice(invoice.invoiceId)}
-          onDelete={()=>this.deleteInvoice(invoice.invoiceId, invoice.invoiceNumber)} />
+          onEdit={() => startEditing(invoice)} 
+          onDownload={() => downloadInvoice(invoice.invoiceId)}
+          onEmail={() => emailInvoice(invoice.invoiceId)}
+          onPreview={() => previewInvoice(invoice.invoiceId)}
+          onDelete={()=>deleteInvoice(invoice.invoiceId, invoice.invoiceNumber)} />
         )}
         </TableBody>
       </Table>
     );
-  }
 }
-
-function mapStateToProps(state) {
-  return {
-    invoices: state.invoices,
-    notifications: state.notifications,
-    customers: state.customers,
-    isLoading: state.loading.invoices
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(actions, dispatch)
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(InvoiceList);
