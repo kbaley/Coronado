@@ -90,8 +90,10 @@ GROUP BY account_id"
 
         public async static Task<Invoice> FindInvoiceEager(this CoronadoDbContext context, Guid invoiceId) {
             var invoice = await context.Invoices.FindAsync(invoiceId).ConfigureAwait(false);
-            await context.Entry(invoice).Collection(i => i.LineItems).LoadAsync().ConfigureAwait(false);
-            await context.Entry(invoice).Reference(i => i.Customer).LoadAsync().ConfigureAwait(false);
+            if (invoice != null) {
+                await context.Entry(invoice).Collection(i => i.LineItems).LoadAsync().ConfigureAwait(false);
+                await context.Entry(invoice).Reference(i => i.Customer).LoadAsync().ConfigureAwait(false);
+            }
 
             return invoice;
 
