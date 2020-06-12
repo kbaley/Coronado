@@ -3,7 +3,6 @@ import * as actions from '../../actions/investmentActions';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
 import { NewIcon } from '../icons/NewIcon';
-import './NewInvestment.css';
 import InvestmentForm from './InvestmentForm';
 
 export default function NewInvestment() {
