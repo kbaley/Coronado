@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { AccountForm } from './AccountForm';
+import AccountForm from './AccountForm';
 import { EditIcon } from '../icons/EditIcon';
 import './EditAccount.css';
 

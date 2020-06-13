@@ -2,7 +2,7 @@
 import * as accountActions from '../../actions/accountActions'
 import { useDispatch, useSelector } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
-import { AccountForm } from './AccountForm';
+import AccountForm from './AccountForm';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Button, makeStyles } from '@material-ui/core';
 
