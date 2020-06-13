@@ -1,6 +1,6 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { Icon } from "../icons/Icon";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, withStyles } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, makeStyles } from '@material-ui/core';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import PublishIcon from '@material-ui/icons/Publish';
@@ -11,62 +11,49 @@ const styles = theme => ({
   }
 });
 
-class UploadQif extends Component {
-  constructor(props) {
-    super(props);
+const useStyles = makeStyles(styles);
 
-    this.showUploadForm = this.showUploadForm.bind(this);
-    this.closeUploadForm = this.closeUploadForm.bind(this);
-    this.handleSelectedFile = this.handleSelectedFile.bind(this);
-    this.handleChangeDate = this.handleChangeDate.bind(this);
-    this.onSave = this.onSave.bind(this);
-    this.state = {
-      selectedFile: null,
-      fromDate: new Date(),
-      show: false,
-      filename: 'No file selected'
-    }
+export default function UploadQif({onUpload, account}) {
+  const [ selectedFile, setSelectedFile ] = React.useState(null);
+  const [ fromDate, setFromDate ] = React.useState(new Date());
+  const [ show, setShow ] = React.useState(false);
+  const [ filename, setFilename ] = React.useState('No file selected');
+
+  const handleSelectedFile = (event) => {
+    setSelectedFile(event.target.files[0]);
+    setFilename(event.target.files[0].name);
   }
 
-  handleSelectedFile(event) {
-    this.setState({
-      selectedFile: event.target.files[0],
-      filename: event.target.files[0].name
-    })
+  const handleChangeDate = (date) => {
+    setFromDate(date);
   }
 
-  handleChangeDate(date) {
-    this.setState({
-      fromDate: date
-    });
+  const showUploadForm = () => {
+    setShow(true);
   }
 
-  showUploadForm() {
-    this.setState({ show: true });
+  const closeUploadForm = () => {
+    setShow(false);
   }
 
-  closeUploadForm() {
-    this.setState({ show: false });
+  const onSave = () => {
+    onUpload(selectedFile, fromDate);
+    closeUploadForm();
   }
 
-  onSave() {
-    this.props.onUpload(this.state.selectedFile, this.state.fromDate);
-    this.closeUploadForm();
-  }
-  render() {
-    const { classes } = this.props;
+  const classes = useStyles();
     return (
       <Fragment>
         <Icon 
-          onClick={this.showUploadForm} 
+          onClick={showUploadForm} 
           icon={<PublishIcon />}
         />
         <Dialog
-          onClose={this.closeUploadForm}
-          open={this.state.show}
+          onClose={closeUploadForm}
+          open={show}
           classes={{paper: classes.dialogPaper }}
         >
-          <DialogTitle>Upload transactions to: {this.props.account.name}</DialogTitle>
+          <DialogTitle>Upload transactions to: {account.name}</DialogTitle>
           <DialogContent>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <Grid container spacing={3}>
@@ -76,20 +63,20 @@ class UploadQif extends Component {
                     type="file"
                     name="selectedFile"
                     id='selectedFile'
-                    onChange={this.handleSelectedFile}
+                    onChange={handleSelectedFile}
                     style={{ display: 'none' }}
                   />
                   <label htmlFor='selectedFile'>
                     <Button variant="outlined" component="span">Select file</Button>
                   </label>
                   <label style={{ marginLeft: 20 }}>
-                    {this.state.filename}
+                    {filename}
                   </label>
                 </Grid>
                 <Grid item xs={12}>
                   <KeyboardDatePicker
-                    value={this.state.fromDate}
-                    onChange={this.handleChangeDate}
+                    value={fromDate}
+                    onChange={handleChangeDate}
                     disableToolbar
                     format="MM/dd/yyyy"
                     variant="inline"
@@ -101,12 +88,9 @@ class UploadQif extends Component {
             </MuiPickersUtilsProvider>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.onSave}>Upload</Button>
+            <Button onClick={onSave}>Upload</Button>
           </DialogActions>
         </Dialog>
       </Fragment>
     );
-  }
 };
-
-export default (withStyles(styles)(UploadQif));
