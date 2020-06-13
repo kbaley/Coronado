@@ -1,56 +1,51 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   Button, Dialog, Grid, TextField, Select, MenuItem,
   DialogContent, DialogActions, InputLabel, FormControl
 } from '@material-ui/core';
 
-class CategoryForm extends Component {
-  displayName = CategoryForm.name;
-  initialState = {
-    newCategory: true,
-    category: { name: '', type: '', parentCategoryId: '' }
+export default function CategoryForm(props) {
+  const defaultCategory = {
+    name: '', 
+    type: '', 
+    parentCategoryId: '',
   }
-  constructor(props) {
-    super(props);
-    this.saveCategory = this.saveCategory.bind(this);
-    this.handleChangeField = this.handleChangeField.bind(this);
-    this.handleChangeParent = this.handleChangeParent.bind(this);
-    this.state = Object.assign({}, this.initialState);
-  }
-
-  componentDidUpdate() {
-    if (this.props.category && this.props.category.categoryId && this.props.category.categoryId !== this.state.category.categoryId) {
-      this.setState({
-        newCategory: false,
-        category: {
-          categoryId: this.props.category.categoryId,
-          name: this.props.category.name,
-          type: this.props.category.type,
-          parentCategoryId: this.props.category.parentCategoryId || ''
-        }
-      });
+  const [ category, setCategory ] = React.useState(Object.assign({}, defaultCategory));
+  React.useEffect(() => {
+    if (props.category && props.category.categoryId && props.category.categoryId !== category.categoryId) {
+      setCategory({
+        categoryId: props.category.categoryId,
+        name: props.category.name,
+        type: props.category.type,
+        parentCategoryId: props.category.parentCategoryId || '',
+      })
     }
+  }, [props.category, category.categoryId]);
+
+  const saveCategory = () => {
+    props.onSave(category);
+    setCategory(Object.assign({}, defaultCategory));
+    props.onClose();
   }
 
-  saveCategory() {
-    this.props.onSave(this.state.category);
-    this.setState(Object.assign({}, this.initialState));
-    this.props.onClose();
-  }
-
-  handleChangeField(e) {
+  const handleChangeField = (e) => {
     const name = e.target.name;
-    this.setState({ category: { ...this.state.category, [name]: e.target.value } });
+    setCategory({
+      ...category,
+      [name]: e.target.value,
+    })
   }
 
-  handleChangeParent(e) {
-    this.setState({ category: { ...this.state.category, parentCategoryId: e.target.value } });
+  const handleChangeParent = (e) => {
+    setCategory({
+      ...category,
+      parentCategoryId: e.target.value,
+    })
   }
-  render() {
     return (
       <Dialog
-        onClose={this.props.onClose}
-        open={this.props.show}
+        onClose={props.onClose}
+        open={props.show}
         fullWidth={true}
         maxWidth="sm"
       >
@@ -61,16 +56,16 @@ class CategoryForm extends Component {
                 autoFocus
                 name="name"
                 label="Category name"
-                value={this.state.category.name}
-                onChange={this.handleChangeField}
+                value={category.name}
+                onChange={handleChangeField}
               />
             </Grid>
             <Grid item xs={4}>
               <TextField
                 name="type"
                 label="Type"
-                value={this.state.category.type}
-                onChange={this.handleChangeField}
+                value={category.type}
+                onChange={handleChangeField}
               />
             </Grid>
             <Grid item xs={4}>
@@ -78,13 +73,13 @@ class CategoryForm extends Component {
                 <InputLabel id="parent-category">Parent category</InputLabel>
                 <Select
                   labelId="parent-category"
-                  value={this.state.category.parentCategoryId}
+                  value={category.parentCategoryId}
                   style={{ minWidth: 150 }}
-                  onChange={this.handleChangeParent}
+                  onChange={handleChangeParent}
                 >
                   <MenuItem value={''}>None</MenuItem>
-                  {this.props.categories ? this.props.categories.map(c =>
-                    (c.categoryId !== this.state.category.categoryId) &&
+                  {props.categories ? props.categories.map(c =>
+                    (c.categoryId !== category.categoryId) &&
                     <MenuItem value={c.categoryId} key={c.categoryId}>{c.name}</MenuItem>
                   ) : <MenuItem>Select...</MenuItem>
                   }
@@ -94,11 +89,8 @@ class CategoryForm extends Component {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.saveCategory}>Save</Button>
+          <Button onClick={saveCategory}>Save</Button>
         </DialogActions>
       </Dialog>
     );
-  };
 }
-
-export default CategoryForm;
