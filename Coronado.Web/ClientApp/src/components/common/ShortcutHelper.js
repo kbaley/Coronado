@@ -46,8 +46,6 @@ export default function ShortcutHelper() {
           <Grid item xs={10}>Go to account</Grid>
           <Grid item xs={2}>n a</Grid>
           <Grid item xs={10}>New account</Grid>
-                <Grid item xs={2}>n t</Grid>
-                <Grid item xs={10}>(On an account listing) New transaction</Grid>
                 <Grid item xs={2}>g d</Grid>
                 <Grid item xs={10}>Go to the dashboard</Grid>
                 <Grid item xs={2}>g i</Grid>

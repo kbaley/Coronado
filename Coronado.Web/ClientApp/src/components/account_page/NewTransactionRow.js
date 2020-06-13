@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { CheckIcon } from '../icons/CheckIcon';
-import * as Mousetrap from 'mousetrap';
 import { CategorySelect } from '../common/CategorySelect';
 import { find } from 'lodash';
-import { bindActionCreators } from 'redux';
 import * as transactionActions from '../../actions/transactionActions';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getCategoriesForDropdown } from "../../selectors/selectors";
 import VendorField from '../common/VendorField';
-import { withStyles, TableRow, TableCell } from '@material-ui/core';
+import { TableRow, TableCell, makeStyles } from '@material-ui/core';
 
 const styles = theme => ({
   input: {
@@ -18,19 +16,10 @@ const styles = theme => ({
   }
 });
 
-export class NewTransactionRow extends Component {
-  constructor(props) {
-    super(props);
-    this.saveTransaction = this.saveTransaction.bind(this);
-    this.handleChangeCategory = this.handleChangeCategory.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.handleChangeField = this.handleChangeField.bind(this);
-    this.handleChangeDebit = this.handleChangeDebit.bind(this);
-    this.handleChangeVendor = this.handleChangeVendor.bind(this);
-    this.setFocus = this.setFocus.bind(this);
+const useStyles = makeStyles(styles);
 
-    this.state = {
-      trx: {
+export default function NewTransactionRow(props) {
+  const [ trx, setTrx ] = React.useState({
         transactionDate: new Date().toLocaleDateString(),
         vendor: '',
         description: '',
@@ -39,99 +28,96 @@ export class NewTransactionRow extends Component {
         debit: '',
         invoiceId: '',
         transactionType: 'REGULAR',
-      },
-      selectedCategory: {},
-      categories: [],
-      transactionType: "REGULAR",
-      mortgageType: '',
-      mortgagePayment: ''
+  });
+  const [ selectedCategory, setSelectedCategory ] = React.useState({});
+  const [ transactionType, setTransactionType ] = React.useState("REGULAR");
+  const [ mortgageType, setMortgageType ] = React.useState('');
+  const [ mortgagePayment, setMortgagePayment ] = React.useState('');
+  const categories = useSelector(state => getCategoriesForDropdown(state.categories, state.accounts, state.invoices));
+  const accounts = useSelector(state => state.accounts);
+  const vendors = useSelector(state => state.vendors);
+  const dispatch = useDispatch();  
+  
+  React.useEffect(() => {
+    if (props.account && props.account.accountId !== trx.accountId) {
+      setTrx({
+        ...trx,
+        accountId: props.account.accountId,
+      });
     }
-  }
+    
+  }, [props.account, trx]);
 
-  componentDidMount() {
-    Mousetrap.bind('n t', this.setFocus);
-  }
-
-  componentWillUnmount() {
-    Mousetrap.unbind('n t');
-  }
-
-  componentDidUpdate() {
-    if (this.props.account && this.props.account.accountId !== this.state.trx.accountId) {
-      this.setState({
-        trx: {
-          ...this.state.trx,
-          accountId: this.props.account.accountId
-        }
-      })
-    }
-  }
-
-
-  setFocus(e) {
-    if (e) e.preventDefault();
-    this.refs["inputDate"].focus();
-    return false;
-  }
-
-  handleChangeField(e) {
+  const handleChangeField = (e) => {
     const name = e.target.name;
-    this.setState({ trx: { ...this.state.trx, [name]: e.target.value } });
+    setTrx({
+      ...trx,
+      [name]: e.target.value,
+    })
   }
 
-  handleKeyPress(e) {
+  const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      this.saveTransaction();
+      saveTransaction();
     }
   }
 
-  handleChangeVendor(vendorName) {
-    let categoryId = this.state.trx.categoryId;
-    let categoryDisplay = this.state.trx.categoryDisplay;
-    let selectedCategory = this.state.selectedCategory;
-    const vendor = this.props.vendors.find(v => v.name === vendorName);
+  const handleChangeVendor = (vendorName) => {
+    let categoryId = trx.categoryId;
+    let categoryDisplay = trx.categoryDisplay;
+    let localSelectedCategory = selectedCategory;
+    const vendor = vendors.find(v => v.name === vendorName);
     if (vendor) {
-      const category = this.props.categories.find(c => c.categoryId === vendor.lastTransactionCategoryId);
+      const category = categories.find(c => c.categoryId === vendor.lastTransactionCategoryId);
       if (category) {
         categoryId = category.categoryId;
         categoryDisplay = category.name;
-        selectedCategory = category;
+        localSelectedCategory = category;
       }
     }
-    this.setState({ 
-      trx: {
-        ...this.state.trx, 
-        vendor: vendorName,
-        categoryId,
-        categoryDisplay
-      },
-      selectedCategory
+    setTrx({
+      ...trx,
+      vendor: vendorName,
+      categoryId,
+      categoryDisplay,
+    });
+    setSelectedCategory(localSelectedCategory);
+  }
+
+  const handleChangeDebit = (e) => {
+    let credit = '';
+    const debit = e.target.value;
+    if (transactionType === "MORTGAGE_PAYMENT" && mortgageType === 'fixedPayment' && debit !== '') {
+      credit = mortgagePayment - Number(debit);
+    }
+    setTrx({
+      ...trx,
+      debit,
+      credit,
     });
   }
 
-  handleChangeDebit(e) {
-    let credit = '';
-    const debit = e.target.value;
-    if (this.state.transactionType === "MORTGAGE_PAYMENT" && this.state.mortgageType === 'fixedPayment' && debit !== '') {
-      credit = this.state.mortgagePayment - Number(debit);
-    }
-    this.setState({ trx: { ...this.state.trx, debit, credit } });
-  }
-
-  handleChangeCategory(selectedCategory) {
+  const handleChangeCategory = (selectedCategory) => {
     if (selectedCategory === null) {
       // Category cleared
-      this.setState({
-        trx: { ...this.state.trx, categoryId: '', categoryDisplay: '' }, selectedCategory: {}
+      setTrx({
+        ...trx,
+        categoryId: '',
+        categoryDisplay: '',
       });
+      setSelectedCategory({});
       return;
     }
     if (selectedCategory.id) {
       // New category
-      this.setState({
-        trx: { ...this.state.trx, categoryId: '', categoryDisplay: selectedCategory.name, categoryName: selectedCategory.name }, selectedCategory
+      setTrx({
+        ...trx,
+        categoryId: '',
+        categoryDisplay: selectedCategory.name,
+        categoryName: selectedCategory.name,
       });
+      setSelectedCategory(selectedCategory);
       return;
     }
     let categoryId = selectedCategory.categoryId;
@@ -140,8 +126,8 @@ export class NewTransactionRow extends Component {
     let mortgagePayment = '';
     let invoiceId = '';
     let categoryDisplay = selectedCategory.name;
-    let debit = this.state.trx.debit;
-    let credit = this.state.trx.credit;
+    let debit = trx.debit;
+    let credit = trx.credit;
     let relatedAccountId = '';
     if (categoryId.substring(0, 4) === "TRF:") {
       transactionType = "TRANSFER";
@@ -151,7 +137,7 @@ export class NewTransactionRow extends Component {
     if (categoryId.substring(0, 4) === "MRG:") {
       transactionType = "MORTGAGE_PAYMENT";
       relatedAccountId = categoryId.substring(4);
-      const relatedAccount = find(this.props.accounts, a => a.accountId === relatedAccountId);
+      const relatedAccount = find(accounts, a => a.accountId === relatedAccountId);
       categoryId = '';
       debit = relatedAccount.mortgagePayment || '';
       mortgageType = relatedAccount.mortgageType;
@@ -164,65 +150,66 @@ export class NewTransactionRow extends Component {
       categoryId = '';
       credit = selectedCategory.balance;
     }
-    this.setState({
-      trx: { ...this.state.trx, categoryId, debit, credit, categoryDisplay, invoiceId, relatedAccountId, transactionType },
+    setTrx({
+      ...trx,
+      categoryId,
+      debit,
+      credit,
+      categoryDisplay,
+      invoiceId,
+      relatedAccountId,
       transactionType,
-      mortgageType,
-      mortgagePayment,
-      selectedCategory
     });
+    setTransactionType(transactionType);
+    setMortgageType(mortgageType);
+    setMortgagePayment(mortgagePayment);
+    setSelectedCategory(selectedCategory);
   }
 
-  saveTransaction() {
-    this.props.actions.createTransaction(this.state.trx);
+  const saveTransaction = () => {
+    dispatch(transactionActions.createTransaction(trx));
 
-    this.setState(
-      {
-        trx:
-        {
-          ...this.state.trx,
-          vendor: '',
-          description: '',
-          debit: '',
-          credit: '',
-          invoiceId: '',
-          categoryId: '',
-          categoryDisplay: '',
-          relatedAccountId: ''
-        },
-        selectedCategory: { value: null },
-        transactionType: "REGULAR",
-      }
-    );
-    this.setFocus();
+    setTrx({
+      ...trx,
+      vendor: '',
+      description: '',
+      debit: '',
+      credit: '',
+      invoiceId: '',
+      categoryId: '',
+      categoryDisplay: '',
+      relatedAccountId: '',
+    });
+    setSelectedCategory({ value: null });
+    setTransactionType('REGULAR');
   }
 
-  render() {
-    const { classes } = this.props;
+  const classes = useStyles();
+
     return (
       <TableRow>
         <TableCell>
-          <CheckIcon onClick={this.saveTransaction} />
+          <CheckIcon onClick={saveTransaction} />
         </TableCell>
-        <TableCell><input type="text" name="transactionDate" ref="inputDate" className={classes.input}
-          value={this.state.trx.transactionDate} onChange={this.handleChangeField} /></TableCell>
+        <TableCell><input type="text" name="transactionDate" className={classes.input}
+          value={trx.transactionDate} onChange={handleChangeField} /></TableCell>
         <TableCell>
-          <VendorField vendors={this.props.vendors} value={this.state.trx.vendor} onVendorChanged={this.handleChangeVendor} />
+          <VendorField vendors={vendors} value={trx.vendor} onVendorChanged={handleChangeVendor} />
         </TableCell>
         <TableCell>
           <CategorySelect
-            selectedCategory={this.state.selectedCategory}
-            onCategoryChanged={this.handleChangeCategory}
-            selectedAccount={this.state.trx.accountId}
-            categories={this.props.categories} />
+            selectedCategory={selectedCategory}
+            onCategoryChanged={handleChangeCategory}
+            selectedAccount={trx.accountId}
+            categories={categories} />
         </TableCell>
         <TableCell>
           <input 
             type="text" 
             name="description" 
             className={classes.input}
-            value={this.state.trx.description} 
-            onChange={this.handleChangeField} 
+            value={trx.description} 
+            onChange={handleChangeField} 
           />
         </TableCell>
         <TableCell>
@@ -230,9 +217,9 @@ export class NewTransactionRow extends Component {
             type="text" 
             name="debit" 
             className={classes.input}
-            value={this.state.trx.debit}
-            onChange={this.handleChangeDebit} 
-            onKeyPress={this.handleKeyPress} 
+            value={trx.debit}
+            onChange={handleChangeDebit} 
+            onKeyPress={handleKeyPress} 
           />
         </TableCell>
         <TableCell>
@@ -240,32 +227,12 @@ export class NewTransactionRow extends Component {
             type="text" 
             name="credit" 
             className={classes.input}
-            value={this.state.trx.credit}
-            onChange={this.handleChangeField} 
-            onKeyPress={this.handleKeyPress} 
+            value={trx.credit}
+            onChange={handleChangeField} 
+            onKeyPress={handleKeyPress} 
           />
         </TableCell>
         <TableCell></TableCell>
       </TableRow>
     )
-  }
 }
-
-function mapStateToProps(state) {
-  return {
-    categories: getCategoriesForDropdown(state.categories, state.accounts, state.invoices),
-    accounts: state.accounts,
-    vendors: state.vendors
-  }
-}
-
-export function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(transactionActions, dispatch)
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(NewTransactionRow));
