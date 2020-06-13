@@ -1,11 +1,10 @@
-﻿import React, { Component } from 'react';
+﻿import React from 'react';
 import * as accountActions from '../../actions/accountActions'
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
 import { AccountForm } from './AccountForm';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import { Button, withStyles } from '@material-ui/core';
+import { Button, makeStyles } from '@material-ui/core';
 
 const styles = theme => ({
   newAccount: {
@@ -16,66 +15,43 @@ const styles = theme => ({
   }
 });
 
-class NewAccount extends Component {
-  displayName = NewAccount.name
+const useStyles = makeStyles(styles);
 
-  constructor(props) {
-    super(props);
-    this.newAccount = this.newAccount.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.saveNewAccount = this.saveNewAccount.bind(this);
-    this.state = { show: false };
-  }
+export default function NewAccount() {
+  const [show, setShow] = React.useState(false);
+  const accountTypes = useSelector(state => state.accountTypes);
+  const dispatch = useDispatch();
 
-  componentDidMount() {
-    Mousetrap.bind('n a', this.newAccount);
-  }
+  React.useEffect(() => {
+    Mousetrap.bind('n a', newAccount);
+    return function cleanup() {
+      Mousetrap.unbind('n a');
+    }
+  });
 
-  componentWillUnmount() {
-    Mousetrap.unbind('n a');
-  }
-
-  newAccount() {
-    this.setState({ show: true });
+  const newAccount = () => {
+    setShow(true);
     return false;
   }
 
-  handleClose() {
-    this.setState({ show: false });
+  const handleClose = () => {
+    setShow(false);
   }
 
-  saveNewAccount(account) {
-    this.props.actions.createAccount(account);
+  const saveNewAccount = (account) => {
+    dispatch(accountActions.createAccount(account));
   }
 
-  render() {
-    const { classes } = this.props;
-    return (
-      <div className={classes.newAccount}>
-        <Button onClick={this.newAccount} className={classes.button} size="small">
-          <AddCircleIcon />
-          <span style={{"marginLeft": "5px"}}>New Account</span>
-        </Button>
-        <AccountForm show={this.state.show} onClose={this.handleClose}
-          onSave={this.saveNewAccount} accountTypes={this.props.accountTypes} />
-      </div>
-    );
-  }
+  const classes = useStyles();
+
+  return (
+    <div className={classes.newAccount}>
+      <Button onClick={newAccount} className={classes.button} size="small">
+        <AddCircleIcon />
+        <span style={{ "marginLeft": "5px" }}>New Account</span>
+      </Button>
+      <AccountForm show={show} onClose={handleClose}
+        onSave={saveNewAccount} accountTypes={accountTypes} />
+    </div>
+  );
 }
-
-function mapStateToProps(state) {
-  return {
-    accountTypes: state.accountTypes
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(accountActions, dispatch)
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(NewAccount));
