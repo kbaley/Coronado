@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import * as transactionActions from '../../actions/transactionActions';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import TransactionRow from './TransactionRow';
 import './TransactionList.css';
 import NewTransactionRow from './NewTransactionRow';
-import { Table, TableHead, TableRow, TableBody, TableCell, withStyles } from '@material-ui/core';
+import { Table, TableHead, TableRow, TableBody, TableCell, makeStyles } from '@material-ui/core';
 import Spinner from '../common/Spinner';
 
 const styles = theme => ({
@@ -40,21 +39,19 @@ const styles = theme => ({
   }
 })
 
-class TransactionList extends Component {
-  displayName = TransactionList.name;
-  constructor(props) {
-    super(props);
-    this.deleteTransaction = this.deleteTransaction.bind(this);
-    this.state = {
-    }
+const useStyles = makeStyles(styles);
+
+export default function TransactionList(props) {
+  const dispatch = useDispatch();
+  const transactions = useSelector(state => state.transactionModel.transactions);
+  const isLoading = useSelector(state => state.loading.transactions);
+  
+  const deleteTransaction = (transactionId) => {
+    dispatch(transactionActions.deleteTransaction(transactionId));
   }
 
-  deleteTransaction(transactionId) {
-    this.props.actions.deleteTransaction(transactionId);
-  }
+  const classes = useStyles();
 
-  render() {
-    const { classes } = this.props;
     return (
       <Table className={classes.transactionTable}>
         <TableHead>
@@ -71,35 +68,14 @@ class TransactionList extends Component {
         </TableHead>
         <TableBody>
           <NewTransactionRow
-            account={this.props.account} />
-        { this.props.isLoading ? <tr><td colSpan="8"><Spinner /></td></tr> :
-          this.props.transactions.map(trx =>
+            account={props.account} />
+        { isLoading ? <tr><td colSpan="8"><Spinner /></td></tr> :
+          transactions.map(trx =>
             <TransactionRow key={trx.transactionId} transaction={trx}
-              onDelete={() => this.deleteTransaction(trx.transactionId)} />
+              onDelete={() => deleteTransaction(trx.transactionId)} />
           )
         }
         </TableBody>
       </Table>
     );
-  }
 }
-
-function mapStateToProps(state) {
-  return {
-    categories: state.categories,
-    accounts: state.accounts,
-    transactions: state.transactionModel.transactions,
-    isLoading: state.loading.transactions,
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(transactionActions, dispatch)
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(TransactionList));
