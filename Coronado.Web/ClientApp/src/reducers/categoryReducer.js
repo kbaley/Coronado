@@ -12,25 +12,25 @@ export const categoryReducer = (state = initialState.categories, action, deleted
       
     case actions.UNDO_DELETE_CATEGORY:
       const deletedCategory = find(deletedCategories, c => c.categoryId === action.categoryId);
-      const newState = [
+      const newStateAfterUndo = [
         ...state,
         Object.assign({}, deletedCategory)
       ];
-      return orderBy(newState, ['name'], ['asc']);
+      return orderBy(newStateAfterUndo, ['name'], ['asc']);
       
     case actions.CREATE_CATEGORY_SUCCESS:
-      var newState = [
+      var newStateAfterCreate = [
         ...state,
         Object.assign({}, action.category),
       ];
-      return orderBy(newState, ['name'], ['asc']);
+      return orderBy(newStateAfterCreate, ['name'], ['asc']);
       
     case actions.UPDATE_CATEGORY_SUCCESS:
-      var newState = [
+      var newStateAfterUpdate = [
         ...state.filter(c => c.categoryId !== action.category.categoryId),
         Object.assign({}, action.category)
       ];
-      return orderBy(newState, ['name'], ['asc']);
+      return orderBy(newStateAfterUpdate, ['name'], ['asc']);
       
     default:
       return state;
