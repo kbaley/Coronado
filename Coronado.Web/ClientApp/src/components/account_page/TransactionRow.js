@@ -2,7 +2,7 @@ import React from 'react';
 import { DecimalFormat, MoneyFormat } from '../common/DecimalFormat';
 import * as transactionActions from '../../actions/transactionActions';
 import { useDispatch, useSelector } from 'react-redux';
-import { CategorySelect } from '../common/CategorySelect';
+import CategorySelect from '../common/CategorySelect';
 import { MoneyInput } from '../common/MoneyInput';
 import * as Mousetrap from 'mousetrap';
 import { getCategoriesForDropdown } from "../../selectors/selectors.js";

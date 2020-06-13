@@ -1,22 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
 import CreatableSelect from 'react-select/creatable';
 
-export class CategorySelect extends Component {
-  constructor(props) {
-    super(props);
-    this.handleChangeCategory = this.handleChangeCategory.bind(this);
-    this.state = {
-      categoriesLoaded: false
-    };
-  }
+export default function CategorySelect(props) {
 
-  handleChangeCategory(selectedOption, actionMeta) {
-    
-    this.props.onCategoryChanged(selectedOption);
+  const handleChangeCategory = (selectedOption, actionMeta) => {
+    props.onCategoryChanged(selectedOption);
   }
 
   // See https://github.com/JedWatson/react-select/issues/2630
-  isValidNewOption = (inputValue, selectValue, selectOptions) => {
+  const isValidNewOption = (inputValue, selectValue, selectOptions) => {
     if (
       inputValue.trim().length === 0 ||
       selectOptions.find(option => option.name === inputValue)
@@ -26,7 +18,6 @@ export class CategorySelect extends Component {
     return true;
   }
 
-  render() {
     const customStyles = {
       option: (base) => ({
         ...base,
@@ -55,18 +46,18 @@ export class CategorySelect extends Component {
         padding: "3px"
       })
     };
-    const options = this.props.categories.filter(c => c.accountId !== this.props.selectedAccount);
+    const options = props.categories.filter(c => c.accountId !== props.selectedAccount);
     return (
       <CreatableSelect 
-        value={this.props.selectedCategory}
-        onChange={this.handleChangeCategory} 
+        value={props.selectedCategory}
+        onChange={handleChangeCategory} 
         getOptionLabel={o => o.name}
         getOptionValue={o => o.categoryId}
         getNewOptionData={(inputValue, optionLabel) => ({
           id: inputValue,
           name: optionLabel,
         })}
-        isValidNewOption={this.isValidNewOption}
-        options={options} styles={customStyles} />);
-  }
+        isValidNewOption={isValidNewOption}
+        options={options} styles={customStyles} />
+  );
 }

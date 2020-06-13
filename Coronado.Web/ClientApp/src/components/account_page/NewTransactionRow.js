@@ -1,6 +1,6 @@
 import React from 'react';
 import { CheckIcon } from '../icons/CheckIcon';
-import { CategorySelect } from '../common/CategorySelect';
+import CategorySelect from '../common/CategorySelect';
 import { find } from 'lodash';
 import * as transactionActions from '../../actions/transactionActions';
 import { useSelector, useDispatch } from 'react-redux';
