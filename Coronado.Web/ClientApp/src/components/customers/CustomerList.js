@@ -1,89 +1,53 @@
-import React, { Component } from 'react';
+import React from 'react';
 import * as customerActions from '../../actions/customerActions';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import CustomerForm from './CustomerForm';
-import { find } from 'lodash';
 import { CustomerRow } from './CustomerRow';
 import Spinner from '../common/Spinner';
 import CustomTable from '../common/Table';
 
-class CustomerList extends Component {
-  constructor(props) {
-    super(props);
-    this.deleteCustomer = this.deleteCustomer.bind(this);
-    this.startEditing = this.startEditing.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.saveCustomer = this.saveCustomer.bind(this);
-    this.getCustomerName = this.getCustomerName.bind(this);
-    this.state = {
-      show: false,
-      selectedCustomer: {}
-    }
+export default function CustomerList() {
+  const [ show, setShow ] = React.useState(false);
+  const [ selectedCustomer, setSelectedCustomer ] = React.useState({});
+  const customers = useSelector(state => state.customers);
+  const isLoading = useSelector(state => state.loading.customers);
+  const dispatch = useDispatch();
+
+  const deleteCustomer = (customerId, customerName) => {
+    dispatch(customerActions.deleteCustomer(customerId, customerName));
   }
 
-  deleteCustomer(customerId, customerName) {
-    this.props.actions.deleteCustomer(customerId, customerName);
+  const startEditing = (customer) => {
+    setSelectedCustomer(customer);
+    setShow(true);
   }
 
-  startEditing(customer) {
-    this.setState({show:true, selectedCustomer: customer});
+  const handleClose = () => {
+    setShow(false);
   }
 
-  handleClose() {
-    this.setState({show:false});
+  const saveCustomer = (customer) => {
+    dispatch(customerActions.updateCustomer(customer));
   }
 
-  saveCustomer(customer) {
-    this.props.actions.updateCustomer(customer);
-  }
-
-  getCustomerName(customerId) {
-    if (!customerId || customerId === '') return '';
-
-    var customer = find(this.props.customers, c => c.customerId === customerId);
-    return customer ? customer.name : '';
-  }
-  
-  render() {
     return (
       <CustomTable
         tableHeader={["", "Name", "Email", "Street Address", "City", "Region"]}
       >
         <CustomerForm 
-          show={this.state.show} 
-          onClose={this.handleClose} 
-          customer={this.state.selectedCustomer} 
-          customers={this.props.customers}
-          onSave={this.saveCustomer} />
-        { this.props.isLoading ? <tr><td colSpan="2"><Spinner /></td></tr> :
-          this.props.customers.map(cust => 
+          show={show} 
+          onClose={handleClose} 
+          customer={selectedCustomer} 
+          customers={customers}
+          onSave={saveCustomer} />
+        { isLoading ? <tr><td colSpan="2"><Spinner /></td></tr> :
+          customers.map(cust => 
         <CustomerRow 
           key={cust.customerId} 
           customer={cust} 
-          onEdit={() => this.startEditing(cust)} 
-          onDelete={()=>this.deleteCustomer(cust.customerId, cust.name)} />
+          onEdit={() => startEditing(cust)} 
+          onDelete={()=>deleteCustomer(cust.customerId, cust.name)} />
         )}
       </CustomTable>
     );
-  }
 }
-
-function mapStateToProps(state) {
-  return {
-    customers: state.customers,
-    notifications: state.notifications,
-    isLoading: state.loading.customers
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(customerActions, dispatch)
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(CustomerList);
