@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Moment from 'react-moment';
 import { Icon } from "../icons/Icon";
-import { withStyles, Button, Dialog, DialogTitle, DialogContent, 
-  DialogActions, InputBase, Table, TableHead, TableRow, TableBody, TableCell } from '@material-ui/core'
+import {
+  withStyles, Button, Dialog, DialogTitle, DialogContent,
+  DialogActions, InputBase, Table, TableHead, TableRow, TableBody, TableCell
+} from '@material-ui/core'
 import { fade } from '@material-ui/core/styles';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 
@@ -28,26 +30,16 @@ const PriceInput = withStyles((theme) => ({
   }
 }))(InputBase);
 
-class TodaysPrices extends Component {
-  displayName = TodaysPrices.name;
-  constructor(props) {
-    super(props);
-    this.savePrices = this.savePrices.bind(this);
-    this.handleChangePrice = this.handleChangePrice.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.showTodaysPrices = this.showTodaysPrices.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.state = {
-      investments: [],
-      show: false
-    };
-  }
+export default function TodaysPrices(props) {
+  const [investments, setInvestments] = React.useState([]);
+  const [show, setShow] = React.useState(false);
 
-  componentDidUpdate() {
-    if (this.props.investments && this.props.investments.length > 0
-      && this.props.investments.length !== this.state.investments.length) {
-      this.setState({
-        investments: this.props.investments.map(i => {
+  React.useEffect(() => {
+
+    if (props.investments && props.investments.length > 0
+      && props.investments.length !== investments.length) {
+      setInvestments(
+        props.investments.map(i => {
           return {
             investmentId: i.investmentId,
             name: i.name,
@@ -56,92 +48,76 @@ class TodaysPrices extends Component {
             lastPrice: i.lastPrice
           }
         })
-      })
+
+      );
     };
+  }, [props.investments, investments.length]);
 
-  }
-
-  showTodaysPrices() {
-    this.setState({ show: true });
+  const showTodaysPrices = () => {
+    setShow(true);
     return false;
   }
 
-  handleKeyPress(e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      this.savePrices();
-    }
+  const savePrices = () => {
+    props.onSave(investments);
+    setInvestments([]);
+    setShow(false);
   }
 
-  savePrices() {
-    this.props.onSave(this.state.investments);
-    this.setState({
-      investments: [],
-      show: false
-    });
+  const handleChangePrice = (investmentIndex, e) => {
+    let newState = [...investments];
+    newState[investmentIndex].lastPrice = e.target.value;
+    setInvestments(newState);
   }
 
-  handleChangePrice(investmentIndex, e) {
-    let investments = [...this.state.investments];
-    investments[investmentIndex].lastPrice = e.target.value;
-
-    this.setState({
-      investments
-    });
+  const handleClose = () => {
+    setShow(false);
   }
 
-  handleClose() {
-    this.setState({ show: false });
-  }
+  return (
+    <span>
 
-  render() {
-    return (
-      <span>
-
-        <Icon 
-          onClick={this.showTodaysPrices} 
-          title="Update todays prices" 
-          icon={<LocalOfferIcon />}
-        />
-        <Dialog
-          onClose={this.handleClose}
-          open={this.state.show}
-        >
-          <DialogTitle>Today's Prices</DialogTitle>
-          <DialogContent>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Investment</TableCell>
-                  <TableCell>Last Price Date</TableCell>
-                  <TableCell align={'right'}>Price</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-              {this.state.investments && this.state.investments.map((i, index) => {
+      <Icon
+        onClick={showTodaysPrices}
+        title="Update todays prices"
+        icon={<LocalOfferIcon />}
+      />
+      <Dialog
+        onClose={handleClose}
+        open={show}
+      >
+        <DialogTitle>Today's Prices</DialogTitle>
+        <DialogContent>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Investment</TableCell>
+                <TableCell>Last Price Date</TableCell>
+                <TableCell align={'right'}>Price</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {investments && investments.map((i, index) => {
                 return (
                   <TableRow key={index}>
                     <TableCell>{i.symbol}</TableCell>
-                    <TableCell><Moment format="M/D/YYYY">{i.lastPriceDate}</Moment></TableCell>
+                    <TableCell><Moment format="M/D/YYYY">{i.lastPriceRetrievalDate}</Moment></TableCell>
                     <TableCell>
                       <PriceInput
                         defaultValue={i.lastPrice}
-                        onChange={(e) => this.handleChangePrice(index, e)}
+                        onChange={(e) => handleChangePrice(index, e)}
                       />
                     </TableCell>
                   </TableRow>
                 );
               })}
-              </TableBody>
-            </Table>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.savePrices} color="primary">Save</Button>
-          </DialogActions>
-        </Dialog>
-      </span>
-    );
-  };
+            </TableBody>
+          </Table>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={savePrices} color="primary">Save</Button>
+        </DialogActions>
+      </Dialog>
+    </span>
+  );
 }
-
-export default TodaysPrices;
