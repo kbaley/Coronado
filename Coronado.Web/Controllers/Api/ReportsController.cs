@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 using Coronado.Web.Controllers.Dtos;
+using Coronado.Web.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -53,6 +55,17 @@ namespace Coronado.Web.Controllers.Api
         public class CategoryTotals {
             public IEnumerable<CategoryTotal> Expenses { get; set; }
             public dynamic MonthTotals { get; set; }
+        }
+
+        [HttpGet]
+        public IEnumerable<Transaction> ExpensesForCategory(Guid categoryId, DateTime month) {
+            var start = new DateTime(month.Year, month.Month, 1);
+            var end = start.AddMonths(1);
+            var expenses = _context.Transactions
+                .Include(t => t.Account)
+                .Where(t => t.CategoryId == categoryId
+                    && t.TransactionDate >= start && t.TransactionDate < end);
+            return expenses.ToList();
         }
 
         [HttpGet]

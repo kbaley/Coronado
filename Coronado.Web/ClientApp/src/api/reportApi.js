@@ -38,6 +38,21 @@ class ReportApi {
     return response.json();
   }
 
+  static async getExpensesForCategoryAndMonth(categoryId, month) {
+    const requestOptions = {
+      method: 'GET',
+      headers: authHeader()
+    }
+    const response = await fetch("api/Reports/ExpensesForCategory?categoryId=" + categoryId + "&month=" + month, requestOptions);
+    if (!response.ok) {
+      if (response.status === 401) {
+        logout();
+        return [];
+      }
+    }
+    return response.json();
+  }
+
   static async getIncomeReport(year) {
     const requestOptions = {
       method: 'GET',

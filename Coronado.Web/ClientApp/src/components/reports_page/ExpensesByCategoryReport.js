@@ -9,13 +9,19 @@ import {
   TableCell,
   TableBody,
   TableFooter,
-  makeStyles
+  makeStyles,
+  Link,
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
+import ReportApi from '../../api/reportApi';
+import TransactionPopup from './TransactionPopup';
 
 const styles = theme => ({
   total: {
     backgroundColor: theme.palette.gray[2]
+  },
+  link: {
+    cursor: "pointer",
   }
 });
 
@@ -23,17 +29,44 @@ const useStyles = makeStyles(styles);
 
 export default function ExpensesByCategoryReport() {
 
+  const [ anchorEl, setAnchorEl ] = React.useState(null);
+  const [ transactions, setTransactions ] = React.useState([]);
   const report = useSelector(state => state.reports.expensesByCategory);
+
+  const showExpenses = async (expense, month) => {
+    const categoryId = expense.categoryId;
+    const date = month.date;
+    var expenses = await ReportApi.getExpensesForCategoryAndMonth(categoryId, date);
+    setTransactions(expenses);
+  }
+
+  const doIt = (expense, month, e) => {
+    showExpenses(expense, month);
+    setAnchorEl(e.currentTarget);
+    console.log(e.currentTarget);
+  }
 
   const getExpense = (expense, month) => {
     var foundExpense = find(expense.amounts, (e) => { return e.date === month.date });
-    if (foundExpense)
-      return <CurrencyFormat value={foundExpense.amount} />;
+    if (foundExpense) {
+      return (
+        <Link onClick={(e) => doIt(expense, month, e)} className={classes.link}>
+        <CurrencyFormat value={foundExpense.amount} />
+        </Link>
+      );
+    }
     return <span></span>;
   }
 
   const classes = useStyles();
+
   return (
+    <React.Fragment>
+      <TransactionPopup
+        transactions={transactions}
+        target={anchorEl}
+        onClose={() => setAnchorEl(null)}
+      />
       <Table>
         <TableHead>
           <TableRow>
@@ -58,7 +91,9 @@ export default function ExpensesByCategoryReport() {
             >
               <TableCell>{r.categoryName}</TableCell>
               {report.monthTotals.map((m, i) =>
-                <TableCell key={i}>{getExpense(r, m)}</TableCell>
+                <TableCell key={i}>
+                  {getExpense(r, m)}
+                </TableCell>
               )}
               <TableCell className={classes.total}><CurrencyFormat value={r.total} /></TableCell>
             </TableRow>
@@ -76,5 +111,6 @@ export default function ExpensesByCategoryReport() {
           </TableRow>
         </TableFooter>
       </Table>
+      </React.Fragment>
   );
 }
