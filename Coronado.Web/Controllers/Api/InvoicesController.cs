@@ -76,6 +76,9 @@ namespace Coronado.Web.Controllers.Api
             var invoiceMapped = _mapper.Map<Invoice>(invoice);
             _context.Invoices.Add(invoiceMapped);
             await _context.SaveChangesAsync();
+            var customer = await _context.Customers.FindAsync(invoice.CustomerId);
+            invoice.CustomerName = customer.Name;
+            invoice.CustomerEmail = customer.Email;
 
             return CreatedAtAction("PostInvoice", new { id = invoice.InvoiceId }, invoice);
         }
