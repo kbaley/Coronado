@@ -23,7 +23,7 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpGet]
-        public IEnumerable<Category> GetCategory([FromQuery] UrlQuery query )
+        public IEnumerable<Category> GetCategory()
         {
             return _context.Categories.OrderBy(c => c.Name);
         }

@@ -12,14 +12,16 @@ namespace Coronado.Web.Domain
         public static readonly string CREDIT_CARD = "Credit Card";
 
         public static IEnumerable<string> GetAccountTypes() {
-            var types = new List<string>();
-            types.Add(CASH);
-            types.Add(BANK_ACCOUNT);
-            types.Add(MORTGAGE);
-            types.Add(ASSET);
-            types.Add(LOAN);
-            types.Add(INVESTMENT);
-            types.Add(CREDIT_CARD);
+            var types = new List<string>
+            {
+                CASH,
+                BANK_ACCOUNT,
+                MORTGAGE,
+                ASSET,
+                LOAN,
+                INVESTMENT,
+                CREDIT_CARD
+            };
 
             return types;
         }

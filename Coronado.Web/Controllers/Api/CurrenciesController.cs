@@ -14,7 +14,7 @@ namespace Coronado.Web.Controllers.Api
     [ApiController]
     public class CurrenciesController : ControllerBase
     {
-        CoronadoDbContext _context;
+        readonly CoronadoDbContext _context;
         public CurrenciesController(CoronadoDbContext context)
         {
             _context = context;
@@ -33,24 +33,28 @@ namespace Coronado.Web.Controllers.Api
                 isNew = true;
             }
             if (isNew || currency.LastRetrieved < DateTime.Today) {
-                using (var client = new HttpClient()) {
-                    client.BaseAddress = new Uri("https://api.exchangeratesapi.io");
-                    try {
-                        var response = await client.GetAsync($"/latest?base=USD&symbols={symbol}");
-                        response.EnsureSuccessStatusCode();
-                        var stringResult = await response.Content.ReadAsStringAsync();
-                        dynamic rawRate = JsonConvert.DeserializeObject(stringResult);
-                        currency.PriceInUsd = rawRate.rates[symbol];
-                        currency.LastRetrieved = DateTime.Today;
-                        if ( isNew )
-                            _context.Currencies.Add(currency);
-                        // Don't do anything if updating an existing currency; EF will handle the
-                        // change tracking for us
-                        await _context.SaveChangesAsync().ConfigureAwait(false);
-                    } catch(Exception e) {
-                        // For now, do nothing
-                        Console.WriteLine(e.Message);
-                    }
+                using var client = new HttpClient
+                {
+                    BaseAddress = new Uri("https://api.exchangeratesapi.io")
+                };
+                try
+                {
+                    var response = await client.GetAsync($"/latest?base=USD&symbols={symbol}");
+                    response.EnsureSuccessStatusCode();
+                    var stringResult = await response.Content.ReadAsStringAsync();
+                    dynamic rawRate = JsonConvert.DeserializeObject(stringResult);
+                    currency.PriceInUsd = rawRate.rates[symbol];
+                    currency.LastRetrieved = DateTime.Today;
+                    if (isNew)
+                        _context.Currencies.Add(currency);
+                    // Don't do anything if updating an existing currency; EF will handle the
+                    // change tracking for us
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
+                }
+                catch (Exception e)
+                {
+                    // For now, do nothing
+                    Console.WriteLine(e.Message);
                 }
             }
             return currency.PriceInUsd;

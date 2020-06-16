@@ -20,34 +20,29 @@ namespace Coronado.Web.Controllers
 
         private readonly IConfiguration _config;
         private readonly CoronadoDbContext _context;
-        private readonly ILogger _logger;
 
-        public InvoiceController(IConfiguration config, CoronadoDbContext context,
-          ILogger<InvoiceController> logger)
+        public InvoiceController(IConfiguration config, CoronadoDbContext context)
         {
             _config = config;
             _context = context;
-            _logger = logger;
         }
 
         public async Task<IActionResult> GeneratePDF(Guid invoiceId)
         {
             var apiKey = _config.GetValue<string>("Html2PdfRocketKey");
 
-            using (var client = new WebClient())
-            {
-                var invoice = await _context.FindInvoiceEager(invoiceId).ConfigureAwait(false);
-                var options = new NameValueCollection
+            using var client = new WebClient();
+            var invoice = await _context.FindInvoiceEager(invoiceId).ConfigureAwait(false);
+            var options = new NameValueCollection
                 {
                     { "apikey", apiKey },
                     { "value", GetInvoiceHtml(invoice) }
                 };
 
-                var ms = new MemoryStream(client.UploadValues("http://api.html2pdfrocket.com/pdf", options));
+            var ms = new MemoryStream(client.UploadValues("http://api.html2pdfrocket.com/pdf", options));
 
-                HttpContext.Response.Headers.Add("content-disposition", $"attachment; filename=Invoice {invoice.InvoiceNumber}.pdf");
-                return new FileStreamResult(ms, "text/html");
-            }
+            HttpContext.Response.Headers.Add("content-disposition", $"attachment; filename=Invoice {invoice.InvoiceNumber}.pdf");
+            return new FileStreamResult(ms, "text/html");
         }
 
         private string GetInvoiceHtml(Invoice invoice)
@@ -117,7 +112,7 @@ namespace Coronado.Web.Controllers
             var subject = $"Invoice {invoice.InvoiceNumber} from Kyle Baley Consulting Ltd.";
             var cc = new EmailAddress("kyle@baley.org", "Kyle Baley");
 
-            var htmlContent = $"Invoice {invoice.InvoiceNumber} for {invoice.Balance.ToString("C")} from Kyle Baley Consulting Ltd is attached";
+            var htmlContent = $"Invoice {invoice.InvoiceNumber} for {invoice.Balance:C} from Kyle Baley Consulting Ltd is attached";
             var plainTextContent = htmlContent;
             var msg = new SendGridMessage
             {
@@ -131,9 +126,11 @@ namespace Coronado.Web.Controllers
             using (var webClient = new WebClient())
             {
                 var pdfApiKey = _config.GetValue<string>("Html2PdfRocketKey");
-                var options = new NameValueCollection();
-                options.Add("apikey", pdfApiKey);
-                options.Add("value", GetInvoiceHtml(invoice));
+                var options = new NameValueCollection
+                {
+                    { "apikey", pdfApiKey },
+                    { "value", GetInvoiceHtml(invoice) }
+                };
 
                 var attachmentContent = webClient.UploadValues("http://api.html2pdfrocket.com/pdf", options);
                 var file = Convert.ToBase64String(attachmentContent);

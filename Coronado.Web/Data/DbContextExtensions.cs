@@ -11,16 +11,6 @@ namespace Coronado.Web.Data
     public static class DbContextExtensions
     {
 
-        public static IQueryable<Account> etAccountBalances(this DbSet<Account> accounts)
-        {
-
-            return accounts.FromSqlRaw(
-@"SELECT account_id, sum(amount) as current_balance
-FROM Transactions
-GROUP BY account_id"
-            );
-        }
-
         public static IQueryable<AccountIdAndBalance> GetAccountBalances(this DbSet<Account> accounts) {
             return accounts
                 .Select( a => new AccountIdAndBalance {

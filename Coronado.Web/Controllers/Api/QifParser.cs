@@ -23,16 +23,14 @@ namespace Coronado.Web.Controllers.Api
             var transactions = new List<TransactionForDisplay>();
             if (file.Length > 0)
             {
-                using (var reader = new StreamReader(file.OpenReadStream()))
+                using var reader = new StreamReader(file.OpenReadStream());
+                var peek = reader.Peek();
+                if (peek != -1)
                 {
-                    var peek = reader.Peek();
-                    if (peek != -1)
-                    {
-                        if ((char)peek == '!')
-                            transactions = ParseQif(reader, accountId, fromDate);
-                        else
-                            transactions = ParseCsv(reader, accountId, fromDate);
-                    }
+                    if ((char)peek == '!')
+                        transactions = ParseQif(reader, accountId, fromDate);
+                    else
+                        transactions = ParseCsv(reader, accountId, fromDate);
                 }
             }
             return transactions;

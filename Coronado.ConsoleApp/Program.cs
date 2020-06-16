@@ -23,6 +23,20 @@ namespace Coronado.ConsoleApp
             app.Description = "Console app for managing accounts and transactions with Coronado";
 
             app.HelpOption("-?|-h|--help");
+            app.Command("accounts", (command) => {
+                command.Description = "List accounts";
+                command.HelpOption("-?|-h|--help");
+                command.OnExecute(async () => {
+                    var client = new HttpClient();
+                    client.BaseAddress = new Uri(url);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(
+                        new MediaTypeWithQualityHeaderValue("application/json")
+                    );
+                    var response = await client.GetAsync("api/accounts" ).ConfigureAwait(false);
+                    response.EnsureSuccessStatusCode();
+                });
+            });
             app.Command("account", (command) => {
                 command.Description = "Create a new account";
                 command.HelpOption("-?|-h|--help");

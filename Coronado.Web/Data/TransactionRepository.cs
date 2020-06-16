@@ -326,9 +326,8 @@ namespace Coronado.Web.Data
             {
                 var next = parsed.IndexOf("bf:", 1, StringComparison.CurrentCultureIgnoreCase);
                 if (next == -1) next = parsed.Length;
-                var transactionData = parsed.Substring(3, next - 3).Trim().Split(" ");
-                decimal amount;
-                if (decimal.TryParse(transactionData[0], out amount))
+                var transactionData = parsed[3..next].Trim().Split(" ");
+                if (decimal.TryParse(transactionData[0], out var amount))
                 {
                     var bankFeeDescription = string.Join(" ", transactionData.Skip(1).ToArray());
                     var transaction = new Transaction
