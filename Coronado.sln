@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coronado.Web", "Coronado.We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coronado.Web.Tests", "Coronado.Web.Tests\Coronado.Web.Tests.csproj", "{B366A54C-78CE-42DF-9275-C3D1E8B53D6C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coronado.ConsoleApp", "Coronado.ConsoleApp\Coronado.ConsoleApp.csproj", "{17E78D87-42F7-4956-A125-88AF990C0F0A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{B366A54C-78CE-42DF-9275-C3D1E8B53D6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B366A54C-78CE-42DF-9275-C3D1E8B53D6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B366A54C-78CE-42DF-9275-C3D1E8B53D6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17E78D87-42F7-4956-A125-88AF990C0F0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17E78D87-42F7-4956-A125-88AF990C0F0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17E78D87-42F7-4956-A125-88AF990C0F0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17E78D87-42F7-4956-A125-88AF990C0F0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

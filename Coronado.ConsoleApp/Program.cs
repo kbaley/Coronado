@@ -1,10 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using McMaster.Extensions.CommandLineUtils;
+using System.Text;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 
 namespace Coronado.ConsoleApp
 {
@@ -12,121 +14,62 @@ namespace Coronado.ConsoleApp
     {
         static void Main(string[] args)
         {
-            RunAsync(args).GetAwaiter().GetResult();
-        }
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables()
+                .AddCommandLine(args)
+                .AddUserSecrets<Program>(false)
+                .Build();
 
-        static async Task RunAsync(string[] args)
-        {
-            var url = "http://localhost:5000/";
-            var app = new CommandLineApplication();
-            app.Name = "Coronado";
-            app.Description = "Console app for managing accounts and transactions with Coronado";
+            var coronadoOptions = new CoronadoOptions();
+            config.GetSection(CoronadoOptions.Coronado).Bind(coronadoOptions);
 
-            app.HelpOption("-?|-h|--help");
-            app.Command("accounts", (command) => {
-                command.Description = "List accounts";
-                command.HelpOption("-?|-h|--help");
-                command.OnExecute(async () => {
-                    var client = new HttpClient();
-                    client.BaseAddress = new Uri(url);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(
-                        new MediaTypeWithQualityHeaderValue("application/json")
-                    );
-                    var response = await client.GetAsync("api/accounts" ).ConfigureAwait(false);
-                    response.EnsureSuccessStatusCode();
-                });
-            });
-            app.Command("account", (command) => {
-                command.Description = "Create a new account";
-                command.HelpOption("-?|-h|--help");
-                var name = command.Option("-n|--name", "Name of account", CommandOptionType.SingleValue);
-                var startingBalance = command.Option("-b|--balance", "Starting balance", CommandOptionType.SingleValue);
-                command.OnExecute(async () => {
-                    if (!name.HasValue()) {
-                        Console.WriteLine("Enter a name");
-                        return;
-                    }
-                    var balance = startingBalance.HasValue() ? Convert.ToDecimal(startingBalance.Value()) : 0m;
-                    var account = new Account {
-                        AccountId = Guid.NewGuid(),
-                        Name = name.Value(),
-                        StartingBalance = balance
-                    };
-                    var client = new HttpClient();
-                    client.BaseAddress = new Uri(url);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(
-                        new MediaTypeWithQualityHeaderValue("application/json")
-                    );
-                    var response = await client.PostAsJsonAsync("api/accounts", account );
-                    response.EnsureSuccessStatusCode();
-
-                    Console.WriteLine($"Account '{name.Value()}' created");
-                });
-            });
-            app.Command("trx", (command) => {
-                command.Description = "Add a transaction";
-                command.HelpOption("-?|-h|--help");
-                var account = command.Option("-a|--account", "Account name", CommandOptionType.SingleValue);
-                var trxDate = command.Option("-d|--date", "Thing", CommandOptionType.SingleValue);
-                var vendor = command.Option("-v|--vendor", "Vendor", CommandOptionType.SingleValue);
-                var description = command.Option("-p|--description", "Description", CommandOptionType.SingleValue);
-                var category = command.Option("-c|--category", "Transaction category", CommandOptionType.SingleValue);
-
-                command.OnExecute(async () => {
-                    var trx = new Transaction();
-                    trx.TransactionId = Guid.NewGuid();
-                    trx.AccountName = account.Value();
-                    trx.TransactionDate = DateTime.Parse(trxDate.Value());
-                    trx.Vendor = vendor.Value();
-                    trx.Description = description.Value();
-                    trx.CategoryName = category.Value();
-                    var client = new HttpClient();
-                    client.BaseAddress = new Uri(url);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(
-                        new MediaTypeWithQualityHeaderValue("application/json")
-                    );
-                    var response = await client.PostAsJsonAsync("api/transactions", trx );
-                    response.EnsureSuccessStatusCode();
-                    Console.WriteLine("Transaction added");
-                });
-            });
-            await Task.Run(() => app.Execute(args));
-        }
-
-        static void handleNewTransaction(string[] args)
-        {
-
-        }
-
-        static void handleNewAccount(string[] args)
-        {
-
-        }
-    }
-
-    public class Transaction {
-        public Guid TransactionId {get;set;}
-        public DateTime TransactionDate { get; set; }
-        public string Vendor { get; set; }
-        public string Description { get; set; }
-        public string AccountName { get; set; }
-        public string CategoryName { get; set; }
-    }
-
-    class AutoCompletionHandler : IAutoCompleteHandler
-    {
-        public char[] Separators {get;set;} = new char[] { ' ' };
-        public string[] GetSuggestions(string text, int index)
-        {
-            var suggestions = new string[] { "clone", "stash", "clothes", "closure" };
-            if (index > 0) {
-                var check = text.Substring(index);
-                return suggestions.Where(s => s.StartsWith(check, StringComparison.CurrentCultureIgnoreCase)).ToArray();
+            using var client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var settingsFile = Path.Combine(appDataFolder, "coronado.config");
+            var token = "";
+            if (File.Exists(settingsFile)) {
+                var settings = File.ReadAllLines(settingsFile);
+                if (settings.Any(l => l.StartsWith("Bearer "))) {
+                    token = settings.First(l => l.StartsWith("Bearer "));
+                }
             }
-            return suggestions;
+            if (string.IsNullOrWhiteSpace(token)) {
+                // Log in
+                Console.Write("Username: ");
+                var username = Console.ReadLine();
+                Console.Write("Password: ");
+                var password = Console.ReadLine();
+                Console.WriteLine("Logging in...");
+                var requestUri = $"accounts/";
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri(coronadoOptions.Url + "Auth/login")
+                };
+                request.Content = new StringContent(
+                    $"{{Email: '{username}', Password: '{password}'}}",
+                    Encoding.UTF8, "application/json");
+                var response = client.SendAsync(request).GetAwaiter().GetResult();
+                System.Console.WriteLine(response.StatusCode);
+                var responseJson = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                dynamic retrievedToken = JsonConvert.DeserializeObject(responseJson);
+                File.AppendAllText(settingsFile, "Bearer " + retrievedToken.token + "\n");
+            } else {
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri(coronadoOptions.Url + "accounts")
+                };
+                request.Headers.Add("Authorization", token);
+                var response = client.SendAsync(request).GetAwaiter().GetResult();
+                var json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                System.Console.WriteLine(json);
+            }
+
         }
     }
 }
