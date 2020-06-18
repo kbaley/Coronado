@@ -130,8 +130,27 @@ namespace Coronado.Web.Controllers.Api
             var gainLossCategory = await _context.GetOrCreateCategory("Gain/loss on investments").ConfigureAwait(false);
             var end = DateTime.Today.LastDayOfMonth();
             var start = end.AddMonths(0 - numMonths).FirstDayOfMonth();
-            var expenses = await _reportRepo.GetMonthlyTotalsForCategory(gainLossCategory.CategoryId, start, end).ConfigureAwait(false);
-            return Ok(expenses);
+            var investmentGains = await _reportRepo.GetMonthlyTotalsForCategory(gainLossCategory.CategoryId, start, end).ConfigureAwait(false);
+            var liquidAssetsBalance = _context.Accounts
+                .Where(a => a.AccountType == "Bank Account" || a.AccountType == "Cash")
+                .Sum(a => a.Transactions.Sum(t => t.AmountInBaseCurrency));
+            var creditCardBalance = _context.Accounts
+                .Where(a => a.AccountType == "Credit Card")
+                .Sum(a => a.Transactions.Sum(t => t.AmountInBaseCurrency));
+            var netWorth = _context.Transactions.Sum(t => t.AmountInBaseCurrency);
+
+            var firstdayOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+            var netWorthLastMonth = _context.Transactions
+                .Where(t => t.TransactionDate < firstdayOfMonth)
+                .Sum(t => t.AmountInBaseCurrency);
+            var report = new {
+                liquidAssetsBalance,
+                creditCardBalance,
+                netWorth,
+                netWorthLastMonth,
+                investmentGains
+            };
+            return Ok(report);
         }
     }
 

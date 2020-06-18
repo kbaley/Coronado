@@ -43,7 +43,7 @@ class Home extends React.Component {
   }
 
   getGainLossForMonth(month) {
-    const stats = this.props.dashboardStats;
+    const stats = this.props.dashboardStats.investmentGains;
     if (!stats || !stats.length) return Currency(0);
     if (stats.length < month) return Currency(0);
 
