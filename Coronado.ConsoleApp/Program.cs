@@ -5,24 +5,46 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Coronado.ConsoleApp.Commands;
 using Coronado.ConsoleApp.Domain;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using static Coronado.ConsoleApp.Domain.Program;
 
 namespace Coronado.ConsoleApp
 {
-    class Program
+    partial class Program
     {
+        static Datastore context;
         static string settingsFile;
         static async Task Main(string[] args)
         {
+            context = new Datastore();
             Initialize(args);
+            await LoadLocalStore().ConfigureAwait(false);
             await DoTask().ConfigureAwait(false);
         }
 
-        static void Initialize(string[] args) {
+        static async Task LoadLocalStore()
+        {
+
+            using var client = new HttpClient();
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(CoronadoOptions.Url + "accounts")
+            };
+            request.Headers.Add("Authorization", CoronadoOptions.BearerToken);
+            var response = client.SendAsync(request).GetAwaiter().GetResult();
+            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            // System.Console.WriteLine(json);
+            context.Accounts = JsonConvert.DeserializeObject<List<Account>>(json);
+        }
+
+        static void Initialize(string[] args)
+        {
 
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             var config = new ConfigurationBuilder()
@@ -51,19 +73,25 @@ namespace Coronado.ConsoleApp
                 File.AppendAllText(settingsFile, "Bearer " + bearerToken + "\n");
             }
             await LoadDashboardStats().ConfigureAwait(false);
-            while (true) {
+            while (true)
+            {
+                if (context.SelectedAccount != null) {
+                    Console.Write(context.SelectedAccount.Name + " ");
+                }
                 Console.Write("> ");
                 var command = Console.ReadLine();
-                switch (command) {
-                    case "la":
-                    case "list-accounts":
-                        await new ListAccounts().Execute().ConfigureAwait(false);
-                        break;
-                    case "quit":
-                    case "q":
-                        return;
+                if (command == "la" || command == "list-accounts")
+                {
+                    await new ListAccounts().Execute(context).ConfigureAwait(false);
                 }
-                if (command == "quit" || command == "q") break;
+                else if (Regex.Match(command, "^ga\\d{1,2}$").Success)
+                {
+                    await new OpenAccount().Execute(context, command).ConfigureAwait(false);
+                }
+                else if (command == "quit" || command == "q")
+                {
+                    break;
+                }
             }
 
         }
@@ -85,17 +113,6 @@ namespace Coronado.ConsoleApp
             Console.WriteLine($"Change..................{Math.Round(stats.NetWorthChange, 2).ToString("C2").PadLeft(18, '.')}");
             Console.WriteLine($"Liquid assets...........{Math.Round(stats.LiquidAssetsBalance, 2).ToString("C2").PadLeft(18, '.')}");
             Console.WriteLine($"Credit cards............{Math.Round(stats.CreditCardBalance, 2).ToString("C2").PadLeft(18, '.')}");
-        }
-
-        public class DashboardStats {
-            public decimal NetWorth { get; set; }
-            public decimal LiquidAssetsBalance { get; set; }
-            public decimal CreditCardBalance { get; set; }
-            public decimal NetWorthLastMonth { get; set; }
-            public decimal NetWorthChange { get {
-                return NetWorth - NetWorthLastMonth;
-            } }
-
         }
 
         private static async Task<string> LogIn()

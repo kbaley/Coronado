@@ -8,21 +8,12 @@ using Newtonsoft.Json;
 
 namespace Coronado.ConsoleApp.Commands
 {
-    public class ListAccounts {
+    public class ListAccounts
+    {
 
-        public async Task Execute() {
-            using var client = new HttpClient();
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri(CoronadoOptions.Url + "accounts")
-            };
-            request.Headers.Add("Authorization", CoronadoOptions.BearerToken);
-            var response = client.SendAsync(request).GetAwaiter().GetResult();
-            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            // System.Console.WriteLine(json);
-            IEnumerable<Account> accounts = JsonConvert.DeserializeObject<List<Account>>(json);
-            accounts = accounts
+        public async Task Execute(Datastore context)
+        {
+            var accounts = context.Accounts
                 .Where(a => !a.IsHidden)
                 .OrderBy(a => a.DisplayOrder);
             foreach (var item in accounts)
