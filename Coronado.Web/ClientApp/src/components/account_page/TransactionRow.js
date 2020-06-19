@@ -73,7 +73,7 @@ export default function TransactionRow(props) {
     let categoryDisplay = trx.categoryDisplay;
     let localSelectedCategory = selectedCategory;
     let newVendor = Object.assign({}, vendor);
-    let vendorName = vendor;
+    let vendorName = vendor || "";
     if (vendorName.name) {
       // This is a vendor selected from the list
       vendorName = vendor.name;
