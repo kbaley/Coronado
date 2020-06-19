@@ -26,6 +26,7 @@ namespace Coronado.Web.Controllers.Dtos
         public string InvoiceNumber { get; set; }
         public TRANSACTION_TYPE TransactionType { get; set; }
         public decimal AmountInBaseCurrency { get; set; }
+        public decimal RunningTotal { get; set; }
         public void SetAmount()
         {
             Amount = Debit.HasValue ? (0 - Debit.Value) : Credit.Value;

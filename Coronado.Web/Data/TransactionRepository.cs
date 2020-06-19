@@ -266,7 +266,14 @@ namespace Coronado.Web.Data
                 .ThenBy(t => t.TransactionId)
                 .Skip(transactionList.Count())
                 .Sum(t => t.Amount);
-            transactions.ForEach(t => t.SetDebitAndCredit());
+            var runningTotal = _context.Transactions
+                .Where(t => t.AccountId == accountId)
+                .Sum(t => t.Amount);
+            transactions.ForEach(t => {
+                t.SetDebitAndCredit();
+                t.RunningTotal = runningTotal;
+                runningTotal -= t.Amount;
+            });
 
             var model = new TransactionListModel
             {
@@ -291,7 +298,14 @@ namespace Coronado.Web.Data
                 .ThenByDescending(t => t.EnteredDate)
                 .Select(t => _mapper.Map<TransactionForDisplay>(t))
                 .ToList();
-            transactions.ForEach(t => t.SetDebitAndCredit());
+            var runningTotal = _context.Transactions
+                .Where(t => t.AccountId == accountId)
+                .Sum(t => t.Amount);
+            transactions.ForEach(t => {
+                t.SetDebitAndCredit();
+                t.RunningTotal = runningTotal;
+                runningTotal -= t.Amount;
+            });
             return transactions;
         }
 

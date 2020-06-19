@@ -13,11 +13,12 @@ namespace Coronado.ConsoleApp.Domain
         public decimal Amount { get; set; }
         public DateTime EnteredDate { get; set; }
         public string TransactionType { get; set; }
+        public decimal RunningTotal { get; set; }
         public decimal AmountInBaseCurrency { get; set; }
         public string Alias { get; set; }
 
         public override string ToString() {
-            var str = $"{Alias.PadRight(5, '.')}..";
+            var str = $"{Alias.PadRight(5, '.')}";
             str += $"{TransactionDate.ToShortDateString().PadLeft(11, '.')}...";
             str += $"{Vendor.PadLeft(25, '.')}...";
             str += $"{CategoryDisplay.PadLeft(30, '.')}...";
@@ -28,9 +29,10 @@ namespace Coronado.ConsoleApp.Domain
                 str += ".".PadLeft(3, '.');
             } else {
                 str += ".".PadLeft(3, '.');
-                str += $"{Amount.ToString("#,##0.00").PadLeft(10, '.')}";
+                str += $"{(-Amount).ToString("#,##0.00").PadLeft(10, '.')}";
                 str += ".".PadLeft(15, '.');
             }
+            str += $"{RunningTotal.ToString("#,##0.00").PadLeft(10, '.')}";
 
             return str;
         }

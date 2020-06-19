@@ -18,9 +18,9 @@ export const transactionReducer = (state = initialState.transactionModel, action
   switch (action.type) {
     
     case actions.LOAD_TRANSACTIONS_SUCCESS:
-      transactions = computeRunningTotal(action.transactions, action.startingBalance);
+      // transactions = computeRunningTotal(action.transactions, action.startingBalance);
       return {
-        transactions: transactions,
+        transactions: action.transactions,
         startingBalance: action.startingBalance,
         remainingTransactionCount: action.remainingTransactionCount
       }
