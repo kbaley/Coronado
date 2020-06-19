@@ -3,11 +3,10 @@ import { DecimalFormat, MoneyFormat } from '../common/DecimalFormat';
 import * as transactionActions from '../../actions/transactionActions';
 import { useDispatch, useSelector } from 'react-redux';
 import CategorySelect from '../common/CategorySelect';
-import { MoneyInput } from '../common/MoneyInput';
 import * as Mousetrap from 'mousetrap';
 import { getCategoriesForDropdown } from "../../selectors/selectors.js";
 import VendorField from '../common/VendorField';
-import { TableRow, TableCell, IconButton, makeStyles } from '@material-ui/core';
+import { TableRow, TableCell, IconButton, makeStyles, TextField } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import CheckIcon from '@material-ui/icons/Check'
@@ -69,24 +68,35 @@ export default function TransactionRow(props) {
     }
   }
 
-  const handleChangeVendor = (vendorName) => {
+  const handleChangeVendor = (vendor) => {
     let categoryId = trx.categoryId;
     let categoryDisplay = trx.categoryDisplay;
-    const vendor = vendors.find(v => v.name === vendorName);
-    if (vendor) {
+    let localSelectedCategory = selectedCategory;
+    let newVendor = Object.assign({}, vendor);
+    let vendorName = vendor;
+    if (vendorName.name) {
+      // This is a vendor selected from the list
+      vendorName = vendor.name;
+    } else {
+      // This is not a vendor selected from the list
+      // See if it exists in our vendor list
+      newVendor = vendors.find(v => v.name === vendorName);
+    }
+    if (newVendor) {
       const category = categories.find(c => c.categoryId === vendor.lastTransactionCategoryId);
       if (category) {
         categoryId = category.categoryId;
         categoryDisplay = category.name;
-        setSelectedCategory(category);
+        localSelectedCategory = category;
       }
     }
     setTrx({
       ...trx,
       vendor: vendorName,
       categoryId,
-      categoryDisplay
+      categoryDisplay,
     });
+    setSelectedCategory(localSelectedCategory);
   }
 
   const handleChangeField = (e) => {
@@ -129,14 +139,20 @@ export default function TransactionRow(props) {
           </IconButton>
         </TableCell>
         <TableCell>
-          <input type="text" name="transactionDate"
+          <TextField 
+            name="transactionDate"
             onChange={handleChangeField}
             className={classes.input}
             onKeyPress={handleKeyPress}
             value={trx.transactionDate} />
         </TableCell>
         <TableCell>
-          <VendorField vendors={vendors} value={trx.vendor} onVendorChanged={handleChangeVendor} />
+          <VendorField 
+            vendors={vendors} 
+            value={trx.vendor} 
+            className={classes.input}
+            onVendorChanged={handleChangeVendor} 
+          />
         </TableCell>
         <TableCell>
           <CategorySelect
@@ -146,17 +162,33 @@ export default function TransactionRow(props) {
             onCategoryChanged={handleChangeCategory} />
         </TableCell>
         <TableCell>
-          <input type="text" name="description" onChange={handleChangeField}
+          <TextField 
+            name="description" 
+            onChange={handleChangeField}
+            fullWidth
             className={classes.input}
-            value={trx.description} onKeyPress={handleKeyPress} />
+            value={trx.description} 
+            onKeyPress={handleKeyPress} 
+          />
         </TableCell>
         <TableCell>
-          <MoneyInput name="debit" value={trx.debit} className={classes.input}
-            onChange={handleChangeField} onKeyPress={handleKeyPress} />
+          <TextField 
+            name="debit" 
+            value={trx.debit} 
+            className={classes.input}
+            inputProps={{ style:{ textAlign: 'right'}}}
+            onChange={handleChangeField} 
+            onKeyPress={handleKeyPress} />
         </TableCell>
         <TableCell>
-          <MoneyInput name="credit" value={trx.credit} className={classes.input}
-            onChange={handleChangeField} onKeyPress={handleKeyPress} /></TableCell>
+          <TextField 
+            name="credit" 
+            value={trx.credit} 
+            className={classes.input}
+            inputProps={{ style:{ textAlign: 'right'}}}
+            onChange={handleChangeField} 
+            onKeyPress={handleKeyPress} 
+          /></TableCell>
         <TableCell></TableCell>
       </TableRow> :
 

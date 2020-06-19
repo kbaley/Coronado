@@ -6,7 +6,7 @@ import * as transactionActions from '../../actions/transactionActions';
 import { useSelector, useDispatch } from 'react-redux';
 import { getCategoriesForDropdown } from "../../selectors/selectors";
 import VendorField from '../common/VendorField';
-import { TableRow, TableCell, makeStyles } from '@material-ui/core';
+import { TableRow, TableCell, makeStyles, TextField } from '@material-ui/core';
 
 const styles = theme => ({
   input: {
@@ -19,25 +19,26 @@ const styles = theme => ({
 const useStyles = makeStyles(styles);
 
 export default function NewTransactionRow(props) {
-  const [ trx, setTrx ] = React.useState({
-        transactionDate: new Date().toLocaleDateString(),
-        vendor: '',
-        description: '',
-        accountId: props.account.accountId,
-        credit: '',
-        debit: '',
-        invoiceId: '',
-        transactionType: 'REGULAR',
+  const [trx, setTrx] = React.useState({
+    transactionDate: new Date().toLocaleDateString(),
+    vendor: '',
+    description: '',
+    accountId: props.account.accountId,
+    credit: '',
+    debit: '',
+    invoiceId: '',
+    transactionType: 'REGULAR',
   });
-  const [ selectedCategory, setSelectedCategory ] = React.useState({});
-  const [ transactionType, setTransactionType ] = React.useState("REGULAR");
-  const [ mortgageType, setMortgageType ] = React.useState('');
-  const [ mortgagePayment, setMortgagePayment ] = React.useState('');
+  const [selectedCategory, setSelectedCategory] = React.useState({});
+  const [transactionType, setTransactionType] = React.useState("REGULAR");
+  const [mortgageType, setMortgageType] = React.useState('');
+  const [mortgagePayment, setMortgagePayment] = React.useState('');
   const categories = useSelector(state => getCategoriesForDropdown(state.categories, state.accounts, state.invoices));
   const accounts = useSelector(state => state.accounts);
   const vendors = useSelector(state => state.vendors);
-  const dispatch = useDispatch();  
-  
+  const dispatch = useDispatch();
+  const textInput = React.createRef();
+
   React.useEffect(() => {
     if (props.account && props.account.accountId !== trx.accountId) {
       setTrx({
@@ -45,7 +46,7 @@ export default function NewTransactionRow(props) {
         accountId: props.account.accountId,
       });
     }
-    
+
   }, [props.account, trx]);
 
   const handleChangeField = (e) => {
@@ -63,12 +64,21 @@ export default function NewTransactionRow(props) {
     }
   }
 
-  const handleChangeVendor = (vendorName) => {
+  const handleChangeVendor = (vendor) => {
     let categoryId = trx.categoryId;
     let categoryDisplay = trx.categoryDisplay;
     let localSelectedCategory = selectedCategory;
-    const vendor = vendors.find(v => v.name === vendorName);
-    if (vendor) {
+    let newVendor = Object.assign({}, vendor);
+    let vendorName = vendor;
+    if (vendorName.name) {
+      // This is a vendor selected from the list
+      vendorName = vendor.name;
+    } else {
+      // This is not a vendor selected from the list
+      // See if it exists in our vendor list
+      newVendor = vendors.find(v => v.name === vendorName);
+    }
+    if (newVendor) {
       const category = categories.find(c => c.categoryId === vendor.lastTransactionCategoryId);
       if (category) {
         categoryId = category.categoryId;
@@ -170,7 +180,7 @@ export default function NewTransactionRow(props) {
     dispatch(transactionActions.createTransaction(trx));
 
     setTrx({
-      ...trx,
+      transactionDate: trx.transactionDate,
       vendor: '',
       description: '',
       debit: '',
@@ -182,57 +192,71 @@ export default function NewTransactionRow(props) {
     });
     setSelectedCategory({ value: null });
     setTransactionType('REGULAR');
+    textInput.current.focus();
   }
 
   const classes = useStyles();
 
-    return (
-      <TableRow>
-        <TableCell>
-          <CheckIcon onClick={saveTransaction} />
-        </TableCell>
-        <TableCell><input type="text" name="transactionDate" className={classes.input}
-          value={trx.transactionDate} onChange={handleChangeField} /></TableCell>
-        <TableCell>
-          <VendorField vendors={vendors} value={trx.vendor} onVendorChanged={handleChangeVendor} />
-        </TableCell>
-        <TableCell>
-          <CategorySelect
-            selectedCategory={selectedCategory}
-            onCategoryChanged={handleChangeCategory}
-            selectedAccount={trx.accountId}
-            categories={categories} />
-        </TableCell>
-        <TableCell>
-          <input 
-            type="text" 
-            name="description" 
-            className={classes.input}
-            value={trx.description} 
-            onChange={handleChangeField} 
-          />
-        </TableCell>
-        <TableCell>
-          <input 
-            type="text" 
-            name="debit" 
-            className={classes.input}
-            value={trx.debit}
-            onChange={handleChangeDebit} 
-            onKeyPress={handleKeyPress} 
-          />
-        </TableCell>
-        <TableCell>
-          <input 
-            type="text" 
-            name="credit" 
-            className={classes.input}
-            value={trx.credit}
-            onChange={handleChangeField} 
-            onKeyPress={handleKeyPress} 
-          />
-        </TableCell>
-        <TableCell></TableCell>
-      </TableRow>
-    )
+  return (
+    <TableRow>
+      <TableCell>
+        <CheckIcon onClick={saveTransaction} />
+      </TableCell>
+      <TableCell>
+        <TextField
+          name="transactionDate"
+          className={classes.input}
+          value={trx.transactionDate}
+          onChange={handleChangeField}
+          autoFocus
+          inputRef={textInput}
+        />
+      </TableCell>
+      <TableCell>
+        <VendorField
+          vendors={vendors}
+          value={trx.vendor}
+          className={classes.input}
+          onVendorChanged={handleChangeVendor}
+        />
+      </TableCell>
+      <TableCell>
+        <CategorySelect
+          selectedCategory={selectedCategory}
+          onCategoryChanged={handleChangeCategory}
+          selectedAccount={trx.accountId}
+          categories={categories} />
+      </TableCell>
+      <TableCell>
+        <TextField
+          name="description"
+          fullWidth={true}
+          className={classes.input}
+          value={trx.description}
+          onChange={handleChangeField}
+        />
+      </TableCell>
+      <TableCell>
+        <TextField
+          name="debit"
+          fullWidth={true}
+          className={classes.input}
+          value={trx.debit}
+          onChange={handleChangeDebit}
+          onKeyPress={handleKeyPress}
+        />
+      </TableCell>
+      <TableCell>
+        <TextField
+          name="credit"
+          fullWidth={true}
+          className={classes.input}
+          value={trx.credit}
+          onChange={handleChangeField}
+          onKeyPress={handleKeyPress}
+        />
+      </TableCell>
+      <TableCell></TableCell>
+    </TableRow>
+  )
 }
