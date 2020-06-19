@@ -1,5 +1,4 @@
 import React from 'react';
-import './VendorField.css';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { TextField } from '@material-ui/core';
 
