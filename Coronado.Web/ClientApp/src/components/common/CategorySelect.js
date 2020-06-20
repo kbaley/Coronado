@@ -1,63 +1,71 @@
 import React from 'react';
-import CreatableSelect from 'react-select/creatable';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { TextField } from '@material-ui/core';
 
-export default function CategorySelect(props) {
+export default function CategorySelect({ categories, selectedCategory, className, onCategoryChanged, selectedAccount }) {
+  const [options, setOptions] = React.useState([]);
+  const [value, setValue] = React.useState(selectedCategory);
 
-  const handleChangeCategory = (selectedOption, actionMeta) => {
-    props.onCategoryChanged(selectedOption);
-  }
-
-  // See https://github.com/JedWatson/react-select/issues/2630
-  const isValidNewOption = (inputValue, selectValue, selectOptions) => {
-    if (
-      inputValue.trim().length === 0 ||
-      selectOptions.find(option => option.name === inputValue)
-    ) {
-      return false;
+  React.useEffect(() => {
+    if (categories && categories.length > 0) {
+      setOptions(categories.filter(c => c.accountId !== selectedAccount));
     }
-    return true;
+  }, [categories, selectedAccount]);
+
+  React.useEffect(() => {
+    setValue(selectedCategory);
+  }, [selectedCategory]);
+
+  const handleChangeCategory = (_, newValue) => {
+    setValue(newValue);
+    if (newValue !== null) {
+      if (typeof newValue === 'string') {
+        // Might be a new category, might not; let's find out!
+        const existing = categories.find(c => c.name === newValue);
+        if (!existing) {
+          // It's new!
+          newValue = {
+            categoryId: '',
+            name: newValue,
+            isNew: true,
+          };
+        } else {
+          newValue = existing;
+        }
+      }
+    }
+    onCategoryChanged(newValue);
   }
 
-    const customStyles = {
-      option: (base) => ({
-        ...base,
-      }),
-      control: (base) => ({
-        ...base,
-        minHeight: "25px",
-        borderRadius: 0,
-        height: 25
-      }),
-      valueContainer: base => ({
-        ...base,
-        padding: "0px 8px",
-        height: 25
-      }),
-      indicatorsContainer: base => ({
-        ...base,
-        height: "25px"
-      }),
-      clearIndicator: base => ({
-        ...base,
-        padding: "3px"
-      }),
-      dropdownIndicator: base => ({
-        ...base,
-        padding: "3px"
-      })
-    };
-    const options = props.categories.filter(c => c.accountId !== props.selectedAccount);
-    return (
-      <CreatableSelect 
-        value={props.selectedCategory}
-        onChange={handleChangeCategory} 
-        getOptionLabel={o => o.name}
-        getOptionValue={o => o.categoryId}
-        getNewOptionData={(inputValue, optionLabel) => ({
-          id: inputValue,
-          name: optionLabel,
-        })}
-        isValidNewOption={isValidNewOption}
-        options={options} styles={customStyles} />
+  const getOptionLabel = (option) => {
+    if (typeof option === 'string') return option;
+    if (option.inputValue) {
+      return option.inputValue;
+    }
+    return option.name;
+  }
+
+  const getOptionSelected = (option, value) => {
+    return option && option.name === value;
+  }
+
+  return (
+    <Autocomplete
+      openOnFocus={false}
+      value={value}
+      freeSolo
+      options={options}
+      onChange={handleChangeCategory}
+      autoSelect
+      getOptionLabel={getOptionLabel}
+      getOptionSelected={getOptionSelected}
+      clearOnBlur
+      selectOnFocus
+      renderOption={(option) => option.name}
+      renderInput={(params) => <TextField
+        {...params}
+        className={className}
+      />}
+    />
   );
 }

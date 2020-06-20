@@ -29,7 +29,7 @@ export default function NewTransactionRow(props) {
     invoiceId: '',
     transactionType: 'REGULAR',
   });
-  const [selectedCategory, setSelectedCategory] = React.useState({});
+  const [selectedCategory, setSelectedCategory] = React.useState('');
   const [transactionType, setTransactionType] = React.useState("REGULAR");
   const [mortgageType, setMortgageType] = React.useState('');
   const [mortgagePayment, setMortgagePayment] = React.useState('');
@@ -116,11 +116,10 @@ export default function NewTransactionRow(props) {
         categoryId: '',
         categoryDisplay: '',
       });
-      setSelectedCategory({});
+      setSelectedCategory('');
       return;
     }
-    if (selectedCategory.id) {
-      // New category
+    if (selectedCategory.isNew) {
       setTrx({
         ...trx,
         categoryId: '',
@@ -130,6 +129,8 @@ export default function NewTransactionRow(props) {
       setSelectedCategory(selectedCategory);
       return;
     }
+
+    // Handle special categories
     let categoryId = selectedCategory.categoryId;
     let transactionType = "REGULAR";
     let mortgageType = '';
@@ -143,8 +144,7 @@ export default function NewTransactionRow(props) {
       transactionType = "TRANSFER";
       relatedAccountId = categoryId.substring(4);
       categoryId = '';
-    }
-    if (categoryId.substring(0, 4) === "MRG:") {
+    } else if (categoryId.substring(0, 4) === "MRG:") {
       transactionType = "MORTGAGE_PAYMENT";
       relatedAccountId = categoryId.substring(4);
       const relatedAccount = find(accounts, a => a.accountId === relatedAccountId);
@@ -152,8 +152,7 @@ export default function NewTransactionRow(props) {
       debit = relatedAccount.mortgagePayment || '';
       mortgageType = relatedAccount.mortgageType;
       mortgagePayment = relatedAccount.mortgagePayment;
-    }
-    if (categoryId.substring(0, 4) === "PMT:") {
+    } else if (categoryId.substring(0, 4) === "PMT:") {
       transactionType = "INVOICE_PAYMENT";
 
       invoiceId = selectedCategory.invoiceId;
@@ -190,7 +189,7 @@ export default function NewTransactionRow(props) {
       categoryDisplay: '',
       relatedAccountId: '',
     });
-    setSelectedCategory({ value: null });
+    setSelectedCategory('');
     setTransactionType('REGULAR');
     textInput.current.focus();
   }
@@ -225,7 +224,9 @@ export default function NewTransactionRow(props) {
           selectedCategory={selectedCategory}
           onCategoryChanged={handleChangeCategory}
           selectedAccount={trx.accountId}
-          categories={categories} />
+          className={classes.input}
+          categories={categories}
+        />
       </TableCell>
       <TableCell>
         <TextField

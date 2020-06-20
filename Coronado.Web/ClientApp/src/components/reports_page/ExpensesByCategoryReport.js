@@ -43,7 +43,6 @@ export default function ExpensesByCategoryReport() {
   const doIt = (expense, month, e) => {
     showExpenses(expense, month);
     setAnchorEl(e.currentTarget);
-    console.log(e.currentTarget);
   }
 
   const getExpense = (expense, month) => {

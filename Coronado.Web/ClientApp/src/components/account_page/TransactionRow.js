@@ -32,7 +32,7 @@ const useStyles = makeStyles(styles);
 
 export default function TransactionRow(props) {
   const [isEditing, setIsEditing] = React.useState(false);
-  const [selectedCategory, setSelectedCategory] = React.useState({});
+  const [selectedCategory, setSelectedCategory] = React.useState('');
   const [trx, setTrx] = React.useState({
     ...props.transaction,
     vendor: props.transaction.vendor || '',
@@ -108,6 +108,16 @@ export default function TransactionRow(props) {
   }
 
   const handleChangeCategory = (category) => {
+    if (selectedCategory === null) {
+      // Category cleared
+      setTrx({
+        ...trx,
+        categoryId: '',
+        categoryDisplay: '',
+      });
+      setSelectedCategory('');
+      return;
+    }
     setTrx({
       ...trx,
       categoryId: category.categoryId,
@@ -156,6 +166,7 @@ export default function TransactionRow(props) {
         </TableCell>
         <TableCell>
           <CategorySelect
+            className={classes.input}
             selectedCategory={selectedCategory}
             categories={categories}
             selectedAccount={trx.accountId}
