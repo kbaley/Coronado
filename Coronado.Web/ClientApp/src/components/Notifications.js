@@ -1,14 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
+import { useSelector } from 'react-redux';
  
 import Notifications from 'react-notification-system-redux';
  
-class NotificationsComponent extends React.Component {
-  displayName = NotificationsComponent.name;
+export default function NotificationsComponent() {
  
-  render() {
-    const {notifications} = this.props;
+    const notifications = useSelector(state => state.notifications);
+    
  
     //Optional styling
     const style = {
@@ -29,7 +28,6 @@ class NotificationsComponent extends React.Component {
         style={style}
       />
     );
-  }
 }
  
 NotificationsComponent.contextTypes = {
@@ -40,6 +38,3 @@ NotificationsComponent.propTypes = {
   notifications: PropTypes.array
 };
  
-export default connect(
-  state => ({ notifications: state.notifications })
-)(NotificationsComponent);
