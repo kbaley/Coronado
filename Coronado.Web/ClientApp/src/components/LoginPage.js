@@ -1,80 +1,58 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import * as loginActions from '../actions/loginActions';
-import { bindActionCreators } from 'redux';
+import { TextField, Button } from '@material-ui/core';
 
-class LoginPage extends React.Component {
-  constructor(props) {
-    super(props);
+export default function LoginPage(props)  {
+  const dispatch = useDispatch();
+  const [ login, setLogin ] = React.useState({
+    email: '',
+    password: '',
+  });
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-
-    this.state = {
-      email: '',
-      password: '',
-      submitted: false
-    }
-  }
-
-  handleChange(e) {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    this.setState({ [name]: value });
+    setLogin({
+      ...login,
+      [name]: value,
+    })
   }
 
-  handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    this.setState({ submitted: true });
-    const { email, password } = this.state;
+    const { email, password } = login;
     let next = "";
-    if (this.props.location.state) {
-      next = this.props.location.state.from;
+    if (props.location.state) {
+      next = props.location.state.from;
     }
     if (email && password) {
-      this.props.actions.login(email, password, next);
+      dispatch(loginActions.login(email, password, next));
     }
   }
 
-  render() {
     return (
       <div style={{width: 300}}>
         <h1>Login</h1>
-        <form name='loginForm' onSubmit={this.handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input type="text" className="form-control" name="email" value={this.state.email} onChange={this.handleChange} />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input type="password" className="form-control" name="password" value={this.state.password} onChange={this.handleChange} />
-          </div>
-          <div className="form-group">
-            <button className="btn btn-primary">Login</button>
-            {this.props.loggingIn &&
-              <img alt="logging in" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-            }
-          </div>
-        </form>
+        <TextField
+          name="email"
+          value={login.email}
+          onChange={handleChange}
+          label="Email"
+        />
+        <TextField
+          name="password"
+          value={login.password}
+          onChange={handleChange}
+          label="Password"
+          type="password"
+        />
+        <Button
+          onClick={handleSubmit}
+          style={{margin: 10}}
+        >
+          Login
+        </Button>
       </div>
     );
-  }
 }
-
-function mapStateToProps(state) {
-  const { loggingIn } = true;
-  return {
-    loggingIn
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(loginActions, dispatch)
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LoginPage);
