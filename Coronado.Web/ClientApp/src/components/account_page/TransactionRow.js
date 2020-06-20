@@ -38,7 +38,7 @@ export default function TransactionRow(props) {
     vendor: props.transaction.vendor || '',
     description: props.transaction.description || '',
     transactionDate: new Date(props.transaction.transactionDate).toLocaleDateString(),
-    categoryId: props.transaction.categoryId,
+    categoryId: (props.transaction.transactionType === 0) ? props.transaction.categoryId : '',
     debit: props.transaction.debit ? Number(props.transaction.debit).toFixed(2) : '',
     credit: props.transaction.credit ? Number(props.transaction.credit).toFixed(2) : '',
     categoryName: props.transaction.categoryDisplay,
@@ -49,6 +49,12 @@ export default function TransactionRow(props) {
 
   const startEditing = () => {
     setIsEditing(true);
+    if (trx.transactionType !== 0) {
+      setTrx({
+        ...trx,
+        categoryId: '',
+      });
+    }
     setSelectedCategory({
       categoryId: trx.categoryId,
       name: trx.categoryName
@@ -118,9 +124,13 @@ export default function TransactionRow(props) {
       setSelectedCategory('');
       return;
     }
+    let categoryId = category.categoryId;
+    if (trx.transactionType !== 0) {
+      categoryId = '';
+    }
     setTrx({
       ...trx,
-      categoryId: category.categoryId,
+      categoryId: categoryId,
       categoryDisplay: category.name,
     });
     setSelectedCategory({
@@ -132,7 +142,6 @@ export default function TransactionRow(props) {
   const updateTransaction = () => {
     dispatch(transactionActions.updateTransaction(trx));
     setIsEditing(false);
-
   }
 
   const classes = useStyles();

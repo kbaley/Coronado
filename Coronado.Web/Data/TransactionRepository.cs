@@ -81,7 +81,8 @@ namespace Coronado.Web.Data
             dbTransaction.IsReconciled = transaction.IsReconciled;
             dbTransaction.InvoiceId = transaction.InvoiceId;
             dbTransaction.TransactionDate = transaction.TransactionDate;
-            dbTransaction.CategoryId = transaction.CategoryId;
+            if (transaction.CategoryId.HasValue)
+                dbTransaction.CategoryId = transaction.CategoryId;
 
             UpdateAmount(dbTransaction, transaction);
 
