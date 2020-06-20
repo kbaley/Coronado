@@ -1,13 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { sumBy, filter } from 'lodash';
+import { useDispatch, useSelector } from 'react-redux';
 import { Currency } from './common/CurrencyFormat';
 import * as reportActions from '../actions/reportActions';
-import { bindActionCreators } from 'redux';
 import NetWorthGraph from './reports_page/NetWorthGraph';
 import moment from 'moment';
 import { 
-  withStyles, 
   Table, 
   TableBody, 
   TableRow, 
@@ -16,6 +13,7 @@ import {
 } from '@material-ui/core';
 import ExpensesByCategoryChart from './reports_page/ExpensesByCategoryChart';
 import IncomeChart from './reports_page/IncomeChart';
+import { makeStyles } from '@material-ui/core/styles';
 
 const styles = (theme) => ({
   table: {
@@ -30,20 +28,19 @@ const styles = (theme) => ({
   },
 })
 
-class Home extends React.Component {
-  constructor(props) {
-    super(props);
-    this.getGainLossForMonth = this.getGainLossForMonth.bind(this);
-    this.state = {
-    }
-  }
+const useStyles = makeStyles(styles);
 
-  componentDidMount() {
-    this.props.actions.loadDashboardStats();
-  }
+export default function Home() {
+  const dashboardStats = useSelector(state => state.reports.dashboardStats);
+  const dispatch = useDispatch();
+  const classes = useStyles();
 
-  getGainLossForMonth(month) {
-    const stats = this.props.dashboardStats.investmentGains;
+  React.useEffect(() => {
+    dispatch(reportActions.loadDashboardStats());
+  });
+
+  const getGainLossForMonth = (month) => {
+    const stats = dashboardStats.investmentGains;
     if (!stats || !stats.length) return Currency(0);
     if (stats.length < month) return Currency(0);
 
@@ -55,12 +52,8 @@ class Home extends React.Component {
     return Currency(stats[month].amount);
   }
 
-  render() {
-    const { classes } = this.props;
-    var bankAccounts = filter(this.props.accounts, a => a.accountType === 'Bank Account' || a.accountType === 'Cash');
-    var creditCards = filter(this.props.accounts, a => a.accountType === 'Credit Card');
-    var liquidAssets = sumBy(bankAccounts, a => a.currentBalance);
-    var ccTotal = sumBy(creditCards, c => c.currentBalance);
+    var liquidAssets = dashboardStats ? dashboardStats.liquidAssetsBalance : 0;
+    var ccTotal = dashboardStats ? dashboardStats.creditCardBalance : 0;
 
     return (
       <div>
@@ -77,11 +70,11 @@ class Home extends React.Component {
             </TableRow>
             <TableRow>
               <TableCell>Investment change this month</TableCell>
-              <TableCell align="right">{this.getGainLossForMonth(0)}</TableCell>
+              <TableCell align="right">{getGainLossForMonth(0)}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>Investment change last month</TableCell>
-              <TableCell align="right">{this.getGainLossForMonth(1)}</TableCell>
+              <TableCell align="right">{getGainLossForMonth(1)}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -101,24 +94,4 @@ class Home extends React.Component {
         </Grid>
       </div>
     )
-  }
 }
-
-function mapStateToProps(state) {
-  return {
-    accounts: state.accounts,
-    dashboardStats: state.reports.dashboardStats,
-    isLoadingData: state.loading ? state.loading.accounts : true,
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(reportActions, dispatch)
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(Home));
