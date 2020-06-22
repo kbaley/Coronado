@@ -16,6 +16,10 @@ namespace Coronado.ConsoleApp.Domain
         public decimal RunningTotal { get; set; }
         public decimal AmountInBaseCurrency { get; set; }
         public string Alias { get; set; }
+        public string Description { get; set; }
+        public Guid AccountId { get; set; }
+        public decimal? Debit { get; set; }
+        public decimal? Credit { get; set; }
     }
 
     public class TransactionModel {

@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Coronado.ConsoleApp.Commands;
 using Coronado.ConsoleApp.Domain;
@@ -23,9 +21,23 @@ namespace Coronado.ConsoleApp
         {
             context = new Datastore();
             Initialize(args);
+            var commands = GetCommands();
             await LoadLocalStore().ConfigureAwait(false);
-            await DoTask().ConfigureAwait(false);
+            await DoTask(commands).ConfigureAwait(false);
         }
+
+        static IEnumerable<ICommand> GetCommands() {
+            var commands = new List<ICommand>
+            {
+                new ListAccounts(),
+                new ListInvestments(),
+                new OpenAccount(),
+                new NewTransaction(),
+            };
+
+            return commands;
+        }
+
 
         static async Task LoadLocalStore()
         {
@@ -63,7 +75,7 @@ namespace Coronado.ConsoleApp
             CoronadoOptions.Bind(settingsFile);
         }
 
-        private static async Task DoTask()
+        private static async Task DoTask(IEnumerable<ICommand> commands)
         {
             if (string.IsNullOrWhiteSpace(CoronadoOptions.BearerToken))
             {
@@ -78,20 +90,13 @@ namespace Coronado.ConsoleApp
                     Console.Write(context.SelectedAccount.Name + " ");
                 }
                 Console.Write("> ");
-                var command = Console.ReadLine();
-                if (command == "la" || command == "list-accounts")
-                {
-                    await new ListAccounts().Execute(context).ConfigureAwait(false);
+                var entry = Console.ReadLine();
+                var command = commands.SingleOrDefault(c => c.Matches(entry));
+
+                if (command != null) {
+                    await command.Execute(context, entry).ConfigureAwait(false);
                 }
-                else if (Regex.Match(command, "^ga\\d{1,2}$").Success)
-                {
-                    await new OpenAccount().Execute(context, command).ConfigureAwait(false);
-                }
-                if (command == "li" || command == "list-investments")
-                {
-                    await new ListInvestments().Execute(context).ConfigureAwait(false);
-                }
-                else if (command == "quit" || command == "q")
+                else if (entry == "quit" || entry == "q")
                 {
                     break;
                 }
@@ -126,7 +131,6 @@ namespace Coronado.ConsoleApp
             Console.Write("Password: ");
             var password = Console.ReadLine();
             Console.WriteLine("Logging in...");
-            var requestUri = $"accounts/";
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,

@@ -8,9 +8,13 @@ using Newtonsoft.Json;
 
 namespace Coronado.ConsoleApp.Commands
 {
-    public class ListInvestments
+    public class ListInvestments : ICommand
     {
-        public async Task Execute(Datastore context)
+        public bool Matches(string entry) {
+            return entry.Equals("li", StringComparison.InvariantCultureIgnoreCase)
+                || entry.Equals("list-investments", StringComparison.InvariantCultureIgnoreCase);
+        }
+        public async Task Execute(Datastore context, params string[] _)
         {
             var investments = context.Investments;
             var portfolioIrr = context.PortfolioIrr;
