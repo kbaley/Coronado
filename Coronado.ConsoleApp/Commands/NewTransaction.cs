@@ -24,7 +24,7 @@ namespace Coronado.ConsoleApp.Commands
             var transaction = new Transaction {
                 TransactionDate = DateTime.Parse(date),
                 Vendor = vendor,
-                CategoryDisplay = category,
+                CategoryName = category,
                 Amount = decimal.Parse(amount),
                 Description = description,
                 AccountId = context.SelectedAccount.AccountId,
