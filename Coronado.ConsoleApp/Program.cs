@@ -39,7 +39,6 @@ namespace Coronado.ConsoleApp
             request.Headers.Add("Authorization", CoronadoOptions.BearerToken);
             var response = client.SendAsync(request).GetAwaiter().GetResult();
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            // System.Console.WriteLine(json);
             context.Accounts = JsonConvert.DeserializeObject<List<Account>>(json);
         }
 
@@ -87,6 +86,10 @@ namespace Coronado.ConsoleApp
                 else if (Regex.Match(command, "^ga\\d{1,2}$").Success)
                 {
                     await new OpenAccount().Execute(context, command).ConfigureAwait(false);
+                }
+                if (command == "li" || command == "list-investments")
+                {
+                    await new ListInvestments().Execute(context).ConfigureAwait(false);
                 }
                 else if (command == "quit" || command == "q")
                 {
