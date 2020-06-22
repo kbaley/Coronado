@@ -1,3 +1,5 @@
+using System;
+
 namespace Coronado.ConsoleApp.Domain.Formatters
 {
     public class FormatOptions {
@@ -38,13 +40,22 @@ namespace Coronado.ConsoleApp.Domain.Formatters
                 : formatted.PadLeftWithDots(Width, IncludeTrailingDots);
             return formatted;
         }
+
+        public string Format(DateTime item) {
+            var formatted = item.ToString(FormatString);
+            formatted = Align == Alignment.LEFT 
+                ? formatted.PadRightWithDots(Width, IncludeTrailingDots)
+                : formatted.PadLeftWithDots(Width, IncludeTrailingDots);
+            return formatted;
+        }
     }
 
     public class FormatString {
-        public static string STRING = "";
-        public static string DECIMAL = "#,##0.00";
-        public static string PERCENTAGE = "P2";
-        public static string CURRENCY = "C2";
+        public const string STRING = "";
+        public const string DECIMAL = "#,##0.00";
+        public const string PERCENTAGE = "P2";
+        public const string CURRENCY = "C2";
+        public const string SHORT_DATE = "M/d/yyyy";
     }
 
     public enum Alignment {

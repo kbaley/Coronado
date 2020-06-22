@@ -2,7 +2,7 @@ using System;
 
 namespace Coronado.ConsoleApp.Domain
 {
-    public class Account {
+    public class Account : IHasAlias {
         public Guid AccountId { get; set; }
         public string Name { get; set; }
         public decimal StartingBalance { get; set; }
@@ -14,9 +14,5 @@ namespace Coronado.ConsoleApp.Domain
         public bool IsHidden { get; set; }
         public decimal CurrentBalance { get; set; }
         public decimal CurrentBalanceInUsd { get; set; }
-
-        public override string ToString() {
-            return $"{Alias,4}  {Name.PadRight(25, '.')}{Math.Round(CurrentBalance, 2).ToString().PadLeft(10, '.')}";
-        }
     }
 }
