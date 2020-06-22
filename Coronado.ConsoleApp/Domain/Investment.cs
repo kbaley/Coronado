@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Coronado.ConsoleApp.Domain
 {
-    public class Investment {
+    public class Investment : IHasAlias {
 
         public Guid InvestmentId { get; set; }
         public string Name { get; set; }
