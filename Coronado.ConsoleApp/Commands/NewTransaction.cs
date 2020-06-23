@@ -47,6 +47,13 @@ namespace Coronado.ConsoleApp.Commands
             }
             var api = new CoronadoApi();
             var model = await api.Post<PostTransactionModel>("transactions", transaction).ConfigureAwait(false);
+            if (context.Vendors.All(v => v.VendorId != model.Vendor.VendorId)) {
+                var vendors = context.Vendors.ToList();
+                vendors.Add(model.Vendor);
+                context.Vendors = vendors;
+            }
+            await new ListTransactions().Execute(context).ConfigureAwait(false);
+            await Execute(context).ConfigureAwait(false);
         }
 
         private bool GetInput(string prompt, out string entry) {

@@ -61,6 +61,16 @@ namespace Coronado.ConsoleApp
             return model;
         }
 
+        public async Task<T> Delete<T>(string uri, Guid id) {
+            var client = new HttpClient();
+            var request = GetMessage(uri + "/" + id, HttpMethod.Delete);
+            var response = await client.SendAsync(request).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            var responseJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var model = JsonConvert.DeserializeObject<T>(responseJson);
+            return model;
+        }
+
         public async Task<string> Login(string email, string password)
         {
             using var client = new HttpClient();
