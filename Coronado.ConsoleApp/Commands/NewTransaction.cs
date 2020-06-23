@@ -47,12 +47,10 @@ namespace Coronado.ConsoleApp.Commands
             var response = await client.SendAsync(request).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
             var responseJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            System.Console.WriteLine(responseJson);
         }
 
         private bool GetInput(string prompt, out string entry) {
-            Console.Write(prompt + ": ");
-            entry = Console.ReadLine();
+            entry = ReadLine.Read(prompt + ": ");
             if (entry == "xx") return false;
             return true;
         }

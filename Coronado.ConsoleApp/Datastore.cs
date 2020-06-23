@@ -9,5 +9,6 @@ namespace Coronado.ConsoleApp
         public Account SelectedAccount { get; set; }
         public IEnumerable<Investment> Investments { get; set; }
         public double PortfolioIrr { get; set; }
+        public IEnumerable<Vendor> Vendors { get; set; }
     }
 }

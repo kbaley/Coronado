@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Coronado.ConsoleApp.Domain;
 using Coronado.ConsoleApp.Domain.Formatters;
-using Newtonsoft.Json;
 
 namespace Coronado.ConsoleApp.Commands
 {
@@ -20,17 +17,8 @@ namespace Coronado.ConsoleApp.Commands
             var portfolioIrr = context.PortfolioIrr;
             if (investments == null)
             {
-
-                using var client = new HttpClient();
-                var request = new HttpRequestMessage
-                {
-                    Method = HttpMethod.Get,
-                    RequestUri = new Uri(CoronadoOptions.Url + "investments")
-                };
-                request.Headers.Add("Authorization", CoronadoOptions.BearerToken);
-                var response = await client.SendAsync(request).ConfigureAwait(false);
-                var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                var model = JsonConvert.DeserializeObject<InvestmentModel>(json);
+                var api = new CoronadoApi();
+                var model = await api.Get<InvestmentModel>("investments").ConfigureAwait(false);
                 context.Investments = model.Investments;
                 context.PortfolioIrr = model.PortfolioIrr;
                 investments = context.Investments;

@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Coronado.ConsoleApp.Commands;
 using Coronado.ConsoleApp.Domain;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using static Coronado.ConsoleApp.Domain.Program;
 
 namespace Coronado.ConsoleApp
@@ -41,17 +38,9 @@ namespace Coronado.ConsoleApp
 
         static async Task LoadLocalStore()
         {
-
-            using var client = new HttpClient();
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri(CoronadoOptions.Url + "accounts")
-            };
-            request.Headers.Add("Authorization", CoronadoOptions.BearerToken);
-            var response = client.SendAsync(request).GetAwaiter().GetResult();
-            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            context.Accounts = JsonConvert.DeserializeObject<List<Account>>(json);
+            var api = new CoronadoApi();
+            context.Accounts = await api.GetList<Account>().ConfigureAwait(false);
+            context.Vendors = await api.GetList<Vendor>().ConfigureAwait(false);
         }
 
         static void Initialize(string[] args)
@@ -86,19 +75,23 @@ namespace Coronado.ConsoleApp
             await LoadDashboardStats().ConfigureAwait(false);
             while (true)
             {
+                ReadLine.HistoryEnabled = true;
+                var prompt = "> ";
                 if (context.SelectedAccount != null) {
-                    Console.Write(context.SelectedAccount.Name + " ");
+                    prompt = context.SelectedAccount.Name + " " + prompt;
                 }
-                Console.Write("> ");
-                var entry = Console.ReadLine();
+                var entry = ReadLine.Read(prompt);
                 var command = commands.SingleOrDefault(c => c.Matches(entry));
 
+                ReadLine.HistoryEnabled = false;
                 if (command != null) {
                     await command.Execute(context, entry).ConfigureAwait(false);
-                }
-                else if (entry == "quit" || entry == "q")
+                } else if (entry == "quit" || entry == "q")
                 {
                     break;
+                } else {
+                    // Invalid command, remove it from command history
+                    ReadLine.GetHistory().RemoveAt(ReadLine.GetHistory().Count - 1);
                 }
             }
 
@@ -106,16 +99,8 @@ namespace Coronado.ConsoleApp
 
         private static async Task LoadDashboardStats()
         {
-            using var client = new HttpClient();
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri(CoronadoOptions.Url + "reports/GetDashboardStats")
-            };
-            request.Headers.Add("Authorization", CoronadoOptions.BearerToken);
-            var response = client.SendAsync(request).GetAwaiter().GetResult();
-            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            var stats = JsonConvert.DeserializeObject<DashboardStats>(json);
+            var api = new CoronadoApi();
+            var stats = await api.Get<DashboardStats>("reports/GetDashboardStats").ConfigureAwait(false);
             Console.WriteLine($"Net worth...............{Math.Round(stats.NetWorth, 2).ToString("C2").PadLeft(18, '.')}");
             Console.WriteLine($"Net worth last month....{Math.Round(stats.NetWorthLastMonth, 2).ToString("C2").PadLeft(18, '.')}");
             Console.WriteLine($"Change..................{Math.Round(stats.NetWorthChange, 2).ToString("C2").PadLeft(18, '.')}");
@@ -125,24 +110,13 @@ namespace Coronado.ConsoleApp
 
         private static async Task<string> LogIn()
         {
-            using var client = new HttpClient();
             Console.Write("Username: ");
             var username = Console.ReadLine();
             Console.Write("Password: ");
             var password = Console.ReadLine();
             Console.WriteLine("Logging in...");
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Post,
-                RequestUri = new Uri(CoronadoOptions.Url + "Auth/login")
-            };
-            request.Content = new StringContent(
-                $"{{Email: '{username}', Password: '{password}'}}",
-                Encoding.UTF8, "application/json");
-            var response = await client.SendAsync(request).ConfigureAwait(false);
-            var responseJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            dynamic retrievedToken = JsonConvert.DeserializeObject(responseJson);
-            return retrievedToken.token;
+            var api = new CoronadoApi();
+            return await api.Login(username, password).ConfigureAwait(false);
         }
     }
 }
