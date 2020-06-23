@@ -10,5 +10,6 @@ namespace Coronado.ConsoleApp
         public IEnumerable<Investment> Investments { get; set; }
         public double PortfolioIrr { get; set; }
         public IEnumerable<Vendor> Vendors { get; set; }
+        public IEnumerable<Category> Categories { get; set; }
     }
 }

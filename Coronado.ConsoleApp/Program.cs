@@ -41,6 +41,7 @@ namespace Coronado.ConsoleApp
             var api = new CoronadoApi();
             context.Accounts = await api.GetList<Account>().ConfigureAwait(false);
             context.Vendors = await api.GetList<Vendor>().ConfigureAwait(false);
+            context.Categories = await api.GetList<Category>("categories").ConfigureAwait(false);
         }
 
         static void Initialize(string[] args)

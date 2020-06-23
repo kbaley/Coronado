@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,8 +17,17 @@ namespace Coronado.ConsoleApp.Commands
                 return;
             }
             if (!GetInput("Date", out var date)) return;
-            if (!GetInput("Vendor", out var vendor)) return;
-            if (!GetInput("Category", out var category)) return;
+            ReadLine.AutoCompletionHandler = new VendorCompletionHandler(context);
+            if (!GetInput("Vendor", out var vendor)) {
+                ReadLine.AutoCompletionHandler = null;
+                return;
+            };
+            ReadLine.AutoCompletionHandler = new CategoryCompletionHandler(context);
+            if (!GetInput("Category", out var category)) {
+                ReadLine.AutoCompletionHandler = null;
+                return;
+            };
+            ReadLine.AutoCompletionHandler = null;
             if (!GetInput("Description", out var description)) return;
             if (!GetInput("Amount", out var amount)) return;
 
@@ -59,6 +69,38 @@ namespace Coronado.ConsoleApp.Commands
         {
             return entry.Equals("nt", StringComparison.InvariantCultureIgnoreCase)
                 || entry.Equals("new-transaction", StringComparison.InvariantCultureIgnoreCase);
+        }
+    }
+    class VendorCompletionHandler : IAutoCompleteHandler
+    {
+        private readonly Datastore _context;
+        public VendorCompletionHandler(Datastore context) : base() {
+            _context = context;
+        }
+        public char[] Separators { get; set; } = new char[] { '\t' };
+
+        public string[] GetSuggestions(string text, int index)
+        {
+            var vendors = _context.Vendors.Where(c => c.Name.Contains(text));
+            if (vendors.Any()) return vendors.Select(c => c.Name).ToArray();
+            return null;
+        }
+    }
+
+    class CategoryCompletionHandler : IAutoCompleteHandler
+    {
+        private readonly Datastore _context;
+
+        public CategoryCompletionHandler(Datastore context) : base() {
+            _context = context;
+        }
+
+        public char[] Separators { get; set; } = new char[] { '\t' };
+        public string[] GetSuggestions(string text, int index)
+        {
+            var categories = _context.Categories.Where(c => c.Name.Contains(text));
+            if (categories.Any()) return categories.Select(c => c.Name).ToArray();
+            return null;
         }
     }
 }
