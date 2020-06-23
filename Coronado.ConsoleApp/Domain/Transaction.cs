@@ -27,4 +27,10 @@ namespace Coronado.ConsoleApp.Domain
         public int RemainingTransactionCount { get; set; }
         public decimal StartingBalance { get; set; }
     }
+
+    public class PostTransactionModel {
+
+        public IEnumerable<Transaction> Transactions { get; set; }
+        public Vendor Vendor { get; set; }
+    }
 }

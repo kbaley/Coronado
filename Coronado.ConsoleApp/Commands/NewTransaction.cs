@@ -45,18 +45,8 @@ namespace Coronado.ConsoleApp.Commands
             } else {
                 transaction.Credit = transaction.Amount;
             }
-            var client = new HttpClient();
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Post,
-                RequestUri = new Uri(CoronadoOptions.Url + "transactions")
-            };
-            request.Content = new StringContent(JsonConvert.SerializeObject(transaction),
-                Encoding.UTF8, "application/json");
-            request.Headers.Add("Authorization", CoronadoOptions.BearerToken);
-            var response = await client.SendAsync(request).ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
-            var responseJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var api = new CoronadoApi();
+            var model = await api.Post<PostTransactionModel>("transactions", transaction).ConfigureAwait(false);
         }
 
         private bool GetInput(string prompt, out string entry) {

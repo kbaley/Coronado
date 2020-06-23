@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Coronado.ConsoleApp.Commands;
 using Coronado.ConsoleApp.Domain;
@@ -24,13 +25,15 @@ namespace Coronado.ConsoleApp
         }
 
         static IEnumerable<ICommand> GetCommands() {
-            var commands = new List<ICommand>
+            var commands = new List<ICommand>();
+            var type = typeof(ICommand);
+            var assembly = Assembly.GetExecutingAssembly();
+            var types = assembly.GetTypes()
+                .Where(p => type.IsAssignableFrom(p) && !p.IsInterface);
+            foreach (var item in types)
             {
-                new ListAccounts(),
-                new ListInvestments(),
-                new OpenAccount(),
-                new NewTransaction(),
-            };
+                commands.Add((ICommand)assembly.CreateInstance(item.FullName));
+            }
 
             return commands;
         }

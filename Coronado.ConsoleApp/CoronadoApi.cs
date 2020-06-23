@@ -7,12 +7,14 @@ using Newtonsoft.Json;
 
 namespace Coronado.ConsoleApp
 {
-    public class CoronadoApi {
+    public class CoronadoApi
+    {
 
 
-        public async Task<IEnumerable<T>> GetList<T>(string uri = "") 
+        public async Task<IEnumerable<T>> GetList<T>(string uri = "")
         {
-            if (string.IsNullOrWhiteSpace(uri)) {
+            if (string.IsNullOrWhiteSpace(uri))
+            {
                 uri = typeof(T).Name + "s";
             }
             using var client = new HttpClient();
@@ -23,9 +25,10 @@ namespace Coronado.ConsoleApp
             return items;
         }
 
-        public async Task<T> Get<T>(string uri = "") 
+        public async Task<T> Get<T>(string uri = "")
         {
-            if (string.IsNullOrWhiteSpace(uri)) {
+            if (string.IsNullOrWhiteSpace(uri))
+            {
                 uri = typeof(T).Name + "s";
             }
             using var client = new HttpClient();
@@ -36,7 +39,30 @@ namespace Coronado.ConsoleApp
             return model;
         }
 
-        public async Task<string> Login(string email, string password) {
+        public async Task<T> Post<T>(string uri)
+        {
+            return await Post<T>(uri, null).ConfigureAwait(false);
+        }
+
+        public async Task<T> Post<T>(string uri, dynamic data)
+        {
+
+            var client = new HttpClient();
+            var request = GetMessage(uri, HttpMethod.Post);
+            if (data != null)
+            {
+                request.Content = new StringContent(JsonConvert.SerializeObject(data),
+                    Encoding.UTF8, "application/json");
+            }
+            var response = await client.SendAsync(request).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            var responseJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var model = JsonConvert.DeserializeObject<T>(responseJson);
+            return model;
+        }
+
+        public async Task<string> Login(string email, string password)
+        {
             using var client = new HttpClient();
             var request = GetMessage("Auth/login", HttpMethod.Post, false);
             request.Content = new StringContent(
@@ -52,7 +78,7 @@ namespace Coronado.ConsoleApp
         {
             var request = new HttpRequestMessage
             {
-                Method = HttpMethod.Get,
+                Method = method,
                 RequestUri = new Uri(CoronadoOptions.Url + uri)
             };
             if (includeAuthorizationHeader)
