@@ -1,10 +1,7 @@
 using System;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Coronado.ConsoleApp.Domain;
-using Newtonsoft.Json;
 
 namespace Coronado.ConsoleApp.Commands
 {
@@ -12,52 +9,70 @@ namespace Coronado.ConsoleApp.Commands
     {
         public async Task Execute(Datastore context, params string[] args)
         {
-            if (context.SelectedAccount == null) {
+            if (context.SelectedAccount == null)
+            {
                 Console.WriteLine("No account selected. List available accounts with 'la' or 'list-accounts', then select an account with 'ga<account alias>'");
                 return;
             }
-            if (!GetInput("Date", out var date)) return;
-            ReadLine.AutoCompletionHandler = new VendorCompletionHandler(context);
-            if (!GetInput("Vendor", out var vendor)) {
-                ReadLine.AutoCompletionHandler = null;
-                return;
-            };
-            ReadLine.AutoCompletionHandler = new CategoryCompletionHandler(context);
-            if (!GetInput("Category", out var category)) {
-                ReadLine.AutoCompletionHandler = null;
-                return;
-            };
-            ReadLine.AutoCompletionHandler = null;
-            if (!GetInput("Description", out var description)) return;
-            if (!GetInput("Amount", out var amount)) return;
+            var transactionDate = DateTime.Today;
+            while (true)
+            {
+                ReadLine.BypassMode = true;
+                if (!GetInput("Date", out var date, transactionDate.ToShortDateString())) return;
+                ReadLine.BypassMode = true;
 
-            var transaction = new Transaction {
-                TransactionDate = DateTime.Parse(date),
-                Vendor = vendor,
-                CategoryName = category,
-                Amount = decimal.Parse(amount),
-                Description = description,
-                AccountId = context.SelectedAccount.AccountId,
-                TransactionType = "REGULAR",
-            };
-            if (transaction.Amount < 0) {
-                transaction.Debit = -transaction.Amount;
-            } else {
-                transaction.Credit = transaction.Amount;
+                ReadLine.AutoCompletionHandler = new VendorCompletionHandler(context);
+                if (!GetInput("Vendor", out var vendor))
+                {
+                    ReadLine.AutoCompletionHandler = null;
+                    return;
+                };
+                ReadLine.AutoCompletionHandler = new CategoryCompletionHandler(context);
+                if (!GetInput("Category", out var category))
+                {
+                    ReadLine.AutoCompletionHandler = null;
+                    return;
+                };
+                ReadLine.AutoCompletionHandler = null;
+                if (!GetInput("Description", out var description)) return;
+                if (!GetInput("Amount", out var amount)) return;
+
+                var transaction = new Transaction
+                {
+                    TransactionDate = DateTime.Parse(date),
+                    Vendor = vendor,
+                    CategoryName = category,
+                    Amount = decimal.Parse(amount),
+                    Description = description,
+                    AccountId = context.SelectedAccount.AccountId,
+                    TransactionType = "REGULAR",
+                };
+                transactionDate = transaction.TransactionDate;
+                if (transaction.Amount < 0)
+                {
+                    transaction.Debit = -transaction.Amount;
+                }
+                else
+                {
+                    transaction.Credit = transaction.Amount;
+                }
+                var api = new CoronadoApi();
+                var model = await api.Post<PostTransactionModel>("transactions", transaction).ConfigureAwait(false);
+                if (context.Vendors.All(v => v.VendorId != model.Vendor.VendorId))
+                {
+                    var vendors = context.Vendors.ToList();
+                    vendors.Add(model.Vendor);
+                    context.Vendors = vendors;
+                }
+                await new ListTransactions().Execute(context).ConfigureAwait(false);
             }
-            var api = new CoronadoApi();
-            var model = await api.Post<PostTransactionModel>("transactions", transaction).ConfigureAwait(false);
-            if (context.Vendors.All(v => v.VendorId != model.Vendor.VendorId)) {
-                var vendors = context.Vendors.ToList();
-                vendors.Add(model.Vendor);
-                context.Vendors = vendors;
-            }
-            await new ListTransactions().Execute(context).ConfigureAwait(false);
-            await Execute(context).ConfigureAwait(false);
         }
 
-        private bool GetInput(string prompt, out string entry) {
-            entry = ReadLine.Read(prompt + ": ");
+        private bool GetInput(string prompt, out string entry, string @default = "")
+        {
+            entry = ReadLine.Read(prompt + ": ", @default);
+            Console.WriteLine(entry);
+
             if (entry == "xx") return false;
             return true;
         }
@@ -71,7 +86,8 @@ namespace Coronado.ConsoleApp.Commands
     class VendorCompletionHandler : IAutoCompleteHandler
     {
         private readonly Datastore _context;
-        public VendorCompletionHandler(Datastore context) : base() {
+        public VendorCompletionHandler(Datastore context) : base()
+        {
             _context = context;
         }
         public char[] Separators { get; set; } = new char[] { '\t' };
@@ -88,7 +104,8 @@ namespace Coronado.ConsoleApp.Commands
     {
         private readonly Datastore _context;
 
-        public CategoryCompletionHandler(Datastore context) : base() {
+        public CategoryCompletionHandler(Datastore context) : base()
+        {
             _context = context;
         }
 
