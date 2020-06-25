@@ -93,6 +93,7 @@ The following commands are available:
 - `lt` or `list-transactions`: List the 10 most recent transactions in the selected account. 
 - `nt` or `new-transaction`: Starts a new transaction in the selected account.
 - `li` or `list-investments`: Lists the investments
+- `uip` or `update-investment-prices`: Retrieve the latest prices (from the Yahoo finance API) of all investments and update them.
 
 The application uses a fork of https://github.com/tonerdo/readline which mimics many GNU Readline commands, such as using the up and down arrows for command history. There is also auto-complete which is used when entering new transactions.
 
