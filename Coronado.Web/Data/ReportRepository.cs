@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace Coronado.Web.Data
 {
@@ -25,6 +26,14 @@ namespace Coronado.Web.Data
         {
             return _context.Transactions
                 .Where(t => t.TransactionDate <= date)
+                .Sum(t => t.AmountInBaseCurrency);
+        }
+
+        public decimal GetInvestmentTotalFor(DateTime date)
+        {
+            return _context.Transactions
+                .Where(t => t.TransactionDate <= date 
+                    && t.Account.AccountType == "Investment")
                 .Sum(t => t.AmountInBaseCurrency);
         }
 

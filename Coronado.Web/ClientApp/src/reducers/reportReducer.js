@@ -8,6 +8,11 @@ export const reportReducer = (state = initialState.reports, action, deletedCusto
         ...state,
         netWorth: action.report,
       };
+    case actions.LOAD_INVESTMENT_REPORT_SUCCESS:
+      return {
+        ...state,
+        investment: action.report,
+      };
     case actions.LOAD_EXPENSES_BY_CATEGORY_REPORT_SUCCESS:
       return {
         ...state,

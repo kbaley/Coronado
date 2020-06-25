@@ -14,6 +14,7 @@ import {
 import ExpensesByCategoryChart from './reports_page/ExpensesByCategoryChart';
 import IncomeChart from './reports_page/IncomeChart';
 import { makeStyles } from '@material-ui/core/styles';
+import InvestmentGraph from './reports_page/InvestmentGraph';
 
 const styles = (theme) => ({
   table: {
@@ -37,7 +38,7 @@ export default function Home() {
 
   React.useEffect(() => {
     dispatch(reportActions.loadDashboardStats());
-  });
+  }, []);
 
   const getGainLossForMonth = (month) => {
     const stats = dashboardStats.investmentGains;
@@ -79,17 +80,21 @@ export default function Home() {
           </TableBody>
         </Table>
         <Grid container spacing={2}>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <h2>Net worth</h2>
             <NetWorthGraph />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <h2>Expenses</h2>
             <ExpensesByCategoryChart />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <h2>Income</h2>
             <IncomeChart />
+          </Grid>
+          <Grid item xs={3}>
+            <h2>Investments</h2>
+            <InvestmentGraph />
           </Grid>
         </Grid>
       </div>

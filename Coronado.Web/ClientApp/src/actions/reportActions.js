@@ -1,6 +1,14 @@
 import * as types from '../constants/reportActionTypes';
 import ReportApi from '../api/reportApi';
 
+export function loadInvestmentReportSuccess(report) {
+  return {type: types.LOAD_INVESTMENT_REPORT_SUCCESS, report};
+}
+
+export function loadInvestmentReportAction() {
+  return {type: types.LOAD_INVESTMENT_REPORT};
+}
+
 export function loadNetWorthReportSuccess(report) {
   return {type: types.LOAD_NET_WORTH_REPORT_SUCCESS, report};
 }
@@ -31,6 +39,14 @@ export function loadDashboardStatsAction() {
 
 export function loadDashboardStatsSuccess(report) {
   return {type: types.LOAD_DASHBOARD_STATS_SUCCESS, report};
+}
+
+export const loadInvestmentReport = (year) => {
+  return async (dispatch) => {
+    dispatch(loadInvestmentReportAction());
+    const report = await ReportApi.getInvestmentReport(year);
+    dispatch(loadInvestmentReportSuccess(report));
+  };
 }
 
 export const loadNetWorthReport = (year) => {

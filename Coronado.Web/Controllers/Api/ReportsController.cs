@@ -26,6 +26,24 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpGet]
+        public IActionResult Investment([FromQuery] ReportQuery query )
+        {
+            var report = new List<dynamic>();
+
+            var date = query.EndDate;
+            var numItems = DateTime.Today.Month + 1;
+            if (query.SelectedYear != DateTime.Today.Year) {
+                numItems = 13;
+            }
+            for (var i = 0; i < numItems; i++) {
+                report.Add(new {date, total=_reportRepo.GetInvestmentTotalFor(date)});
+                date = date.AddMonths(-1).LastDayOfMonth();
+            }
+
+            return Ok(new { report, year = query.SelectedYear});
+        }
+
+        [HttpGet]
         public IActionResult NetWorth([FromQuery] ReportQuery query )
         {
             var netWorth = new List<dynamic>();

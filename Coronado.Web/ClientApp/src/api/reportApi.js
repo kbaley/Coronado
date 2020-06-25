@@ -20,6 +20,24 @@ class ReportApi {
     return response.json();
   }
 
+  static async getInvestmentReport(year) {
+    const requestOptions = {
+      method: 'GET',
+      headers: authHeader(),
+    }
+    if (!year) {
+      year = new Date().getFullYear();
+    }
+    const response = await fetch("api/Reports/Investment?year=" + year, requestOptions);
+    if (!response.ok) {
+      if (response.status === 401) {
+        logout();
+        return [];
+      }
+    }
+    return response.json();
+  }
+
   static async getExpensesByCategoryReport(year) {
     const requestOptions = {
       method: 'GET',
