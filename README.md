@@ -74,12 +74,42 @@ One thing I sometimes do is, at the end of the month, delete all the intermediat
 
 Investment price retrieval uses the Yahoo Finance RapidAPI service. Set the `RapidApiKey` value in `appSettings` to use this. Historical currency values are not stored though the app keeps track of investment prices (though not automatically).
 
+### Console app
+
+The console app is currently under development. It relies on a key in `appSettings.json` for the URL to the API. For example:
+
+```
+  "Coronado": {
+    "url": "http://localhost:5000/api/"
+  }
+```
+
+This can be provided in the command to launch the app as well: `dotnet run --Coronado:url=https://mysite.net/api`.
+
+The following commands are available:
+
+- `la` or `list-accounts`: List all accounts and their balances in their home currency
+- `ga<#>`: Go to an account. The number corresponds to its alias in the account listing. This will list the 10 most recent transactions in the account
+- `lt` or `list-transactions`: List the 10 most recent transactions in the selected account. 
+- `nt` or `new-transaction`: Starts a new transaction in the selected account.
+- `li` or `list-investments`: Lists the investments
+
+The application uses a fork of https://github.com/tonerdo/readline which mimics many GNU Readline commands, such as using the up and down arrows for command history. There is also auto-complete which is used when entering new transactions.
+
+#### New transactions
+
+After selecting an account (with `ga<#>`), start a new transaction with `nt` or `new-transaction`. You'll be prompted to enter the transaction date, vendor, category, description, and amount.
+
+The default date is today. Press the up or down arrow to quickly navigate forward or back one day.
+
+The vendor and category fields support autocomplete. Type the first few letters, then press Tab to autocomplete. If there is more than one result, keep press Tab or Shift Tab to iterate forward and backward through them.
+
 ## Still to come
 
 - ~some form of scrolling mechanism for accounts with lots of transactions~
 - currency conversion (e.g. automatic creation of transactions at the end of the month)
 - transaction tagging (e.g. `spring 2018 vacation` or `rental expense`)
-- console app to enter certain things (e.g. transactions) quickly from the command line
+- ~console app to enter certain things (e.g. transactions) quickly from the command line~
 - reconcile transactions for outdated banks with crappy online service (*cough* ScotiaBank *cough*)
 - ~QIF import~ (maybe export)
 - nested categories
