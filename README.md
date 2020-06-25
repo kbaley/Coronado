@@ -104,6 +104,8 @@ The default date is today. Press the up or down arrow to quickly navigate forwar
 
 The vendor and category fields support autocomplete. Type the first few letters, then press Tab to autocomplete. If there is more than one result, keep press Tab or Shift Tab to iterate forward and backward through them.
 
+The amount must be negative to debit the account and positive to credit it. 
+
 ## Still to come
 
 - ~some form of scrolling mechanism for accounts with lots of transactions~
