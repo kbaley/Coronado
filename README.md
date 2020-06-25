@@ -95,7 +95,7 @@ Investment price retrieval uses the Yahoo Finance RapidAPI service. Set the `Rap
 
 ASP.NET Core in the back, React in the front, PostgreSQL for the database
 
-Why PostgreSQL? I started this project at my brother's cabin in Manitoba, Canada. He had no internet and cell service was slow and, because my provider is in Panama, expensive. I didn't have SQL Server on the VM I normally do Windows development work and, since this a .NET Core app, I wasn't keen to work in the VM anyway. My host machine (macOS) had only PostgreSQL installed as a Docker container from some previous work I had done so I went with that.
+Why PostgreSQL? I started this project at a remote-ish cabin in Canada. I had no internet and cell service was slow and, because my provider is in Panama, expensive. I didn't have SQL Server on the VM I normally do Windows development work and, since this a .NET Core app, I wasn't keen to work in the VM anyway. My host machine (macOS) had only PostgreSQL installed as a Docker container from some previous work I had done so I went with that. Since then, I've grown to like it though I recommend something like DataGrip over the stock pgAdmin these days.
 
 The `sql-server` branch contains a version that works with SQL Server though the migrations are out of date. I did a test migration and it was pretty straight-forward:
 
@@ -109,7 +109,7 @@ To migrate data, use `pg_dump` with `--data-only` and --column-inserts` to get a
 
 ### Why Dapper _and_ Entity Framework?
 
-I started with only EF. A few weeks in, I started hitting problems managing the interdependencies between my entities. Things like accounts having transactions which link to other accounts, etc. It's been a while since I've had to deal with a full ORM and I don't have the patience for it anymore so I switched to Dapper for some of the more complicated data access and cases where I need to aggregate (e.g. account balances). EF6 remains for the simple stuff.
+I started with only EF. A few weeks in, I started hitting problems managing the interdependencies between my entities. Things like accounts having transactions which link to other accounts, etc. It's been a while since I've had to deal with a full ORM and I don't have the patience for it anymore so I switched to Dapper for some of the more complicated data access and cases where I need to aggregate (e.g. account balances) or for reports. EF6 remains for the remaining stuff.
 
 ### Deploying
 
@@ -118,7 +118,6 @@ I started with only EF. A few weeks in, I started hitting problems managing the 
 - At some vague point in the future, try to set this up in GitHub Actions or Travis but honestly VS Code works well for a single developer and user
 
 ### Backup/restore
-
 
 Backup:
 
