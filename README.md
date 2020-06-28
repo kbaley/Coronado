@@ -13,7 +13,8 @@ Plus I wanted to learn React.
 
 ## Highlights
 
-- Shortcut keys:
+### Shortcut keys:
+
   - `n a`: New account
   - `g n`: Go to invoices page
   - `g i`: Go to investments page
@@ -23,6 +24,12 @@ Plus I wanted to learn React.
   - `n u`: New customer (when on customers page)
   - `n i`: New invoice (when on invoices page)
   - `n t`: New transaction (sets focus to the date field on an account detail page)
+
+### Undo
+
+Deleting some objects (e.g. accounts, invoices, categories, investments) can be undone within a certain timeframe (notable exception: transactions). When deleting something, the UI will be updated to reflect the item being deleted and a notification will appear indicating the item is deleted. The notification lies. The item is not deleted, it's in a holding pattern for a few seconds waiting for the notification to either be dismissed explicitly (by clicking on the X) or to run its course and go away. Once it is gone, _then_ an explicit command is sent to the server to delete the item.
+
+If you click on the Undo button in the notification instead, the item is pulled from its holding pattern and reinserted into its rightful place. Similarly, if you refresh the page before the notification disappears, it won't be deleted.
 
 ### Invoices
 
