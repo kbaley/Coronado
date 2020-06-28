@@ -7,6 +7,7 @@ function computeRunningTotal(transactions, startingBalance) {
   var total = startingBalance ? startingBalance : 0;
   forEachRight(sorted, (value) => {
     total += (value.credit - value.debit);
+    total = Math.round((total + Number.EPSILON) * 100) / 100;
     value.runningTotal = total;
   });
   return sorted;
@@ -18,7 +19,6 @@ export const transactionReducer = (state = initialState.transactionModel, action
   switch (action.type) {
     
     case actions.LOAD_TRANSACTIONS_SUCCESS:
-      // transactions = computeRunningTotal(action.transactions, action.startingBalance);
       return {
         transactions: action.transactions,
         startingBalance: action.startingBalance,

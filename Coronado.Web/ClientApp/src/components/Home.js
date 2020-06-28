@@ -38,7 +38,7 @@ export default function Home() {
 
   React.useEffect(() => {
     dispatch(reportActions.loadDashboardStats());
-  }, []);
+  }, [dispatch]);
 
   const getGainLossForMonth = (month) => {
     const stats = dashboardStats.investmentGains;

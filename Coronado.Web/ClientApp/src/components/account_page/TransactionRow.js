@@ -47,6 +47,22 @@ export default function TransactionRow(props) {
   const categories = useSelector(state => getCategoriesForDropdown(state.categories, state.accounts, state.invoices));
   const dispatch = useDispatch();
 
+  React.useEffect(() => {
+    var transaction = props.transaction;
+    if (transaction) {
+      setTrx({
+        ...transaction,
+        vendor: transaction.vendor || '',
+        description: transaction.description || '',
+        transactionDate: new Date(transaction.transactionDate).toLocaleDateString(),
+        categoryId: (transaction.transactionType === 0) ? transaction.categoryId : '',
+        debit: transaction.debit ? Number(transaction.debit).toFixed(2) : '',
+        credit: transaction.credit ? Number(transaction.credit).toFixed(2) : '',
+        categoryName: transaction.categoryDisplay,
+      });
+    }
+  }, [props.transaction]);
+
   const startEditing = () => {
     setIsEditing(true);
     if (trx.transactionType !== 0) {
@@ -158,7 +174,7 @@ export default function TransactionRow(props) {
           </IconButton>
         </TableCell>
         <TableCell>
-          <TextField 
+          <TextField
             name="transactionDate"
             onChange={handleChangeField}
             className={classes.input}
@@ -166,11 +182,11 @@ export default function TransactionRow(props) {
             value={trx.transactionDate} />
         </TableCell>
         <TableCell>
-          <VendorField 
-            vendors={vendors} 
-            value={trx.vendor} 
+          <VendorField
+            vendors={vendors}
+            value={trx.vendor}
             className={classes.input}
-            onVendorChanged={handleChangeVendor} 
+            onVendorChanged={handleChangeVendor}
           />
         </TableCell>
         <TableCell>
@@ -182,32 +198,32 @@ export default function TransactionRow(props) {
             onCategoryChanged={handleChangeCategory} />
         </TableCell>
         <TableCell>
-          <TextField 
-            name="description" 
+          <TextField
+            name="description"
             onChange={handleChangeField}
             fullWidth
             className={classes.input}
-            value={trx.description} 
-            onKeyPress={handleKeyPress} 
+            value={trx.description}
+            onKeyPress={handleKeyPress}
           />
         </TableCell>
         <TableCell>
-          <TextField 
-            name="debit" 
-            value={trx.debit} 
+          <TextField
+            name="debit"
+            value={trx.debit}
             className={classes.input}
-            inputProps={{ style:{ textAlign: 'right'}}}
-            onChange={handleChangeField} 
+            inputProps={{ style: { textAlign: 'right' } }}
+            onChange={handleChangeField}
             onKeyPress={handleKeyPress} />
         </TableCell>
         <TableCell>
-          <TextField 
-            name="credit" 
-            value={trx.credit} 
+          <TextField
+            name="credit"
+            value={trx.credit}
             className={classes.input}
-            inputProps={{ style:{ textAlign: 'right'}}}
-            onChange={handleChangeField} 
-            onKeyPress={handleKeyPress} 
+            inputProps={{ style: { textAlign: 'right' } }}
+            onChange={handleChangeField}
+            onKeyPress={handleKeyPress}
           /></TableCell>
         <TableCell></TableCell>
       </TableRow> :
