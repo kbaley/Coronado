@@ -3,8 +3,8 @@ import { cloneDeep, concat, filter, orderBy, forEachRight } from 'lodash';
 import * as actions from "../constants/transactionActionTypes.js";
 
 function computeRunningTotal(transactions, startingBalance) {
-  var sorted = orderBy(transactions, ['transactionDate', 'enteredDate'], ['desc', 'desc']);
-  var total = startingBalance ? startingBalance : 0;
+  const sorted = orderBy(transactions, ['transactionDate', 'enteredDate'], ['desc', 'desc']);
+  let total = startingBalance ? startingBalance : 0;
   forEachRight(sorted, (value) => {
     total += (value.credit - value.debit);
     total = Math.round((total + Number.EPSILON) * 100) / 100;
@@ -34,9 +34,11 @@ export const transactionReducer = (state = initialState.transactionModel, action
       }
 
     case actions.DELETE_TRANSACTION_SUCCESS:
+      transactions = cloneDeep(state.transactions); 
+      transactions = computeRunningTotal(filter(transactions, t => {return t.transactionId !== action.transaction.transactionId}), state.startingBalance)
       return {
         ...state,
-        transactions: computeRunningTotal(filter(state.transactions, t => {return t.transactionId !== action.transaction.transactionId}), state.startingBalance)
+        transactions: transactions,
       }
 
     case actions.CREATE_TRANSACTION_SUCCESS:
