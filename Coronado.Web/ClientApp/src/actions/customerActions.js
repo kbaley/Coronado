@@ -1,7 +1,7 @@
 import * as types from '../constants/customerActionTypes';
 import CustomerApi from '../api/customerApi';
 import { info } from 'react-notification-system-redux';
-import { authHeader } from '../api/auth-header';
+import handleApiCall from './responseHandler';
 
 export function loadCustomersSuccess(customers) {
   return {type: types.LOAD_CUSTOMERS_SUCCESS, customers};
@@ -22,22 +22,19 @@ export function updateCustomerSuccess(customer) {
 export const loadCustomers = () => {
   return async (dispatch) => {
     dispatch(loadCustomersAction());
-    const customers = await CustomerApi.getAllCustomers();
-    dispatch(loadCustomersSuccess(customers));
+    await handleApiCall(dispatch, async() => await CustomerApi.getAllCustomers(), loadCustomersSuccess);
   };
 }
 
 export const updateCustomer = (customer) => {
   return async (dispatch) => {
-    const updatedCustomer = await CustomerApi.updateCustomer(customer);
-    dispatch(updateCustomerSuccess(updatedCustomer));
+    await handleApiCall(dispatch, async() => await CustomerApi.updateCustomer(customer), updateCustomerSuccess);
   }
 }
 
 export const createCustomer = (customer) => {
   return async (dispatch) => {
-    const newCustomer = await CustomerApi.createCustomer(customer);
-    dispatch(createCustomerSuccess(newCustomer));
+    await handleApiCall(dispatch, async() => await CustomerApi.createCustomer(customer), createCustomerSuccess);
   }
 }
 
@@ -46,7 +43,7 @@ export const deleteCustomer = (customerId, customerName) => {
     const notificationOpts = {
       message: 'Customer ' + customerName + ' deleted',
       position: 'bl',
-      onRemove: () => { deleteCustomerForReal(customerId, getState().deletedCustomers) },
+      onRemove: () => { deleteCustomerForReal(customerId, getState().deletedCustomers, dispatch) },
       action: {
         label: 'Undo',
         callback: () => {dispatch({type: types.UNDO_DELETE_CUSTOMER, customerId: customerId })}
@@ -57,15 +54,8 @@ export const deleteCustomer = (customerId, customerName) => {
   }
 }
 
-async function deleteCustomerForReal(customerId, deletedCustomers) {
+async function deleteCustomerForReal(customerId, deletedCustomers, dispatch) {
   if (deletedCustomers.some(c => c.customerId === customerId)) {
-    await fetch('/api/Customers/' + customerId, {
-      method: 'DELETE',
-      headers: {
-        ...authHeader(),
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
+    await handleApiCall(dispatch, async () => CustomerApi.deleteCustomer(customerId));
   }
 }

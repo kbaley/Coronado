@@ -88,7 +88,7 @@ class InvestmentApi {
 
   static async deleteInvestment(investmentId) {
 
-    return fetch('/api/Investments/' + investmentId, {
+    return await fetch('/api/Investments/' + investmentId, {
       method: 'DELETE',
       headers: {
         ...authHeader(),

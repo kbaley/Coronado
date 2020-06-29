@@ -14,7 +14,7 @@ class CustomerApi {
         return [];
       }
     }
-    return response.json();
+    return response;
   }
 
   static async createCustomer(customer) {
@@ -27,7 +27,7 @@ class CustomerApi {
       },
       body: JSON.stringify(customer)
     });
-    return response.json();
+    return response;
   }
 
   static async updateCustomer(customer) {
@@ -40,7 +40,18 @@ class CustomerApi {
       },
       body: JSON.stringify(customer)
     });
-    return response.json();
+    return response;
+  }
+
+  static async deleteCustomer(customerId) {
+    return await fetch('/api/Customers/' + customerId, {
+      method: 'DELETE',
+      headers: {
+        ...authHeader(),
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
   }
 }
 
