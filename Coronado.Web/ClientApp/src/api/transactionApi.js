@@ -1,7 +1,7 @@
 import { authHeader } from './auth-header';
 import { logout } from "./authApi";
 
-class AccountApi {
+class TransactionApi {
 
   static async getTransactions(accountId) {
     const requestOptions = {
@@ -15,7 +15,7 @@ class AccountApi {
         return [];
       }
     }
-    return response.json();
+    return response;
   }
 
   static async getAllTransactions(accountId) {
@@ -30,7 +30,7 @@ class AccountApi {
         return [];
       }
     }
-    return response.json();
+    return response;
   }
 
   static async updateTransaction(transaction) {
@@ -44,7 +44,7 @@ class AccountApi {
       },
       body: JSON.stringify(transaction)
     });
-    return response.json();
+    return response;
   }
 
   static async createTransaction(transaction) {
@@ -59,8 +59,19 @@ class AccountApi {
       },
       body: JSON.stringify(transaction)
     });
-    return response.json();
+    return response;
+  }
+
+  static async deleteTransaction(transactionId) {
+    return await fetch('/api/Transactions/' + transactionId, {
+      method: 'DELETE',
+      headers: {
+        ...authHeader(),
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
   }
 }
 
-export default AccountApi;
+export default TransactionApi;

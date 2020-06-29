@@ -1,7 +1,7 @@
 import * as types from '../constants/transactionActionTypes';
 import * as selectedAccountTypes from "../constants/selectAccountActionTypes";
 import TransactionApi from '../api/transactionApi';
-import { authHeader } from '../api/auth-header';
+import handleResponse, {handleDefaultResponse} from './responseHandler';
 
 export function loadTransactionsSuccess(model, accountId) {
   return { 
@@ -32,49 +32,41 @@ export function deleteTransactionSuccess(deleteTransactionModel) {
 export const loadTransactions = (accountId) => {
   return async (dispatch) => {
     dispatch(selectAccount(accountId) );
-    const transactionModel = await TransactionApi.getTransactions(accountId);
-
-    dispatch(loadTransactionsSuccess(transactionModel, accountId));
+    const response = await TransactionApi.getTransactions(accountId);
+    await handleResponse(dispatch, response,
+      async () => dispatch(loadTransactionsSuccess(await response.json(), accountId)));
   }
 }
 
 export const loadAllTransactions = (accountId) => {
   return async (dispatch) => {
     dispatch(selectAccount(accountId) );
-    const transactions = await TransactionApi.getAllTransactions(accountId);
-
-    dispatch(loadTransactionsSuccess(transactions, accountId));
+    const response = await TransactionApi.getAllTransactions(accountId);
+    await handleResponse(dispatch, response,
+      async () => dispatch(loadTransactionsSuccess(await response.json(), accountId)));
   }
 }
 
 export const deleteTransaction = (transactionId) => {
   return async (dispatch) => {
-    const response = await fetch('/api/Transactions/' + transactionId, {
-      method: 'DELETE',
-      headers: {
-        ...authHeader(),
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
-    const transaction = await response.json();
-    dispatch( deleteTransactionSuccess(transaction) );
+    await handleDefaultResponse(dispatch,
+      async () => await TransactionApi.deleteTransaction(transactionId),
+      deleteTransactionSuccess);
   }
 }
 
 export const updateTransaction = (transaction) => {
   return async (dispatch) => {
-
-    const updatedTransactionModel = await TransactionApi.updateTransaction(transaction);
-    dispatch(updateTransactionSuccess(updatedTransactionModel));
+    await handleDefaultResponse(dispatch,
+      async () => await TransactionApi.updateTransaction(transaction),
+      updateTransactionSuccess);
   }
 }
 
 export const createTransaction = (transaction) => {
   return async (dispatch) => {
-
-    const newTransaction = await TransactionApi.createTransaction(transaction);
-
-    dispatch(createTransactionSuccess(newTransaction));
+    await handleDefaultResponse(dispatch,
+      async () => await TransactionApi.createTransaction(transaction),
+      createTransactionSuccess);
   }
 }

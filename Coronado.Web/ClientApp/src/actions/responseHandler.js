@@ -9,6 +9,12 @@ export default async function handleResponse (dispatch, response, successCallbac
   }
 }
 
+export async function handleDefaultResponse(dispatch, apiCall, successCall) {
+  const response = await apiCall();
+  await handleResponse(dispatch, response,
+    async () => dispatch(successCall(await response.json())));
+}
+
 const handleError = (response, dispatch) => {
   let message = response.statusText;
   switch (response.status) {
