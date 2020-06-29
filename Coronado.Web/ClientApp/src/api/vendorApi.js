@@ -15,7 +15,7 @@ class VendorApi {
         return [];
       }
     }
-    return response.json();
+    return response;
   }
 }
 
