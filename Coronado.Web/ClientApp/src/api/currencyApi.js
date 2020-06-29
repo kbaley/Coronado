@@ -16,7 +16,7 @@ class CurrencyApi {
         return [];
       }
     }
-    return response.json();
+    return response;
   }
 }
 
