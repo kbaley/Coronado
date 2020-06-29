@@ -51,7 +51,7 @@ class CategoryApi {
       },
       body: JSON.stringify(category)
     });
-    return response.json();
+    return response;
   }
 }
 

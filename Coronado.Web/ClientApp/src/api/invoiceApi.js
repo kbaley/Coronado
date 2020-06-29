@@ -14,7 +14,7 @@ class InvoiceApi {
         return [];
       }
     }
-    return response.json();
+    return response;
   }
 
   static async createInvoice(invoice) {
@@ -27,7 +27,7 @@ class InvoiceApi {
       },
       body: JSON.stringify(invoice)
     });
-    return response.json();
+    return response;
   }
 
   static async updateInvoice(invoice) {
@@ -40,7 +40,7 @@ class InvoiceApi {
       },
       body: JSON.stringify(invoice)
     });
-    return response.json();
+    return response;
   }
 
   static async emailInvoice(invoiceId) {
@@ -52,7 +52,7 @@ class InvoiceApi {
         'Content-Type': 'application/json'
       }
     });
-    return response.json();
+    return response;
   }
 
   static async uploadTemplate(file) {
@@ -63,7 +63,18 @@ class InvoiceApi {
       headers: authHeader(),
       body: data
     });
-    return response.json();
+    return response;
+  }
+
+  static async deleteInvoice(invoiceId) {
+    return await fetch('/api/Invoices/' + invoiceId, {
+      method: 'DELETE',
+      headers: {
+        ...authHeader(),
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
   }
 }
 

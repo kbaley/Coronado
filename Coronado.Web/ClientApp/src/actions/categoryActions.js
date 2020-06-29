@@ -1,7 +1,7 @@
 import * as types from '../constants/categoryActionTypes';
 import { info } from 'react-notification-system-redux';
 import CategoryApi from '../api/categoryApi';
-import handleResponse from './responseHandler';
+import handleApiCall from './responseHandler';
 
 export function loadCategoriesSuccess(categories) {
   return {type: types.LOAD_CATEGORIES_SUCCESS, categories};
@@ -22,19 +22,17 @@ export function createCategorySuccess(category) {
 export const loadCategories = () => {
   return async (dispatch) => {
     dispatch(loadCategoriesAction());
-    const response = await CategoryApi.getAllCategories();
-    await handleResponse(dispatch, response,
-      async () => dispatch(loadCategoriesSuccess(await response.json()))
-    );
+    await handleApiCall(dispatch,
+      () => CategoryApi.getAllCategories(),
+      loadCategoriesSuccess);
   };
 }
 
 export const updateCategory = (category) => {
   return async (dispatch) => {
-    const response = await CategoryApi.updateCategory(category);
-    await handleResponse(dispatch, response,
-      async () => dispatch(updateCategorySuccess(await response.json()))
-    );
+    await handleApiCall(dispatch,
+      async () => await CategoryApi.updateCategory(category),
+      updateCategorySuccess);
   }
 }
 
@@ -56,15 +54,15 @@ export const deleteCategory = (categoryId, categoryName) => {
 
 export const createCategory = (category) => {
   return async (dispatch) => {
-    const newCategory = await CategoryApi.createCategory(category);
-    dispatch(createCategorySuccess(newCategory));
+    await handleApiCall(dispatch,
+      () => CategoryApi.createCategory(category),
+      createCategorySuccess);
   }
 }
 
 async function deleteCategoryForReal(categoryId, deletedCategories, dispatch) {
   if (deletedCategories.some(c => c.categoryId === categoryId)) {
-    const response = await CategoryApi.deleteCategory(categoryId);
-    await handleResponse(dispatch, response,
-      async () => {});
+    await handleApiCall(dispatch,
+      async () => await CategoryApi.deleteCategory(categoryId));
   }
 }

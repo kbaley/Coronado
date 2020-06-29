@@ -1,7 +1,7 @@
 import * as types from '../constants/transactionActionTypes';
 import * as selectedAccountTypes from "../constants/selectAccountActionTypes";
 import TransactionApi from '../api/transactionApi';
-import handleResponse, {handleDefaultResponse} from './responseHandler';
+import handleApiCall, { handleResponse } from './responseHandler';
 
 export function loadTransactionsSuccess(model, accountId) {
   return { 
@@ -49,7 +49,7 @@ export const loadAllTransactions = (accountId) => {
 
 export const deleteTransaction = (transactionId) => {
   return async (dispatch) => {
-    await handleDefaultResponse(dispatch,
+    await handleApiCall(dispatch,
       async () => await TransactionApi.deleteTransaction(transactionId),
       deleteTransactionSuccess);
   }
@@ -57,7 +57,7 @@ export const deleteTransaction = (transactionId) => {
 
 export const updateTransaction = (transaction) => {
   return async (dispatch) => {
-    await handleDefaultResponse(dispatch,
+    await handleApiCall(dispatch,
       async () => await TransactionApi.updateTransaction(transaction),
       updateTransactionSuccess);
   }
@@ -65,7 +65,7 @@ export const updateTransaction = (transaction) => {
 
 export const createTransaction = (transaction) => {
   return async (dispatch) => {
-    await handleDefaultResponse(dispatch,
+    await handleApiCall(dispatch,
       async () => await TransactionApi.createTransaction(transaction),
       createTransactionSuccess);
   }

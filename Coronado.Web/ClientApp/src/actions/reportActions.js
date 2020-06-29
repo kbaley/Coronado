@@ -1,6 +1,6 @@
 import * as types from '../constants/reportActionTypes';
 import ReportApi from '../api/reportApi';
-import handleResponse from './responseHandler';
+import handleApiCall from './responseHandler';
 
 export function loadInvestmentReportSuccess(report) {
   return {type: types.LOAD_INVESTMENT_REPORT_SUCCESS, report};
@@ -45,44 +45,39 @@ export function loadDashboardStatsSuccess(report) {
 export const loadInvestmentReport = (year) => {
   return async (dispatch) => {
     dispatch(loadInvestmentReportAction());
-    const response = await ReportApi.getInvestmentReport(year);
-    await handleResponse(dispatch, response,
-      async () => dispatch(loadInvestmentReportSuccess(await response.json())));
+    await handleApiCall(dispatch,
+      async () => await ReportApi.getInvestmentReport(year), loadInvestmentReportSuccess);
   };
 }
 
 export const loadNetWorthReport = (year) => {
   return async (dispatch) => {
     dispatch(loadNetWorthReportAction());
-    const response = await ReportApi.getNetWorthReport(year);
-    await handleResponse(dispatch, response,
-      async () => dispatch(loadNetWorthReportSuccess(await response.json())));
+    await handleApiCall(dispatch,
+      async () => await ReportApi.getNetWorthReport(year), loadNetWorthReportSuccess);
   };
 }
 
 export const loadExpensesByCategoryReport = (year) => {
   return async (dispatch) => {
     dispatch(loadExpensesByCategoryReportAction());
-    const response = await ReportApi.getExpensesByCategoryReport(year);
-    await handleResponse(dispatch, response,
-      async () => dispatch(loadExpensesByCategoryReportSuccess(await response.json())));
+    await handleApiCall(dispatch,
+      async () => await ReportApi.getExpensesByCategoryReport(year), loadExpensesByCategoryReportSuccess);
   }
 }
 
 export const loadIncomeReport = (year) => {
   return async (dispatch) => {
     dispatch(loadIncomeReportAction());
-    const response = await ReportApi.getIncomeReport(year);
-    await handleResponse(dispatch, response,
-      async () => dispatch(loadIncomeReportSuccess(await response.json())));
+    await handleApiCall(dispatch,
+      async () => await ReportApi.getIncomeReport(year), loadIncomeReportSuccess);
   }
 }
 
 export const loadDashboardStats = () => {
   return async (dispatch) => {
     dispatch(loadDashboardStatsAction());
-    const response = await ReportApi.getDashboardStats();
-    await handleResponse(dispatch, response,
-      async () => dispatch(loadDashboardStatsSuccess(await response.json())));
+    await handleApiCall(dispatch,
+      async () => await ReportApi.getDashboardStats(), loadDashboardStatsSuccess);
   }
 }

@@ -1,7 +1,7 @@
 import { logout } from "../api/authApi";
 import { error } from 'react-notification-system-redux';
 
-export default async function handleResponse (dispatch, response, successCallback) {
+export async function handleResponse(dispatch, response, successCallback) {
   if (response.ok) {
     successCallback();
   } else {
@@ -9,17 +9,21 @@ export default async function handleResponse (dispatch, response, successCallbac
   }
 }
 
-export async function handleDefaultResponse(dispatch, apiCall, successCall) {
+export default async function handleApiCall(dispatch, apiCall, successCall) {
   const response = await apiCall();
   await handleResponse(dispatch, response,
-    async () => dispatch(successCall(await response.json())));
+    async () => {
+      if (successCall) {
+        dispatch(successCall(await response.json()));
+      }
+    });
 }
 
 const handleError = (response, dispatch) => {
   let message = response.statusText;
   switch (response.status) {
     case 404:
-      message = "API not found. Is the app running?"; 
+      message = "API not found. Is the app running?";
       break;
     case 500:
       message = "Server error. Check the backend."

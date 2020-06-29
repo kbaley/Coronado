@@ -8,7 +8,7 @@ class AuthApi {
       },
       body: JSON.stringify({ Email: email, Password: password})
     });
-    return response.json();
+    return response;
   }
 
 }
