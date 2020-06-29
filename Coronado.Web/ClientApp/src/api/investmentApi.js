@@ -14,7 +14,7 @@ class InvestmentApi {
         return [];
       }
     }
-    return response.json();
+    return response;
   }
 
   static async getInvestment(investmentId) {
@@ -29,7 +29,7 @@ class InvestmentApi {
         return[];
       }
     }
-    return response.json();
+    return response;
   }
 
   static async getLatestPrices() {
@@ -38,7 +38,7 @@ class InvestmentApi {
       headers: authHeader()
     };
     const response = await fetch("api/Investments/UpdateCurrentPrices", requestOptions);
-    return response.json();
+    return response;
   }
 
   static async purchaseInvestment(investment) {
@@ -47,7 +47,7 @@ class InvestmentApi {
       headers: defaultHeaders(),
       body: JSON.stringify(investment)
     });
-    return response.json();
+    return response;
   }
 
   static async updateInvestment(investment) {
@@ -56,7 +56,7 @@ class InvestmentApi {
       headers: defaultHeaders(),
       body: JSON.stringify(investment)
     });
-    return response.json();
+    return response;
   }
 
   static async buySellInvestment(investment) {
@@ -65,7 +65,7 @@ class InvestmentApi {
       headers: defaultHeaders(),
       body: JSON.stringify(investment)
     });
-    return response.json();
+    return response;
   }
 
   static async saveTodaysPrices(investments) {
@@ -74,7 +74,7 @@ class InvestmentApi {
       headers: defaultHeaders(),
       body: JSON.stringify(investments),
     })
-    return response.json();
+    return response;
   }
 
   static async makeCorrectingEntries() {
@@ -83,7 +83,19 @@ class InvestmentApi {
       headers: defaultHeaders(),
     });
     if (response.status === 200) return "";
-    return response.json();
+    return response;
+  }
+
+  static async deleteInvestment(investmentId) {
+
+    return fetch('/api/Investments/' + investmentId, {
+      method: 'DELETE',
+      headers: {
+        ...authHeader(),
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
   }
 }
 
