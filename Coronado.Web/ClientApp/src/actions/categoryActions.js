@@ -1,7 +1,7 @@
 import * as types from '../constants/categoryActionTypes';
 import { info } from 'react-notification-system-redux';
 import CategoryApi from '../api/categoryApi';
-import { authHeader } from '../api/auth-header';
+import handleResponse from './responseHandler';
 
 export function loadCategoriesSuccess(categories) {
   return {type: types.LOAD_CATEGORIES_SUCCESS, categories};
@@ -22,15 +22,19 @@ export function createCategorySuccess(category) {
 export const loadCategories = () => {
   return async (dispatch) => {
     dispatch(loadCategoriesAction());
-    const categories = await CategoryApi.getAllCategories();
-    dispatch(loadCategoriesSuccess(categories));
+    const response = await CategoryApi.getAllCategories();
+    await handleResponse(dispatch, response,
+      async () => dispatch(loadCategoriesSuccess(await response.json()))
+    );
   };
 }
 
 export const updateCategory = (category) => {
   return async (dispatch) => {
-    const updatedCategory = await CategoryApi.updateCategory(category);
-    dispatch(updateCategorySuccess(updatedCategory));
+    const response = await CategoryApi.updateCategory(category);
+    await handleResponse(dispatch, response,
+      async () => dispatch(updateCategorySuccess(await response.json()))
+    );
   }
 }
 
@@ -39,7 +43,7 @@ export const deleteCategory = (categoryId, categoryName) => {
     const notificationOpts = {
       message: 'Category ' + categoryName + ' deleted',
       position: 'bl',
-      onRemove: () => { deleteCategoryForReal(categoryId, getState().deletedCategories) },
+      onRemove: () => { deleteCategoryForReal(categoryId, getState().deletedCategories, dispatch) },
       action: {
         label: 'Undo',
         callback: () => {dispatch({type: types.UNDO_DELETE_CATEGORY, categoryId: categoryId })}
@@ -57,15 +61,10 @@ export const createCategory = (category) => {
   }
 }
 
-async function deleteCategoryForReal(categoryId, deletedCategories) {
+async function deleteCategoryForReal(categoryId, deletedCategories, dispatch) {
   if (deletedCategories.some(c => c.categoryId === categoryId)) {
-    await fetch('/api/Categories/' + categoryId, {
-      method: 'DELETE',
-      headers: {
-        ...authHeader(),
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
+    const response = await CategoryApi.deleteCategory(categoryId);
+    await handleResponse(dispatch, response,
+      async () => {});
   }
 }

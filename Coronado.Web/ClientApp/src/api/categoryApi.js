@@ -14,7 +14,7 @@ class CategoryApi {
         return [];
       }
     }
-    return response.json();
+    return response;
   }
 
   static async updateCategory(category) {
@@ -27,7 +27,18 @@ class CategoryApi {
       },
       body: JSON.stringify(category)
     });
-    return response.json();
+    return response;
+  }
+
+  static async deleteCategory(categoryId) {
+    return await fetch('/api/Categories/' + categoryId, {
+      method: 'DELETE',
+      headers: {
+        ...authHeader(),
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
   }
 
   static async createCategory(category) {
