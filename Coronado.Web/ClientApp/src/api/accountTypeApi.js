@@ -2,7 +2,7 @@ class AccountTypeApi {
 
   static async getAccountTypes() {
     const response = await fetch(this.baseUrl);
-    return response.json();
+    return response;
   }
 }
 
