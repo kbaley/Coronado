@@ -17,7 +17,7 @@ class ReportApi {
         return [];
       }
     }
-    return response.json();
+    return response;
   }
 
   static async getInvestmentReport(year) {
@@ -35,7 +35,7 @@ class ReportApi {
         return [];
       }
     }
-    return response.json();
+    return response;
   }
 
   static async getExpensesByCategoryReport(year) {
@@ -53,7 +53,7 @@ class ReportApi {
         return [];
       }
     }
-    return response.json();
+    return response;
   }
 
   static async getExpensesForCategoryAndMonth(categoryId, month) {
@@ -68,7 +68,7 @@ class ReportApi {
         return [];
       }
     }
-    return response.json();
+    return response;
   }
 
   static async getIncomeReport(year) {
@@ -86,7 +86,7 @@ class ReportApi {
         return [];
       }
     }
-    return response.json();
+    return response;
   }
 
   static async getDashboardStats() {
@@ -101,7 +101,7 @@ class ReportApi {
         return [];
       }
     }
-    return response.json();
+    return response;
   }
 
 }
