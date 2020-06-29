@@ -15,7 +15,7 @@ class AccountApi {
         return [];
       }
     }
-    return response.json();
+    return response;
   }
     
   static async updateAccount(account) {
@@ -28,7 +28,7 @@ class AccountApi {
       },
       body: JSON.stringify(account)
     });
-    return response.json();
+    return response;
   }
 
   static async uploadQif(accountId, file, fromDate) {
@@ -43,7 +43,7 @@ class AccountApi {
       },
       body: data
     });
-    return response.json();
+    return response;
   }
 
   static async createAccount(account) {
@@ -56,7 +56,19 @@ class AccountApi {
       },
       body: JSON.stringify(account)
     });
-    return response.json();
+    return response;
+  }
+
+  static async deleteAccount(accountId) {
+
+    return await fetch('/api/Accounts/' + accountId, {
+      method: 'DELETE',
+      headers: {
+        ...authHeader(),
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
   }
 }
 

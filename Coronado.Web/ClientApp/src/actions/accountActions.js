@@ -4,9 +4,14 @@ import { info } from 'react-notification-system-redux';
 import AccountApi from '../api/accountApi';
 import { authHeader } from '../api/auth-header';
 import history from "../history";
+import handleApiCall, { handleResponse } from './responseHandler';
 
 export function loadAccountsSuccess(accounts) {
   return { type: types.LOAD_ACCOUNTS_SUCCESS, accounts };
+}
+
+export function removeDeletedAccount(accountId) {
+  return { type: types.REMOVE_DELETED_ACCOUNT, accountId };
 }
 
 export function updateAccountSuccess(updatedAccount) {
@@ -26,14 +31,13 @@ function loadAccountsAction() {
 }
 
 export const loadAccounts = () => {
-  return async function(dispatch) {
+  return async function (dispatch) {
     dispatch(loadAccountsAction());
-    const accounts = await AccountApi.getAllAccounts();
-    dispatch(loadAccountsSuccess(accounts));
+    await handleApiCall(dispatch, async () => await AccountApi.getAllAccounts(), loadAccountsSuccess);
   };
 }
 
-export const deleteAccount = (accountId, accountName) => { 
+export const deleteAccount = (accountId, accountName) => {
   return async (dispatch, getState) => {
 
     const notificationOpts = {
@@ -43,12 +47,12 @@ export const deleteAccount = (accountId, accountName) => {
       onRemove: () => { deleteAccountForReal(accountId, dispatch, getState().deletedAccounts) },
       action: {
         label: 'Undo',
-        callback: () => {dispatch({type: types.UNDO_DELETE_ACCOUNT, accountId })}
+        callback: () => { dispatch({ type: types.UNDO_DELETE_ACCOUNT, accountId }) }
       }
     };
-    dispatch( { type: types.DELETE_ACCOUNT, accountId } );
+    dispatch({ type: types.DELETE_ACCOUNT, accountId });
     dispatch(info(notificationOpts));
-    
+
     var accounts = getState().accounts;
     if (accounts.length === 0) {
       history.push('/');
@@ -60,40 +64,30 @@ export const deleteAccount = (accountId, accountName) => {
 
 export const updateAccount = (account) => {
   return async (dispatch) => {
-    const updatedAccount = await AccountApi.updateAccount(account);
-
-    dispatch(updateAccountSuccess(updatedAccount));
+    await handleApiCall(dispatch, async() => await AccountApi.updateAccount(account), updateAccountSuccess);
   }
 }
 
 export const createAccount = (account) => {
   return async (dispatch) => {
-    const newAccount = await AccountApi.createAccount(account);
-
-    dispatch(createAccountSuccess(newAccount));
-    history.push('/account/' + newAccount.accountId);
+    const response = await AccountApi.createAccount(account);
+    await handleResponse(dispatch, response,
+      async () => {
+        const newAccount = await response.json();
+        dispatch(createAccountSuccess(newAccount));
+        history.push('/account/' + newAccount.accountId);
+      })
   }
 }
 
 export const uploadQif = (accountId, file, fromDate) => {
   return async (dispatch) => {
-    const uploadedTransactions = await AccountApi.uploadQif(accountId, file, fromDate);
-
-    dispatch(uploadQifSuccess(uploadedTransactions));
+    await handleApiCall(dispatch, async () => await AccountApi.uploadQif(accountId, file, fromDate), uploadQifSuccess);
   }
 }
 
 async function deleteAccountForReal(accountId, dispatch, deletedAccounts) {
   if (deletedAccounts.some(a => a.accountId === accountId)) {
-    const response = await fetch('/api/Accounts/' + accountId, {
-      method: 'DELETE',
-      headers: {
-        ...authHeader(),
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
-    await response.json();
-    dispatch({type: types.REMOVE_DELETED_ACCOUNT, accountId});
+    await handleApiCall(dispatch, async () => await AccountApi.deleteAccount(accountId), removeDeletedAccount);
   }
 }
