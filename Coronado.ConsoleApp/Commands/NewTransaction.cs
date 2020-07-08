@@ -71,7 +71,6 @@ namespace Coronado.ConsoleApp.Commands
         private bool GetInput(string prompt, out string entry, string @default = "")
         {
             entry = ReadLine.Read(prompt + ": ", @default);
-            Console.WriteLine(entry);
 
             if (entry == "xx") return false;
             return true;
