@@ -14,8 +14,8 @@ import { loadVendors } from "./actions/vendorActions";
 import { loadCurrencies } from "./actions/currencyActions";
 import { loadInvestments } from "./actions/investmentActions";
 import registerServiceWorker from './registerServiceWorker';
-import { ThemeProvider } from '@material-ui/core';
-import theme from './theme';
+// import { ThemeProvider } from '@material-ui/core';
+// import theme from './theme';
 
 // Get the application-wide store instance, prepopulating with state from the server where available.
 const initialState = window.initialReduxState;
@@ -34,11 +34,9 @@ const rootElement = document.getElementById('root');
 
 ReactDOM.render(
   <Provider store={store}>
-    <ThemeProvider theme={theme}>
       <Router history={history}>
         <App />
       </Router>
-    </ThemeProvider>
   </Provider>,
   rootElement);
 

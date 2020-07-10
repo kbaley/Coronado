@@ -2,7 +2,6 @@ import * as types from '../constants/accountActionTypes';
 import * as transactionTypes from '../constants/transactionActionTypes';
 import { info } from 'react-notification-system-redux';
 import AccountApi from '../api/accountApi';
-import { authHeader } from '../api/auth-header';
 import history from "../history";
 import handleApiCall, { handleResponse } from './responseHandler';
 
