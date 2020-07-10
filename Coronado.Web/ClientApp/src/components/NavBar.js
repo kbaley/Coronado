@@ -1,7 +1,16 @@
 import React from 'react';
 import './Layout.css';
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, IconButton, Button, Menu, MenuItem, ListItemIcon, ListItemText, Box } from '@material-ui/core';
+import Hidden from '@material-ui/core/Hidden';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Box from '@material-ui/core/Box';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import SettingsIcon from '@material-ui/icons/Settings';
 import routes from '../routes';
@@ -48,6 +57,7 @@ export default function Header() {
       <Toolbar className={classes.container}>
         <div className={classes.flex}></div>
         <div>
+        <Hidden smDown>
           {routes.filter(r => r.isTopBar).map((route, index) => {
             return (<Button
               key={index}
@@ -61,6 +71,7 @@ export default function Header() {
               {route.name}
             </Button>
           )})}
+        </Hidden>
           <IconButton variant="contained" onClick={openMenu} className={classes.menuIcon}>
             <SettingsIcon />
           </IconButton>
@@ -71,16 +82,18 @@ export default function Header() {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-          <MenuItem onClick={handleClose}>Always Displayed</MenuItem>
-        <Box clone display={{ sm: "none" }}>
-          <MenuItem onClick={handleClose}>Profile</MenuItem>
+            {routes.filter(r => r.isTopBar).map((route, index) => {
+                return (
+        <Box key={index} clone display={{ md: "none" }}>
+              <MenuItem key={index} component={Link} to={route.path} onClick={handleClose}>
+                <ListItemIcon>
+                  {React.createElement(route.icon)}
+                </ListItemIcon>
+                <ListItemText primary={route.name} />
+              </MenuItem>
         </Box>
-        <Box clone display={{ lg: "none" }}>
-          <MenuItem onClick={handleClose}>My account</MenuItem>
-        </Box>
-        <Box clone display={{ md: "none" }}>
-          <MenuItem onClick={handleClose}>Logout</MenuItem>
-        </Box>
+                )
+            })}
             {routes.filter(r => r.isTopLevelMenu).map((route, index) => {
                 return (
               <MenuItem key={index} component={Link} to={route.path} onClick={handleClose}>
