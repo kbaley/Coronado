@@ -201,4 +201,4 @@ I started this section _very_ late and I will try to edit this as my memory and 
 - Error-handling borrowed from: https://github.com/CodeMazeBlog/react-series/tree/react-series-part5-end
 - [Testing React Applications with Jest - Pluralsight](https://www.pluralsight.com/courses/testing-react-applications-jest)
 - [Building Applications with React and Redux - Pluralsight](https://app.pluralsight.com/library/courses/react-redux-react-router-es6/)
-- 
+- [Show/hide menu items responsively](https://stackoverflow.com/questions/62824947/can-i-include-hidden-menu-items-in-a-material-ui-menu-component/62825463)

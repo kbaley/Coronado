@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -14,8 +13,16 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import SettingsIcon from '@material-ui/icons/Settings';
 import routes from '../routes';
-
+import { withStyles } from "@material-ui/core/styles";
 import { Link } from 'react-router-dom';
+
+const MenuItemHiddenLgUp = withStyles(theme => ({
+  root: {
+    [theme.breakpoints.up("md")]: {
+      display: "none"
+    }
+  }
+}))(MenuItem);
 
 const styles = theme => ({
   appBar: {
@@ -84,14 +91,12 @@ export default function Header() {
           >
             {routes.filter(r => r.isTopBar).map((route, index) => {
                 return (
-        <Box key={index} clone display={{ md: "none" }}>
-              <MenuItem key={index} component={Link} to={route.path} onClick={handleClose}>
+              <MenuItemHiddenLgUp key={index} component={Link} to={route.path} onClick={handleClose}>
                 <ListItemIcon>
                   {React.createElement(route.icon)}
                 </ListItemIcon>
                 <ListItemText primary={route.name} />
-              </MenuItem>
-        </Box>
+              </MenuItemHiddenLgUp>
                 )
             })}
             {routes.filter(r => r.isTopLevelMenu).map((route, index) => {
