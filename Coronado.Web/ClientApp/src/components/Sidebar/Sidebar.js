@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import AccountNavList from './AccountNavList';
-import { Drawer } from '@material-ui/core';
-import { makeStyles} from '@material-ui/core/styles';
+import { Drawer, Hidden } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import Header from './Header';
 
 const drawerWidth = 350;
@@ -20,16 +20,18 @@ const useStyles = makeStyles(theme => ({
 export default function Sidebar(props) {
   const classes = useStyles();
   return (localStorage.getItem('coronado-user') &&
+        <Hidden smDown>
     <Drawer
       variant="permanent"
       classes={{ paper: classes.drawer }}
       anchor="left"
     >
       <div className={classes.root}>
-      <Header />
-      <AccountNavList />
+        <Header />
+          <AccountNavList />
       </div>
     </Drawer>
+        </Hidden>
   );
 };
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
-import { ListItemText, Icon, ListItem, ListItemSecondaryAction } from '@material-ui/core';
-import { makeStyles} from '@material-ui/core/styles';
+import { ListItemText, Icon, ListItem, ListItemSecondaryAction, Hidden } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
   itemLink: {
@@ -53,19 +53,21 @@ export function SidebarMenuItem(props) {
       to={to}
       className={classes.item}
     >
-      <ListItem 
-        button 
+      <ListItem
+        button
         selected={selected}
         className={classes.itemLink}>
         {typeof icon === "string" ? (
           <Icon className={classes.itemIcon}>{icon}</Icon>
         ) : (
-          React.createElement(icon, {
-            className: classes.itemIcon
-          })
-        )}
+            React.createElement(icon, {
+              className: classes.itemIcon
+            })
+          )}
         <ListItemText primary={primary} className={classes.itemText} disableTypography={true} />
-        <ListItemSecondaryAction className={classes.itemText}>{secondary}</ListItemSecondaryAction>
+        <Hidden mdDown>
+          <ListItemSecondaryAction className={classes.itemText}>{secondary}</ListItemSecondaryAction>
+        </Hidden>
       </ListItem>
     </NavLink>
   )
