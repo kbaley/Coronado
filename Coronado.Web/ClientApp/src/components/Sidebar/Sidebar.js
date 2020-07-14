@@ -17,21 +17,49 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Sidebar(props) {
+export default function Sidebar({open, onSidebarClosed}) {
+  const [ mobileOpen, setMobileOpen ] = React.useState(open);
   const classes = useStyles();
+
+  React.useEffect(() => {
+    setMobileOpen(open); 
+  }, [open]);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+    onSidebarClosed();
+  }
+
   return (localStorage.getItem('coronado-user') &&
-        <Hidden smDown>
-    <Drawer
-      variant="permanent"
-      classes={{ paper: classes.drawer }}
-      anchor="left"
-    >
-      <div className={classes.root}>
-        <Header />
+  <nav>
+   <Hidden mdUp>
+      <Drawer
+        variant="temporary"
+        classes={{ paper: classes.drawer }}
+        anchor="left"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+      >
+        <div className={classes.root}>
+          <Header />
           <AccountNavList />
-      </div>
-    </Drawer>
-        </Hidden>
+        </div>
+      </Drawer>
+   </Hidden>
+    <Hidden smDown>
+      <Drawer
+        variant="permanent"
+        classes={{ paper: classes.drawer }}
+        anchor="left"
+        open
+      >
+        <div className={classes.root}>
+          <Header />
+          <AccountNavList />
+        </div>
+      </Drawer>
+    </Hidden>
+    </nav>
   );
 };
 

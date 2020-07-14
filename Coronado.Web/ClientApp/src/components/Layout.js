@@ -24,12 +24,24 @@ const styles = theme => ({
 const useStyles = makeStyles(styles);
 
 export default function Layout(props) {
+  const [ sidebarOpen, setSidebarOpen ] = React.useState(false);
   const classes = useStyles();
+  const onSidebarOpen = () => {
+    setSidebarOpen(true);
+  }
+  const onSidebarClosed = () => {
+    setSidebarOpen(false);
+  }
   return (
     <div>
-      <Sidebar />
+      <Sidebar 
+        open={sidebarOpen}
+        onSidebarClosed={onSidebarClosed}
+      />
       <div className={classes.mainPanel}>
-        <NavBar />
+        <NavBar 
+          onSidebarOpen={onSidebarOpen}
+        />
         <div className={classes.content}>
           <div className={classes.container}>
             {props.children}

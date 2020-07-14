@@ -38,5 +38,6 @@ export default {
   portfolioStats: {
     irr: 0.0,
   },
+  accountListOpen: false,
 }
 

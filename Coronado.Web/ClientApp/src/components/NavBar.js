@@ -44,7 +44,7 @@ const styles = theme => ({
 });
 const useStyles = makeStyles(styles);
 
-export default function Header() {
+export default function Header(props) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = (event) => {
@@ -61,7 +61,7 @@ export default function Header() {
   }
 
   const openSidebar = () => {
-
+    props.onSidebarOpen();
   }
 
   return (
