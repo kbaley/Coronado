@@ -15,6 +15,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import routes from '../routes';
 import { withStyles } from "@material-ui/core/styles";
 import { Link } from 'react-router-dom';
+import MenuIcon from '@material-ui/icons/Menu';
 
 const MenuItemHiddenLgUp = withStyles(theme => ({
   root: {
@@ -59,9 +60,23 @@ export default function Header() {
     setAnchorEl(null);
   }
 
+  const openSidebar = () => {
+
+  }
+
   return (
     <AppBar className={classes.appBar} position="sticky" elevation={1}>
       <Toolbar className={classes.container}>
+        <Hidden mdUp>
+          <IconButton 
+            variant="contained" 
+            className={classes.menuIcon}
+            edge="start"
+            onClick={openSidebar}
+          >
+            <MenuIcon />
+          </IconButton>
+        </Hidden>
         <div className={classes.flex}></div>
         <div>
         <Hidden smDown>
