@@ -32,7 +32,8 @@ export default function InvestmentPage({ match }) {
 
   React.useEffect(() => {
     async function fetchInvestment() {
-      const loadedInvestment = await InvestmentApi.getInvestment(matchingInvestment.investmentId);
+      const response = await InvestmentApi.getInvestment(matchingInvestment.investmentId);
+      const loadedInvestment = await response.json();
       setInvestment(loadedInvestment);
     }
     if (matchingInvestment) {
