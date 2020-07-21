@@ -26,6 +26,7 @@ export function makeCorrectingEntriesSuccess(correctingEntryModel) {
 
 export const loadInvestments = () => {
   return async (dispatch) => {
+    if (!localStorage.getItem('coronado-user')) return;
     dispatch(loadInvestmentsAction());
     await handleApiCall(dispatch, async () => await InvestmentApi.getAllInvestments(), loadInvestmentsSuccess);
   };

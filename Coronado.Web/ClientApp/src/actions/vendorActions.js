@@ -8,6 +8,7 @@ export function loadVendorsSuccess(vendors) {
 
 export const loadVendors = () => {
   return async function(dispatch, getState) {
+    if (!localStorage.getItem('coronado-user')) return;
     if (getState().vendors.length > 0) return null;
     await handleApiCall(dispatch,
       async() => VendorApi.getVendors(),

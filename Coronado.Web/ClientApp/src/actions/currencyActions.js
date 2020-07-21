@@ -8,6 +8,7 @@ export function loadCurrenciesSuccess(currencies) {
 
 export const loadCurrencies = () => {
   return async function(dispatch, getState) {
+    if (!localStorage.getItem('coronado-user')) return;
     if (getState().currencies.length > 0) return null;
     await handleApiCall(dispatch,
       async () => await CurrencyApi.getCurrencies(),

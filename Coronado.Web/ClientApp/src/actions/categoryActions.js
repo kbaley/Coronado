@@ -21,6 +21,7 @@ export function createCategorySuccess(category) {
 
 export const loadCategories = () => {
   return async (dispatch) => {
+    if (!localStorage.getItem('coronado-user')) return;
     dispatch(loadCategoriesAction());
     await handleApiCall(dispatch,
       () => CategoryApi.getAllCategories(),

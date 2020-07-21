@@ -31,6 +31,7 @@ function loadAccountsAction() {
 
 export const loadAccounts = () => {
   return async function (dispatch) {
+    if (!localStorage.getItem('coronado-user')) return;
     dispatch(loadAccountsAction());
     await handleApiCall(dispatch, async () => await AccountApi.getAllAccounts(), loadAccountsSuccess);
   };

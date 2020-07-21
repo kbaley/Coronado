@@ -29,6 +29,7 @@ export function emailInvoiceSuccess(invoice) {
 
 export const loadInvoices = () => {
   return async (dispatch) => {
+    if (!localStorage.getItem('coronado-user')) return;
     dispatch(loadInvoicesAction());
     await handleApiCall(dispatch, async () => await InvoiceApi.getAllInvoices(), loadInvoicesSuccess);
   };

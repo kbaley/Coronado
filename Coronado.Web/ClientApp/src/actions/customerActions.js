@@ -21,6 +21,7 @@ export function updateCustomerSuccess(customer) {
 
 export const loadCustomers = () => {
   return async (dispatch) => {
+    if (!localStorage.getItem('coronado-user')) return;
     dispatch(loadCustomersAction());
     await handleApiCall(dispatch, async() => await CustomerApi.getAllCustomers(), loadCustomersSuccess);
   };
