@@ -36,6 +36,10 @@ export default function Sidebar({open, onSidebarClosed}) {
     onSidebarClosed();
   }
 
+  const onAccountSelected = () => {
+    handleDrawerToggle();
+  }
+
   return (localStorage.getItem('coronado-user') &&
   <nav>
    <Hidden mdUp>
@@ -48,7 +52,9 @@ export default function Sidebar({open, onSidebarClosed}) {
       >
         <div className={classes.root}>
           <Header />
-          <AccountNavList />
+          <AccountNavList 
+            onItemSelected={onAccountSelected}
+          />
         </div>
       </Drawer>
    </Hidden>

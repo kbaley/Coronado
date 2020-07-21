@@ -45,8 +45,12 @@ const styles = theme => ({
 const useStyles = makeStyles(styles);
 
 export function SidebarMenuItem(props) {
-  const { icon, primary, to, secondary, selected } = props;
+  const { icon, primary, to, secondary, selected, onItemSelected } = props;
   const classes = useStyles();
+
+  const itemSelected = () => {
+    if (onItemSelected) onItemSelected();
+  }
 
   return (
     <NavLink
@@ -56,7 +60,9 @@ export function SidebarMenuItem(props) {
       <ListItem
         button
         selected={selected}
-        className={classes.itemLink}>
+        className={classes.itemLink}
+        onClick={itemSelected}
+      >
         {typeof icon === "string" ? (
           <Icon className={classes.itemIcon}>{icon}</Icon>
         ) : (

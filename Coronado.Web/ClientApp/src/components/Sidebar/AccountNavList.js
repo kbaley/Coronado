@@ -18,7 +18,7 @@ const styles = ({
 
 const useStyles = makeStyles(styles);
 
-export default function AccountNavList() {
+export default function AccountNavList({onItemSelected}) {
   const [isLoading, setIsLoading] = React.useState(true);
   const accounts = useSelector(state => state.showAllAccounts ? state.accounts : filter(state.accounts, a => !a.isHidden));
   const isLoadingData = useSelector(state => state.loading ? state.loading.accounts : true);
@@ -62,6 +62,7 @@ export default function AccountNavList() {
             selected={'/account/' + account.accountId === pathname}
             primary={account.name}
             secondary={<MoneyFormat amount={account.currentBalance} />}
+            onItemSelected={onItemSelected}
             icon={getIcon(account.accountType)} />
         ))}
     </List>
