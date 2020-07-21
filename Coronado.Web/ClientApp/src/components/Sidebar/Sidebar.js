@@ -4,10 +4,16 @@ import { Drawer, Hidden } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Header from './Header';
 
-const drawerWidth = 350;
+const drawerWidthWide = 350;
+const drawerWidthNarrow = 250;
 const useStyles = makeStyles(theme => ({
   drawer: {
-    width: drawerWidth,
+    [theme.breakpoints.up("sm")]: {
+      width: drawerWidthWide,
+    },
+    [theme.breakpoints.down("xs")]: {
+      width: drawerWidthNarrow,
+    },
     backgroundColor: theme.palette.blue,
   },
   root: {
