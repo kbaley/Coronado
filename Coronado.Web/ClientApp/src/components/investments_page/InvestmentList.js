@@ -6,10 +6,21 @@ import { orderBy } from 'lodash';
 import { InvestmentRow } from './InvestmentRow';
 import InvestmentsTotal from './InvestmentsTotal';
 import Spinner from '../common/Spinner';
-import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
+import { Grid, Hidden, makeStyles } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 
-export default function InvestmentList({investments, currency, children}) {
+const styles = theme => ({
+  header: {
+    ...theme.table.head,
+  },
+  right: {
+    textAlign: "right",
+  }
+})
+
+const useStyles = makeStyles(styles);
+
+export default function InvestmentList({ investments, currency, children }) {
   const [show, setShow] = React.useState(false);
   const [selectedInvestment, setSelectedInvestment] = React.useState({});
   const [isBuying, setIsBuying] = React.useState(false);
@@ -48,30 +59,35 @@ export default function InvestmentList({investments, currency, children}) {
     setShow(true);
   }
 
+  const classes = useStyles();
+
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell></TableCell>
-          <TableCell>Name</TableCell>
-          <TableCell>Symbol</TableCell>
-          <TableCell>Shares</TableCell>
-          <TableCell align={'right'}>Last Price</TableCell>
-          <TableCell align={'right'}>Average Price</TableCell>
-          <TableCell align={'right'}>IRR</TableCell>
-          <TableCell align={'right'}>Current Value</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        <InvestmentForm
-          show={show}
-          onClose={handleClose}
-          investment={selectedInvestment}
-          investments={investments}
-          isBuying={isBuying}
-          accounts={accounts}
-          onSave={saveInvestment} />
-        {isLoading ? <tr><td colSpan="2"><Spinner /></td></tr> :
+    <div>
+      <InvestmentForm
+        show={show}
+        onClose={handleClose}
+        investment={selectedInvestment}
+        investments={investments}
+        isBuying={isBuying}
+        accounts={accounts}
+        onSave={saveInvestment}
+      />
+      <Grid container spacing={0}>
+        <Hidden smDown>
+          <Grid item md={2} className={classes.header}></Grid>
+        </Hidden>
+        <Hidden smDown>
+          <Grid item xs={3} className={classes.header}>Name</Grid>
+        </Hidden>
+        <Grid item xs={8} md={1} className={classes.header}>Symbol</Grid>
+        <Hidden smDown>
+          <Grid item xs={1} className={classes.header}>Shares</Grid>
+          <Grid item xs={1} className={classes.header + " " + classes.right}>Last Price</Grid>
+          <Grid item xs={1} className={classes.header + " " + classes.right}>Average Price</Grid>
+          <Grid item xs={1} className={classes.header + " " + classes.right}>IRR</Grid>
+        </Hidden>
+        <Grid item xs={4} md={2} className={classes.header + " " + classes.right}>Current Value</Grid>
+        {isLoading ? <Grid item xs={12}><Spinner /></Grid> :
           sortedInvestments.map(i =>
             <InvestmentRow
               key={i.investmentId}
@@ -86,7 +102,7 @@ export default function InvestmentList({investments, currency, children}) {
           currency={currency}
           currencies={currencies} />
         {children}
-      </TableBody>
-    </Table>
+      </Grid>
+    </div>
   );
 }

@@ -81,7 +81,7 @@ export default function InvestmentsPage() {
       <InvestmentList investments={filter(investments, i => i.currency === 'USD')} currency='USD' />
       <h3>CAD</h3>
       <InvestmentList investments={filter(investments, i => i.currency === 'CAD')} currency='CAD'>
-        <DisplayTotalRow text="Grand Total" value={getInvestmentsTotal()} />
+      <DisplayTotalRow text="Grand Total" value={getInvestmentsTotal()} />
       </InvestmentList>
     </div>
   );
