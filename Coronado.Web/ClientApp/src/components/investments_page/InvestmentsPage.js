@@ -52,6 +52,16 @@ export default function InvestmentsPage() {
     }).toFixed(2);
   }
 
+  const getBookValueTotal = () => {
+    return sumBy(investments, i => {
+      if (i.currency === 'CAD') {
+        return (parseFloat(i.bookValue)) / currencies['CAD'];
+      } else {
+        return (parseFloat(i.bookValue));
+      }
+    }).toFixed(2);
+  }
+
   return (
     <div>
       <div style={{ float: "right", width: "250px", textAlign: "right" }}>
@@ -81,7 +91,7 @@ export default function InvestmentsPage() {
       <InvestmentList investments={filter(investments, i => i.currency === 'USD')} currency='USD' />
       <h3>CAD</h3>
       <InvestmentList investments={filter(investments, i => i.currency === 'CAD')} currency='CAD'>
-      <DisplayTotalRow text="Grand Total" value={getInvestmentsTotal()} />
+      <DisplayTotalRow text="Grand Total" value={getInvestmentsTotal()} secondaryValue={getBookValueTotal()} />
       </InvestmentList>
     </div>
   );

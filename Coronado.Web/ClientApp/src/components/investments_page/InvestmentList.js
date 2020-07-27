@@ -74,19 +74,20 @@ export default function InvestmentList({ investments, currency, children }) {
       />
       <Grid container spacing={0}>
         <Hidden smDown>
-          <Grid item md={2} className={classes.header}></Grid>
-        </Hidden>
-        <Hidden smDown>
+          <Grid item xs={2} className={classes.header}></Grid>
           <Grid item xs={3} className={classes.header}>Name</Grid>
         </Hidden>
-        <Grid item xs={8} md={1} className={classes.header}>Symbol</Grid>
+        <Grid item xs={4} md={1} className={classes.header}>Symbol</Grid>
         <Hidden smDown>
           <Grid item xs={1} className={classes.header}>Shares</Grid>
-          <Grid item xs={1} className={classes.header + " " + classes.right}>Last Price</Grid>
+        </Hidden>
+        <Grid item xs={4} md={1} className={classes.header + " " + classes.right}>Last Price</Grid>
+        <Hidden smDown>
           <Grid item xs={1} className={classes.header + " " + classes.right}>Average Price</Grid>
           <Grid item xs={1} className={classes.header + " " + classes.right}>IRR</Grid>
+          <Grid item xs={1} className={classes.header + " " + classes.right}>Book Value</Grid>
         </Hidden>
-        <Grid item xs={4} md={2} className={classes.header + " " + classes.right}>Current Value</Grid>
+        <Grid item xs={4} md={1} className={classes.header + " " + classes.right}>Current Value</Grid>
         {isLoading ? <Grid item xs={12}><Spinner /></Grid> :
           sortedInvestments.map(i =>
             <InvestmentRow

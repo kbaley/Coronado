@@ -30,31 +30,21 @@ const goToInvestment = (investment) => {
   history.push('/investment/' + investment.symbol);
 }
 
-function ClickableTableCell({ children, investment }) {
-  return (
-    <TableCell
-      onClick={() => goToInvestment(investment)}
-    >
-      {children}
-    </TableCell>
-  );
-}
-
 const useStyles = makeStyles(styles);
 
 function ClickableGridItem({ children, investment, xs, sm, lg, md }) {
   const classes = useStyles();
   return (
-    <Grid item 
-      xs={xs} 
+    <Grid item
+      xs={xs}
       sm={sm}
       md={md}
       lg={lg}
-      className={classes.row} 
+      className={classes.row}
       onClick={() => goToInvestment(investment)}
     >
       {children}
-    </Grid> 
+    </Grid>
   )
 }
 
@@ -63,36 +53,41 @@ export function InvestmentRow({ investment, onEdit, onDelete, onBuySell }) {
   return (
     <React.Fragment>
       <Grid container item xs={12} spacing={0} className={classes.gridRow}>
-      <Hidden smDown>
-        <Grid item xs={2}>
-          <EditIcon onStartEditing={onEdit} fontSize="small" />
-          <DeleteIcon onDelete={onDelete} fontSize="small" />
-          <Icon
-            onClick={onBuySell}
-            title="Buy/sell shares in this investment"
-            icon={<AddIcon fontSize="small" />}
-          />
-        </Grid>
-      </Hidden>
-      <Hidden smDown>
-        <ClickableGridItem xs={3} investment={investment}>{investment.name}</ClickableGridItem>
-      </Hidden>
-      <ClickableGridItem xs={8} sm={1} investment={investment}>{investment.symbol}</ClickableGridItem>
-      <Hidden smDown>
-        <ClickableGridItem xs={1} investment={investment}>{investment.shares}</ClickableGridItem>
-        <ClickableGridItem xs={1} investment={investment}>
+        <Hidden smDown>
+          <Grid item xs={2}>
+            <EditIcon onStartEditing={onEdit} fontSize="small" />
+            <DeleteIcon onDelete={onDelete} fontSize="small" />
+            <Icon
+              onClick={onBuySell}
+              title="Buy/sell shares in this investment"
+              icon={<AddIcon fontSize="small" />}
+            />
+          </Grid>
+        </Hidden>
+        <Hidden smDown>
+          <ClickableGridItem xs={3} investment={investment}>{investment.name}</ClickableGridItem>
+        </Hidden>
+        <ClickableGridItem xs={4} md={1} investment={investment}>{investment.symbol}</ClickableGridItem>
+        <Hidden smDown>
+          <ClickableGridItem xs={1} investment={investment}>{investment.shares}</ClickableGridItem>
+        </Hidden>
+        <ClickableGridItem xs={4} md={1} investment={investment}>
           <MoneyFormat amount={investment.lastPrice} />
         </ClickableGridItem>
-        <ClickableGridItem item xs={1} investment={investment}>
-          <MoneyFormat amount={investment.averagePrice} />
+        <Hidden smDown>
+          <ClickableGridItem item xs={1} investment={investment}>
+            <MoneyFormat amount={investment.averagePrice} />
+          </ClickableGridItem>
+          <ClickableGridItem xs={1} investment={investment}>
+            <PercentageFormat amount={investment.annualizedIrr} />
+          </ClickableGridItem>
+          <ClickableGridItem xs={1} investment={investment}>
+            <MoneyFormat amount={investment.bookValue} />
+          </ClickableGridItem>
+        </Hidden>
+        <ClickableGridItem xs={4} md={1} investment={investment}>
+          <MoneyFormat amount={investment.currentValue} />
         </ClickableGridItem>
-        <ClickableGridItem xs={1} investment={investment}>
-          <PercentageFormat amount={investment.annualizedIrr} />
-        </ClickableGridItem>
-      </Hidden>
-      <ClickableGridItem xs={4} sm={2} investment={investment}>
-        <MoneyFormat amount={investment.currentValue} />
-      </ClickableGridItem>
       </Grid>
     </React.Fragment>
   );

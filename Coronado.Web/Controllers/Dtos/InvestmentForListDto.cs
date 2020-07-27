@@ -21,5 +21,6 @@ namespace Coronado.Web.Controllers.Dtos
         // The date of a buy or sell
         public DateTime Date { get; set; }
         public double AnnualizedIrr { get; set; }
+        public decimal BookValue { get; set; }
     }
 }

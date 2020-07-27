@@ -69,6 +69,7 @@ namespace Coronado.Web.Controllers.Api
                 .ToList();
             investments.ForEach( i => {
                 i.CurrentValue = i.Shares * i.LastPrice;
+                i.BookValue = i.Shares * i.AveragePrice;
             });
             var totalIrr = _context.Investments.GetAnnualizedIrr();
 
