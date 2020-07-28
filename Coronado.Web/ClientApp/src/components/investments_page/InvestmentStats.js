@@ -13,6 +13,10 @@ export default function InvestmentStats({ investment }) {
             <Grid item xs={6}><MoneyFormat amount={investment.lastPrice} /></Grid>
             <Grid item xs={6}>Value</Grid>
             <Grid item xs={6}><MoneyFormat amount={investment.currentValue} /></Grid>
+            <Grid item xs={6}>Book value</Grid>
+            <Grid item xs={6}><MoneyFormat amount={investment.bookValue} /></Grid>
+            <Grid item xs={6}>Total gain</Grid>
+            <Grid item xs={6}><MoneyFormat amount={investment.currentValue - investment.bookValue} /></Grid>
             <Grid item xs={6}>Total return</Grid>
             <Grid item xs={6}><PercentageFormat isCredit={true} amount={investment.totalReturn} /></Grid>
             <Grid item xs={6}>Annualized return</Grid>

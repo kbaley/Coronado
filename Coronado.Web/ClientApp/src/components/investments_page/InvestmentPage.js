@@ -9,12 +9,10 @@ import InvestmentTransactionList from './InvestmentTransactionList';
 
 const styles = theme => ({
   stats: {
-    width: 400,
     fontSize: "15px",
     margin: 10,
   },
   transactionList: {
-    width: 600,
     fontSize: "15px",
     margin: 10,
   }
@@ -47,14 +45,14 @@ export default function InvestmentPage({ match }) {
         {investment.name} ({investment.symbol})
       </h1>
       <Grid container spacing={2}>
-        <Grid item xs={4}>
+        <Grid item xs={12} md={4} >
           <Card className={classes.stats}>
             <CardContent>
               <InvestmentStats investment={investment} />
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={12} md={8}>
           <Card className={classes.transactionList}>
             <CardContent>
               <InvestmentTransactionList investment={investment} />

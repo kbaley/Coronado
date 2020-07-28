@@ -15,6 +15,7 @@ namespace Coronado.Web.Controllers.Dtos
         public decimal AveragePrice { get; set; }
         public decimal TotalPaid { get; set; }
         public decimal CurrentValue { get; set; }
+        public decimal BookValue { get; set; }
         public double TotalAnnualizedReturn { get; set; }
         public decimal TotalReturn { get; set; } 
         public IEnumerable<InvestmentTransactionDto> Transactions { get; set; }

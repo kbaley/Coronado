@@ -5,7 +5,6 @@ import { Icon } from '../icons/Icon';
 import { MoneyFormat, PercentageFormat } from '../common/DecimalFormat';
 import history from "../../history";
 import {
-  TableCell,
   Grid,
   Hidden,
 } from '@material-ui/core';

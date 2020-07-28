@@ -44,7 +44,8 @@ namespace Coronado.Web.Controllers.Api
 
             var mappedInvestment = _mapper.Map<InvestmentDetailDto>(investment);
             mappedInvestment.TotalPaid = Math.Round(investment.Transactions.Sum(t => t.Shares * t.Price), 2);
-            mappedInvestment.CurrentValue = Math.Round(mappedInvestment.AveragePrice * mappedInvestment.Shares);
+            mappedInvestment.CurrentValue = Math.Round(mappedInvestment.LastPrice * mappedInvestment.Shares);
+            mappedInvestment.BookValue = Math.Round(mappedInvestment.AveragePrice * mappedInvestment.Shares);
 
             return mappedInvestment;
         }
