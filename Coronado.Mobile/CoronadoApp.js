@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { AsyncStorage } from 'react-native';
+import { CORONADO_API } from 'react-native-dotenv';
 
 export default function CoronadoApp() {
   const [email, setEmail] = React.useState("");
@@ -24,7 +25,8 @@ export default function CoronadoApp() {
   }
 
   const loginApi = async (email, password) => {
-    return fetch('/api/Auth/login', {
+    const url = CORONADO_API + "/Auth/login";
+    return fetch(url, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -36,7 +38,6 @@ export default function CoronadoApp() {
       .catch(err => console.error(err));
   }
   const doLogin = () => {
-    console.log("Logging in");
     dispatch(loginAction(email, password));
   }
 
