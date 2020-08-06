@@ -19,6 +19,8 @@ namespace Coronado.Web.Domain
         public virtual ICollection<InvestmentTransaction> Transactions { get; set; }
         public decimal LastPrice { get; set; }
         public DateTime LastPriceRetrievalDate { get; set; }
+        public Guid? CategoryId { get; set; }
+        public InvestmentCategory Category { get; set; }
 
         public decimal GetTotalReturn() {
             var totalPaid = Transactions.Sum(t => t.Shares * t.Price);

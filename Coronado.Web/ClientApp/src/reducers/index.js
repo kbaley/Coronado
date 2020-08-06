@@ -1,4 +1,5 @@
 import { categoryReducer } from "./categoryReducer";
+import { investmentCategoryReducer } from "./investmentCategoryReducer";
 import { invoiceReducer } from "./invoiceReducer";
 import { customerReducer } from "./customerReducer";
 import { investmentReducer } from "./investmentReducer";
@@ -41,6 +42,7 @@ function rootReducer(state, action) {
     notifications: notifications(state.notifications, action),
     showAllAccounts: navListReducer(state.showAllAccounts, action),
     portfolioStats: portfolioStatsReducer(state.portfolioStats, action),
+    investmentCategories: investmentCategoryReducer(state.investmentCategories, action),
   }
 }
 

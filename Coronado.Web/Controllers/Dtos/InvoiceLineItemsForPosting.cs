@@ -2,6 +2,7 @@ using System;
 
 namespace Coronado.Web.Controllers.Dtos
 {
+
     public class InvoiceLineItemsForPosting
     {
         public InvoiceLineItemsForPosting()

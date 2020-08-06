@@ -8,5 +8,7 @@ namespace Coronado.Web.Controllers.Dtos
         public string Symbol { get; set; }
         public bool DontRetrievePrices { get; set; }
         public string Currency { get; set; }
+        public Guid CategoryId { get; set; }
+        public decimal CategoryPercentage { get; set; }
     }
 }

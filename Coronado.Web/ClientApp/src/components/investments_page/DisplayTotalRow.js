@@ -21,7 +21,7 @@ export default function DisplayTotalRow(props) {
       <Grid item xs={7} md={5} className={classes.footer}>{text}</Grid>
       <Hidden smDown>
       <Grid item xs={1} className={classes.footer}>
-        {secondaryValue &&
+        {secondaryValue !== null &&
         <CurrencyFormat value={secondaryValue} />
         }
       </Grid>

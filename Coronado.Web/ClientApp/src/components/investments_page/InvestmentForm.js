@@ -129,6 +129,37 @@ export default function InvestmentForm(props) {
                   <MenuItem value={'CAD'}>CAD</MenuItem>
                 </TextField>
               </Grid>
+              <Grid item xs={8}>
+                <FormControlLabel
+                  control={
+                    <Tooltip title="Should this investment be included when balancing investments according to a pre-defined portfolio breakdown?">
+                      <Checkbox
+                        name='includeInBalancing'
+                        disabled={props.isBuying}
+                        checked={investment.includeInBalancing}
+                        onChange={handleChangeField}
+                      />
+                    </Tooltip>
+                  }
+                  label="Include when balancing investments?"
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  select
+                  name="investmentCategory"
+                  label="Category"
+                  fullWidth={true}
+                  disabled={props.isBuying}
+                  value={investment.category}
+                  onChange={handleChangeField}
+                >
+                  <MenuItem value={'Bonds'}>Bonds</MenuItem>
+                  <MenuItem value={'Canada'}>Canada</MenuItem>
+                  <MenuItem value={'US'}>United States</MenuItem>
+                  <MenuItem value={'International'}>Interational</MenuItem>
+                </TextField>
+              </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
                   control={

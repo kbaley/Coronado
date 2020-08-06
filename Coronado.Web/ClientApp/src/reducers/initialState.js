@@ -39,5 +39,6 @@ export default {
     irr: 0.0,
   },
   accountListOpen: false,
+  investmentCategories: [],
 }
 

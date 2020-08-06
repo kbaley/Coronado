@@ -16,6 +16,7 @@ import { loadInvestments } from "./actions/investmentActions";
 import registerServiceWorker from './registerServiceWorker';
 import { ThemeProvider } from '@material-ui/core';
 import theme from './theme';
+import { loadInvestmentCategories } from './actions/investmentCategoryActions';
 
 // Get the application-wide store instance, prepopulating with state from the server where available.
 const initialState = window.initialReduxState;
@@ -29,6 +30,7 @@ store.dispatch(loadInvoices());
 store.dispatch(loadVendors());
 store.dispatch(loadInvestments());
 store.dispatch(loadCurrencies());
+store.dispatch(loadInvestmentCategories());
 
 const rootElement = document.getElementById('root');
 

@@ -20,6 +20,8 @@ namespace Coronado.Web.Controllers.Dtos
                 .ReverseMap();
             CreateMap<InvoiceLineItem, InvoiceLineItemsForPosting>()
                 .ReverseMap();
+            CreateMap<InvestmentCategory, InvestmentCategoryForUpdate>()
+                .ReverseMap();
             CreateMap<Invoice, InvoiceForPosting>()
                 .ReverseMap()
                 .ForMember(dest => dest.Customer, opt => opt.Ignore());
