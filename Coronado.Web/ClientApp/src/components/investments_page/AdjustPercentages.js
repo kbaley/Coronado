@@ -52,10 +52,7 @@ export default function AdjustPercentages(props) {
 
   const onCategoryDeleted = (categoryId) => {
     const categories = clone(investmentCategories);
-    console.log(categoryId);
-    console.log(categories);
     const category = find(categories, c => c.investmentCategoryId === categoryId);
-    console.log(category);
     category.status = "deleted";
     setInvestmentCategories(categories);
   }
@@ -72,7 +69,7 @@ export default function AdjustPercentages(props) {
 
           {investmentCategories && investmentCategories.filter(c => c.status !== "deleted").map((c, i) =>
             <React.Fragment key={c.investmentCategoryId}>
-            <Grid item xs={5}>{c.investmentCategoryId}</Grid>
+            <Grid item xs={5}>{c.name}</Grid>
             <Grid item xs={5}>{c.percentage}%</Grid>
             <Grid item xs={2}>
               <DeleteIcon onClick={() => onCategoryDeleted(c.investmentCategoryId)} />

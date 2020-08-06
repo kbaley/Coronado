@@ -132,16 +132,16 @@ export default function InvestmentForm(props) {
               <Grid item xs={8}>
                 <FormControlLabel
                   control={
-                    <Tooltip title="Should this investment be included when balancing investments according to a pre-defined portfolio breakdown?">
+                    <Tooltip title="Check this to exclude the investment when downloading the daily prices">
                       <Checkbox
-                        name='includeInBalancing'
+                        name='dontRetrievePrices'
                         disabled={props.isBuying}
-                        checked={investment.includeInBalancing}
+                        checked={investment.dontRetrievePrices}
                         onChange={handleChangeField}
                       />
                     </Tooltip>
                   }
-                  label="Include when balancing investments?"
+                  label="Exclude when downloading prices?"
                 />
               </Grid>
               <Grid item xs={4}>
@@ -159,21 +159,6 @@ export default function InvestmentForm(props) {
                   <MenuItem value={'US'}>United States</MenuItem>
                   <MenuItem value={'International'}>Interational</MenuItem>
                 </TextField>
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Tooltip title="Check this to exclude the investment when downloading the daily prices">
-                      <Checkbox
-                        name='dontRetrievePrices'
-                        disabled={props.isBuying}
-                        checked={investment.dontRetrievePrices}
-                        onChange={handleChangeField}
-                      />
-                    </Tooltip>
-                  }
-                  label="Exclude when downloading prices?"
-                />
               </Grid>
             </React.Fragment>
           {(investment.investmentId === undefined || props.isBuying) &&
