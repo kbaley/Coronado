@@ -43,11 +43,11 @@ Payments for invoices can be entered as transactions with a category of:
 
 Two types of mortgage payment are available: fixed payment and fixed principal.
 
-### Fixed payment
+#### Fixed payment
 
 This is the traditional mortgage payment where you pay the same amount each month and the amount that's applied to the principal increases over time. When this type of mortgage payment is selected while entering transactions, the amount of the payment will appear in the Debit column. Update this to match the amount applied to the principal and the Credit column will automatically update the interest. When committed, this will create two transactions: 1) a transfer from the current account to the mortgage account, and 2) a `Mortgage Interest` transaction
 
-### Fixed principal
+#### Fixed principal
 
 In this type of payment, the monthly payment varies. It includes a fixed amount applied to the principal each month and the interest is calculated based on the remaining mortgage balance and the time since the last payment. When entering this type of payment as a transaction, the Debit column will be populated to the fixed principal amount and you can enter the interest payment in the Credit column. When committed, this will create two transactions: 1) a transfer from the current account to the mortgage account, and 2) a `Mortgage Interest` transaction
 
@@ -80,6 +80,22 @@ The idea is this: keep track of your individual stocks in the investments page w
 One thing I sometimes do is, at the end of the month, delete all the intermediate ones during the month then click the reconcile button to create a single one. Only reason I do that is to reduce the number of "gain/loss" entries in the investment account.
 
 Investment price retrieval uses the Yahoo Finance RapidAPI service. Set the `RapidApiKey` value in `appSettings` to use this. Historical currency values are not stored though the app keeps track of investment prices (though not automatically).
+
+#### Rudimentary (and buggy) portfolio balancing
+
+Borrowing from Andrew Hallam's [_Millionaire Expat_ book](https://www.amazon.com/gp/product/B078TR1FLP/ref=dbs_a_def_rwt_bibl_vppi_i1) (formerly The Global Expatriate's Guide to Investing), I added some very rudimentary functionality around the idea of portfolio balancing. The basic idea: You can create categories of investments (e.g. bonds, Canadian funds, US funds, international funds) and set ratios for each of these. Then you assign your investments one of these categories and it will tell you what your actual balance is compared to your expected balance.
+
+E.g. if you should have 50% of your portfolio in bonds and the rest split between Canadian and US, enter the following investment categories:
+
+| Bonds | 2 |
+| Canadian | 1 |
+| US | 1 |
+
+You could also do the traditional 50%, 25%, and 25% respectively. I did it this way so I wouldn't have to deal with rounding issues for cases where the numbers don't work out perfectly. E.g. 50% bonds and the rest split equally between Canadian, international, and US.
+
+This is pretty buggy at the moment. This is because the category is optional for each investment. I didn't want to make it required because I also have a very small percentage of my investments in random stocks (i.e. Vegas money) and don't want these included in the actual portfolio I want to rely on for retirement. In any case, I'm not handling the "None" option properly and there will be JavaScript warnings and errors when you first set this up but for the most part, stuff should get saved and the warnings go away. The investment categories are very much designed to be set once and then forgotten.
+
+See also: [The Canadian Couch Potato](https://canadiancouchpotato.com/)
 
 ### Console app
 

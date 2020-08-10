@@ -14,33 +14,37 @@ import {
   InputLabel,
   Select,
 } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 
 export default function InvestmentForm(props) {
   const [investment, setInvestment] = React.useState({
     name: '',
     symbol: '',
     shares: '',
-    price: '',
+    lastPrice: '',
     amount: '',
     date: new Date().toLocaleDateString(),
     currency: 'USD',
     dontRetrievePrices: false,
     accountId: '',
+    categoryId: '00000000-0000-0000-0000-000000000000',
   });
+  const investmentCategories = useSelector(state => state.investmentCategories);
 
   React.useEffect(() => {
-    if (props.investment) {
+    if (props.investment && props.investment.name !== '') {
       setInvestment({
         investmentId: props.investment.investmentId,
         name: props.investment.name,
         symbol: props.investment.symbol || '',
         shares: 0,
-        price: props.investment.price || 0.00,
+        lastPrice: props.investment.lastPrice || 0.00,
         amount: props.investment.shares && props.investment.price ? props.investment.shares * props.investment.price : 0,
         currency: props.investment.currency || 'USD',
         date: new Date().toLocaleDateString(),
         accountId: props.investment.transaction ? props.investment.transaction.accountId : '',
         dontRetrievePrices: props.investment.dontRetrievePrices,
+        categoryId: props.investment.categoryId,
       });
     }
   }, [props.investment]);
@@ -51,12 +55,13 @@ export default function InvestmentForm(props) {
       name: '',
       symbol: '',
       shares: '',
-      price: '',
+      lastPrice: '',
       amount: '',
       currency: 'USD',
       dontRetrievePrices: false,
       date: new Date().toLocaleDateString(),
       accountId: '',
+      categoryId: '00000000-0000-0000-0000-000000000000',
     });
     props.onClose();
   }
@@ -69,17 +74,17 @@ export default function InvestmentForm(props) {
     var newState = { ...investment, [name]: value };
     var amount = parseFloat(investment.amount) || 0;
     var shares = parseFloat(investment.shares) || 0;
-    var price = parseFloat(investment.price) || 0;
+    var lastPrice = parseFloat(investment.lastPrice) || 0;
     if (name === "shares") {
-      amount = (price * (parseFloat(value) || 0)).toFixed(2);
+      amount = (lastPrice * (parseFloat(value) || 0)).toFixed(2);
       newState.amount = amount;
-    } else if (name === "price") {
+    } else if (name === "lastPrice") {
       amount = (shares * (parseFloat(value) || 0)).toFixed(2);
       newState.amount = amount;
     } else if (name === "amount") {
       if (shares !== 0) {
-        price = (parseFloat(value) || 0) / shares;
-        newState.price = price;
+        lastPrice = (parseFloat(value) || 0) / shares;
+        newState.lastPrice = lastPrice;
       }
     }
     setInvestment(newState);
@@ -147,17 +152,17 @@ export default function InvestmentForm(props) {
               <Grid item xs={4}>
                 <TextField
                   select
-                  name="investmentCategory"
+                  name="categoryId"
                   label="Category"
                   fullWidth={true}
                   disabled={props.isBuying}
-                  value={investment.category}
+                  value={investment.categoryId}
                   onChange={handleChangeField}
                 >
-                  <MenuItem value={'Bonds'}>Bonds</MenuItem>
-                  <MenuItem value={'Canada'}>Canada</MenuItem>
-                  <MenuItem value={'US'}>United States</MenuItem>
-                  <MenuItem value={'International'}>Interational</MenuItem>
+                  <MenuItem value={'00000000-0000-0000-0000-000000000000'}>None</MenuItem>
+                  {investmentCategories && investmentCategories.map(c => 
+                    <MenuItem key={c.investmentCategoryId} value={c.investmentCategoryId}>{c.name}</MenuItem>
+                  )}
                 </TextField>
               </Grid>
             </React.Fragment>
@@ -174,10 +179,10 @@ export default function InvestmentForm(props) {
               </Grid>
               <Grid item xs={4}>
                 <TextField
-                  name="price"
+                  name="lastPrice"
                   label="Price"
                   fullWidth={true}
-                  value={investment.price}
+                  value={investment.lastPrice}
                   onChange={handleChangeField}
                 />
               </Grid>

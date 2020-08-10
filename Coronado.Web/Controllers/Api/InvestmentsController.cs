@@ -64,7 +64,8 @@ namespace Coronado.Web.Controllers.Api
                     AveragePrice = i.Transactions.Sum(t => t.Shares * t.Price) / i.Transactions.Sum(t => t.Shares),
                     Currency = i.Currency,
                     DontRetrievePrices = i.DontRetrievePrices,
-                    AnnualizedIrr = i.GetAnnualizedIrr()
+                    AnnualizedIrr = i.GetAnnualizedIrr(),
+                    CategoryId = i.CategoryId
                 })
                 .OrderBy(i => i.Name)
                 .ToList();
@@ -183,7 +184,15 @@ namespace Coronado.Web.Controllers.Api
             if (id != investment.InvestmentId) {
                 return BadRequest();
             }
+            // Don't update the price
+            var investmentFromDb = await _context.Investments.FindAsync(investment.InvestmentId).ConfigureAwait(false);
+            _context.Entry(investmentFromDb).State = EntityState.Detached;
+            var lastPrice = investmentFromDb.LastPrice;
+            var lastPriceRetrievalDate = investmentFromDb.LastPriceRetrievalDate;
+
             var investmentMapped = _mapper.Map<Investment>(investment);
+            investmentMapped.LastPrice = lastPrice;
+            investmentMapped.LastPriceRetrievalDate = lastPriceRetrievalDate; 
             _context.Entry(investmentMapped).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             await _context.Entry(investmentMapped).ReloadAsync().ConfigureAwait(false);
