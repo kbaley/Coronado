@@ -230,14 +230,14 @@ namespace Coronado.Web.Controllers.Api
         {
             var buySell = investmentDto.Shares > 0 ? $"Buy {investmentDto.Shares} share" : $"Sell {investmentDto.Shares} share";
             if (investmentDto.Shares != 1) buySell += "s";
-            var description = $"Investment: {buySell} of {investmentDto.Symbol} at {investmentDto.Price}";
+            var description = $"Investment: {buySell} of {investmentDto.Symbol} at {investmentDto.LastPrice}";
             var investmentAccount = await _context.Accounts.FirstAsync(a => a.AccountType == "Investment").ConfigureAwait(false);
             var enteredDate = DateTime.Now;
             var investmentAccountTransaction = new Transaction
             {
                 TransactionId = Guid.NewGuid(),
                 AccountId = investmentAccount.AccountId,
-                Amount = Math.Round(investmentDto.Shares * investmentDto.Price, 2),
+                Amount = Math.Round(investmentDto.Shares * investmentDto.LastPrice, 2),
                 TransactionDate = investmentDto.Date,
                 EnteredDate = enteredDate,
                 TransactionType = TRANSACTION_TYPE.INVESTMENT,
@@ -247,7 +247,7 @@ namespace Coronado.Web.Controllers.Api
             {
                 TransactionId = Guid.NewGuid(),
                 AccountId = investmentDto.AccountId,
-                Amount = 0 - Math.Round(investmentDto.Shares * investmentDto.Price, 2),
+                Amount = 0 - Math.Round(investmentDto.Shares * investmentDto.LastPrice, 2),
                 TransactionDate = investmentDto.Date,
                 EnteredDate = enteredDate,
                 TransactionType = TRANSACTION_TYPE.INVESTMENT,
@@ -258,7 +258,7 @@ namespace Coronado.Web.Controllers.Api
                 InvestmentTransactionId = Guid.NewGuid(),
                 InvestmentId = investment.InvestmentId,
                 Shares = investmentDto.Shares,
-                Price = investmentDto.Price,
+                Price = investmentDto.LastPrice,
                 Date = investmentDto.Date,
                 TransactionId = transaction.TransactionId
             };
