@@ -33,6 +33,11 @@ export function InvoiceRow({invoice, onEdit, onDelete, onDownload, onEmail, onPr
       <TableCell>{invoice.invoiceNumber}</TableCell>
       <TableCell>{new Date(invoice.date).toLocaleDateString()}</TableCell>
       <TableCell>{invoice.customerName + " (" + invoice.customerEmail + ")" }</TableCell>
+      <TableCell>
+        {invoice.lastSentToCustomer &&
+        new Date(invoice.lastSentToCustomer).toLocaleDateString()
+        }
+      </TableCell>
       <TableCell><CurrencyFormat value={invoice.balance} /></TableCell>
     </TableRow>
   );
