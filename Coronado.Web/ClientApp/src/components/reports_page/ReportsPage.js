@@ -44,7 +44,11 @@ export default function ReportsPage(props) {
   return (
     <div className='reports-list'>
       <h1>Reports</h1>
-      <Tabs value={value} onChange={handleChange}>
+      <Tabs 
+        value={value} 
+        onChange={handleChange}
+        variant="scrollable"
+      >
         <Tab label="Net worth over time" id='tab-0' component={Link} to={allTabs[0]} />
         <Tab label="Expenses by category" id='tab-1' component={Link} to={allTabs[1]} />
         <Tab label="Income" id='tab-2' component={Link} to={allTabs[2]} />
