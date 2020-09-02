@@ -8,8 +8,9 @@ import {
   TableCell,
   makeStyles,
 } from '@material-ui/core';
+import * as reportActions from '../../actions/reportActions';
 import moment from 'moment';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 const styles = (theme) => ({
   reportTable: {
@@ -34,6 +35,12 @@ export default function NetWorthReport() {
 
   const reportData = useSelector(state => state.reports.netWorth);
   const report = reportData.report || [];
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    if (!reportData || reportData.length === 0)
+      dispatch(reportActions.loadNetWorthReport());
+  });
 
   const classes = useStyles();
   return (

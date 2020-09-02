@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Grid,
+  Grid, Hidden,
 } from '@material-ui/core';
 import NetWorthGraph from './NetWorthGraph';
 import NetWorthReport from './NetWorthReport';
@@ -11,10 +11,12 @@ export default function NetWorthPage() {
     <div style={{ margin: "10px" }}>
       <h2>Net Worth</h2>
       <Grid container spacing={2}>
+        <Hidden smDown>
         <Grid item xs={5}>
           <NetWorthGraph />
         </Grid>
-        <Grid item xs={7}>
+        </Hidden>
+        <Grid item xs={12} md={7}>
           <NetWorthReport />
         </Grid>
       </Grid>
