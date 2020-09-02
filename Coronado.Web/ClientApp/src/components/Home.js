@@ -10,6 +10,7 @@ import {
   TableRow, 
   TableCell,
   Grid,
+  Hidden,
 } from '@material-ui/core';
 import ExpensesByCategoryChart from './reports_page/ExpensesByCategoryChart';
 import IncomeChart from './reports_page/IncomeChart';
@@ -79,6 +80,7 @@ export default function Home() {
             </TableRow>
           </TableBody>
         </Table>
+        <Hidden smDown>
         <Grid container spacing={2}>
           <Grid item xs={3}>
             <h2>Net worth</h2>
@@ -97,6 +99,7 @@ export default function Home() {
             <InvestmentGraph />
           </Grid>
         </Grid>
+        </Hidden>
       </div>
     )
 }
