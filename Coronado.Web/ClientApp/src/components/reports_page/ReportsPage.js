@@ -6,9 +6,22 @@ import ExpensesByCategoryPage from './ExpensesByCategoryPage';
 import NetWorthPage from './NetWorthPage';
 import IncomePage from './IncomePage';
 import InvestmentReportPage from './InvestmentReportPage';
+import { makeStyles } from '@material-ui/core/styles';
+
+const styles = (theme) => ({
+  box: {
+    padding: theme.spacing(3),
+    [theme.breakpoints.down("sm")]: {
+      padding: theme.spacing(0),
+    }
+  }
+});
+
+const useStyles = makeStyles(styles);
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
+  const classes = useStyles();
 
   return (
     <div
@@ -18,7 +31,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box p={3}>
+        <Box className={classes.box}>
           {children}
         </Box>
       )}
