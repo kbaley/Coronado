@@ -29,7 +29,6 @@ export default function AdjustPercentages(props) {
   React.useEffect(() => {
       const totalPercentage = sumBy(investmentCategories, c => c.percentage);
       const totalInvestments = sumBy(investments, i => (i.categoryId ? i.currentValue : 0));
-      console.log(investments);
 
       forEach(investmentCategories, ic => {
           ic.totalPercentage = (ic.percentage * 100 / totalPercentage).toFixed(2);

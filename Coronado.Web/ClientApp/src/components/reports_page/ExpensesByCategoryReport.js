@@ -34,9 +34,11 @@ export default function ExpensesByCategoryReport() {
   const report = useSelector(state => state.reports.expensesByCategory);
 
   const showExpenses = async (expense, month) => {
+    setTransactions([]);
     const categoryId = expense.categoryId;
     const date = month.date;
-    var expenses = await ReportApi.getExpensesForCategoryAndMonth(categoryId, date);
+    const response = await ReportApi.getExpensesForCategoryAndMonth(categoryId, date);
+    const expenses = await response.json();
     setTransactions(expenses);
   }
 
