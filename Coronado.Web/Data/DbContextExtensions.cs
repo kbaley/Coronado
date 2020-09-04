@@ -25,6 +25,7 @@ namespace Coronado.Web.Data
                 .SelectMany(i => i.Transactions)
                 .OrderBy(t => t.Date)
                 .ToList();
+            if (!transactions.Any()) return 0.0;
             var startDate = transactions.First().Date;
             var payments = new List<double>();
             var days = new List<double>();
