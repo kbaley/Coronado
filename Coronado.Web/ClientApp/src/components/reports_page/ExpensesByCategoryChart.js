@@ -22,7 +22,7 @@ export default function ExpensesByCategoryChart() {
   const expenseReport = data.expenses || [];
 
   React.useEffect(() => {
-    if (!report || report.length === 0)
+    if (!data || data.length === 0)
       dispatch(reportActions.loadExpensesByCategoryReport());
   });
 
