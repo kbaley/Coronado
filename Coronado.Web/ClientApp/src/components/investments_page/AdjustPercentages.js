@@ -12,6 +12,16 @@ import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { clone, find, forEach, sumBy } from 'lodash';
 import { useSelector } from 'react-redux';
+import { MoneyFormat } from '../common/DecimalFormat';
+import { makeStyles } from '@material-ui/core/styles';
+
+const styles = theme => ({
+  right: {
+    textAlign: "right",
+  }
+})
+
+const useStyles = makeStyles(styles);
 
 export default function AdjustPercentages(props) {
 
@@ -34,6 +44,9 @@ export default function AdjustPercentages(props) {
           ic.totalPercentage = (ic.percentage * 100 / totalPercentage).toFixed(2);
           const total = sumBy(investments, i => (i.categoryId === ic.investmentCategoryId ? i.currentValue : 0));
           ic.actualPercentage = (total * 100 / totalInvestments).toFixed(2);
+          ic.actualAmount = total;
+          ic.expectedAmount = totalInvestments * ic.totalPercentage / 100;
+          ic.adjustment = ic.expectedAmount - ic.actualAmount;
       });
   }, [investmentCategories, investments]);
 
@@ -70,27 +83,41 @@ export default function AdjustPercentages(props) {
     setInvestmentCategories(categories);
   }
 
+  const classes = useStyles();
+
   return (
     <Dialog
       onClose={props.onClose}
       open={props.show}
       fullWidth={true}
-      maxWidth={'sm'}
+      maxWidth={'md'}
     >
       <DialogContent>
         <Grid container spacing={2}>
 
-          <Grid item xs={2}>Name</Grid>
-          <Grid item xs={2}>Ratio</Grid>
-          <Grid item xs={3}>Expected %</Grid>
-          <Grid item xs={3}>Current %</Grid>
+          <Grid item xs={1}>Name</Grid>
+          <Grid item xs={1}>Ratio</Grid>
+          <Grid item xs={1}>Expected %</Grid>
+          <Grid item xs={1}>Current %</Grid>
+          <Grid item xs={2} className={classes.right}>Expected $</Grid>
+          <Grid item xs={2} className={classes.right}>Current $</Grid>
+          <Grid item xs={2} className={classes.right}>Adjustment</Grid>
           <Grid item xs={2}></Grid>
           {investmentCategories && investmentCategories.filter(c => c.status !== "deleted").map((c, i) =>
             <React.Fragment key={c.investmentCategoryId}>
-            <Grid item xs={2}>{c.name}</Grid>
-            <Grid item xs={2}>{c.percentage}</Grid>
-            <Grid item xs={3}>{c.totalPercentage}%</Grid>
-            <Grid item xs={3}>{c.actualPercentage}%</Grid>
+            <Grid item xs={1}>{c.name}</Grid>
+            <Grid item xs={1}>{c.percentage}</Grid>
+            <Grid item xs={1}>{c.totalPercentage}%</Grid>
+            <Grid item xs={1}>{c.actualPercentage}%</Grid>
+            <Grid item xs={2}>
+              <MoneyFormat amount={c.expectedAmount} />
+            </Grid>
+            <Grid item xs={2}>
+              <MoneyFormat amount={c.actualAmount} />
+            </Grid>
+            <Grid item xs={2}>
+              <MoneyFormat amount={c.adjustment} />
+            </Grid>
             <Grid item xs={2}>
               <DeleteIcon onClick={() => onCategoryDeleted(c.investmentCategoryId)} />
             </Grid>
