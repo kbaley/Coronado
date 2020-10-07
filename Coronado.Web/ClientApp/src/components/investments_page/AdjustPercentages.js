@@ -29,6 +29,7 @@ export default function AdjustPercentages(props) {
   const [name, setName] = React.useState('');
   const [percentage, setPercentage] = React.useState(0);
   const investments = useSelector(state => state.investments);
+  const currencies = useSelector(state => state.currencies);
   
   React.useEffect(() => {
     if (props.investmentCategories) {
@@ -38,17 +39,18 @@ export default function AdjustPercentages(props) {
 
   React.useEffect(() => {
       const totalPercentage = sumBy(investmentCategories, c => c.percentage);
-      const totalInvestments = sumBy(investments, i => (i.categoryId ? i.currentValue : 0));
+      const totalInvestments = sumBy(investments, i => (i.categoryId ? i.currentValue / currencies[i.currency] : 0));
 
       forEach(investmentCategories, ic => {
           ic.totalPercentage = (ic.percentage * 100 / totalPercentage).toFixed(2);
-          const total = sumBy(investments, i => (i.categoryId === ic.investmentCategoryId ? i.currentValue : 0));
+          const total = sumBy(investments, i => 
+            (i.categoryId === ic.investmentCategoryId ? i.currentValue / currencies[i.currency] : 0));
           ic.actualPercentage = (total * 100 / totalInvestments).toFixed(2);
           ic.actualAmount = total;
           ic.expectedAmount = totalInvestments * ic.totalPercentage / 100;
           ic.adjustment = ic.expectedAmount - ic.actualAmount;
       });
-  }, [investmentCategories, investments]);
+  }, [investmentCategories, investments, currencies]);
 
   const savePercentages = () => {
     props.onSaveCategories(investmentCategories);
