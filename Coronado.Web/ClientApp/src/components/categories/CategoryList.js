@@ -5,13 +5,9 @@ import CategoryForm from './CategoryForm';
 import { find } from 'lodash';
 import { CategoryRow } from './CategoryRow';
 import Spinner from '../common/Spinner';
-import {
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell
-} from '@material-ui/core';
+import * as widths from './CategoryWidths';
+import { Grid } from '@material-ui/core';
+import GridHeader from '../common/grid/GridHeader';
 
 export default function CategoryList() {
   const [show, setShow] = React.useState(false);
@@ -46,23 +42,20 @@ export default function CategoryList() {
   }
 
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell style={{ width: 130 }}></TableCell>
-          <TableCell>Name</TableCell>
-          <TableCell>Type</TableCell>
-          <TableCell>Parent</TableCell>
-        </TableRow>
-      </TableHead>
+    <React.Fragment>
+
       <CategoryForm
         show={show}
         onClose={handleClose}
         category={selectedCategory}
         categories={categories}
         onSave={saveCategory} />
-      <TableBody>
-        {isLoading ? <tr><td colSpan="5"><Spinner /></td></tr> :
+    <Grid container spacing={0}>
+      <GridHeader xs={widths.ICON_WIDTH}></GridHeader>
+      <GridHeader xs={widths.NAME_WIDTH}>Name</GridHeader>
+      <GridHeader xs={widths.TYPE_WIDTH}>Type</GridHeader>
+      <GridHeader xs={widths.PARENT_WIDTH}>Parent</GridHeader>
+        {isLoading ? <Grid item xs={12}><Spinner /></Grid> :
           categories.map(cat =>
             <CategoryRow
               key={cat.categoryId}
@@ -71,7 +64,7 @@ export default function CategoryList() {
               onEdit={() => startEditing(cat)}
               onDelete={() => deleteCategory(cat.categoryId, cat.name)} />
           )}
-      </TableBody>
-    </Table>
+    </Grid>
+    </React.Fragment>
   );
 }

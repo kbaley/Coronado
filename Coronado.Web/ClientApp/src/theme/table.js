@@ -14,5 +14,13 @@ export default {
     color: palette.text.primary,
     padding: "13px 5px",
     fontSize: "14px",
+  },
+  paddedRow: {
+    padding: "13px 5px",
+  },
+  cell: {
+    color: palette.text.primary,
+    padding: "13px 5px",
+    fontSize: "14px",
   }
 };
