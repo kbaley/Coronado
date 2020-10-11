@@ -10,10 +10,11 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
+import GridRow from '../common/grid/GridRow';
+import GridItem from '../common/grid/GridItem';
 
 const styles = theme => ({
   row: {
-    ...theme.table.body,
     "&:hover": {
       cursor: 'pointer',
     },
@@ -31,19 +32,16 @@ const goToInvestment = (investment) => {
 
 const useStyles = makeStyles(styles);
 
-function ClickableGridItem({ children, investment, xs, sm, lg, md }) {
+function ClickableGridItem({ children, investment, ...other }) {
   const classes = useStyles();
   return (
-    <Grid item
-      xs={xs}
-      sm={sm}
-      md={md}
-      lg={lg}
+    <GridItem
+      {...other}
       className={classes.row}
       onClick={() => goToInvestment(investment)}
     >
       {children}
-    </Grid>
+    </GridItem>
   )
 }
 
@@ -51,7 +49,7 @@ export function InvestmentRow({ investment, onEdit, onDelete, onBuySell }) {
   const classes = useStyles();
   return (
     <React.Fragment>
-      <Grid container item xs={12} spacing={0} className={classes.gridRow}>
+      <GridRow xs={12} spacing={0} className={classes.gridRow}>
         <Hidden smDown>
           <Grid item xs={2}>
             <EditIcon onStartEditing={onEdit} fontSize="small" />
@@ -87,7 +85,7 @@ export function InvestmentRow({ investment, onEdit, onDelete, onBuySell }) {
         <ClickableGridItem xs={4} md={1} investment={investment}>
           <MoneyFormat amount={investment.currentValue} />
         </ClickableGridItem>
-      </Grid>
+      </GridRow>
     </React.Fragment>
   );
 }

@@ -9,7 +9,7 @@ import GridItem from '../common/grid/GridItem';
 export function CategoryRow({ category, onEdit, onDelete, parent }) {
   return (
     <React.Fragment>
-      <GridRow xs={12} spacing={0}>
+      <GridRow xs={12}>
         <Grid item xs={widths.ICON_WIDTH}>
           <EditIcon onStartEditing={onEdit} fontSize="small" />
           <DeleteIcon onDelete={onDelete} fontSize="small" />

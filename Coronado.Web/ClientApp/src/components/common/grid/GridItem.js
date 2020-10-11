@@ -9,15 +9,16 @@ const styles = theme => ({
 
 const useStyles = makeStyles(styles);
 
-export default function GridItem({ children, xs, sm, lg, md }) {
+export default function GridItem({ children, ...other }) {
   const classes = useStyles();
+  let className = classes.cell;
+  if (other.className) {
+    className += " " + other.className;
+  }
   return (
     <Grid item
-      xs={xs}
-      sm={sm}
-      md={md}
-      lg={lg}
-      className={classes.cell}
+      {...other}
+      className={className}
     >
       {children}
     </Grid>

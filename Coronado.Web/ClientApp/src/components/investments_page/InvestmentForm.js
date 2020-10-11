@@ -44,7 +44,7 @@ export default function InvestmentForm(props) {
         date: new Date().toLocaleDateString(),
         accountId: props.investment.transaction ? props.investment.transaction.accountId : '',
         dontRetrievePrices: props.investment.dontRetrievePrices,
-        categoryId: props.investment.categoryId,
+        categoryId: props.investment.categoryId || '00000000-0000-0000-0000-000000000000',
       });
     }
   }, [props.investment]);

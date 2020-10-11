@@ -5,19 +5,24 @@ const styles = theme => ({
   header: {
     ...theme.table.head,
   },
+  right: {
+    textAlign: "right",
+  }
 });
 
 const useStyles = makeStyles(styles);
 
-export default function GridHeader({ children, xs, sm, lg, md }) {
+export default function GridHeader({ children, alignRight, ...other }) {
   const classes = useStyles();
+  let classNames = classes.header;
+  if (alignRight) classNames += " " + classes.right;
+  if (other.className) {
+    classNames += " " + other.className;
+  }
   return (
     <Grid item
-      xs={xs}
-      sm={sm}
-      md={md}
-      lg={lg}
-      className={classes.header}
+      {...other}
+      className={classNames}
     >
       {children}
     </Grid>

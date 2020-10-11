@@ -3,21 +3,22 @@ import { Grid, makeStyles } from '@material-ui/core';
 
 const styles = theme => ({
   row: {
-    ...theme.table.paddedRow,
+    // ...theme.table.paddedRow,
   },
 });
 
 const useStyles = makeStyles(styles);
 
-export default function GridRow({ children, xs, sm, lg, md }) {
+export default function GridRow({children, ...other}) {
   const classes = useStyles();
+  let className = classes.row;
+  if (other.className) {
+    className += " " + other.className;
+  }
   return (
     <Grid container item
-      xs={xs}
-      sm={sm}
-      md={md}
-      lg={lg}
-      className={classes.row}
+      {...other}
+      className={className}
     >
       {children}
     </Grid>

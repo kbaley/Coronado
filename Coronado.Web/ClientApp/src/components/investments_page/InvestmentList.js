@@ -6,19 +6,9 @@ import { orderBy } from 'lodash';
 import { InvestmentRow } from './InvestmentRow';
 import InvestmentsTotal from './InvestmentsTotal';
 import Spinner from '../common/Spinner';
-import { Grid, Hidden, makeStyles } from '@material-ui/core';
+import { Grid, Hidden } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-
-const styles = theme => ({
-  header: {
-    ...theme.table.head,
-  },
-  right: {
-    textAlign: "right",
-  }
-})
-
-const useStyles = makeStyles(styles);
+import GridHeader from '../common/grid/GridHeader';
 
 export default function InvestmentList({ investments, currency, children }) {
   const [show, setShow] = React.useState(false);
@@ -59,8 +49,6 @@ export default function InvestmentList({ investments, currency, children }) {
     setShow(true);
   }
 
-  const classes = useStyles();
-
   return (
     <div>
       <InvestmentForm
@@ -74,20 +62,20 @@ export default function InvestmentList({ investments, currency, children }) {
       />
       <Grid container spacing={0}>
         <Hidden smDown>
-          <Grid item xs={2} className={classes.header}></Grid>
-          <Grid item xs={3} className={classes.header}>Name</Grid>
+          <GridHeader xs={2}></GridHeader>
+          <GridHeader xs={3}>Name</GridHeader>
         </Hidden>
-        <Grid item xs={4} md={1} className={classes.header}>Symbol</Grid>
+          <GridHeader xs={4} md={1}>Symbol</GridHeader>
         <Hidden smDown>
-          <Grid item xs={1} className={classes.header}>Shares</Grid>
+          <GridHeader xs={1}>Shares</GridHeader>
         </Hidden>
-        <Grid item xs={4} md={1} className={classes.header + " " + classes.right}>Last Price</Grid>
+        <GridHeader xs={4} md={1} alignRight>Last Price</GridHeader>
         <Hidden smDown>
-          <Grid item xs={1} className={classes.header + " " + classes.right}>Average Price</Grid>
-          <Grid item xs={1} className={classes.header + " " + classes.right}>IRR</Grid>
-          <Grid item xs={1} className={classes.header + " " + classes.right}>Book Value</Grid>
+          <GridHeader xs={1} alignRight>Average Price</GridHeader>
+          <GridHeader xs={1} alignRight>IRR</GridHeader>
+          <GridHeader xs={1} alignRight>Book Value</GridHeader>
         </Hidden>
-        <Grid item xs={4} md={1} className={classes.header + " " + classes.right}>Current Value</Grid>
+        <GridHeader xs={4} md={1} alignRight>Current Value</GridHeader>
         {isLoading ? <Grid item xs={12}><Spinner /></Grid> :
           sortedInvestments.map(i =>
             <InvestmentRow
