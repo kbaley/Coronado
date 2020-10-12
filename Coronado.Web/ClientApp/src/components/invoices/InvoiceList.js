@@ -4,7 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import InvoiceForm from './InvoiceForm';
 import { InvoiceRow } from './InvoiceRow';
 import Spinner from '../common/Spinner';
-import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
+import GridHeader from '../common/grid/GridHeader';
+import * as widths from './InvoiceWidths';
 
 export default function InvoiceList({ showPaid }) {
   const [show, setShow] = React.useState(false);
@@ -49,18 +51,7 @@ export default function InvoiceList({ showPaid }) {
   }
 
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell style={{ width: 260 }}></TableCell>
-          <TableCell>Number</TableCell>
-          <TableCell>Date</TableCell>
-          <TableCell>Customer</TableCell>
-          <TableCell>Date sent</TableCell>
-          <TableCell align="right">Balance</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
+    <React.Fragment>
         <InvoiceForm
           show={show}
           onClose={handleClose}
@@ -68,7 +59,14 @@ export default function InvoiceList({ showPaid }) {
           invoices={invoices}
           customers={customers}
           onSave={saveInvoice} />
-        {isLoading ? <tr><td colSpan="4"><Spinner /></td></tr> :
+    <Grid container spacing={0}>
+      <GridHeader xs={widths.ICON_WIDTH}></GridHeader>
+      <GridHeader xs={widths.NUMBER_WIDTH}>Number</GridHeader>
+      <GridHeader xs={widths.DATE_WIDTH}>Date</GridHeader>
+      <GridHeader xs={widths.CUSTOMER_WIDTH}>Customer</GridHeader>
+      <GridHeader xs={widths.DATE_SENT_WIDTH}>Date sent</GridHeader>
+      <GridHeader xs={widths.BALANCE_WIDTH} alignRight>Balance</GridHeader>
+        {isLoading ? <Grid item xs={12}><Spinner /></Grid> :
           invoices.map((invoice, key) =>
             showInvoice(invoice) &&
             <InvoiceRow
@@ -80,7 +78,7 @@ export default function InvoiceList({ showPaid }) {
               onPreview={() => previewInvoice(invoice.invoiceId)}
               onDelete={() => deleteInvoice(invoice.invoiceId, invoice.invoiceNumber)} />
           )}
-      </TableBody>
-    </Table>
+    </Grid>
+    </React.Fragment>
   );
 }
