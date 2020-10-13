@@ -2,17 +2,40 @@ import React from 'react';
 import { DecimalFormat, MoneyFormat } from '../common/DecimalFormat';
 import { IconButton, makeStyles, Grid } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
 import * as widths from './TransactionWidths';
 import GridRow from '../common/grid/GridRow';
 import GridItem from '../common/grid/GridItem';
 import EditableTransaction from './EditableTransaction';
+import * as Mousetrap from 'mousetrap';
 
 const styles = theme => ({
   icon: {
     transform: "scale(1)",
-  }
+  },
+  row: {
+    "&:hover": {
+      cursor: 'pointer',
+    },
+  },
+  gridRow: {
+    "&:hover": {
+      backgroundColor: theme.palette.gray[1],
+    },
+  },
 });
+
+function ClickableGridItem({ children, onClick, ...other }) {
+  const classes = useStyles();
+  return (
+    <GridItem
+      {...other}
+      className={classes.row}
+      onClick={onClick}
+    >
+      {children}
+    </GridItem>
+  )
+}
 
 const useStyles = makeStyles(styles);
 
@@ -45,32 +68,74 @@ export default function TransactionRow(props) {
     }
   }, [props.transaction]);
 
+  const startEditing = () => {
+    setIsEditing(true);
+    Mousetrap.bind('esc', cancelEditing)
+  }
+
+  const cancelEditing = () => {
+    setIsEditing(false);
+    Mousetrap.unbind('esc');
+  }
+
   const classes = useStyles();
 
   return (
     isEditing ?
       <EditableTransaction 
         transaction={trx} 
-        onCancelEdit={() => setIsEditing(false)}
-        onFinishEdit={() => setIsEditing(false)}
+        onCancelEdit={cancelEditing}
+        onFinishEdit={cancelEditing}
       /> :
 
-      <GridRow xs={12}>
+      <GridRow xs={12} className={classes.gridRow}>
         <Grid item xs={widths.ICON_WIDTH}>
-          <IconButton onClick={() => setIsEditing(true)} component="span">
-            <EditIcon className={classes.icon} fontSize="small" />
-          </IconButton>
           <IconButton onClick={props.onDelete} component="span">
             <DeleteIcon className={classes.icon} fontSize="small" />
           </IconButton>
         </Grid>
-        <GridItem xs={widths.DATE_WIDTH}>{new Date(trx.transactionDate).toLocaleDateString()}</GridItem>
-        <GridItem xs={widths.VENDOR_WIDTH}>{trx.vendor}</GridItem>
-        <GridItem xs={widths.CATEGORY_WIDTH}>{trx.categoryDisplay}</GridItem>
-        <GridItem xs={widths.DESCRIPTION_WIDTH}>{trx.description}</GridItem>
-        <GridItem xs={widths.DEBIT_WIDTH}><DecimalFormat isDebit={true} amount={trx.debit} /></GridItem>
-        <GridItem xs={widths.CREDIT_WIDTH}><DecimalFormat isCredit={true} amount={trx.credit} /></GridItem>
-        <GridItem xs={widths.BALANCE_WIDTH}><MoneyFormat amount={trx.runningTotal} /></GridItem>
+        <ClickableGridItem 
+          xs={widths.DATE_WIDTH}
+          onClick={startEditing}
+        >
+          {new Date(trx.transactionDate).toLocaleDateString()}
+        </ClickableGridItem>
+        <ClickableGridItem 
+          xs={widths.VENDOR_WIDTH}
+          onClick={startEditing}
+        >
+          {trx.vendor}
+        </ClickableGridItem>
+        <ClickableGridItem 
+          xs={widths.CATEGORY_WIDTH}
+          onClick={startEditing}
+        >
+          {trx.categoryDisplay}
+        </ClickableGridItem>
+        <ClickableGridItem 
+          xs={widths.DESCRIPTION_WIDTH}
+          onClick={startEditing}
+        >
+          {trx.description}
+        </ClickableGridItem>
+        <ClickableGridItem 
+          xs={widths.DEBIT_WIDTH}
+          onClick={startEditing}
+        >
+          <DecimalFormat isDebit={true} amount={trx.debit} />
+        </ClickableGridItem>
+        <ClickableGridItem 
+          xs={widths.CREDIT_WIDTH}
+          onClick={startEditing}
+        >
+          <DecimalFormat isDebit={true} amount={trx.credit} />
+        </ClickableGridItem>
+        <ClickableGridItem 
+          xs={widths.BALANCE_WIDTH}
+          onClick={startEditing}
+        >
+          <MoneyFormat amount={trx.runningTotal} />
+        </ClickableGridItem>
       </GridRow>
   );
 }

@@ -146,9 +146,6 @@ export default function EditableTransaction(props) {
   return (
       <GridRow xs={12}>
         <Grid item xs={widths.ICON_WIDTH}>
-          <IconButton onClick={updateTransaction} component="span">
-            <CheckIcon className={classes.icon} fontSize="small" />
-          </IconButton>
           <IconButton onClick={cancelEditing} component="span">
             <CancelIcon className={classes.icon} fontSize="small" />
           </IconButton>
