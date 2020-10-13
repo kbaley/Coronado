@@ -6,11 +6,14 @@ import CategorySelect from '../common/CategorySelect';
 import * as Mousetrap from 'mousetrap';
 import { getCategoriesForDropdown } from "../../selectors/selectors.js";
 import VendorField from '../common/VendorField';
-import { TableRow, TableCell, IconButton, makeStyles, TextField } from '@material-ui/core';
+import { IconButton, makeStyles, TextField, Grid } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import CheckIcon from '@material-ui/icons/Check'
 import CancelIcon from '@material-ui/icons/Cancel'
+import * as widths from './TransactionWidths';
+import GridRow from '../common/grid/GridRow';
+import GridItem from '../common/grid/GridItem';
 
 const styles = theme => ({
   overflow: {
@@ -164,40 +167,40 @@ export default function TransactionRow(props) {
 
   return (
     isEditing ?
-      <TableRow>
-        <TableCell>
+      <GridRow xs={12}>
+        <Grid xs={widths.ICON_WIDTH}>
           <IconButton onClick={updateTransaction} component="span">
             <CheckIcon className={classes.icon} fontSize="small" />
           </IconButton>
           <IconButton onClick={cancelEditing} component="span">
             <CancelIcon className={classes.icon} fontSize="small" />
           </IconButton>
-        </TableCell>
-        <TableCell>
+        </Grid>
+        <GridItem xs={widths.DATE_WIDTH}>
           <TextField
             name="transactionDate"
             onChange={handleChangeField}
             className={classes.input}
             onKeyPress={handleKeyPress}
             value={trx.transactionDate} />
-        </TableCell>
-        <TableCell>
+        </GridItem>
+        <GridItem xs={widths.VENDOR_WIDTH}>
           <VendorField
             vendors={vendors}
             value={trx.vendor}
             className={classes.input}
             onVendorChanged={handleChangeVendor}
           />
-        </TableCell>
-        <TableCell>
+        </GridItem>
+        <GridItem xs={widths.CATEGORY_WIDTH}>
           <CategorySelect
             className={classes.input}
             selectedCategory={selectedCategory}
             categories={categories}
             selectedAccount={trx.accountId}
             onCategoryChanged={handleChangeCategory} />
-        </TableCell>
-        <TableCell>
+        </GridItem>
+        <GridItem xs={widths.DESCRIPTION_WIDTH}>
           <TextField
             name="description"
             onChange={handleChangeField}
@@ -206,8 +209,8 @@ export default function TransactionRow(props) {
             value={trx.description}
             onKeyPress={handleKeyPress}
           />
-        </TableCell>
-        <TableCell>
+        </GridItem>
+        <GridItem xs={widths.DEBIT_WIDTH}>
           <TextField
             name="debit"
             value={trx.debit}
@@ -215,8 +218,8 @@ export default function TransactionRow(props) {
             inputProps={{ style: { textAlign: 'right' } }}
             onChange={handleChangeField}
             onKeyPress={handleKeyPress} />
-        </TableCell>
-        <TableCell>
+        </GridItem>
+        <GridItem xs={widths.CREDIT_WIDTH}>
           <TextField
             name="credit"
             value={trx.credit}
@@ -224,26 +227,27 @@ export default function TransactionRow(props) {
             inputProps={{ style: { textAlign: 'right' } }}
             onChange={handleChangeField}
             onKeyPress={handleKeyPress}
-          /></TableCell>
-        <TableCell></TableCell>
-      </TableRow> :
+          />
+        </GridItem>
+        <GridItem xs={widths.BALANCE_WIDTH} />
+      </GridRow> :
 
-      <TableRow>
-        <TableCell>
+      <GridRow xs={12}>
+        <Grid item xs={widths.ICON_WIDTH}>
           <IconButton onClick={startEditing} component="span">
             <EditIcon className={classes.icon} fontSize="small" />
           </IconButton>
           <IconButton onClick={props.onDelete} component="span">
             <DeleteIcon className={classes.icon} fontSize="small" />
           </IconButton>
-        </TableCell>
-        <TableCell>{new Date(trx.transactionDate).toLocaleDateString()}</TableCell>
-        <TableCell title={trx.vendor} className={classes.overflow}>{trx.vendor}</TableCell>
-        <TableCell title={trx.categoryDisplay} className={classes.overflow}>{trx.categoryDisplay}</TableCell>
-        <TableCell title={trx.description}>{trx.description}</TableCell>
-        <TableCell><DecimalFormat isDebit={true} amount={trx.debit} /></TableCell>
-        <TableCell><DecimalFormat isCredit={true} amount={trx.credit} /></TableCell>
-        <TableCell><MoneyFormat amount={trx.runningTotal} /></TableCell>
-      </TableRow>
+        </Grid>
+        <GridItem xs={widths.DATE_WIDTH}>{new Date(trx.transactionDate).toLocaleDateString()}</GridItem>
+        <GridItem xs={widths.VENDOR_WIDTH}>{trx.vendor}</GridItem>
+        <GridItem xs={widths.CATEGORY_WIDTH}>{trx.categoryDisplay}</GridItem>
+        <GridItem xs={widths.DESCRIPTION_WIDTH}>{trx.description}</GridItem>
+        <GridItem xs={widths.DEBIT_WIDTH}><DecimalFormat isDebit={true} amount={trx.debit} /></GridItem>
+        <GridItem xs={widths.CREDIT_WIDTH}><DecimalFormat isCredit={true} amount={trx.credit} /></GridItem>
+        <GridItem xs={widths.BALANCE_WIDTH}><MoneyFormat amount={trx.runningTotal} /></GridItem>
+      </GridRow>
   );
 }

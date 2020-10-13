@@ -1,12 +1,14 @@
 import React from 'react';
-import { CheckIcon } from '../icons/CheckIcon';
 import CategorySelect from '../common/CategorySelect';
 import { find } from 'lodash';
 import * as transactionActions from '../../actions/transactionActions';
 import { useSelector, useDispatch } from 'react-redux';
 import { getCategoriesForDropdown } from "../../selectors/selectors";
 import VendorField from '../common/VendorField';
-import { TableRow, TableCell, makeStyles, TextField } from '@material-ui/core';
+import { makeStyles, TextField, Grid } from '@material-ui/core';
+import * as widths from './TransactionWidths';
+import GridRow from '../common/grid/GridRow';
+import GridItem from '../common/grid/GridItem';
 
 const styles = theme => ({
   input: {
@@ -197,11 +199,9 @@ export default function NewTransactionRow(props) {
   const classes = useStyles();
 
   return (
-    <TableRow>
-      <TableCell>
-        <CheckIcon onClick={saveTransaction} />
-      </TableCell>
-      <TableCell>
+    <GridRow xs={12}>
+      <Grid item xs={widths.ICON_WIDTH} />
+      <GridItem xs={widths.DATE_WIDTH}>
         <TextField
           name="transactionDate"
           className={classes.input}
@@ -210,16 +210,16 @@ export default function NewTransactionRow(props) {
           autoFocus
           inputRef={textInput}
         />
-      </TableCell>
-      <TableCell>
+      </GridItem>
+      <GridItem xs={widths.VENDOR_WIDTH}>
         <VendorField
           vendors={vendors}
           value={trx.vendor}
           className={classes.input}
           onVendorChanged={handleChangeVendor}
         />
-      </TableCell>
-      <TableCell>
+      </GridItem>
+      <GridItem xs={widths.CATEGORY_WIDTH}>
         <CategorySelect
           selectedCategory={selectedCategory}
           onCategoryChanged={handleChangeCategory}
@@ -227,8 +227,8 @@ export default function NewTransactionRow(props) {
           className={classes.input}
           categories={categories}
         />
-      </TableCell>
-      <TableCell>
+      </GridItem>
+      <GridItem xs={widths.DESCRIPTION_WIDTH}>
         <TextField
           name="description"
           fullWidth={true}
@@ -236,8 +236,8 @@ export default function NewTransactionRow(props) {
           value={trx.description}
           onChange={handleChangeField}
         />
-      </TableCell>
-      <TableCell>
+      </GridItem>
+      <GridItem xs={widths.DEBIT_WIDTH}>
         <TextField
           name="debit"
           fullWidth={true}
@@ -246,8 +246,8 @@ export default function NewTransactionRow(props) {
           onChange={handleChangeDebit}
           onKeyPress={handleKeyPress}
         />
-      </TableCell>
-      <TableCell>
+      </GridItem>
+      <GridItem xs={widths.CREDIT_WIDTH}>
         <TextField
           name="credit"
           fullWidth={true}
@@ -256,8 +256,8 @@ export default function NewTransactionRow(props) {
           onChange={handleChangeField}
           onKeyPress={handleKeyPress}
         />
-      </TableCell>
-      <TableCell></TableCell>
-    </TableRow>
+      </GridItem>
+      <GridItem xs={widths.BALANCE_WIDTH} />
+    </GridRow>
   )
 }
