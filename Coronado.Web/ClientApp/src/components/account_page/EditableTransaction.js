@@ -5,7 +5,6 @@ import CategorySelect from '../common/CategorySelect';
 import { getCategoriesForDropdown } from "../../selectors/selectors.js";
 import VendorField from '../common/VendorField';
 import { IconButton, makeStyles, TextField, Grid } from '@material-ui/core';
-import CheckIcon from '@material-ui/icons/Check'
 import CancelIcon from '@material-ui/icons/Cancel'
 import * as widths from './TransactionWidths';
 import GridRow from '../common/grid/GridRow';
