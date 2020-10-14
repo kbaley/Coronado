@@ -13,6 +13,7 @@ const styles = theme => ({
     transform: "scale(1)",
   },
   row: {
+    padding: '7px 5px',
     "&:hover": {
       cursor: 'pointer',
     },
@@ -22,6 +23,9 @@ const styles = theme => ({
       backgroundColor: theme.palette.gray[1],
     },
   },
+  button: {
+    padding: 7,
+  }
 });
 
 function ClickableGridItem({ children, onClick, ...other }) {
@@ -90,7 +94,7 @@ export default function TransactionRow(props) {
 
       <GridRow xs={12} className={classes.gridRow}>
         <Grid item xs={widths.ICON_WIDTH}>
-          <IconButton onClick={props.onDelete} component="span">
+          <IconButton onClick={props.onDelete} component="span" className={classes.button}>
             <DeleteIcon className={classes.icon} fontSize="small" />
           </IconButton>
         </Grid>
