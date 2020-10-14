@@ -4,11 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import CategorySelect from '../common/CategorySelect';
 import { getCategoriesForDropdown } from "../../selectors/selectors.js";
 import VendorField from '../common/VendorField';
-import { IconButton, makeStyles, TextField, Grid } from '@material-ui/core';
+import { IconButton, makeStyles, TextField, TableRow, TableCell } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel'
-import * as widths from './TransactionWidths';
-import GridRow from '../common/grid/GridRow';
-import GridItem from '../common/grid/GridItem';
 
 const styles = theme => ({
   input: {
@@ -143,37 +140,37 @@ export default function EditableTransaction(props) {
   const classes = useStyles();
 
   return (
-      <GridRow xs={12}>
-        <Grid item xs={widths.ICON_WIDTH}>
+      <TableRow>
+        <TableCell>
           <IconButton onClick={cancelEditing} component="span">
             <CancelIcon className={classes.icon} fontSize="small" />
           </IconButton>
-        </Grid>
-        <GridItem xs={widths.DATE_WIDTH}>
+        </TableCell>
+        <TableCell>
           <TextField
             name="transactionDate"
             onChange={handleChangeField}
             className={classes.input}
             onKeyPress={handleKeyPress}
             value={trx.transactionDate} />
-        </GridItem>
-        <GridItem xs={widths.VENDOR_WIDTH}>
+        </TableCell>
+        <TableCell>
           <VendorField
             vendors={vendors}
             value={trx.vendor}
             className={classes.input}
             onVendorChanged={handleChangeVendor}
           />
-        </GridItem>
-        <GridItem xs={widths.CATEGORY_WIDTH}>
+        </TableCell>
+        <TableCell>
           <CategorySelect
             className={classes.input}
             selectedCategory={selectedCategory}
             categories={categories}
             selectedAccount={trx.accountId}
             onCategoryChanged={handleChangeCategory} />
-        </GridItem>
-        <GridItem xs={widths.DESCRIPTION_WIDTH}>
+        </TableCell>
+        <TableCell>
           <TextField
             name="description"
             onChange={handleChangeField}
@@ -182,8 +179,8 @@ export default function EditableTransaction(props) {
             value={trx.description}
             onKeyPress={handleKeyPress}
           />
-        </GridItem>
-        <GridItem xs={widths.DEBIT_WIDTH}>
+        </TableCell>
+        <TableCell>
           <TextField
             name="debit"
             value={trx.debit}
@@ -191,8 +188,8 @@ export default function EditableTransaction(props) {
             inputProps={{ style: { textAlign: 'right' } }}
             onChange={handleChangeField}
             onKeyPress={handleKeyPress} />
-        </GridItem>
-        <GridItem xs={widths.CREDIT_WIDTH}>
+        </TableCell>
+        <TableCell>
           <TextField
             name="credit"
             value={trx.credit}
@@ -201,8 +198,8 @@ export default function EditableTransaction(props) {
             onChange={handleChangeField}
             onKeyPress={handleKeyPress}
           />
-        </GridItem>
-        <GridItem xs={widths.BALANCE_WIDTH} />
-      </GridRow>
+        </TableCell>
+        <TableCell />
+      </TableRow>
   );
 }

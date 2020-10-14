@@ -1,10 +1,7 @@
 import React from 'react';
 import { DecimalFormat, MoneyFormat } from '../common/DecimalFormat';
-import { IconButton, makeStyles, Grid } from '@material-ui/core';
+import { IconButton, makeStyles, TableCell, TableRow } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import * as widths from './TransactionWidths';
-import GridRow from '../common/grid/GridRow';
-import GridItem from '../common/grid/GridItem';
 import EditableTransaction from './EditableTransaction';
 import * as Mousetrap from 'mousetrap';
 
@@ -28,16 +25,16 @@ const styles = theme => ({
   }
 });
 
-function ClickableGridItem({ children, onClick, ...other }) {
+function ClickableTableCell({ children, onClick, ...other }) {
   const classes = useStyles();
   return (
-    <GridItem
+    <TableCell
       {...other}
       className={classes.row}
       onClick={onClick}
     >
       {children}
-    </GridItem>
+    </TableCell>
   )
 }
 
@@ -92,54 +89,33 @@ export default function TransactionRow(props) {
         onFinishEdit={cancelEditing}
       /> :
 
-      <GridRow xs={12} className={classes.gridRow}>
-        <Grid item xs={widths.ICON_WIDTH}>
+      <TableRow className={classes.gridRow}>
+        <TableCell>
           <IconButton onClick={props.onDelete} component="span" className={classes.button}>
             <DeleteIcon className={classes.icon} fontSize="small" />
           </IconButton>
-        </Grid>
-        <ClickableGridItem 
-          xs={widths.DATE_WIDTH}
-          onClick={startEditing}
-        >
+        </TableCell>
+        <ClickableTableCell onClick={startEditing}>
           {new Date(trx.transactionDate).toLocaleDateString()}
-        </ClickableGridItem>
-        <ClickableGridItem 
-          xs={widths.VENDOR_WIDTH}
-          onClick={startEditing}
-        >
+        </ClickableTableCell>
+        <ClickableTableCell onClick={startEditing}>
           {trx.vendor}
-        </ClickableGridItem>
-        <ClickableGridItem 
-          xs={widths.CATEGORY_WIDTH}
-          onClick={startEditing}
-        >
+        </ClickableTableCell>
+        <ClickableTableCell onClick={startEditing}>
           {trx.categoryDisplay}
-        </ClickableGridItem>
-        <ClickableGridItem 
-          xs={widths.DESCRIPTION_WIDTH}
-          onClick={startEditing}
-        >
+        </ClickableTableCell>
+        <ClickableTableCell onClick={startEditing}>
           {trx.description}
-        </ClickableGridItem>
-        <ClickableGridItem 
-          xs={widths.DEBIT_WIDTH}
-          onClick={startEditing}
-        >
+        </ClickableTableCell>
+        <ClickableTableCell onClick={startEditing}>
           <DecimalFormat isDebit={true} amount={trx.debit} />
-        </ClickableGridItem>
-        <ClickableGridItem 
-          xs={widths.CREDIT_WIDTH}
-          onClick={startEditing}
-        >
+        </ClickableTableCell>
+        <ClickableTableCell onClick={startEditing}>
           <DecimalFormat isDebit={true} amount={trx.credit} />
-        </ClickableGridItem>
-        <ClickableGridItem 
-          xs={widths.BALANCE_WIDTH}
-          onClick={startEditing}
-        >
+        </ClickableTableCell>
+        <ClickableTableCell onClick={startEditing}>
           <MoneyFormat amount={trx.runningTotal} />
-        </ClickableGridItem>
-      </GridRow>
+        </ClickableTableCell>
+      </TableRow>
   );
 }
