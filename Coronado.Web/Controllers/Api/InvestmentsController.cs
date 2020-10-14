@@ -61,16 +61,19 @@ namespace Coronado.Web.Controllers.Api
                     Symbol = i.Symbol,
                     Shares = i.Transactions.Sum(t => t.Shares),
                     LastPrice = i.LastPrice,
-                    AveragePrice = i.Transactions.Sum(t => t.Shares * t.Price) / i.Transactions.Sum(t => t.Shares),
+                    // Don't divide by number of shares yet in case it's zero; we'll do this later
+                    AveragePrice = i.Transactions.Sum(t => t.Shares * t.Price),
                     Currency = i.Currency,
                     DontRetrievePrices = i.DontRetrievePrices,
                     AnnualizedIrr = i.GetAnnualizedIrr(),
                     CategoryId = i.CategoryId
                 })
+                .Where(i => i.Shares != 0)
                 .OrderBy(i => i.Name)
                 .ToList();
             investments.ForEach( i => {
                 i.CurrentValue = i.Shares * i.LastPrice;
+                i.AveragePrice = i.Shares == 0 ? 0 : i.AveragePrice / i.Shares;
                 i.BookValue = i.Shares * i.AveragePrice;
             });
             var totalIrr = _context.Investments.GetAnnualizedIrr();
