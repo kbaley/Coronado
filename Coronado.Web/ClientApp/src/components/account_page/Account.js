@@ -12,6 +12,8 @@ import UploadQif from './UploadQif';
 import { filter } from "lodash";
 import history from "../../history";
 import { withRouter } from 'react-router-dom';
+import { Box } from '@material-ui/core';
+import MiniTransactionList from './mini/MiniTransactionList';
 
 function AccountHeader({ account }) {
   return <h1>
@@ -73,12 +75,22 @@ function Account({ match }) {
         <DeleteAccount onDelete={deleteAccount} />
       </div>
       <AccountHeader account={account} />
+      <Box display={{xs: "none", md: "block"}}>
       <TransactionList
         mortgageAccounts={getMortgageAccounts()}
         account={account}
         categories={categories}
       />
       {remainingTransactionCount > 0 ? <LoadMoreTransactions /> : null}
+      </Box>
+      <Box display={{xs: "block", md: "none"}}>
+      <MiniTransactionList
+        mortgageAccounts={getMortgageAccounts()}
+        account={account}
+        categories={categories}
+      />
+      {remainingTransactionCount > 0 ? <LoadMoreTransactions /> : null}
+      </Box>
     </div>
   );
 }

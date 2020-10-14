@@ -52,29 +52,29 @@ export default function TransactionList(props) {
   const classes = useStyles();
 
   return (
-       <Table className={classes.transactionTable}>
-        <TableHead>
-          <TableRow>
-            <TableCell></TableCell>
-            <TableCell>Date</TableCell>
-            <TableCell>Vendor</TableCell>
-            <TableCell>Category</TableCell>
-            <TableCell>Description</TableCell>
-            <TableCell>Debit</TableCell>
-            <TableCell>Credit</TableCell>
-            <TableCell></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <NewTransactionRow
-            account={props.account} />
-        { isLoading ? <tr><td colSpan="8"><Spinner /></td></tr> :
+    <Table className={classes.transactionTable}>
+      <TableHead>
+        <TableRow>
+          <TableCell></TableCell>
+          <TableCell>Date</TableCell>
+          <TableCell>Vendor</TableCell>
+          <TableCell>Category</TableCell>
+          <TableCell>Description</TableCell>
+          <TableCell>Debit</TableCell>
+          <TableCell>Credit</TableCell>
+          <TableCell></TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        <NewTransactionRow
+          account={props.account} />
+        {isLoading ? <tr><td colSpan="8"><Spinner /></td></tr> :
           transactions.map(trx =>
             <TransactionRow key={trx.transactionId} transaction={trx}
               onDelete={() => deleteTransaction(trx.transactionId)} />
           )
         }
-        </TableBody>
-      </Table>
+      </TableBody>
+    </Table>
   );
 }
