@@ -3,7 +3,7 @@ import { Grid, makeStyles } from '@material-ui/core';
 
 const styles = theme => ({
   row: {
-    // ...theme.table.paddedRow,
+    "borderBottom": "1px solid #ddd",
   },
 });
 
