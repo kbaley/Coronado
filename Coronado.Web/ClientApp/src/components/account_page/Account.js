@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import TransactionList from './TransactionList';
 import LoadMoreTransactions from './LoadMoreTransactions';
 import { find } from 'lodash';
-import './Account.css';
 import EditAccount from './EditAccount';
 import UploadQif from './UploadQif';
 import { filter } from "lodash";
@@ -14,9 +13,10 @@ import history from "../../history";
 import { withRouter } from 'react-router-dom';
 import { Box } from '@material-ui/core';
 import MiniTransactionList from './mini/MiniTransactionList';
+import NewTransaction from './mini/NewTransaction';
 
 function AccountHeader({ account }) {
-  return <h1>
+  return <h1 style={{"float": "left"}}>
     {account ? account.name : ""}
   </h1>
 }
@@ -28,7 +28,7 @@ function Account({ match }) {
   const categories = useSelector(state => state.categories);
   const remainingTransactionCount = useSelector(state => state.transactionModel.remainingTransactionCount);
   const dispatch = useDispatch();
-
+  
   React.useEffect(() => {
     dispatch(transactionActions.loadTransactions(match.params.accountId));
   }, [dispatch, match.params.accountId])
@@ -69,27 +69,31 @@ function Account({ match }) {
 
   return (
     <div>
-      <div style={{ float: "right", width: "150px" }}>
-        <UploadQif account={account} onUpload={uploadQif} />
-        <EditAccount account={account} onUpdate={updateAccount} accountTypes={accountTypes} />
-        <DeleteAccount onDelete={deleteAccount} />
-      </div>
-      <AccountHeader account={account} />
-      <Box display={{xs: "none", md: "block"}}>
-      <TransactionList
-        mortgageAccounts={getMortgageAccounts()}
-        account={account}
-        categories={categories}
-      />
-      {remainingTransactionCount > 0 ? <LoadMoreTransactions /> : null}
+      <Box display={{ xs: "none", md: "block" }}>
+        <div style={{ float: "right", width: "150px" }}>
+          <UploadQif account={account} onUpload={uploadQif} />
+          <EditAccount account={account} onUpdate={updateAccount} accountTypes={accountTypes} />
+          <DeleteAccount onDelete={deleteAccount} />
+        </div>
+        <AccountHeader account={account} />
+        <TransactionList
+          mortgageAccounts={getMortgageAccounts()}
+          account={account}
+          categories={categories}
+        />
+        {remainingTransactionCount > 0 ? <LoadMoreTransactions /> : null}
       </Box>
-      <Box display={{xs: "block", md: "none"}}>
-      <MiniTransactionList
-        mortgageAccounts={getMortgageAccounts()}
-        account={account}
-        categories={categories}
-      />
-      {remainingTransactionCount > 0 ? <LoadMoreTransactions /> : null}
+      <Box display={{ xs: "block", md: "none" }}>
+        <div style={{ float: "right", width: "50px" }}>
+          <NewTransaction />
+        </div>
+        <AccountHeader account={account} />
+        <MiniTransactionList
+          mortgageAccounts={getMortgageAccounts()}
+          account={account}
+          categories={categories}
+        />
+        {remainingTransactionCount > 0 ? <LoadMoreTransactions /> : null}
       </Box>
     </div>
   );
