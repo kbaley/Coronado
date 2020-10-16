@@ -4,6 +4,7 @@ import {
 } from '@material-ui/core';
 import NetWorthGraph from './NetWorthGraph';
 import NetWorthReport from './NetWorthReport';
+import NetWorthBreakdown from './NetWorthBreakdown';
 
 export default function NetWorthPage() {
 
@@ -18,6 +19,9 @@ export default function NetWorthPage() {
         </Hidden>
         <Grid item xs={12} md={7}>
           <NetWorthReport />
+        </Grid>
+        <Grid item xs={12}>
+          <NetWorthBreakdown />
         </Grid>
       </Grid>
       <div>

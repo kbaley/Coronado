@@ -236,6 +236,7 @@ namespace Coronado.Web.Controllers.Api
             var description = $"Investment: {buySell} of {investmentDto.Symbol} at {investmentDto.LastPrice}";
             var investmentAccount = await _context.Accounts.FirstAsync(a => a.AccountType == "Investment").ConfigureAwait(false);
             var enteredDate = DateTime.Now;
+            var exchangeRate = _context.Currencies.SingleOrDefault(c => c.Symbol == "CAD").PriceInUsd;
             var investmentAccountTransaction = new Transaction
             {
                 TransactionId = Guid.NewGuid(),
@@ -246,6 +247,9 @@ namespace Coronado.Web.Controllers.Api
                 TransactionType = TRANSACTION_TYPE.INVESTMENT,
                 Description = description
             };
+            investmentAccountTransaction.SetAmountInBaseCurrency(investmentAccount.Currency, exchangeRate);
+            var otherAccount = await _context.Accounts.FindAsync(investmentDto.AccountId);
+            var currency = otherAccount.Currency;
             var transaction = new Transaction
             {
                 TransactionId = Guid.NewGuid(),
@@ -256,6 +260,7 @@ namespace Coronado.Web.Controllers.Api
                 TransactionType = TRANSACTION_TYPE.INVESTMENT,
                 Description = description
             };
+            transaction.SetAmountInBaseCurrency(currency, exchangeRate);
             var investmentTransaction = new InvestmentTransaction
             {
                 InvestmentTransactionId = Guid.NewGuid(),

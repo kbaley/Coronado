@@ -42,6 +42,15 @@ namespace Coronado.Web.Domain
                 _ => "",
             };
         }
+
+        public void SetAmountInBaseCurrency(string currency, decimal exchangeRate) {
+            if (currency == "USD") {
+                AmountInBaseCurrency = Amount;
+            } else {
+                AmountInBaseCurrency = Math.Round(Amount / exchangeRate, 2);
+            }
+
+        }
     }
 
     public enum TRANSACTION_TYPE
