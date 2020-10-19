@@ -1,7 +1,6 @@
 import React from 'react';
 import { MoneyFormat, MiniDecimalFormat } from '../../common/DecimalFormat';
 import { Grid, makeStyles } from '@material-ui/core';
-import EditableTransaction from './../EditableTransaction';
 
 const styles = theme => ({
   icon: {
@@ -27,7 +26,6 @@ const styles = theme => ({
 const useStyles = makeStyles(styles);
 
 export default function MiniTransactionRow(props) {
-  const [isEditing, setIsEditing] = React.useState(false);
   const [trx, setTrx] = React.useState({
     ...props.transaction,
     vendor: props.transaction.vendor || '',
@@ -55,24 +53,9 @@ export default function MiniTransactionRow(props) {
     }
   }, [props.transaction]);
 
-  const startEditing = () => {
-    setIsEditing(true);
-  }
-
-  const cancelEditing = () => {
-    setIsEditing(false);
-  }
-
   const classes = useStyles();
 
   return (
-    isEditing ?
-      <EditableTransaction 
-        transaction={trx} 
-        onCancelEdit={cancelEditing}
-        onFinishEdit={cancelEditing}
-      /> :
-
       <Grid item container spacing={0} xs={12} className={classes.gridRow}>
         <Grid item xs={3}>{trx.vendor}</Grid>
         <Grid item xs={3}>{trx.categoryDisplay}</Grid>

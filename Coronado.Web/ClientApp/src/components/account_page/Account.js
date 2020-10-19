@@ -5,15 +5,13 @@ import * as transactionActions from '../../actions/transactionActions';
 import { useDispatch, useSelector } from 'react-redux';
 import TransactionList from './TransactionList';
 import LoadMoreTransactions from './LoadMoreTransactions';
-import { find } from 'lodash';
+import { find, filter } from 'lodash';
 import EditAccount from './EditAccount';
 import UploadQif from './UploadQif';
-import { filter } from "lodash";
 import history from "../../history";
 import { withRouter } from 'react-router-dom';
 import { Box } from '@material-ui/core';
-import MiniTransactionList from './mini/MiniTransactionList';
-import NewTransactionIcon from './mini/NewTransactionIcon';
+import MiniAccountPage from './mini/MiniAccountPage';
 
 function AccountHeader({ account }) {
   return <h1 style={{"float": "left"}}>
@@ -84,14 +82,8 @@ function Account({ match }) {
         {remainingTransactionCount > 0 ? <LoadMoreTransactions /> : null}
       </Box>
       <Box display={{ xs: "block", md: "none" }}>
-        <div style={{ float: "right", width: "50px" }}>
-          <NewTransactionIcon />
-        </div>
-        <AccountHeader account={account} />
-        <MiniTransactionList
-          mortgageAccounts={getMortgageAccounts()}
+        <MiniAccountPage 
           account={account}
-          categories={categories}
         />
         {remainingTransactionCount > 0 ? <LoadMoreTransactions /> : null}
       </Box>
