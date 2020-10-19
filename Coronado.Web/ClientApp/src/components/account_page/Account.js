@@ -13,7 +13,7 @@ import history from "../../history";
 import { withRouter } from 'react-router-dom';
 import { Box } from '@material-ui/core';
 import MiniTransactionList from './mini/MiniTransactionList';
-import NewTransaction from './mini/NewTransaction';
+import NewTransactionIcon from './mini/NewTransactionIcon';
 
 function AccountHeader({ account }) {
   return <h1 style={{"float": "left"}}>
@@ -85,7 +85,7 @@ function Account({ match }) {
       </Box>
       <Box display={{ xs: "block", md: "none" }}>
         <div style={{ float: "right", width: "50px" }}>
-          <NewTransaction />
+          <NewTransactionIcon />
         </div>
         <AccountHeader account={account} />
         <MiniTransactionList

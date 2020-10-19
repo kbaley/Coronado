@@ -5,7 +5,7 @@ const showForm = () => {
 
 }
 
-export default function NewTransaction(props) {
+export default function NewTransactionIcon(props) {
 
   return (
     <React.Fragment>
