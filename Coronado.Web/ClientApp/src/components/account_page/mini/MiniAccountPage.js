@@ -2,29 +2,33 @@ import React from 'react';
 import NewTransactionIcon from './NewTransactionIcon';
 import MiniTransactionList from './MiniTransactionList';
 import { useSelector } from 'react-redux';
-import { filter } from 'lodash';
+import EditTransaction from './EditTransaction';
 
 export default function MiniAccountPage({account}) {
+  const [ isEditing, setIsEditing ] = React.useState(true);
   const categories = useSelector(state => state.categories);
-  const accounts = useSelector(state => state.accounts);
-
-  const getMortgageAccounts = () => {
-    return filter(accounts, a => a.accountType === "Mortgage");
-  }
 
   return (
     <React.Fragment>
       <div style={{ float: "right", width: "50px" }}>
-        <NewTransactionIcon />
+        <NewTransactionIcon 
+          onClick={() => setIsEditing(true)}
+        />
       </div>
       <h1 style={{ "float": "left" }}>
         {account ? account.name : ""}
       </h1>
+      { isEditing &&
+      <EditTransaction 
+        account={account}
+      />
+      }
+      { !isEditing &&
       <MiniTransactionList
-        mortgageAccounts={getMortgageAccounts()}
         account={account}
         categories={categories}
       />
+      }
     </React.Fragment>
   );
 }

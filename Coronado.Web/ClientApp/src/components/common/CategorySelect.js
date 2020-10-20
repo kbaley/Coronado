@@ -2,13 +2,14 @@ import React from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { TextField } from '@material-ui/core';
 
-export default function CategorySelect({ categories, selectedCategory, className, onCategoryChanged, selectedAccount }) {
+export default function CategorySelect({ categories, selectedCategory, className, 
+  onCategoryChanged, selectedAccount, ...rest }) {
   const [options, setOptions] = React.useState([]);
   const [value, setValue] = React.useState(selectedCategory);
 
   React.useEffect(() => {
     if (categories && categories.length > 0) {
-      setOptions(categories.filter(c => c.accountId !== selectedAccount));
+      setOptions(categories.filter(c => c.accountId === undefined || c.accountId !== selectedAccount));
     }
   }, [categories, selectedAccount]);
 
@@ -64,6 +65,7 @@ export default function CategorySelect({ categories, selectedCategory, className
       renderOption={(option) => option.name}
       renderInput={(params) => <TextField
         {...params}
+        {...rest}
         className={className}
       />}
     />

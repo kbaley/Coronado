@@ -77,7 +77,6 @@ function Account({ match }) {
         <TransactionList
           mortgageAccounts={getMortgageAccounts()}
           account={account}
-          categories={categories}
         />
         {remainingTransactionCount > 0 ? <LoadMoreTransactions /> : null}
       </Box>
@@ -85,7 +84,6 @@ function Account({ match }) {
         <MiniAccountPage 
           account={account}
         />
-        {remainingTransactionCount > 0 ? <LoadMoreTransactions /> : null}
       </Box>
     </div>
   );

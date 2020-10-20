@@ -2,10 +2,9 @@ import React from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { TextField } from '@material-ui/core';
 
-export default function VendorField(props) {
-  const [value, setValue] = React.useState(props.value);
+export default function VendorField({vendors, onVendorChanged, value, className, ...rest}) {
+  const [selectedVendor, setSelectedVendor] = React.useState(value);
   const [options, setOptions] = React.useState([]);
-  const { vendors, onVendorChanged } = props;
 
   React.useEffect(() => {
     if (vendors && vendors.length > 0) {
@@ -14,11 +13,11 @@ export default function VendorField(props) {
   }, [vendors]);
 
   React.useEffect(() => {
-    setValue(props.value);
-  }, [props.value]);
+    setSelectedVendor(value);
+  }, [value]);
 
   const onChange = (_, newValue) => {
-    setValue(newValue)
+    setSelectedVendor(newValue)
     onVendorChanged(newValue);
   };
 
@@ -34,7 +33,7 @@ export default function VendorField(props) {
   return (
     <Autocomplete
       openOnFocus={false}
-      value={value}
+      value={selectedVendor}
       freeSolo
       options={options}
       onChange={onChange}
@@ -43,7 +42,8 @@ export default function VendorField(props) {
       getOptionSelected={getOptionSelected}
       renderInput={(params) => <TextField 
         {...params} 
-        className={props.className} 
+        {...rest}
+        className={className} 
       />}
     />
   );

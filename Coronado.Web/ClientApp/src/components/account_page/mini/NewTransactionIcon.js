@@ -1,15 +1,11 @@
 import React from 'react';
 import { NewIcon } from '../../icons/NewIcon';
 
-const showForm = () => {
-
-}
-
-export default function NewTransactionIcon(props) {
+export default function NewTransactionIcon({onClick}) {
 
   return (
     <React.Fragment>
-        <NewIcon onClick={showForm} />
+        <NewIcon onClick={onClick} />
     </React.Fragment>
   )
 }
