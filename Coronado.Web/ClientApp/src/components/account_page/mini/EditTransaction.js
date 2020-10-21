@@ -3,35 +3,33 @@ import { makeStyles, Grid, TextField, Button } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
 import VendorField from '../../common/VendorField';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import CategorySelect from '../../common/CategorySelect';
 import { getCategoriesForDropdown } from "../../../selectors/selectors";
 import { find } from 'lodash';
+import * as transactionActions from '../../../actions/transactionActions';
 
 const styles = theme => ({
 });
 
 const useStyles = makeStyles(styles);
 
-export default function EditTransaction(props) {
+export default function EditTransaction({account, onCancel, onSave}) {
 
   const today = new Date().toISOString().split('T')[0];
   const vendors = useSelector(state => state.vendors);
   const categories = useSelector(state => getCategoriesForDropdown(state.categories, state.accounts, state.invoices));
-  // const categories = [{
-  //   categoryId: "123123123",
-  //   name: "My category"
-  // }]
   const [selectedCategory, setSelectedCategory] = React.useState('');
   const [transactionType, setTransactionType] = React.useState("REGULAR");
   const [mortgageType, setMortgageType] = React.useState('');
   const [mortgagePayment, setMortgagePayment] = React.useState('');
   const accounts = useSelector(state => state.accounts);
+  const dispatch = useDispatch();
   const [trx, setTrx] = React.useState({
     transactionDate: new Date().toLocaleDateString(),
     vendor: '',
     description: '',
-    accountId: props.account.accountId,
+    accountId: account.accountId,
     credit: '',
     debit: '',
     invoiceId: '',
@@ -39,14 +37,14 @@ export default function EditTransaction(props) {
   });
 
   React.useEffect(() => {
-    if (props.account && props.account.accountId !== trx.accountId) {
+    if (account && account.accountId !== trx.accountId) {
       setTrx({
         ...trx,
-        accountId: props.account.accountId,
+        accountId: account.accountId,
       });
     }
 
-  }, [props.account, trx]);
+  }, [account, trx]);
 
   const handleChangeField = (e) => {
     const name = e.target.name;
@@ -168,6 +166,26 @@ export default function EditTransaction(props) {
     });
   }
 
+  const saveTransaction = () => {
+    dispatch(transactionActions.createTransaction(trx));
+
+    setTrx({
+      transactionDate: trx.transactionDate,
+      vendor: '',
+      description: '',
+      debit: '',
+      credit: '',
+      invoiceId: '',
+      categoryId: '',
+      categoryDisplay: '',
+      relatedAccountId: '',
+    });
+    setSelectedCategory('');
+    setTransactionType('REGULAR');
+    onSave();
+  }
+
+
   const classes = useStyles();
 
   return (
@@ -186,6 +204,7 @@ export default function EditTransaction(props) {
 
         <VendorField
           vendors={vendors}
+          value={trx.vendor}
           label="Vendor"
           margin="normal"
           onVendorChanged={handleChangeVendor}
@@ -194,6 +213,9 @@ export default function EditTransaction(props) {
       <Grid item xs={12}>
 
         <CategorySelect
+          selectedCategory={selectedCategory}
+          onCategoryChanged={handleChangeCategory}
+          selectedAccount={trx.accountId}
           label="Category"
           margin="normal"
           categories={categories}
@@ -234,6 +256,7 @@ export default function EditTransaction(props) {
       <Grid item xs={6}>
         <Button
           variant="contained"
+          onClick={onCancel}
           startIcon={<CancelIcon />}
         >
           Cancel
@@ -243,6 +266,7 @@ export default function EditTransaction(props) {
         <Button
           variant="contained"
           color="primary"
+          onClick={saveTransaction}
           startIcon={<SaveIcon />}
         >
           Save

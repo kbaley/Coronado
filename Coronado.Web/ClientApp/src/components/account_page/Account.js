@@ -23,7 +23,6 @@ function Account({ match }) {
 
   const accounts = useSelector(state => state.accounts);
   const accountTypes = useSelector(state => state.accountTypes);
-  const categories = useSelector(state => state.categories);
   const remainingTransactionCount = useSelector(state => state.transactionModel.remainingTransactionCount);
   const dispatch = useDispatch();
   

@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import EditTransaction from './EditTransaction';
 
 export default function MiniAccountPage({account}) {
-  const [ isEditing, setIsEditing ] = React.useState(true);
+  const [ isEditing, setIsEditing ] = React.useState(false);
   const categories = useSelector(state => state.categories);
 
   return (
@@ -21,6 +21,8 @@ export default function MiniAccountPage({account}) {
       { isEditing &&
       <EditTransaction 
         account={account}
+        onCancel={() => setIsEditing(false)}
+        onSave={(() => setIsEditing(false))}
       />
       }
       { !isEditing &&
