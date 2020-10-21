@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, Grid, TextField, Button } from '@material-ui/core';
+import { Grid, TextField, Button } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
 import VendorField from '../../common/VendorField';
@@ -8,11 +8,6 @@ import CategorySelect from '../../common/CategorySelect';
 import { getCategoriesForDropdown } from "../../../selectors/selectors";
 import { find } from 'lodash';
 import * as transactionActions from '../../../actions/transactionActions';
-
-const styles = theme => ({
-});
-
-const useStyles = makeStyles(styles);
 
 export default function EditTransaction({account, onCancel, onSave}) {
 
@@ -186,8 +181,6 @@ export default function EditTransaction({account, onCancel, onSave}) {
   }
 
 
-  const classes = useStyles();
-
   return (
     <Grid container spacing={0}>
       <Grid item xs={12}>
@@ -237,7 +230,6 @@ export default function EditTransaction({account, onCancel, onSave}) {
           label="Debit"
           fullWidth={true}
           margin="normal"
-          className={classes.input}
           value={trx.debit}
           onChange={handleChangeDebit}
         />
@@ -248,7 +240,6 @@ export default function EditTransaction({account, onCancel, onSave}) {
           label="Credit"
           fullWidth={true}
           margin="normal"
-          className={classes.input}
           value={trx.credit}
           onChange={handleChangeField}
         />
