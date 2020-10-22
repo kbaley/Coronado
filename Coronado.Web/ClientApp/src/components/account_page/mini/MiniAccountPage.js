@@ -31,6 +31,8 @@ export default function MiniAccountPage({ account }) {
       }
       { !isEditing &&
         <SwipeableList
+          scrollStartThreshold={5}
+          swipeStartThreshold={5}
           threshold={0.25}>
           <MiniTransactionList
             account={account}

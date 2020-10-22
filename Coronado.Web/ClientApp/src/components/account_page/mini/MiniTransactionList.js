@@ -1,11 +1,12 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { makeStyles, Grid } from '@material-ui/core';
 import Spinner from '../../common/Spinner';
 import MiniTransactionRow from './MiniTransactionRow';
 import { groupBy, map, orderBy } from 'lodash';
 import { SwipeableListItem } from '@sandstreamdev/react-swipeable-list';
 import { DeleteIcon } from './icons';
+import * as transactionActions from '../../../actions/transactionActions';
 
 const styles = theme => ({
   date: {
@@ -41,27 +42,32 @@ const styles = theme => ({
   },
 })
 
-const swipeRightOptions = (trx, classes) => ({
-  content: (
-    <div className={classes.listItem}>
-      <div className={classes.listItemContent}>
-        <span className={classes.icon}><DeleteIcon /></span>
-      </div>
-    </div>
-  ),
-  action: () => console.log('moo')
-});
-
 const useStyles = makeStyles(styles);
 
 function DateTransactionList({ transactions }) {
 
   const classes = useStyles();
+  const dispatch = useDispatch();
   const formatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const swipeRightOptions = (trx) => ({
+    content: (
+      <div className={classes.listItem}>
+        <div className={classes.listItemContent}>
+          <span className={classes.icon}><DeleteIcon /></span>
+        </div>
+      </div>
+    ),
+    action: () => deleteTransaction(trx.transactionId)
+  });
+
+  const deleteTransaction = (transactionId) => {
+    dispatch(transactionActions.deleteTransaction(transactionId));
+  }
+
   return (
     <React.Fragment>
-      <Grid item 
-        xs={12} 
+      <Grid item
+        xs={12}
         className={classes.date}
       >
         {new Date(transactions.date).toLocaleDateString("en-US", formatOptions)}
@@ -69,9 +75,10 @@ function DateTransactionList({ transactions }) {
       {transactions.items.map(trx =>
         <SwipeableListItem
           key={trx.transactionId}
-          swipeRight={swipeRightOptions(trx, classes)}
+          threshold={0.25}
+          swipeRight={swipeRightOptions(trx)}
         >
-        <MiniTransactionRow transaction={trx} />
+          <MiniTransactionRow transaction={trx} />
         </SwipeableListItem>
       )}
     </React.Fragment>
