@@ -66,10 +66,13 @@ namespace Coronado.Web.Controllers.Api
         [Route("[action]")]
         public IActionResult PostQif([FromForm] AccountQifViewModel model)
         {
-            var transactions = _qifParser.Parse(model.File, model.AccountId, model.FromDate);
+            // var transactions = _qifParser.Parse(model.File, model.AccountId, model.FromDate);
+            var transactions = _qifParser.Parse(model.File, model.AccountId, DateTime.Today);
             foreach (var trx in transactions)
             {
-                _transactionRepo.Insert(trx);
+                var existingTrx = _context.Transactions.Any(t => t.DownloadId == trx.DownloadId);
+                if (!existingTrx)
+                    _transactionRepo.Insert(trx);
             }
             return CreatedAtAction("PostQif", new { id = model.AccountId }, transactions);
         }

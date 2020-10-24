@@ -32,7 +32,7 @@ namespace Coronado.Web.Controllers.Dtos
     {
         public IFormFile File { get; set; }
         public Guid AccountId { get; set; }
-        public DateTime? FromDate { get; set; }
+        // public DateTime? FromDate { get; set; }
     }
 
     public class QifTransaction

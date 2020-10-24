@@ -30,6 +30,7 @@ namespace Coronado.Web.Domain
         public Transfer LeftTransfer { get; set; }
         public Transfer RightTransfer { get; set; }
         public decimal AmountInBaseCurrency { get; set; }
+        public string DownloadId { get; set; }
 
         public string GetCategoryDisplay()
         {
@@ -43,10 +44,14 @@ namespace Coronado.Web.Domain
             };
         }
 
-        public void SetAmountInBaseCurrency(string currency, decimal exchangeRate) {
-            if (currency == "USD") {
+        public void SetAmountInBaseCurrency(string currency, decimal exchangeRate)
+        {
+            if (currency == "USD")
+            {
                 AmountInBaseCurrency = Amount;
-            } else {
+            }
+            else
+            {
                 AmountInBaseCurrency = Math.Round(Amount / exchangeRate, 2);
             }
 

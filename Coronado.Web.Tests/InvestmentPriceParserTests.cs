@@ -1,11 +1,8 @@
 namespace Coronado.Web.Tests
 {
-    using System;
     using Xunit;
     using Moq;
     using Coronado.Web.Controllers.Api;
-    using Coronado.Web.Domain;
-    using System.Linq;
     using Microsoft.Extensions.Configuration;
 
     public class InvestmentPriceParserTests

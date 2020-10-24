@@ -27,6 +27,7 @@ namespace Coronado.Web.Controllers.Dtos
         public TRANSACTION_TYPE TransactionType { get; set; }
         public decimal AmountInBaseCurrency { get; set; }
         public decimal RunningTotal { get; set; }
+        public string DownloadId { get; set; }
         public void SetAmount()
         {
             Amount = Debit.HasValue ? (0 - Debit.Value) : Credit.Value;
@@ -59,7 +60,8 @@ namespace Coronado.Web.Controllers.Dtos
                 Amount = Amount,
                 IsReconciled = IsReconciled,
                 InvoiceId = InvoiceId,
-                AmountInBaseCurrency = AmountInBaseCurrency
+                AmountInBaseCurrency = AmountInBaseCurrency,
+                DownloadId = DownloadId
             };
         }
     }

@@ -1,6 +1,5 @@
 ﻿using Coronado.Web.Domain;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Coronado.Web.Data
 {

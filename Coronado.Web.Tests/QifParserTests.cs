@@ -1,0 +1,44 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using Xunit;
+using Coronado.Web.Controllers.Api;
+using Moq;
+using Coronado.Web.Data;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+
+namespace Coronado.Web.Tests
+{
+    public class QifParserTests {
+
+        [Fact]
+        public void ShouldParseOfxFile() {
+            
+            var mockContext = new Mock<CoronadoDbContext>();
+            var options = new DbContextOptionsBuilder<CoronadoDbContext>()
+                .UseInMemoryDatabase(databaseName: "Coronado")
+                .Options;
+            var context = new CoronadoDbContext(options);
+            var parser = new QifParser(context);
+            var mockFile = new Mock<IFormFile>();
+            var accountId = Guid.NewGuid();
+            var stream = System.IO.File.OpenRead("Test.ofx");
+            mockFile.Setup(x => x.OpenReadStream()).Returns(stream);
+            mockFile.Setup(x => x.Length).Returns(stream.Length);
+
+            var transactions = parser.Parse(mockFile.Object, accountId, null);
+
+            Assert.Equal(10, transactions.Count());
+            Assert.Equal(new DateTime(2020, 10, 25), transactions.First().TransactionDate);
+            Assert.Equal(-50, transactions.Last().Amount);
+            Assert.Equal("SALSA MAKING LESSONS", transactions.Last().Description);
+            Assert.Equal("15732", transactions.Last().DownloadId);
+        }
+
+
+    }
+}

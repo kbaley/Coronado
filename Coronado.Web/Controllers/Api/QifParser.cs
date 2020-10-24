@@ -6,6 +6,7 @@ using Coronado.Web.Data;
 using Coronado.Web.Controllers.Dtos;
 using Microsoft.AspNetCore.Http;
 using Coronado.Web.Domain;
+using System.Globalization;
 
 namespace Coronado.Web.Controllers.Api
 {
@@ -29,6 +30,8 @@ namespace Coronado.Web.Controllers.Api
                 {
                     if ((char)peek == '!')
                         transactions = ParseQif(reader, accountId, fromDate);
+                    else if ((char)peek == 'O')
+                        transactions = ParseOfx(reader, accountId, fromDate);
                     else
                         transactions = ParseCsv(reader, accountId, fromDate);
                 }
@@ -43,7 +46,7 @@ namespace Coronado.Web.Controllers.Api
             // Trash the header line
             reader.ReadLine();
 
-            while (reader.Peek() >=0)
+            while (reader.Peek() >= 0)
             {
                 var line = reader.ReadLine().Split(',');
                 var trx = new TransactionForDisplay
@@ -61,6 +64,78 @@ namespace Coronado.Web.Controllers.Api
                     transactions.Add(trx);
             }
             return transactions;
+        }
+
+
+        private List<TransactionForDisplay> ParseOfx(StreamReader reader, Guid accountId, DateTime? fromDate)
+        {
+            var transactions = new List<TransactionForDisplay>();
+
+            // This is OFX 1.0.2 and it's not valid XML. Alas...
+            var line = reader.ReadLine();
+            while (!line.StartsWith("<STMTTRN>"))
+            {
+
+                line = reader.ReadLine();
+                if (line.StartsWith("</OFX>"))
+                {
+                    return transactions;
+                }
+            }
+
+            var trx = new TransactionForDisplay
+            {
+                TransactionId = Guid.NewGuid(),
+                AccountId = accountId,
+                EnteredDate = DateTime.Now,
+                TransactionType = TRANSACTION_TYPE.REGULAR,
+                Vendor = ""
+            };
+
+            while (reader.Peek() >= 0)
+            {
+                line = reader.ReadLine();
+                var data = GetOfxDataFrom(line);
+                switch (data.Field.ToUpper())
+                {
+                    case "DTPOSTED":
+                        trx.TransactionDate = DateTime.ParseExact(data.Value.Substring(0, 8), "yyyyMMdd", CultureInfo.InvariantCulture);
+                        break;
+                    case "TRNAMT":
+                        trx.Amount = decimal.Parse(data.Value);
+                        break;
+                    case "MEMO":
+                        trx.Description = data.Value;
+                        break;
+                    case "FITID":
+                        trx.DownloadId = data.Value;
+                        break;
+                    case "/STMTTRN":
+                        // Transaction is over
+                        transactions.Add(trx);
+
+                        trx = new TransactionForDisplay
+                        {
+                            TransactionId = Guid.NewGuid(),
+                            AccountId = accountId,
+                            EnteredDate = DateTime.Now,
+                            TransactionType = TRANSACTION_TYPE.REGULAR,
+                            Vendor = ""
+                        };
+                        break;
+                }
+            }
+
+            return transactions;
+        }
+
+        private (string Field, string Value) GetOfxDataFrom(string line)
+        {
+            var items = line.Split(">");
+            items[0] = items[0].Substring(1);
+            if (items.Length == 1) return (items[0], "");
+            
+            return (items[0], items[1]);
         }
 
         private List<TransactionForDisplay> ParseQif(StreamReader reader, Guid accountId, DateTime? fromDate)
