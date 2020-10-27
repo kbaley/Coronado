@@ -31,12 +31,16 @@ namespace Coronado.Web.Controllers.Api
                     if ((char)peek == '!')
                         transactions = ParseQif(reader, accountId, fromDate);
                     else if ((char)peek == 'O')
-                        transactions = ParseOfx(reader, accountId, fromDate);
+                        transactions = ParseOfx(reader, accountId);
                     else
                         transactions = ParseCsv(reader, accountId, fromDate);
                 }
             }
-            return transactions;
+            if (!fromDate.HasValue) {
+                fromDate = DateTime.MinValue;
+            }
+            return transactions
+                .Where(t => t.TransactionDate >= fromDate);
         }
 
         // Assumes we're parsing for a credit card, specifically AMEX
@@ -67,7 +71,7 @@ namespace Coronado.Web.Controllers.Api
         }
 
 
-        private List<TransactionForDisplay> ParseOfx(StreamReader reader, Guid accountId, DateTime? fromDate)
+        private List<TransactionForDisplay> ParseOfx(StreamReader reader, Guid accountId)
         {
             var transactions = new List<TransactionForDisplay>();
 

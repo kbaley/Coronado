@@ -39,6 +39,31 @@ namespace Coronado.Web.Tests
             Assert.Equal("15732", transactions.Last().DownloadId);
         }
 
+        [Fact]
+        public void ShouldIgnorePreviousDatesForOfx() {
+            
+            var mockContext = new Mock<CoronadoDbContext>();
+            var options = new DbContextOptionsBuilder<CoronadoDbContext>()
+                .UseInMemoryDatabase(databaseName: "Coronado")
+                .Options;
+            var context = new CoronadoDbContext(options);
+            var parser = new QifParser(context);
+            var mockFile = new Mock<IFormFile>();
+            var accountId = Guid.NewGuid();
+            var stream = System.IO.File.OpenRead("Test.ofx");
+            mockFile.Setup(x => x.OpenReadStream()).Returns(stream);
+            mockFile.Setup(x => x.Length).Returns(stream.Length);
+
+            var transactions = parser.Parse(mockFile.Object, accountId, new DateTime(2020, 10, 23));
+
+            Assert.Equal(4, transactions.Count());
+            Assert.Equal(new DateTime(2020, 10, 25), transactions.First().TransactionDate);
+            Assert.Equal(-13.41m, transactions.Last().Amount);
+            Assert.Equal("TOWER RECORDS", transactions.Last().Description);
+            Assert.Equal("171780", transactions.Last().DownloadId);
+        }
+
+
 
     }
 }
