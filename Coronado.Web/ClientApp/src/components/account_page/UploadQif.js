@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { Icon } from "../icons/Icon";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, makeStyles } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, makeStyles, TextField } from '@material-ui/core';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import PublishIcon from '@material-ui/icons/Publish';
@@ -18,6 +18,7 @@ export default function UploadQif({onUpload, account}) {
   const [ fromDate, setFromDate ] = React.useState(new Date());
   const [ show, setShow ] = React.useState(false);
   const [ filename, setFilename ] = React.useState('No file selected');
+  const [ transactions, setTransactions ] = React.useState("");
 
   const handleSelectedFile = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -39,6 +40,10 @@ export default function UploadQif({onUpload, account}) {
   const onSave = () => {
     onUpload(selectedFile, fromDate);
     closeUploadForm();
+  }
+
+  const handleChangeField = (e) => {
+    setTransactions(e.target.value);
   }
 
   const classes = useStyles();
@@ -72,6 +77,17 @@ export default function UploadQif({onUpload, account}) {
                   <label style={{ marginLeft: 20 }}>
                     {filename}
                   </label>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Copy transactions"
+                    multiline
+                    rows={4}
+                    rowsMax={6}
+                    fullWidth
+                    value={transactions}
+                    onChange={handleChangeField}
+                  />
                 </Grid>
                 <Grid item xs={12}>
                   <KeyboardDatePicker

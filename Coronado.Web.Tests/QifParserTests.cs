@@ -10,15 +10,35 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace Coronado.Web.Tests
 {
     public class QifParserTests {
+        
+        [Fact]
+        public void ShouldParseText() {
+
+            var options = new DbContextOptionsBuilder<CoronadoDbContext>()
+                .UseInMemoryDatabase(databaseName: "Coronado")
+                .Options;
+            var context = new CoronadoDbContext(options);
+            var parser = new QifParser(context);
+            var transactionText = File.ReadAllText("TransactionList.txt");
+            var accountId = Guid.NewGuid();
+
+            var transactions = parser.Parse(transactionText, accountId, null);
+
+            Assert.Equal(9, transactions.Count());
+            Assert.Equal(new DateTime(2020, 10, 27), transactions.First().TransactionDate);
+            Assert.Equal(-199.22m, transactions.Last().Amount);
+            Assert.Equal("WHEN I'M GONE", transactions.Last().Description);
+            Assert.Equal(199.22m, transactions.Last().Debit);
+        }
 
         [Fact]
         public void ShouldParseOfxFile() {
             
-            var mockContext = new Mock<CoronadoDbContext>();
             var options = new DbContextOptionsBuilder<CoronadoDbContext>()
                 .UseInMemoryDatabase(databaseName: "Coronado")
                 .Options;

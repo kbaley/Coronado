@@ -116,6 +116,7 @@ namespace Coronado.Web.Controllers.Api
                         break;
                     case "/STMTTRN":
                         // Transaction is over
+                        trx.SetDebitAndCredit();
                         transactions.Add(trx);
 
                         trx = new TransactionForDisplay
@@ -210,5 +211,40 @@ namespace Coronado.Web.Controllers.Api
             }
             return transactions;
         }
+
+
+        // For certain banks that don't offer file downloads so we have to copy and paste the transactions from their
+        // crappy online banking site
+        public IEnumerable<TransactionForDisplay> Parse(string transactionList, Guid accountId, DateTime? fromDate)
+        {
+            var transactions = new List<TransactionForDisplay>();
+            var lines = transactionList.Split('\n');
+            for (var i = 0; i < lines.Length; i += 3) {
+                var date = lines[i];
+                var yearAndDescription = lines[i+1];
+                var amount = decimal.Parse(lines[i+2].Replace("$", "").Split(' ')[0]);
+                var year = int.Parse(yearAndDescription.Split('\t')[0].Trim());
+                date += year;
+                var transactionDate = DateTime.ParseExact(date, "MMM d,yyyy", CultureInfo.InvariantCulture);
+                var description = yearAndDescription.Split('\t')[1].Trim();
+                var transaction = new TransactionForDisplay{
+                    TransactionId = Guid.NewGuid(),
+                    AccountId = accountId,
+                    TransactionDate = transactionDate,
+                    EnteredDate = DateTime.Now,
+                    TransactionType = TRANSACTION_TYPE.REGULAR,
+                    Amount = amount,
+                    Description = description
+                };
+                transaction.SetDebitAndCredit();
+                transactions.Add(transaction);
+            }
+            if (!fromDate.HasValue) {
+                fromDate = DateTime.MinValue;
+            }
+            return transactions
+                .Where(t => t.TransactionDate >= fromDate);
+        }
+
     }
 }
