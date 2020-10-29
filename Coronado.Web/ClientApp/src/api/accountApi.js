@@ -31,11 +31,12 @@ class AccountApi {
     return response;
   }
 
-  static async uploadQif(accountId, file, fromDate) {
+  static async uploadQif(accountId, file, fromDate, transactions) {
     const data = new FormData();
     data.append('file', file);
     data.append('accountId', accountId);
     data.append('fromDate', fromDate);
+    data.append('transactions', transactions);
     const response = await fetch(this.baseUrl + "PostQif/", {
       method: 'POST',
       headers: {

@@ -57,8 +57,8 @@ function Account({ match }) {
     return filter(accounts, a => a.accountType === "Mortgage");
   }
 
-  const uploadQif = (file, fromDate) => {
-    dispatch(accountActions.uploadQif(getSelectedAccount().accountId, file, fromDate));
+  const uploadQif = (file, fromDate, transactions) => {
+    dispatch(accountActions.uploadQif(getSelectedAccount().accountId, file, fromDate, transactions));
 
   }
 

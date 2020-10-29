@@ -80,9 +80,9 @@ export const createAccount = (account) => {
   }
 }
 
-export const uploadQif = (accountId, file, fromDate) => {
+export const uploadQif = (accountId, file, fromDate, transactions) => {
   return async (dispatch) => {
-    await handleApiCall(dispatch, async () => await AccountApi.uploadQif(accountId, file, fromDate), uploadQifSuccess);
+    await handleApiCall(dispatch, async () => await AccountApi.uploadQif(accountId, file, fromDate, transactions), uploadQifSuccess);
   }
 }
 

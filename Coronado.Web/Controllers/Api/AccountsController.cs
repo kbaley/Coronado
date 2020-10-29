@@ -23,7 +23,7 @@ namespace Coronado.Web.Controllers.Api
         private readonly IMapper _mapper;
         private readonly QifParser _qifParser;
 
-        public AccountsController(CoronadoDbContext context, 
+        public AccountsController(CoronadoDbContext context,
             ITransactionRepository transactionRepo, IMapper mapper)
         {
             _context = context;
@@ -37,7 +37,8 @@ namespace Coronado.Web.Controllers.Api
         public IEnumerable<AccountWithBalance> GetAccounts()
         {
             var accounts = _context.Accounts
-                .Select( a => new AccountWithBalance {
+                .Select(a => new AccountWithBalance
+                {
                     AccountId = a.AccountId,
                     Name = a.Name,
                     Currency = a.Currency,
@@ -66,13 +67,27 @@ namespace Coronado.Web.Controllers.Api
         [Route("[action]")]
         public IActionResult PostQif([FromForm] AccountQifViewModel model)
         {
-            // var transactions = _qifParser.Parse(model.File, model.AccountId, model.FromDate);
-            var transactions = _qifParser.Parse(model.File, model.AccountId, DateTime.Today);
+            IEnumerable<TransactionForDisplay> transactions;
+            if (model.File != null)
+            {
+                transactions = _qifParser.Parse(model.File, model.AccountId, model.FromDate);
+            }
+            else
+            {
+                transactions = _qifParser.Parse(model.Transactions, model.AccountId, model.FromDate);
+            }
             foreach (var trx in transactions)
             {
-                var existingTrx = _context.Transactions.Any(t => t.DownloadId == trx.DownloadId);
-                if (!existingTrx)
+                if (string.IsNullOrWhiteSpace(trx.DownloadId))
+                {
                     _transactionRepo.Insert(trx);
+                }
+                else
+                {
+                    var existingTrx = _context.Transactions.Any(t => t.DownloadId == trx.DownloadId);
+                    if (!existingTrx)
+                        _transactionRepo.Insert(trx);
+                }
             }
             return CreatedAtAction("PostQif", new { id = model.AccountId }, transactions);
         }

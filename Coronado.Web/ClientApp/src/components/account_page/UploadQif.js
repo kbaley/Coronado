@@ -15,7 +15,7 @@ const useStyles = makeStyles(styles);
 
 export default function UploadQif({onUpload, account}) {
   const [ selectedFile, setSelectedFile ] = React.useState(null);
-  const [ fromDate, setFromDate ] = React.useState(new Date());
+  const [ fromDate, setFromDate ] = React.useState(new Date().toISOString().split('T')[0]);
   const [ show, setShow ] = React.useState(false);
   const [ filename, setFilename ] = React.useState('No file selected');
   const [ transactions, setTransactions ] = React.useState("");
@@ -26,7 +26,7 @@ export default function UploadQif({onUpload, account}) {
   }
 
   const handleChangeDate = (date) => {
-    setFromDate(date);
+    setFromDate(date.target.value);
   }
 
   const showUploadForm = () => {
@@ -38,7 +38,7 @@ export default function UploadQif({onUpload, account}) {
   }
 
   const onSave = () => {
-    onUpload(selectedFile, fromDate);
+    onUpload(selectedFile, fromDate, transactions);
     closeUploadForm();
   }
 
@@ -90,14 +90,16 @@ export default function UploadQif({onUpload, account}) {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <KeyboardDatePicker
+                  <TextField
                     value={fromDate}
+                    type="date"
                     onChange={handleChangeDate}
-                    disableToolbar
                     format="MM/dd/yyyy"
-                    variant="inline"
                     label="Starting from date"
                     name="fromDate"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                   />
                 </Grid>
               </Grid>
