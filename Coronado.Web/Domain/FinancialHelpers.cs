@@ -38,7 +38,12 @@ namespace Coronado.Web.Domain {
         }
 
         public static double CalculateIrr(double[] cashflow, double[] days) {
-            return NewtonsMethod(0.1, Total_f_xirr(cashflow, days), Total_df_xirr(cashflow, days));
+            var irr = NewtonsMethod(0.1, Total_f_xirr(cashflow, days), Total_df_xirr(cashflow, days));
+            if (double.IsNaN(irr)) {
+                // try a negative guess
+                irr = NewtonsMethod(-0.5, Total_f_xirr(cashflow, days), Total_df_xirr(cashflow, days));
+            }
+            return irr;
         }
 
         static double NewtonsMethod(double guess, fx f, fx df) {

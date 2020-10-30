@@ -41,7 +41,8 @@ namespace Coronado.Web.Domain
             }
             payments.Add(Convert.ToDouble(GetCurrentValue()));
             days.Add((DateTime.Today - startDate).Days);
-            return Irr.CalculateIrr(payments.ToArray(), days.ToArray());
+            var irr = Irr.CalculateIrr(payments.ToArray(), days.ToArray());
+            return irr;
         }
 
         public decimal GetNumberOfShares() {
