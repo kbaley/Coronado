@@ -21,7 +21,7 @@ namespace Coronado.Web.Controllers.Api
         private readonly CoronadoDbContext _context;
         private readonly ITransactionRepository _transactionRepo;
         private readonly IMapper _mapper;
-        private readonly QifParser _qifParser;
+        private readonly TransactionParser _transactionParser;
 
         public AccountsController(CoronadoDbContext context,
             ITransactionRepository transactionRepo, IMapper mapper)
@@ -29,7 +29,7 @@ namespace Coronado.Web.Controllers.Api
             _context = context;
             _transactionRepo = transactionRepo;
             _mapper = mapper;
-            _qifParser = new QifParser(context);
+            _transactionParser = new TransactionParser(context);
         }
 
         // GET: api/Accounts
@@ -70,11 +70,11 @@ namespace Coronado.Web.Controllers.Api
             IEnumerable<TransactionForDisplay> transactions;
             if (model.File != null)
             {
-                transactions = _qifParser.Parse(model.File, model.AccountId, model.FromDate);
+                transactions = _transactionParser.Parse(model.File, model.AccountId, model.FromDate);
             }
             else
             {
-                transactions = _qifParser.Parse(model.Transactions, model.AccountId, model.FromDate);
+                transactions = _transactionParser.Parse(model.Transactions, model.AccountId, model.FromDate);
             }
             foreach (var trx in transactions)
             {

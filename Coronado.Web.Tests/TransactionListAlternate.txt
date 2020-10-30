@@ -1,0 +1,28 @@
+Oct 28
+2020	MY CABLE PROVIDER
+Purchase/Other Charge
+$ 63.56
+Oct 27
+2020	MY HARDWARE STORE
+Purchase/Other Charge
+$ 32.06
+Oct 27
+2020	MY SUPERMARKET
+Purchase/Other Charge
+$ 64.45
+Oct 27
+2020	MY OTHER SUPERMARKET
+Purchase/Other Charge
+$ 172.87
+Oct 26
+2020	MY SUPERMARKET
+Purchase/Other Charge
+$ 39.80
+Oct 25
+2020	MY FURNITURE STORE
+Purchase/Other Charge
+$ 80.26
+Oct 24
+2020	MY GAS COMPANY
+Purchase/Other Charge
+$ 54.93

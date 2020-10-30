@@ -10,11 +10,11 @@ using System.Globalization;
 
 namespace Coronado.Web.Controllers.Api
 {
-    public class QifParser
+    public class TransactionParser
     {
         private readonly CoronadoDbContext _context;
 
-        public QifParser(CoronadoDbContext context)
+        public TransactionParser(CoronadoDbContext context)
         {
             _context = context;
         }
@@ -217,8 +217,25 @@ namespace Coronado.Web.Controllers.Api
         // crappy online banking site
         public IEnumerable<TransactionForDisplay> Parse(string transactionList, Guid accountId, DateTime? fromDate)
         {
-            var transactions = new List<TransactionForDisplay>();
+            IEnumerable<TransactionForDisplay> transactions;
             var lines = transactionList.Split('\n');
+            // And wouldn't you know it, the same bank uses different formats for banks accounts vs. credit cards
+            // Luckily, an easy way to differentiate them is that the date includes a comma in one and not the other
+            if (lines[0].Contains(",")) {
+                transactions = ParseBankAccount(lines, accountId);
+            } else {
+                transactions = ParseCreditCard(lines, accountId);
+            }
+            if (!fromDate.HasValue) {
+                fromDate = DateTime.MinValue;
+            }
+            return transactions
+                .Where(t => t.TransactionDate >= fromDate);
+        }
+
+        public IEnumerable<TransactionForDisplay> ParseBankAccount(string[] lines, Guid accountId) {
+
+            var transactions = new List<TransactionForDisplay>();
             for (var i = 0; i < lines.Length; i += 3) {
                 var date = lines[i];
                 var yearAndDescription = lines[i+1];
@@ -239,11 +256,36 @@ namespace Coronado.Web.Controllers.Api
                 transaction.SetDebitAndCredit();
                 transactions.Add(transaction);
             }
-            if (!fromDate.HasValue) {
-                fromDate = DateTime.MinValue;
+
+            return transactions;
+        }
+
+        public IEnumerable<TransactionForDisplay> ParseCreditCard(string[] lines, Guid accountId) {
+
+            var transactions = new List<TransactionForDisplay>();
+            for (var i = 0; i < lines.Length; i += 4) {
+                var date = lines[i];
+                var yearAndDescription = lines[i+1];
+                // This is a credit card transaction; negate it
+                var amount = -decimal.Parse(lines[i+3].Replace("$", "").Trim());
+                var year = int.Parse(yearAndDescription.Split('\t')[0].Trim());
+                date += "," + year;
+                var transactionDate = DateTime.ParseExact(date, "MMM d,yyyy", CultureInfo.InvariantCulture);
+                var description = yearAndDescription.Split('\t')[1].Trim();
+                var transaction = new TransactionForDisplay{
+                    TransactionId = Guid.NewGuid(),
+                    AccountId = accountId,
+                    TransactionDate = transactionDate,
+                    EnteredDate = DateTime.Now,
+                    TransactionType = TRANSACTION_TYPE.REGULAR,
+                    Amount = amount,
+                    Description = description
+                };
+                transaction.SetDebitAndCredit();
+                transactions.Add(transaction);
             }
-            return transactions
-                .Where(t => t.TransactionDate >= fromDate);
+
+            return transactions;
         }
 
     }

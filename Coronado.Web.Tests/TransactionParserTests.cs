@@ -14,7 +14,7 @@ using System.IO;
 
 namespace Coronado.Web.Tests
 {
-    public class QifParserTests {
+    public class TransactionParserTests {
         
         [Fact]
         public void ShouldParseText() {
@@ -23,7 +23,7 @@ namespace Coronado.Web.Tests
                 .UseInMemoryDatabase(databaseName: "Coronado")
                 .Options;
             var context = new CoronadoDbContext(options);
-            var parser = new QifParser(context);
+            var parser = new TransactionParser(context);
             var transactionText = File.ReadAllText("TransactionList.txt");
             var accountId = Guid.NewGuid();
 
@@ -37,13 +37,33 @@ namespace Coronado.Web.Tests
         }
 
         [Fact]
+        public void ShouldParseTextForCreditCards() {
+
+            var options = new DbContextOptionsBuilder<CoronadoDbContext>()
+                .UseInMemoryDatabase(databaseName: "Coronado")
+                .Options;
+            var context = new CoronadoDbContext(options);
+            var parser = new TransactionParser(context);
+            var transactionText = File.ReadAllText("TransactionListAlternate.txt");
+            var accountId = Guid.NewGuid();
+
+            var transactions = parser.Parse(transactionText, accountId, null);
+
+            Assert.Equal(7, transactions.Count());
+            Assert.Equal(new DateTime(2020, 10, 28), transactions.First().TransactionDate);
+            Assert.Equal(-54.93m, transactions.Last().Amount);
+            Assert.Equal("MY GAS COMPANY", transactions.Last().Description);
+            Assert.Equal(54.93m, transactions.Last().Debit);
+        }
+
+        [Fact]
         public void ShouldParseOfxFile() {
             
             var options = new DbContextOptionsBuilder<CoronadoDbContext>()
                 .UseInMemoryDatabase(databaseName: "Coronado")
                 .Options;
             var context = new CoronadoDbContext(options);
-            var parser = new QifParser(context);
+            var parser = new TransactionParser(context);
             var mockFile = new Mock<IFormFile>();
             var accountId = Guid.NewGuid();
             var stream = System.IO.File.OpenRead("Test.ofx");
@@ -67,7 +87,7 @@ namespace Coronado.Web.Tests
                 .UseInMemoryDatabase(databaseName: "Coronado")
                 .Options;
             var context = new CoronadoDbContext(options);
-            var parser = new QifParser(context);
+            var parser = new TransactionParser(context);
             var mockFile = new Mock<IFormFile>();
             var accountId = Guid.NewGuid();
             var stream = System.IO.File.OpenRead("Test.ofx");
