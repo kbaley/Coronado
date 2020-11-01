@@ -66,7 +66,8 @@ namespace Coronado.Web.Controllers.Api
                     Currency = i.Currency,
                     DontRetrievePrices = i.DontRetrievePrices,
                     AnnualizedIrr = i.GetAnnualizedIrr(),
-                    CategoryId = i.CategoryId
+                    CategoryId = i.CategoryId,
+                    PaysDividends = i.PaysDividends
                 })
                 .Where(i => i.Shares != 0)
                 .OrderBy(i => i.Name)
@@ -197,6 +198,9 @@ namespace Coronado.Web.Controllers.Api
             investmentMapped.LastPrice = lastPrice;
             investmentMapped.LastPriceRetrievalDate = lastPriceRetrievalDate; 
             _context.Entry(investmentMapped).State = EntityState.Modified;
+            if (investmentMapped.CategoryId == Guid.Empty) {
+                investmentMapped.CategoryId = null;
+            }
             await _context.SaveChangesAsync();
             await _context.Entry(investmentMapped).ReloadAsync().ConfigureAwait(false);
             await _context.Entry(investmentMapped).Collection(i => i.Transactions).LoadAsync().ConfigureAwait(false);

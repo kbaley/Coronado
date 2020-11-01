@@ -28,6 +28,7 @@ export default function InvestmentForm(props) {
     dontRetrievePrices: false,
     accountId: '',
     categoryId: '00000000-0000-0000-0000-000000000000',
+    paysDividends: false,
   });
   const investmentCategories = useSelector(state => state.investmentCategories);
 
@@ -45,6 +46,7 @@ export default function InvestmentForm(props) {
         accountId: props.investment.transaction ? props.investment.transaction.accountId : '',
         dontRetrievePrices: props.investment.dontRetrievePrices,
         categoryId: props.investment.categoryId || '00000000-0000-0000-0000-000000000000',
+        paysDividends: props.investment.paysDividends,
       });
     }
   }, [props.investment]);
@@ -164,6 +166,21 @@ export default function InvestmentForm(props) {
                     <MenuItem key={c.investmentCategoryId} value={c.investmentCategoryId}>{c.name}</MenuItem>
                   )}
                 </TextField>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Tooltip title="Check this if the investment pays regular dividends">
+                      <Checkbox
+                        name='paysDividends'
+                        disabled={props.isBuying}
+                        checked={investment.paysDividends}
+                        onChange={handleChangeField}
+                      />
+                    </Tooltip>
+                  }
+                  label="Pays dividends?"
+                />
               </Grid>
             </React.Fragment>
           {(investment.investmentId === undefined || props.isBuying) &&

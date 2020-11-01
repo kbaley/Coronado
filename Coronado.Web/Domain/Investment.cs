@@ -21,6 +21,7 @@ namespace Coronado.Web.Domain
         public DateTime LastPriceRetrievalDate { get; set; }
         public Guid? CategoryId { get; set; }
         public InvestmentCategory Category { get; set; }
+        public bool PaysDividends { get; set; }
 
         public decimal GetTotalReturn() {
             var totalPaid = Transactions.Sum(t => t.Shares * t.Price);
