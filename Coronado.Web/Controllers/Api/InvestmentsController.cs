@@ -122,6 +122,27 @@ namespace Coronado.Web.Controllers.Api
 
         [HttpPost]
         [Route("[action]")]
+        public async Task<IActionResult> RecordDividend(InvestmentDividendDto investmentDto) {
+
+            var investment = await _context.Investments.FindAsync(investmentDto.InvestmentId).ConfigureAwait(false);
+            var transaction = new Transaction {
+                TransactionId = Guid.NewGuid(),
+                AccountId = investmentDto.AccountId,
+                Amount = Math.Round(investmentDto.Amount, 2),
+                TransactionDate = investmentDto.Date,
+                EnteredDate = DateTime.Now,
+                Description = investmentDto.Description,
+                TransactionType = TRANSACTION_TYPE.DIVIDEND,
+                DividendInvestmentId = investmentDto.InvestmentId,
+            };
+            _context.Transactions.Add(transaction);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            return Ok(investment);
+        }
+
+        [HttpPost]
+        [Route("[action]")]
         public async Task<IActionResult> BuySell(InvestmentForListDto investmentDto) {
 
             var investment = await _context.Investments.FindAsync(investmentDto.InvestmentId).ConfigureAwait(false);

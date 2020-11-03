@@ -1,6 +1,7 @@
 import React from 'react';
 import * as investmentActions from '../../actions/investmentActions';
 import InvestmentForm from './InvestmentForm';
+import DividendForm from './DividendForm';
 import './InvestmentList.css';
 import { orderBy } from 'lodash';
 import { InvestmentRow } from './InvestmentRow';
@@ -14,6 +15,7 @@ export default function InvestmentList({ investments, currency, children }) {
   const [show, setShow] = React.useState(false);
   const [selectedInvestment, setSelectedInvestment] = React.useState({});
   const [isBuying, setIsBuying] = React.useState(false);
+  const [ showDividendForm, setShowDividendForm ] = React.useState(false);
   const currencies = useSelector(state => state.currencies);
   const isLoading = useSelector(state => state.isLoading);
   const accounts = useSelector(state => state.accounts);
@@ -32,6 +34,7 @@ export default function InvestmentList({ investments, currency, children }) {
 
   const handleClose = () => {
     setShow(false);
+    setShowDividendForm(false);
   }
 
   const saveInvestment = (investment) => {
@@ -49,6 +52,16 @@ export default function InvestmentList({ investments, currency, children }) {
     setShow(true);
   }
 
+  const recordDividend = (investment) => {
+    setSelectedInvestment(investment);
+    setShowDividendForm(true);
+  }
+
+  const saveDividend = (investment) => {
+    dispatch(investmentActions.recordDividend(investment));
+    setShowDividendForm(false);
+  }
+
   return (
     <div>
       <InvestmentForm
@@ -59,6 +72,13 @@ export default function InvestmentList({ investments, currency, children }) {
         isBuying={isBuying}
         accounts={accounts}
         onSave={saveInvestment}
+      />
+      <DividendForm
+        show={showDividendForm}
+        onClose={handleClose}
+        investment={selectedInvestment}
+        accounts={accounts}
+        onSave={saveDividend}
       />
       <Grid container spacing={0}>
         <Hidden smDown>
@@ -84,6 +104,7 @@ export default function InvestmentList({ investments, currency, children }) {
               onEdit={() => startEditing(i)}
               onDelete={() => deleteInvestment(i.investmentId, i.name)}
               onBuySell={() => buySell(i)}
+              onRecordDividend={() => recordDividend(i)}
             />
           )}
         <InvestmentsTotal

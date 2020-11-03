@@ -2,6 +2,15 @@ using System;
 
 namespace Coronado.Web.Controllers.Dtos
 {
+    public class InvestmentDividendDto
+    {
+        public Guid InvestmentId { get; set; }
+        public decimal Amount { get; set; }
+        public DateTime Date { get; set; }
+        public string Description { get; set; }
+        public Guid AccountId { get; set; }
+    }
+
     public class InvestmentForListDto
     {
         public Guid InvestmentId { get; set; }

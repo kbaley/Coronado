@@ -7,6 +7,8 @@ import history from "../../history";
 import {
   Grid,
   Hidden,
+  Menu,
+  MenuItem,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
@@ -45,17 +47,46 @@ function ClickableGridItem({ children, investment, ...other }) {
   )
 }
 
-export function InvestmentRow({ investment, onEdit, onDelete, onBuySell }) {
+export function InvestmentRow({ investment, onEdit, onDelete, onBuySell, onRecordDividend }) {
   const classes = useStyles();
+  const [ anchorEl, setAnchorEl ] = React.useState(null);
+  const openMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  }
+
+  const onBuySellClicked = () => {
+    setAnchorEl(null);
+    onBuySell();
+  }
+
+  const onRecordDividendClicked = () => {
+    setAnchorEl(null);
+    onRecordDividend();
+  }
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  }
+
   return (
     <React.Fragment>
       <GridRow xs={12} spacing={0} className={classes.gridRow}>
         <Hidden smDown>
           <Grid item xs={2}>
             <EditIcon onStartEditing={onEdit} fontSize="small" />
+            <Menu
+              id="add-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleCloseMenu}
+            >
+              <MenuItem onClick={onBuySellClicked}>Buy/Sell</MenuItem>
+              <MenuItem onClick={onRecordDividendClicked}>Record dividend</MenuItem>
+            </Menu>
             <DeleteIcon onDelete={onDelete} fontSize="small" />
             <Icon
-              onClick={onBuySell}
+              onClick={openMenu}
               title="Buy/sell shares in this investment"
               icon={<AddIcon fontSize="small" />}
             />

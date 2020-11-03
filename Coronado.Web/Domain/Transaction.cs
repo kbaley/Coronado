@@ -31,6 +31,7 @@ namespace Coronado.Web.Domain
         public Transfer RightTransfer { get; set; }
         public decimal AmountInBaseCurrency { get; set; }
         public string DownloadId { get; set; }
+        public Guid? DividendInvestmentId { get; set; }
 
         public string GetCategoryDisplay()
         {
@@ -40,6 +41,7 @@ namespace Coronado.Web.Domain
                 TRANSACTION_TYPE.INVOICE_PAYMENT => Invoice == null ? "PAYMENT" : "PAYMENT: " + Invoice.InvoiceNumber,
                 TRANSACTION_TYPE.TRANSFER => LeftTransfer == null ? "TRANSFER" : "TRANSFER: " + LeftTransfer.RightTransaction.Account.Name,
                 TRANSACTION_TYPE.INVESTMENT => "INVESTMENT",
+                TRANSACTION_TYPE.DIVIDEND => "DIVIDEND",
                 _ => "",
             };
         }
@@ -65,5 +67,6 @@ namespace Coronado.Web.Domain
         INVOICE_PAYMENT,
         INVESTMENT,
         MORTGAGE_PAYMENT,
+        DIVIDEND,
     }
 }

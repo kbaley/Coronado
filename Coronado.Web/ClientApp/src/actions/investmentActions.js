@@ -114,6 +114,12 @@ export const buySellInvestment = (investment) => {
   }
 }
 
+export const recordDividend = (investment) => {
+  return async (dispatch) => {
+    await handleApiCall(dispatch, async() => InvestmentApi.recordDividend(investment), updateInvestmentSuccess);
+  }
+}
+
 export const saveTodaysPrices = (investments) => {
   return async (dispatch) => {
     await handleApiCall(dispatch, async() => InvestmentApi.saveTodaysPrices(investments), loadInvestmentsSuccess);

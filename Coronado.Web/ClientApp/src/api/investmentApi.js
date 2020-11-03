@@ -68,6 +68,15 @@ class InvestmentApi {
     return response;
   }
 
+  static async recordDividend(investment) {
+    const response = await fetch('/api/Investments/RecordDividend', {
+      method: 'POST',
+      headers: defaultHeaders(),
+      body: JSON.stringify(investment)
+    });
+    return response;
+  }
+
   static async saveTodaysPrices(investments) {
     const response = await fetch('/api/Investments/SaveTodaysPrices', {
       method: 'POST',

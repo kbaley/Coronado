@@ -118,6 +118,7 @@ namespace Coronado.Web.Data
                 case TRANSACTION_TYPE.REGULAR:
                 case TRANSACTION_TYPE.INVOICE_PAYMENT:
                 case TRANSACTION_TYPE.MORTGAGE_PAYMENT:
+                case TRANSACTION_TYPE.DIVIDEND:
                     updater = new TransactionAmountUpdaterRegular(dbTransaction, _cadExchangeRate);
                     updater.UpdateAmount(transaction.Amount);
                     break;
