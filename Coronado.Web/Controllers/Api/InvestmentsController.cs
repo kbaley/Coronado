@@ -32,20 +32,39 @@ namespace Coronado.Web.Controllers.Api
         }
 
         [HttpGet("{investmentId}")]
-        public async Task<ActionResult<InvestmentDetailDto>> Get(Guid investmentId) {
+        public async Task<ActionResult<InvestmentDetailDto>> Get(Guid investmentId)
+        {
             var investment = await _context.Investments
                 .Include(i => i.Transactions)
                 .ThenInclude(t => t.Transaction.Account)
                 .SingleOrDefaultAsync(i => i.InvestmentId == investmentId).ConfigureAwait(false);
-            if (investment == null) {
+            if (investment == null)
+            {
                 return NotFound();
             }
             await _context.Entry(investment).Collection(i => i.Transactions).LoadAsync().ConfigureAwait(false);
+            var dividendTransactions = _context.Transactions
+                .Where(t => t.DividendInvestmentId == investmentId)
+                .OrderBy(t => t.TransactionDate)
+                .ThenBy(t => t.Amount)
+                .ToList();
+            var dividends = new List<InvestmentDividendDto>();
+            for (var i = 0; i < dividendTransactions.Count; i += 2)
+            {
+                dividends.Add(new InvestmentDividendDto
+                {
+                    Date = dividendTransactions[i].TransactionDate,
+                    IncomeTax = dividendTransactions[i].Amount,
+                    Amount = dividendTransactions[i + 1].Amount,
+                    Total = dividendTransactions[i+1].Amount + dividendTransactions[i].Amount,
+                });
+            }
 
             var mappedInvestment = _mapper.Map<InvestmentDetailDto>(investment);
             mappedInvestment.TotalPaid = Math.Round(investment.Transactions.Sum(t => t.Shares * t.Price), 2);
             mappedInvestment.CurrentValue = Math.Round(mappedInvestment.LastPrice * mappedInvestment.Shares);
             mappedInvestment.BookValue = Math.Round(mappedInvestment.AveragePrice * mappedInvestment.Shares);
+            mappedInvestment.Dividends = dividends;
 
             return mappedInvestment;
         }
@@ -55,7 +74,8 @@ namespace Coronado.Web.Controllers.Api
         {
             var investments = _context.Investments
                 .Include(i => i.Transactions)
-                .Select(i => new InvestmentForListDto{
+                .Select(i => new InvestmentForListDto
+                {
                     InvestmentId = i.InvestmentId,
                     Name = i.Name,
                     Symbol = i.Symbol,
@@ -72,14 +92,16 @@ namespace Coronado.Web.Controllers.Api
                 .Where(i => i.Shares != 0)
                 .OrderBy(i => i.Name)
                 .ToList();
-            investments.ForEach( i => {
+            investments.ForEach(i =>
+            {
                 i.CurrentValue = i.Shares * i.LastPrice;
                 i.AveragePrice = i.Shares == 0 ? 0 : i.AveragePrice / i.Shares;
                 i.BookValue = i.Shares * i.AveragePrice;
             });
             var totalIrr = _context.Investments.GetAnnualizedIrr();
 
-            return new InvestmentListModel {
+            return new InvestmentListModel
+            {
                 Investments = investments,
                 PortfolioIrr = totalIrr
             };
@@ -93,7 +115,8 @@ namespace Coronado.Web.Controllers.Api
             foreach (var item in investments)
             {
                 var investment = investmentsFromDb.SingleOrDefault(i => i.InvestmentId == item.InvestmentId);
-                if (investment != null) {
+                if (investment != null)
+                {
                     investment.LastPriceRetrievalDate = DateTime.Today;
                     investment.LastPrice = item.LastPrice;
                 }
@@ -114,7 +137,8 @@ namespace Coronado.Web.Controllers.Api
             }
             if (mustUpdatePrices)
                 return GetInvestments();
-            return new InvestmentListModel{
+            return new InvestmentListModel
+            {
                 Investments = new List<InvestmentForListDto>(),
                 PortfolioIrr = _context.Investments.GetAnnualizedIrr()
             };
@@ -122,7 +146,8 @@ namespace Coronado.Web.Controllers.Api
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> RecordDividend(InvestmentDividendDto investmentDto) {
+        public async Task<IActionResult> RecordDividend(InvestmentDividendDto investmentDto)
+        {
 
             var investment = await _context.Investments.FindAsync(investmentDto.InvestmentId);
             var investmentIncomeCategory = await _context.Categories
@@ -132,7 +157,8 @@ namespace Coronado.Web.Controllers.Api
             var now = DateTime.Now;
             var exchangeRate = _context.Currencies.SingleOrDefault(c => c.Symbol == "CAD").PriceInUsd;
             var accountCurrency = (await _context.Accounts.FindAsync(investmentDto.AccountId)).Currency;
-            var transaction = new Transaction {
+            var transaction = new Transaction
+            {
                 TransactionId = Guid.NewGuid(),
                 AccountId = investmentDto.AccountId,
                 Amount = Math.Round(investmentDto.Amount, 2),
@@ -144,7 +170,8 @@ namespace Coronado.Web.Controllers.Api
                 CategoryId = investmentIncomeCategory.CategoryId,
             };
             transaction.SetAmountInBaseCurrency(accountCurrency, exchangeRate);
-            var taxTransaction = new Transaction {
+            var taxTransaction = new Transaction
+            {
                 TransactionId = Guid.NewGuid(),
                 AccountId = investmentDto.AccountId,
                 Amount = -Math.Round(investmentDto.IncomeTax, 2),
@@ -165,7 +192,8 @@ namespace Coronado.Web.Controllers.Api
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> BuySell(InvestmentForListDto investmentDto) {
+        public async Task<IActionResult> BuySell(InvestmentForListDto investmentDto)
+        {
 
             var investment = await _context.Investments.FindAsync(investmentDto.InvestmentId).ConfigureAwait(false);
             await CreateInvestmentTransaction(investmentDto, investment).ConfigureAwait(false);
@@ -228,7 +256,8 @@ namespace Coronado.Web.Controllers.Api
         [HttpPut("{id}")]
         public async Task<IActionResult> PutInvestment([FromRoute] Guid id, [FromBody] InvestmentForUpdateDto investment)
         {
-            if (id != investment.InvestmentId) {
+            if (id != investment.InvestmentId)
+            {
                 return BadRequest();
             }
             // Don't update the price
@@ -239,9 +268,10 @@ namespace Coronado.Web.Controllers.Api
 
             var investmentMapped = _mapper.Map<Investment>(investment);
             investmentMapped.LastPrice = lastPrice;
-            investmentMapped.LastPriceRetrievalDate = lastPriceRetrievalDate; 
+            investmentMapped.LastPriceRetrievalDate = lastPriceRetrievalDate;
             _context.Entry(investmentMapped).State = EntityState.Modified;
-            if (investmentMapped.CategoryId == Guid.Empty) {
+            if (investmentMapped.CategoryId == Guid.Empty)
+            {
                 investmentMapped.CategoryId = null;
             }
             await _context.SaveChangesAsync();

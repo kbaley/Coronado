@@ -6,6 +6,7 @@ import InvestmentApi from '../../api/investmentApi';
 import { find } from 'lodash';
 import InvestmentStats from './InvestmentStats';
 import InvestmentTransactionList from './InvestmentTransactionList';
+import InvestmentDividendList from './InvestmentDividendList';
 
 const styles = theme => ({
   stats: {
@@ -59,9 +60,14 @@ export default function InvestmentPage({ match }) {
             </CardContent>
           </Card>
         </Grid>
+        <Grid item xs={4}>
+          <Card className={classes.transactionList}>
+            <CardContent>
+              <InvestmentDividendList investment={investment} />
+            </CardContent>
+          </Card>
+        </Grid>
       </Grid>
-      <br /><br />
-      <div>Price history graph</div>
     </div>
   );
 }

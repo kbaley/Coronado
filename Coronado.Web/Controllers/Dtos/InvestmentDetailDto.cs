@@ -22,5 +22,6 @@ namespace Coronado.Web.Controllers.Dtos
         public Guid CategoryId { get; set; }
         public decimal CategoryPercentage { get; set; }
         public IEnumerable<InvestmentTransactionDto> Transactions { get; set; }
+        public IEnumerable<InvestmentDividendDto> Dividends { get; set; }
     }
 }
