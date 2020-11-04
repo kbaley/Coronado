@@ -49,18 +49,7 @@ namespace Coronado.Web.Controllers.Api
                 .OrderBy(t => t.TransactionDate)
                 .ThenBy(t => t.Amount)
                 .ToList();
-            var dividends = new List<InvestmentDividendDto>();
-            for (var i = 0; i < dividendTransactions.Count; i += 2)
-            {
-                dividends.Add(new InvestmentDividendDto
-                {
-                    Date = dividendTransactions[i].TransactionDate,
-                    IncomeTax = dividendTransactions[i].Amount,
-                    Amount = dividendTransactions[i + 1].Amount,
-                    Total = dividendTransactions[i+1].Amount + dividendTransactions[i].Amount,
-                });
-            }
-
+            var dividends = GetDividendDtosFrom(investment);
             var mappedInvestment = _mapper.Map<InvestmentDetailDto>(investment);
             mappedInvestment.TotalPaid = Math.Round(investment.Transactions.Sum(t => t.Shares * t.Price), 2);
             mappedInvestment.CurrentValue = Math.Round(mappedInvestment.LastPrice * mappedInvestment.Shares);
@@ -68,6 +57,37 @@ namespace Coronado.Web.Controllers.Api
             mappedInvestment.Dividends = dividends;
 
             return mappedInvestment;
+        }
+
+        private IEnumerable<InvestmentDividendDto> GetDividendDtosFrom(Investment investment) {
+
+            var dividendTransactions = investment.Dividends
+                .OrderBy(d => d.TransactionDate)
+                .ThenBy(d => d.EnteredDate)
+                .ThenBy(d => d.Amount)
+                .ToList();
+            var dividends = new List<InvestmentDividendDto>();
+            var i = 0;
+
+            // Some dividends have income tax; the sort order means we'll get all dividends
+            // order by transaction date, then it will be pairs of transactions with the first one
+            // being the tax (the amount is < 0) and the second being the actual dividend
+            while (i < dividendTransactions.Count) {
+                var dividend = new InvestmentDividendDto
+                {
+                    Date = dividendTransactions[i].TransactionDate,
+                };
+                if (dividendTransactions[i].Amount < 0) {
+                    dividend.IncomeTax = -dividendTransactions[i++].Amount;
+                }
+                dividend.Amount = dividendTransactions[i++].Amount;
+                dividend.Total = dividend.Amount - dividend.IncomeTax;
+
+                dividends.Add(dividend);
+            }
+
+            return dividends;
+
         }
 
         [HttpGet]
@@ -172,21 +192,24 @@ namespace Coronado.Web.Controllers.Api
                 CategoryId = investmentIncomeCategory.CategoryId,
             };
             transaction.SetAmountInBaseCurrency(accountCurrency, exchangeRate);
-            var taxTransaction = new Transaction
-            {
-                TransactionId = Guid.NewGuid(),
-                AccountId = investmentDto.AccountId,
-                Amount = -Math.Round(investmentDto.IncomeTax, 2),
-                TransactionDate = investmentDto.Date,
-                EnteredDate = now,
-                Description = investmentDto.Description + " (INCOME TAX)",
-                TransactionType = TRANSACTION_TYPE.DIVIDEND,
-                DividendInvestmentId = investmentDto.InvestmentId,
-                CategoryId = incomeTaxCategory.CategoryId,
-            };
-            taxTransaction.SetAmountInBaseCurrency(accountCurrency, exchangeRate);
             _context.Transactions.Add(transaction);
-            _context.Transactions.Add(taxTransaction);
+            if (investmentDto.IncomeTax != 0)
+            {
+                var taxTransaction = new Transaction
+                {
+                    TransactionId = Guid.NewGuid(),
+                    AccountId = investmentDto.AccountId,
+                    Amount = -Math.Round(investmentDto.IncomeTax, 2),
+                    TransactionDate = investmentDto.Date,
+                    EnteredDate = now,
+                    Description = investmentDto.Description + " (INCOME TAX)",
+                    TransactionType = TRANSACTION_TYPE.DIVIDEND,
+                    DividendInvestmentId = investmentDto.InvestmentId,
+                    CategoryId = incomeTaxCategory.CategoryId,
+                };
+                taxTransaction.SetAmountInBaseCurrency(accountCurrency, exchangeRate);
+                _context.Transactions.Add(taxTransaction);
+            }
             await _context.SaveChangesAsync();
 
             return Ok(investment);
