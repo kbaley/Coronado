@@ -34,7 +34,7 @@ namespace Coronado.Web.Data
             builder.Entity<Transaction>()
                 .HasOne(a => a.RightTransfer)
                 .WithOne(t => t.RightTransaction);
-
+            
             foreach (var entity in builder.Model.GetEntityTypes())
             {
                 // Replace table names

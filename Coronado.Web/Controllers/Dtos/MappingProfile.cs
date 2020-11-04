@@ -30,6 +30,7 @@ namespace Coronado.Web.Controllers.Dtos
                 .ForMember(t => t.CategoryDisplay, opt => opt.MapFrom(src => src.GetCategoryDisplay()))
                 .ReverseMap();
             CreateMap<Investment, InvestmentDetailDto>()
+                .ForMember(i => i.Dividends, opt => opt.Ignore())
                 .ForMember(i => i.AveragePrice, opt => opt.MapFrom(src => Math.Round(src.GetAveragePricePaid(), 2)))
                 .ForMember(i => i.TotalReturn, opt => opt.MapFrom(src => src.GetTotalReturn()))
                 .ForMember(i => i.TotalAnnualizedReturn, opt => opt.MapFrom(src => src.GetAnnualizedIrr()))

@@ -22,14 +22,19 @@ namespace Coronado.Web.Domain
         public Guid? CategoryId { get; set; }
         public InvestmentCategory Category { get; set; }
         public bool PaysDividends { get; set; }
+        [ForeignKey("DividendInvestmentId")]
+        public virtual IEnumerable<Transaction> Dividends { get; set; }
 
-        public decimal GetTotalReturn() {
+        public decimal GetTotalReturn()
+        {
             var totalPaid = Transactions.Sum(t => t.Shares * t.Price);
+            var dividends = Dividends.Sum(d => d.Amount);
             var currentValue = GetCurrentValue();
-            return (currentValue - totalPaid) / currentValue;
+            return (currentValue + dividends - totalPaid) / currentValue;
         }
 
-        public double GetAnnualizedIrr() {
+        public double GetAnnualizedIrr()
+        {
             if (Transactions.Count == 0) return 0.0;
             var transactionsByDate = Transactions.OrderBy(t => t.Date);
             var startDate = transactionsByDate.First().Date;
@@ -40,23 +45,35 @@ namespace Coronado.Web.Domain
                 payments.Add(-Convert.ToDouble(transaction.Shares) * Convert.ToDouble(transaction.Price));
                 days.Add((transaction.Date - startDate).Days);
             }
+            if (Dividends != null)
+            {
+                var dividendsByDate = Dividends.OrderBy(t => t.TransactionDate);
+                foreach (var dividend in dividendsByDate)
+                {
+                    payments.Add(Convert.ToDouble(dividend.Amount));
+                    days.Add((dividend.TransactionDate - startDate).Days);
+                }
+            }
             payments.Add(Convert.ToDouble(GetCurrentValue()));
             days.Add((DateTime.Today - startDate).Days);
             var irr = Irr.CalculateIrr(payments.ToArray(), days.ToArray());
             return irr;
         }
 
-        public decimal GetNumberOfShares() {
+        public decimal GetNumberOfShares()
+        {
             return Transactions.Sum(t => t.Shares);
         }
 
-        public decimal GetAveragePricePaid() {
+        public decimal GetAveragePricePaid()
+        {
             var numShares = GetNumberOfShares();
             if (numShares == 0) return 0;
             return Transactions.Sum(t => t.Shares * t.Price) / numShares;
         }
 
-        public decimal GetCurrentValue() {
+        public decimal GetCurrentValue()
+        {
             return GetNumberOfShares() * LastPrice;
         }
 

@@ -35,6 +35,7 @@ namespace Coronado.Web.Controllers.Api
         public async Task<ActionResult<InvestmentDetailDto>> Get(Guid investmentId)
         {
             var investment = await _context.Investments
+                .Include(i => i.Dividends)
                 .Include(i => i.Transactions)
                 .ThenInclude(t => t.Transaction.Account)
                 .SingleOrDefaultAsync(i => i.InvestmentId == investmentId).ConfigureAwait(false);
@@ -74,6 +75,7 @@ namespace Coronado.Web.Controllers.Api
         {
             var investments = _context.Investments
                 .Include(i => i.Transactions)
+                .Include(i => i.Dividends)
                 .Select(i => new InvestmentForListDto
                 {
                     InvestmentId = i.InvestmentId,
