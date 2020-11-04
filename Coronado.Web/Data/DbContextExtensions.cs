@@ -25,7 +25,11 @@ namespace Coronado.Web.Data
                 .SelectMany(i => i.Transactions)
                 .OrderBy(t => t.Date)
                 .ToList();
-            if (!transactions.Any()) return 0.0;
+            var dividends = investments
+                .SelectMany(i => i.Dividends)
+                .OrderBy(t => t.TransactionDate)
+                .ToList();
+            if (!transactions.Any() && !dividends.Any()) return 0.0;
             var startDate = transactions.First().Date;
             var payments = new List<double>();
             var days = new List<double>();
@@ -33,6 +37,11 @@ namespace Coronado.Web.Data
             {
                 payments.Add(0 - (Convert.ToDouble(trx.Shares * trx.Price)));
                 days.Add((trx.Date - startDate).Days);
+            }
+            foreach (var dividend in dividends)
+            {
+                payments.Add(Convert.ToDouble(dividend.Amount));
+                days.Add((dividend.TransactionDate - startDate).Days);    
             }
             foreach (var investment in investments)
             {
