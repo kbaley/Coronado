@@ -41,7 +41,7 @@ namespace Coronado.Web.Domain
                 TRANSACTION_TYPE.INVOICE_PAYMENT => Invoice == null ? "PAYMENT" : "PAYMENT: " + Invoice.InvoiceNumber,
                 TRANSACTION_TYPE.TRANSFER => LeftTransfer == null ? "TRANSFER" : "TRANSFER: " + LeftTransfer.RightTransaction.Account.Name,
                 TRANSACTION_TYPE.INVESTMENT => "INVESTMENT",
-                TRANSACTION_TYPE.DIVIDEND => "DIVIDEND",
+                TRANSACTION_TYPE.DIVIDEND => Category == null ? "DIVIDEND" : Category.Name,
                 _ => "",
             };
         }

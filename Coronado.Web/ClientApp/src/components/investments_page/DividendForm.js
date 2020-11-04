@@ -21,6 +21,7 @@ export default function DividendForm(props) {
     date: new Date().toLocaleDateString(),
     accountId: '',
     description: '',
+    incomeTax: '',
   });
   const emptyGuid = getEmptyGuid();
 
@@ -34,6 +35,7 @@ export default function DividendForm(props) {
         date: new Date().toLocaleDateString(),
         accountId: props.investment.accountId,
         description: props.investment.description || '',
+        incomeTax: props.investment.incomeTax || 0.00,
       });
     }
   }, [props.investment]);
@@ -47,6 +49,7 @@ export default function DividendForm(props) {
       date: new Date().toLocaleDateString(),
       accountId: '',
       description: '',
+      incomeTax: '',
     });
     props.onClose();
   }
@@ -92,7 +95,16 @@ export default function DividendForm(props) {
               onChange={handleChangeField}
             />
           </Grid>
-          <Grid item xs={7}>
+          <Grid item xs={3}>
+            <TextField
+              name="incomeTax"
+              label="Income Tax"
+              fullWidth={true}
+              value={investment.incomeTax}
+              onChange={handleChangeField}
+            />
+          </Grid>
+          <Grid item xs={4}>
             <FormControl>
               <InputLabel id="source-account">Account</InputLabel>
               <Select

@@ -124,19 +124,37 @@ namespace Coronado.Web.Controllers.Api
         [Route("[action]")]
         public async Task<IActionResult> RecordDividend(InvestmentDividendDto investmentDto) {
 
-            var investment = await _context.Investments.FindAsync(investmentDto.InvestmentId).ConfigureAwait(false);
+            var investment = await _context.Investments.FindAsync(investmentDto.InvestmentId);
+            var investmentIncomeCategory = await _context.Categories
+                .SingleAsync(c => c.Name == "Investment Income");
+            var incomeTaxCategory = await _context.Categories
+                .SingleAsync(c => c.Name == "Income Tax");
+            var now = DateTime.Now;
             var transaction = new Transaction {
                 TransactionId = Guid.NewGuid(),
                 AccountId = investmentDto.AccountId,
                 Amount = Math.Round(investmentDto.Amount, 2),
                 TransactionDate = investmentDto.Date,
-                EnteredDate = DateTime.Now,
-                Description = investmentDto.Description,
+                EnteredDate = now,
+                Description = investmentDto.Description + " (DIVIDEND)",
                 TransactionType = TRANSACTION_TYPE.DIVIDEND,
                 DividendInvestmentId = investmentDto.InvestmentId,
+                CategoryId = investmentIncomeCategory.CategoryId,
+            };
+            var taxTransaction = new Transaction {
+                TransactionId = Guid.NewGuid(),
+                AccountId = investmentDto.AccountId,
+                Amount = -Math.Round(investmentDto.IncomeTax, 2),
+                TransactionDate = investmentDto.Date,
+                EnteredDate = now,
+                Description = investmentDto.Description + " (INCOME TAX)",
+                TransactionType = TRANSACTION_TYPE.DIVIDEND,
+                DividendInvestmentId = investmentDto.InvestmentId,
+                CategoryId = incomeTaxCategory.CategoryId,
             };
             _context.Transactions.Add(transaction);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            _context.Transactions.Add(taxTransaction);
+            await _context.SaveChangesAsync();
 
             return Ok(investment);
         }

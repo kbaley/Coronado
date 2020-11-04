@@ -9,6 +9,7 @@ namespace Coronado.Web.Controllers.Dtos
         public DateTime Date { get; set; }
         public string Description { get; set; }
         public Guid AccountId { get; set; }
+        public decimal IncomeTax { get; set; }
     }
 
     public class InvestmentForListDto
