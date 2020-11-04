@@ -130,6 +130,8 @@ namespace Coronado.Web.Controllers.Api
             var incomeTaxCategory = await _context.Categories
                 .SingleAsync(c => c.Name == "Income Tax");
             var now = DateTime.Now;
+            var exchangeRate = _context.Currencies.SingleOrDefault(c => c.Symbol == "CAD").PriceInUsd;
+            var accountCurrency = (await _context.Accounts.FindAsync(investmentDto.AccountId)).Currency;
             var transaction = new Transaction {
                 TransactionId = Guid.NewGuid(),
                 AccountId = investmentDto.AccountId,
@@ -141,6 +143,7 @@ namespace Coronado.Web.Controllers.Api
                 DividendInvestmentId = investmentDto.InvestmentId,
                 CategoryId = investmentIncomeCategory.CategoryId,
             };
+            transaction.SetAmountInBaseCurrency(accountCurrency, exchangeRate);
             var taxTransaction = new Transaction {
                 TransactionId = Guid.NewGuid(),
                 AccountId = investmentDto.AccountId,
@@ -152,6 +155,7 @@ namespace Coronado.Web.Controllers.Api
                 DividendInvestmentId = investmentDto.InvestmentId,
                 CategoryId = incomeTaxCategory.CategoryId,
             };
+            taxTransaction.SetAmountInBaseCurrency(accountCurrency, exchangeRate);
             _context.Transactions.Add(transaction);
             _context.Transactions.Add(taxTransaction);
             await _context.SaveChangesAsync();
