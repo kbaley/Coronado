@@ -1,17 +1,7 @@
 import React from 'react';
-import { Grid, Typography, Hidden, Divider } from '@material-ui/core';
-import { MoneyFormat } from '../common/DecimalFormat';
+import { Grid, Typography } from '@material-ui/core';
 import DateFormat from '../common/DateFormat';
-import { makeStyles } from '@material-ui/core/styles';
 import { sumBy } from 'lodash';
-
-const styles = theme => ({
-  accountName: {
-    color: theme.palette.gray[6],
-    padding: 0,
-    borderBottom: "1px solid",
-  }
-})
 
 function Header({ children }) {
   return (
@@ -21,10 +11,7 @@ function Header({ children }) {
   );
 }
 
-const useStyles = makeStyles(styles);
-
 export default function InvestmentDividendList({ investment }) {
-  const classes = useStyles();
 
   return (
     <Grid container spacing={2}>
