@@ -6,12 +6,13 @@ import { Icon } from '../icons/Icon';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import EmailIcon from '@material-ui/icons/Email';
 import LaunchIcon from '@material-ui/icons/Launch';
-import { TableCell, TableRow } from '@material-ui/core';
+import { Hidden, TableCell, TableRow } from '@material-ui/core';
 
 export function InvoiceRow({invoice, onEdit, onDelete, onDownload, onEmail, onPreview}) {
   return (
     <TableRow>
 
+      <Hidden smDown>
       <TableCell>
         <EditIcon onStartEditing={onEdit} fontSize="small" />
         <DeleteIcon onDelete={onDelete} fontSize="small" />
@@ -31,6 +32,7 @@ export function InvoiceRow({invoice, onEdit, onDelete, onDownload, onEmail, onPr
           icon={<LaunchIcon fontSize="small"/>}
         />
       </TableCell>
+      </Hidden>
       <TableCell>{invoice.invoiceNumber}</TableCell>
       <TableCell>{new Date(invoice.date).toLocaleDateString()}</TableCell>
       <TableCell>{invoice.customerName + " (" + invoice.customerEmail + ")" }</TableCell>

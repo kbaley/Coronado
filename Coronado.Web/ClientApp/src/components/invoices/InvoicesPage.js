@@ -10,6 +10,7 @@ import './InvoicesPage.css';
 import PublishIcon from '@material-ui/icons/Publish';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import { Box } from '@material-ui/core';
+import InvoiceListMini from './InvoiceListMini';
 
 export default function InvoicesPage() {
   const [showUploadForm, setShowUploadForm] = React.useState(false);
@@ -60,6 +61,9 @@ export default function InvoicesPage() {
         </h1>
       <Box display={{ xs: "none", md: "block" }}>
         <InvoiceList showPaid={showPaid} />
+      </Box>
+      <Box display={{ xs: "block", md: "none" }}>
+        <InvoiceListMini showPaid={showPaid} />
       </Box>
       </div>
     );
