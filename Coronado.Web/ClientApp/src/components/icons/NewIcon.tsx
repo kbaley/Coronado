@@ -1,17 +1,21 @@
 import React from 'react';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { IconButton, makeStyles } from '@material-ui/core';
-import { PropTypes } from 'prop-types';
 
-const styles = theme => ({
+const styles = (theme: any) => ({
   icon: {
     color: theme.palette.green,
   }
 })
 
+interface NewIconProps {
+    onClick: React.MouseEventHandler<HTMLButtonElement>;
+    fontSize: any;
+}
+
 const useStyles = makeStyles(styles);
 
-export function NewIcon({onClick, fontSize, ...rest}) {
+export function NewIcon({onClick, fontSize, ...rest}: NewIconProps) {
   const classes = useStyles();
   return (
     <IconButton onClick={onClick} component="span" {...rest}>
@@ -21,9 +25,4 @@ export function NewIcon({onClick, fontSize, ...rest}) {
       />
     </IconButton>
   );
-}
-
-NewIcon.propTypes = {
-  onClick: PropTypes.func.isRequired,
-  fontSize: PropTypes.string
 }

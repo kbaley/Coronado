@@ -2,7 +2,7 @@ import React from 'react';
 import * as actions from '../../actions/customerActions';
 import { useDispatch } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
-import { NewIcon } from '../icons/NewIcon';
+import { NewIcon } from '../icons/NewIcon.tsx';
 import './NewCustomer.css';
 import CustomerForm from './CustomerForm';
 

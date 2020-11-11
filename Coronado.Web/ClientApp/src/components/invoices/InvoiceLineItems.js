@@ -1,6 +1,6 @@
 import React from 'react';
 import { CurrencyFormat } from "../common/CurrencyFormat";
-import { NewIcon } from '../icons/NewIcon';
+import { NewIcon } from '../icons/NewIcon.tsx';
 import { DeleteIcon } from '../icons/DeleteIcon';
 import { useSelector } from 'react-redux';
 import {

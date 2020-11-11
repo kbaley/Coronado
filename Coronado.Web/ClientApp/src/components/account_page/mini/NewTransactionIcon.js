@@ -1,5 +1,5 @@
 import React from 'react';
-import { NewIcon } from '../../icons/NewIcon';
+import { NewIcon } from '../../icons/NewIcon.tsx';
 
 export default function NewTransactionIcon({onClick}) {
 

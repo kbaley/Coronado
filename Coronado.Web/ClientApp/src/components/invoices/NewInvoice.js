@@ -2,7 +2,7 @@ import React from 'react';
 import * as actions from '../../actions/invoiceActions';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Mousetrap from 'mousetrap';
-import { NewIcon } from '../icons/NewIcon';
+import { NewIcon } from '../icons/NewIcon.tsx';
 import InvoiceForm from './InvoiceForm';
 
 export default function NewInvoice() {

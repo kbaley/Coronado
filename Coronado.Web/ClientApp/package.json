@@ -9,6 +9,11 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/pickers": "^3.2.10",
     "@sandstreamdev/react-swipeable-list": "^1.0.0",
+    "@types/node": "^14.14.7",
+    "@types/react": "^16.9.56",
+    "@types/react-dom": "^16.9.9",
+    "@types/react-redux": "^7.1.11",
+    "@types/react-router": "^5.1.8",
     "date-fns": "^2.14.0",
     "history": "^4.10.1",
     "i": "^0.3.6",
@@ -41,5 +46,7 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "devDependencies": {}
+  "devDependencies": {
+    "typescript": "^4.0.5"
+  }
 }
