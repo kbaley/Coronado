@@ -4,9 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import InvoiceForm from './InvoiceForm';
 import { InvoiceRow } from './InvoiceRow';
 import Spinner from '../common/Spinner';
-import { Grid } from '@material-ui/core';
-import GridHeader from '../common/grid/GridHeader';
-import * as widths from './InvoiceWidths';
+import { Table, TableCell, TableHead, TableRow, TableBody } from '@material-ui/core';
 
 export default function InvoiceList({ showPaid }) {
   const [show, setShow] = React.useState(false);
@@ -52,33 +50,39 @@ export default function InvoiceList({ showPaid }) {
 
   return (
     <React.Fragment>
-        <InvoiceForm
-          show={show}
-          onClose={handleClose}
-          invoice={selectedInvoice}
-          invoices={invoices}
-          customers={customers}
-          onSave={saveInvoice} />
-    <Grid container spacing={0}>
-      <GridHeader xs={widths.ICON_WIDTH}></GridHeader>
-      <GridHeader xs={widths.NUMBER_WIDTH}>Number</GridHeader>
-      <GridHeader xs={widths.DATE_WIDTH}>Date</GridHeader>
-      <GridHeader xs={widths.CUSTOMER_WIDTH}>Customer</GridHeader>
-      <GridHeader xs={widths.DATE_SENT_WIDTH}>Date sent</GridHeader>
-      <GridHeader xs={widths.BALANCE_WIDTH} alignRight>Balance</GridHeader>
-        {isLoading ? <Grid item xs={12}><Spinner /></Grid> :
-          invoices.map((invoice, key) =>
-            showInvoice(invoice) &&
-            <InvoiceRow
-              key={invoice.invoiceId}
-              invoice={invoice}
-              onEdit={() => startEditing(invoice)}
-              onDownload={() => downloadInvoice(invoice.invoiceId)}
-              onEmail={() => emailInvoice(invoice.invoiceId)}
-              onPreview={() => previewInvoice(invoice.invoiceId)}
-              onDelete={() => deleteInvoice(invoice.invoiceId, invoice.invoiceNumber)} />
-          )}
-    </Grid>
+      <InvoiceForm
+        show={show}
+        onClose={handleClose}
+        invoice={selectedInvoice}
+        invoices={invoices}
+        customers={customers}
+        onSave={saveInvoice} />
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell style={{"width": "260px"}}></TableCell>
+            <TableCell>Number</TableCell>
+            <TableCell>Date</TableCell>
+            <TableCell>Customer</TableCell>
+            <TableCell>Date sent</TableCell>
+            <TableCell>Balance</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {isLoading ? <TableRow><TableCell colSpan={6}><Spinner /></TableCell></TableRow> :
+            invoices.map((invoice) =>
+              showInvoice(invoice) &&
+              <InvoiceRow
+                key={invoice.invoiceId}
+                invoice={invoice}
+                onEdit={() => startEditing(invoice)}
+                onDownload={() => downloadInvoice(invoice.invoiceId)}
+                onEmail={() => emailInvoice(invoice.invoiceId)}
+                onPreview={() => previewInvoice(invoice.invoiceId)}
+                onDelete={() => deleteInvoice(invoice.invoiceId, invoice.invoiceNumber)} />
+            )}
+        </TableBody>
+      </Table>
     </React.Fragment>
   );
 }

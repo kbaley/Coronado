@@ -9,6 +9,7 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import './InvoicesPage.css';
 import PublishIcon from '@material-ui/icons/Publish';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import { Box } from '@material-ui/core';
 
 export default function InvoicesPage() {
   const [showUploadForm, setShowUploadForm] = React.useState(false);
@@ -57,7 +58,9 @@ export default function InvoicesPage() {
         <h1>
           Invoices <NewInvoice />
         </h1>
+      <Box display={{ xs: "none", md: "block" }}>
         <InvoiceList showPaid={showPaid} />
+      </Box>
       </div>
     );
 }
