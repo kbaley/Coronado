@@ -149,6 +149,21 @@ namespace Coronado.Web.Controllers.Api
             var end = DateTime.Today.LastDayOfMonth();
             var start = end.AddMonths(0 - numMonths).FirstDayOfMonth();
             var investmentGains = await _reportRepo.GetMonthlyTotalsForCategory(gainLossCategory.CategoryId, start, end).ConfigureAwait(false);
+            var accountBalances = await _context.Accounts
+                .Include(a => a.Transactions)
+                .Select(a => new {
+                    a.AccountType,
+                    Total = a.Transactions.Sum(t => t.Amount)
+                }).ToListAsync();
+            var netWorthBreakdown = accountBalances
+                .Where(a => a.Total != 0)
+                .GroupBy(a => a.AccountType, a => a.Total)
+                .Select(g => new {
+                    AccountType = g.Key,
+                    Total = g.Sum()
+                })
+                .OrderByDescending(a => a.Total)
+                .ToList();
             var liquidAssetsBalance = _context.Accounts
                 .Where(a => a.AccountType == "Bank Account" || a.AccountType == "Cash")
                 .Sum(a => a.Transactions.Sum(t => t.AmountInBaseCurrency));
@@ -166,7 +181,8 @@ namespace Coronado.Web.Controllers.Api
                 creditCardBalance,
                 netWorth,
                 netWorthLastMonth,
-                investmentGains
+                investmentGains,
+                netWorthBreakdown
             };
             return Ok(report);
         }

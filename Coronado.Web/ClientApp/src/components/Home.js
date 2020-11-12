@@ -56,20 +56,19 @@ export default function Home() {
 
     var liquidAssets = dashboardStats ? dashboardStats.liquidAssetsBalance : 0;
     var ccTotal = dashboardStats ? dashboardStats.creditCardBalance : 0;
+    var netWorthBreakdown = dashboardStats ? dashboardStats.netWorthBreakdown : [];
 
     return (
       <div>
         <h1>Coronado Financial App for Me</h1>
         <Table className={classes.table} size="small">
           <TableBody>
+            {netWorthBreakdown && netWorthBreakdown.map(b => 
             <TableRow>
-              <TableCell>Liquid assets</TableCell>
-              <TableCell align="right">{Currency(liquidAssets)}</TableCell>
+              <TableCell>{b.accountType}</TableCell>
+              <TableCell align="right">{Currency(b.total)}</TableCell>
             </TableRow>
-            <TableRow>
-              <TableCell>Credit cards</TableCell>
-              <TableCell align="right">{Currency(ccTotal)}</TableCell>
-            </TableRow>
+            )}
             <TableRow>
               <TableCell>Investment change this month</TableCell>
               <TableCell align="right">{getGainLossForMonth(0)}</TableCell>
