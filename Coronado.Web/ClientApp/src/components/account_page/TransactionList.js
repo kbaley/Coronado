@@ -13,20 +13,27 @@ const styles = theme => ({
       padding: "0px",
     },
     "& td:nth-child(1)": {
-      width: 95,
-      maxWidth: 95,
+      width: 55,
+      maxWidth: 55,
     },
     "& td:nth-child(2)": {
       width: 110,
       maxWidth: 110,
     },
     "& td:nth-child(3)": {
-      maxWidth: 130,
+      width: 200,
+      maxWidth: 200,
     },
     "& td:nth-child(4)": {
-      maxWidth: 180,
+      width: 280,
+      maxWidth: 280,
     },
     "& td:nth-child(5)": {
+      width: 'auto',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      maxWidth: 0,
     },
     "& td:nth-child(6), & td:nth-child(7), & td:nth-child(8)": {
       width: 100,

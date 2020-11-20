@@ -6,15 +6,19 @@ import { getCategoriesForDropdown } from "../../selectors/selectors.js";
 import VendorField from '../common/VendorField';
 import { IconButton, makeStyles, TextField, TableRow, TableCell } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel'
+import moment from 'moment';
 
 const styles = theme => ({
   input: {
     height: 27,
-    fontSize: 14,
+    fontSize: 13,
     fontFamily: "Roboto, Helvetica, Arial, sans-serif",
   },
   icon: {
     transform: "scale(1)",
+  },
+  iconButton: {
+    padding: 5,
   }
 });
 
@@ -142,7 +146,7 @@ export default function EditableTransaction(props) {
   return (
       <TableRow>
         <TableCell>
-          <IconButton onClick={cancelEditing} component="span">
+          <IconButton onClick={cancelEditing} component="span" className={classes.iconButton}>
             <CancelIcon className={classes.icon} fontSize="small" />
           </IconButton>
         </TableCell>
@@ -152,7 +156,7 @@ export default function EditableTransaction(props) {
             onChange={handleChangeField}
             className={classes.input}
             onKeyPress={handleKeyPress}
-            value={trx.transactionDate} />
+            value={moment(trx.transactionDate).format("MM/DD/YYYY")} />
         </TableCell>
         <TableCell>
           <VendorField

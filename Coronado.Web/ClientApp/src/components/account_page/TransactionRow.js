@@ -3,6 +3,7 @@ import { DecimalFormat, MoneyFormat } from '../common/DecimalFormat';
 import { IconButton, makeStyles, TableCell, TableRow } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditableTransaction from './EditableTransaction';
+import Moment from 'react-moment';
 import * as Mousetrap from 'mousetrap';
 
 const styles = theme => ({
@@ -21,7 +22,7 @@ const styles = theme => ({
     },
   },
   button: {
-    padding: 7,
+    padding: 5,
   }
 });
 
@@ -46,7 +47,7 @@ export default function TransactionRow(props) {
     ...props.transaction,
     vendor: props.transaction.vendor || '',
     description: props.transaction.description || '',
-    transactionDate: new Date(props.transaction.transactionDate).toLocaleDateString(),
+    transactionDate: new Date(props.transaction.transactionDate),
     categoryId: (props.transaction.transactionType === 0) ? props.transaction.categoryId : '',
     debit: props.transaction.debit ? Number(props.transaction.debit).toFixed(2) : '',
     credit: props.transaction.credit ? Number(props.transaction.credit).toFixed(2) : '',
@@ -60,7 +61,7 @@ export default function TransactionRow(props) {
         ...transaction,
         vendor: transaction.vendor || '',
         description: transaction.description || '',
-        transactionDate: new Date(transaction.transactionDate).toLocaleDateString(),
+        transactionDate: new Date(transaction.transactionDate),
         categoryId: (transaction.transactionType === 0) ? transaction.categoryId : '',
         debit: transaction.debit ? Number(transaction.debit).toFixed(2) : '',
         credit: transaction.credit ? Number(transaction.credit).toFixed(2) : '',
@@ -96,7 +97,7 @@ export default function TransactionRow(props) {
           </IconButton>
         </TableCell>
         <ClickableTableCell onClick={startEditing}>
-          {new Date(trx.transactionDate).toLocaleDateString()}
+          <Moment format="MM/DD/YYYY">{trx.transactionDate}</Moment>
         </ClickableTableCell>
         <ClickableTableCell onClick={startEditing}>
           {trx.vendor}
@@ -104,7 +105,7 @@ export default function TransactionRow(props) {
         <ClickableTableCell onClick={startEditing}>
           {trx.categoryDisplay}
         </ClickableTableCell>
-        <ClickableTableCell onClick={startEditing}>
+        <ClickableTableCell onClick={startEditing} title={trx.description}>
           {trx.description}
         </ClickableTableCell>
         <ClickableTableCell onClick={startEditing}>
