@@ -1,6 +1,6 @@
 import React from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { TextField } from '@material-ui/core';
+import { TransactionInput } from '../TransactionInput';
 
 export default function VendorField({vendors, onVendorChanged, value, className, ...rest}) {
   const [selectedVendor, setSelectedVendor] = React.useState(value);
@@ -40,9 +40,10 @@ export default function VendorField({vendors, onVendorChanged, value, className,
       autoSelect
       getOptionLabel={getOptionLabel}
       getOptionSelected={getOptionSelected}
-      renderInput={(params) => <TextField 
-        {...params} 
-        {...rest}
+      renderInput={(params) => <TransactionInput
+        ref={params.InputProps.ref}
+        fullWidth
+        inputProps={params.inputProps}
         className={className} 
       />}
     />

@@ -193,7 +193,7 @@ export default function EditTransaction({account, onCancel, onSave}) {
           }}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={6}>
 
         <VendorField
           vendors={vendors}
@@ -203,7 +203,7 @@ export default function EditTransaction({account, onCancel, onSave}) {
           onVendorChanged={handleChangeVendor}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={6}>
 
         <CategorySelect
           selectedCategory={selectedCategory}
@@ -224,22 +224,26 @@ export default function EditTransaction({account, onCancel, onSave}) {
           onChange={handleChangeField}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={6}>
         <TextField
           name="debit"
           label="Debit"
+          type="number"
           fullWidth={true}
           margin="normal"
+          inputProps={{ inputMode: 'decimal' }}
           value={trx.debit}
           onChange={handleChangeDebit}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={6}>
         <TextField
           name="credit"
           label="Credit"
+          type="number"
           fullWidth={true}
           margin="normal"
+          inputProps={{ inputMode: 'decimal' }}
           value={trx.credit}
           onChange={handleChangeField}
         />

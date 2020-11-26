@@ -54,8 +54,6 @@ export default function Home() {
     return Currency(stats[month].amount);
   }
 
-    var liquidAssets = dashboardStats ? dashboardStats.liquidAssetsBalance : 0;
-    var ccTotal = dashboardStats ? dashboardStats.creditCardBalance : 0;
     var netWorthBreakdown = dashboardStats ? dashboardStats.netWorthBreakdown : [];
 
     return (

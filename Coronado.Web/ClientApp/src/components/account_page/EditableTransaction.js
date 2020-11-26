@@ -4,9 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import CategorySelect from '../common/CategorySelect';
 import { getCategoriesForDropdown } from "../../selectors/selectors.js";
 import VendorField from '../common/VendorField';
-import { IconButton, makeStyles, TextField, TableRow, TableCell } from '@material-ui/core';
+import { IconButton, makeStyles, TableRow, TableCell } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel'
 import moment from 'moment';
+import { TransactionInput } from '../TransactionInput';
 
 const styles = theme => ({
   input: {
@@ -151,12 +152,12 @@ export default function EditableTransaction(props) {
           </IconButton>
         </TableCell>
         <TableCell>
-          <TextField
+          <TransactionInput
             name="transactionDate"
             onChange={handleChangeField}
             className={classes.input}
             onKeyPress={handleKeyPress}
-            value={moment(trx.transactionDate).format("MM/DD/YYYY")} />
+            value={moment(new Date(trx.transactionDate)).format("MM/DD/YYYY")} />
         </TableCell>
         <TableCell>
           <VendorField
@@ -175,7 +176,7 @@ export default function EditableTransaction(props) {
             onCategoryChanged={handleChangeCategory} />
         </TableCell>
         <TableCell>
-          <TextField
+          <TransactionInput
             name="description"
             onChange={handleChangeField}
             fullWidth
@@ -185,7 +186,7 @@ export default function EditableTransaction(props) {
           />
         </TableCell>
         <TableCell>
-          <TextField
+          <TransactionInput
             name="debit"
             value={trx.debit}
             className={classes.input}
@@ -194,7 +195,7 @@ export default function EditableTransaction(props) {
             onKeyPress={handleKeyPress} />
         </TableCell>
         <TableCell>
-          <TextField
+          <TransactionInput
             name="credit"
             value={trx.credit}
             className={classes.input}

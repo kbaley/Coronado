@@ -12,7 +12,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import {
-  makeStyles,
+  makeStyles, useTheme,
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import DateNavigation from './DateNavigation';
@@ -30,6 +30,7 @@ export default function NetWorthGraph() {
   const report = reportData.report || [];
   const dispatch = useDispatch();
   const classes = useStyles();
+  const theme = useTheme();
   const reportReverse = [...report];
   reportReverse.pop();
   reportReverse.reverse();
@@ -70,7 +71,7 @@ export default function NetWorthGraph() {
           <XAxis dataKey="date" tickFormatter={formatXAxis} />
           <YAxis tickFormatter={formatYAxis} />
           <Tooltip formatter={formatTooltip} labelFormatter={formatXAxis} />
-          <Bar type="monotone" dataKey="netWorth" fill="#4682b4" />
+          <Bar type="monotone" dataKey="netWorth" fill={theme.palette.blue} />
         </BarChart>
       </ResponsiveContainer>
     </div>

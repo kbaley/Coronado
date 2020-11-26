@@ -1,6 +1,6 @@
 import React from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { TextField } from '@material-ui/core';
+import { TransactionInput } from '../TransactionInput';
 
 export default function CategorySelect({ categories, selectedCategory, className, 
   onCategoryChanged, selectedAccount, ...rest }) {
@@ -63,10 +63,11 @@ export default function CategorySelect({ categories, selectedCategory, className
       clearOnBlur
       selectOnFocus
       renderOption={(option) => option.name}
-      renderInput={(params) => <TextField
-        {...params}
-        {...rest}
-        className={className}
+      renderInput={(params) => <TransactionInput
+        ref={params.InputProps.ref}
+        fullWidth
+        inputProps={params.inputProps}
+        className={className} 
       />}
     />
   );

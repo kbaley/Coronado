@@ -5,13 +5,16 @@ import * as transactionActions from '../../actions/transactionActions';
 import { useSelector, useDispatch } from 'react-redux';
 import { getCategoriesForDropdown } from "../../selectors/selectors";
 import VendorField from '../common/VendorField';
-import { makeStyles, TextField, TableRow, TableCell } from '@material-ui/core';
+import { makeStyles, TableRow, TableCell } from '@material-ui/core';
+import { TransactionInput } from '../TransactionInput';
 
 const styles = theme => ({
   input: {
-    height: 27,
     fontSize: 14,
     fontFamily: "Roboto, Helvetica, Arial, sans-serif",
+    padding: 0,
+  },
+  outlined: {
   }
 });
 
@@ -200,7 +203,7 @@ export default function NewTransactionRow(props) {
       <TableCell>
       </TableCell>
       <TableCell>
-        <TextField
+        <TransactionInput
           name="transactionDate"
           className={classes.input}
           value={trx.transactionDate}
@@ -213,7 +216,6 @@ export default function NewTransactionRow(props) {
         <VendorField
           vendors={vendors}
           value={trx.vendor}
-          className={classes.input}
           onVendorChanged={handleChangeVendor}
         />
       </TableCell>
@@ -227,7 +229,7 @@ export default function NewTransactionRow(props) {
         />
       </TableCell>
       <TableCell>
-        <TextField
+        <TransactionInput
           name="description"
           fullWidth={true}
           className={classes.input}
@@ -236,7 +238,7 @@ export default function NewTransactionRow(props) {
         />
       </TableCell>
       <TableCell>
-        <TextField
+        <TransactionInput
           name="debit"
           fullWidth={true}
           className={classes.input}
@@ -246,7 +248,7 @@ export default function NewTransactionRow(props) {
         />
       </TableCell>
       <TableCell>
-        <TextField
+        <TransactionInput
           name="credit"
           fullWidth={true}
           className={classes.input}
