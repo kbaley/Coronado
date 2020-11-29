@@ -37,7 +37,7 @@ namespace Coronado.Web.Controllers.Api
             }
             for (var i = 0; i < numItems; i++) {
                 report.Add(new {date, total=_reportRepo.GetInvestmentTotalFor(date)});
-                date = date.AddMonths(-1).LastDayOfMonth();
+                date = date.FirstDayOfMonth().AddMinutes(-1);
             }
 
             return Ok(new { report, year = query.SelectedYear});
@@ -55,7 +55,7 @@ namespace Coronado.Web.Controllers.Api
             }
             for (var i = 0; i < numItems; i++) {
                 netWorth.Add(new {date, netWorth=_reportRepo.GetNetWorthFor(date)});
-                date = date.AddMonths(-1).LastDayOfMonth();
+                date = date.FirstDayOfMonth().AddMinutes(-1);
             }
 
             return Ok(new { report = netWorth, year = query.SelectedYear});
