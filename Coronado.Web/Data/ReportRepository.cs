@@ -7,7 +7,6 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 
 namespace Coronado.Web.Data
 {

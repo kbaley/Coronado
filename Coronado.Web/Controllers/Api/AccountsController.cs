@@ -105,6 +105,7 @@ namespace Coronado.Web.Controllers.Api
                 TransactionId = Guid.NewGuid(),
                 AccountId = mappedAccount.AccountId,
                 Amount = account.StartingBalance,
+                AmountInBaseCurrency = account.StartingBalance,
                 TransactionDate = account.StartDate,
                 Vendor = "",
                 Description = "",
@@ -112,6 +113,9 @@ namespace Coronado.Web.Controllers.Api
                 EnteredDate = account.StartDate,
                 IsReconciled = true
             };
+            var exchangeRate = _context.Currencies.SingleOrDefault(c => c.Symbol == "CAD").PriceInUsd;
+            var accountCurrency = account.Currency;
+            transaction.SetAmountInBaseCurrency(accountCurrency, exchangeRate);
             _context.Transactions.Add(transaction);
 
             var model = new AccountWithTransactions
