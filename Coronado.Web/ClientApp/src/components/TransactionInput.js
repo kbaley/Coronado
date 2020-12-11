@@ -9,7 +9,12 @@ export const TransactionInput = withStyles((theme) => ({
     margin: "0 6px 0 0",
     borderStyle: "solid",
     borderColor: theme.palette.blue,
-    fontSize: 13,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 18,
+    },
+    [theme.breakpoints.up('md')]: {
+      fontSize: 13,
+    },
     fontFamily: "Roboto, Helvetica, Arial, sans-serif",
   },
 

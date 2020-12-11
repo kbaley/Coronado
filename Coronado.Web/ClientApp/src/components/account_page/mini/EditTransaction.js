@@ -8,9 +8,19 @@ import CategorySelect from '../../common/CategorySelect';
 import { getCategoriesForDropdown } from "../../../selectors/selectors";
 import { find } from 'lodash';
 import * as transactionActions from '../../../actions/transactionActions';
+import { makeStyles } from '@material-ui/core/styles';
+
+const styles = theme => ({
+  text: {
+    ...theme.typography.mobileText,
+  },
+});
+
+const useStyles = makeStyles(styles);
 
 export default function EditTransaction({account, onCancel, onSave}) {
 
+  const classes = useStyles();
   const today = new Date().toISOString().split('T')[0];
   const vendors = useSelector(state => state.vendors);
   const categories = useSelector(state => getCategoriesForDropdown(state.categories, state.accounts, state.invoices));
@@ -190,6 +200,9 @@ export default function EditTransaction({account, onCancel, onSave}) {
           defaultValue={today}
           InputLabelProps={{
             shrink: true,
+            classes: {
+              input: classes.text,
+            },
           }}
         />
       </Grid>
@@ -201,6 +214,11 @@ export default function EditTransaction({account, onCancel, onSave}) {
           label="Vendor"
           margin="normal"
           onVendorChanged={handleChangeVendor}
+          InputProps={{
+            classes: {
+              input: classes.text,
+            },
+          }}
         />
       </Grid>
       <Grid item xs={6}>
@@ -222,6 +240,11 @@ export default function EditTransaction({account, onCancel, onSave}) {
           label="Description"
           value={trx.description}
           onChange={handleChangeField}
+          InputProps={{
+            classes: {
+              input: classes.text,
+            },
+          }}
         />
       </Grid>
       <Grid item xs={6}>
@@ -234,6 +257,11 @@ export default function EditTransaction({account, onCancel, onSave}) {
           inputProps={{ inputMode: 'decimal' }}
           value={trx.debit}
           onChange={handleChangeDebit}
+          InputProps={{
+            classes: {
+              input: classes.text,
+            },
+          }}
         />
       </Grid>
       <Grid item xs={6}>
@@ -246,6 +274,11 @@ export default function EditTransaction({account, onCancel, onSave}) {
           inputProps={{ inputMode: 'decimal' }}
           value={trx.credit}
           onChange={handleChangeField}
+          InputProps={{
+            classes: {
+              input: classes.text,
+            },
+          }}
         />
       </Grid>
       <Grid item xs={6}>
