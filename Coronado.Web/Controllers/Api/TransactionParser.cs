@@ -267,7 +267,7 @@ namespace Coronado.Web.Controllers.Api
                 var date = lines[i];
                 var yearAndDescription = lines[i+1];
                 // This is a credit card transaction; negate it
-                var amount = -decimal.Parse(lines[i+3].Replace("$", "").Trim());
+                var amount = -decimal.Parse(lines[i+3].Replace("$", "").Replace(" ", "").Trim());
                 var year = int.Parse(yearAndDescription.Split('\t')[0].Trim());
                 date += "," + year;
                 var transactionDate = DateTime.ParseExact(date, "MMM d,yyyy", CultureInfo.InvariantCulture);
