@@ -267,7 +267,7 @@ namespace Coronado.Web.Controllers.Api
                 };
                 transaction.SetDebitAndCredit();
                 _transactionRepo.Insert(transaction);
-                var accountBalances = _context.Accounts.GetAccountBalances().ToList();
+                var accountBalances = _context.GetAccountBalances().ToList();
                 var transactions = new[] { transaction };
 
                 return CreatedAtAction("PostTransaction", new { id = transaction.TransactionId }, new { transactions, accountBalances });
@@ -320,7 +320,7 @@ namespace Coronado.Web.Controllers.Api
             var investmentTransaction = await CreateInvestmentTransaction(investmentDto, investment).ConfigureAwait(false);
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
-            var accountBalances = _context.Accounts.GetAccountBalances().ToList();
+            var accountBalances = _context.GetAccountBalances().ToList();
             return CreatedAtAction("PostInvestment", new { id = investment.InvestmentId },
                 new
                 {

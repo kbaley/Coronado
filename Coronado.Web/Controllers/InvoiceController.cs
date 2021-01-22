@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Coronado.Web.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using Coronado.Web.Domain;

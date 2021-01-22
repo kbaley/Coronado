@@ -14,15 +14,23 @@ namespace Coronado.Web.Data
             if (!asOf.HasValue) {
                 asOf = DateTime.Now;
             }
-            return currencies.OrderByDescending(c => c.LastRetrieved).First(c => c.Symbol == "CAD").PriceInUsd;
+            var currency = currencies
+                .Where(c => c.Symbol == "CAD")
+                .ToList()
+                .OrderBy(c => Math.Abs((asOf.Value - c.LastRetrieved).TotalMinutes))
+                .First();
+            return currency.PriceInUsd;
         }
 
-        public static IQueryable<AccountIdAndBalance> GetAccountBalances(this DbSet<Account> accounts) {
-            return accounts
+        public static IQueryable<AccountIdAndBalance> GetAccountBalances(this CoronadoDbContext context) {
+            var exchangeRate = context.Currencies.GetCadExchangeRate();
+            return context.Accounts
                 .Select( a => new AccountIdAndBalance {
                     AccountId = a.AccountId,
                     CurrentBalance = a.Transactions.Sum(t => t.Amount),
-                    CurrentBalanceInUsd = a.Transactions.Sum(t => t.AmountInBaseCurrency)
+                    CurrentBalanceInUsd = a.Currency == "CAD"
+                        ? Math.Round(a.Transactions.Sum(t => t.Amount) / exchangeRate, 2)
+                        : a.Transactions.Sum(t => t.Amount)
                 });
         }
 

@@ -61,7 +61,7 @@ namespace Coronado.Web.Controllers.Api
             }
             _transactionRepo.Delete(id);
 
-            return Ok(new { transaction, accountBalances = _context.Accounts.GetAccountBalances().ToList(), invoiceDto });
+            return Ok(new { transaction, accountBalances = _context.GetAccountBalances().ToList(), invoiceDto });
         }
 
         [HttpPut("{id}")]
@@ -85,7 +85,7 @@ namespace Coronado.Web.Controllers.Api
             }
             return Ok(new { transaction, 
                 originalAmount, 
-                accountBalances = _context.Accounts.GetAccountBalances().ToList(), 
+                accountBalances = _context.GetAccountBalances().ToList(), 
                 invoiceDto 
             });
         }
@@ -110,7 +110,7 @@ namespace Coronado.Web.Controllers.Api
             transactions.AddRange(addedTransactions.Select(t => _mapper.Map<TransactionForDisplay>(t)));
             transactions.ForEach(t => t.SetDebitAndCredit());
 
-            var accountBalances = _context.Accounts.GetAccountBalances().ToList();
+            var accountBalances = _context.GetAccountBalances().ToList();
             InvoiceForPosting invoiceDto = null;
             if (transaction.InvoiceId.HasValue)
             {

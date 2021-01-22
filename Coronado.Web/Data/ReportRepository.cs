@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace Coronado.Web.Data
 {
@@ -23,17 +24,38 @@ namespace Coronado.Web.Data
 
         public decimal GetNetWorthFor(DateTime date)
         {
-            return _context.Transactions
-                .Where(t => t.TransactionDate <= date)
-                .Sum(t => t.AmountInBaseCurrency);
+            var exchangeRate = _context.Currencies.GetCadExchangeRate(date);
+            var usTotal = _context
+                .Transactions
+                .Include(t => t.Account)
+                .Where(t => t.TransactionDate <= date && t.Account.Currency == "USD")
+                .Sum(t => t.Amount);
+            var cadTotal = _context
+                .Transactions
+                .Include(t => t.Account)
+                .Where(t => t.TransactionDate <= date && t.Account.Currency == "CAD")
+                .Sum(t => t.Amount);
+            return Math.Round(usTotal + (cadTotal / exchangeRate), 2);
         }
 
         public decimal GetInvestmentTotalFor(DateTime date)
         {
-            return _context.Transactions
+            var exchangeRate = _context.Currencies.GetCadExchangeRate(date);
+            var usTotal = _context
+                .Transactions
+                .Include(t => t.Account)
                 .Where(t => t.TransactionDate <= date 
-                    && t.Account.AccountType == "Investment")
-                .Sum(t => t.AmountInBaseCurrency);
+                    && t.Account.AccountType == "Investment"
+                    && t.Account.Currency == "USD")
+                .Sum(t => t.Amount);
+            var cadTotal = _context
+                .Transactions
+                .Include(t => t.Account)
+                .Where(t => t.TransactionDate <= date 
+                    && t.Account.AccountType == "Investment"
+                    && t.Account.Currency == "CAD")
+                .Sum(t => t.Amount);
+            return Math.Round(usTotal + (cadTotal / exchangeRate), 2);
         }
 
         public IEnumerable<CategoryTotal> GetTransactionsByCategoryType(string categoryType, DateTime start, DateTime end)

@@ -164,6 +164,7 @@ namespace Coronado.Web.Controllers.Api
                 })
                 .OrderByDescending(a => a.Total)
                 .ToList();
+            var exchangeRate = _context.Currencies.GetCadExchangeRate();
             var liquidAssetsBalance = _context.Accounts
                 .Where(a => a.AccountType == "Bank Account" || a.AccountType == "Cash")
                 .Sum(a => a.Transactions.Sum(t => t.AmountInBaseCurrency));

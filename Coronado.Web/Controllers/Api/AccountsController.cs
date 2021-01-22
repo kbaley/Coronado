@@ -36,6 +36,7 @@ namespace Coronado.Web.Controllers.Api
         [HttpGet]
         public IEnumerable<AccountWithBalance> GetAccounts()
         {
+            var exchangeRate = _context.Currencies.GetCadExchangeRate();
             var accounts = _context.Accounts
                 .Select(a => new AccountWithBalance
                 {
@@ -49,7 +50,9 @@ namespace Coronado.Web.Controllers.Api
                     DisplayOrder = a.DisplayOrder,
                     IsHidden = a.IsHidden,
                     CurrentBalance = a.Transactions.Sum(t => t.Amount),
-                    CurrentBalanceInUsd = a.Transactions.Sum(t => t.AmountInBaseCurrency)
+                    CurrentBalanceInUsd = a.Currency == "CAD" 
+                        ? Math.Round(a.Transactions.Sum(t => t.Amount) / exchangeRate, 2)
+                        : a.Transactions.Sum(t => t.Amount),
                 });
             return accounts;
         }
