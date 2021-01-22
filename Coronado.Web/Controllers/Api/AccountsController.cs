@@ -113,7 +113,7 @@ namespace Coronado.Web.Controllers.Api
                 EnteredDate = account.StartDate,
                 IsReconciled = true
             };
-            var exchangeRate = _context.Currencies.SingleOrDefault(c => c.Symbol == "CAD").PriceInUsd;
+            var exchangeRate = _context.Currencies.GetCadExchangeRate();
             var accountCurrency = account.Currency;
             transaction.SetAmountInBaseCurrency(accountCurrency, exchangeRate);
             _context.Transactions.Add(transaction);

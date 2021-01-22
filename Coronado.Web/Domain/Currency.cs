@@ -8,6 +8,8 @@ namespace Coronado.Web.Domain
     public class Currency
     {
         [Key]
+        public Guid CurrencyId { get; set; }
+
         public string Symbol { get; set; }
         public DateTime LastRetrieved { get; set; }
         public decimal PriceInUsd { get; set; }

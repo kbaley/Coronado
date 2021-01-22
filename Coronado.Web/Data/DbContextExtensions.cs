@@ -10,6 +10,12 @@ namespace Coronado.Web.Data
 {
     public static class DbContextExtensions
     {
+        public static decimal GetCadExchangeRate(this DbSet<Currency> currencies, DateTime? asOf = null) {
+            if (!asOf.HasValue) {
+                asOf = DateTime.Now;
+            }
+            return currencies.OrderByDescending(c => c.LastRetrieved).First(c => c.Symbol == "CAD").PriceInUsd;
+        }
 
         public static IQueryable<AccountIdAndBalance> GetAccountBalances(this DbSet<Account> accounts) {
             return accounts
@@ -49,11 +55,6 @@ namespace Coronado.Web.Data
                 days.Add((DateTime.Today - startDate).Days);
             }
             return Irr.CalculateIrr(payments.ToArray(), days.ToArray());
-        }
-
-        public async static Task<Currency> FindBySymbol(this DbSet<Currency> currencies, string symbol)
-        {
-            return await currencies.FirstOrDefaultAsync(c => c.Symbol == symbol);
         }
 
         public async static Task<Category> GetOrCreateCategory(this CoronadoDbContext context, string newCategoryName)

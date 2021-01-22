@@ -157,9 +157,7 @@ namespace Coronado.Web.Data
         private void LoadCadExchangeRate()
         {
             if (_cadExchangeRate > decimal.MinValue) return;
-            var currency = _context.Currencies.SingleOrDefault(c => c.Symbol == "CAD");
-            if (currency == null) _cadExchangeRate = 1.0m;
-            _cadExchangeRate = currency.PriceInUsd;
+            _cadExchangeRate = _context.Currencies.GetCadExchangeRate();
         }
 
         public IEnumerable<Transaction> Insert(TransactionForDisplay transactionDto)

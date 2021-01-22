@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Coronado.Web.Data;
@@ -23,16 +24,10 @@ namespace Coronado.Web.Controllers.Api
         [HttpGet]
         public async Task<decimal> GetExchangeRateFor(string symbol)
         {
-            var currency = await _context.Currencies.FindBySymbol(symbol).ConfigureAwait(false);
-            var isNew = false;
-            if (currency == null) {
-                currency = new Currency{
-                    Symbol = symbol,
-                    LastRetrieved = DateTime.MinValue
-                };
-                isNew = true;
-            }
-            if (isNew || currency.LastRetrieved < DateTime.Today) {
+            var currency = _context.Currencies
+                .OrderByDescending(c => c.LastRetrieved)
+                .FirstOrDefault(c => c.Symbol == symbol);
+            if (currency == null || currency.LastRetrieved < DateTime.Today) {
                 using var client = new HttpClient
                 {
                     BaseAddress = new Uri("https://api.exchangeratesapi.io")
@@ -43,12 +38,13 @@ namespace Coronado.Web.Controllers.Api
                     response.EnsureSuccessStatusCode();
                     var stringResult = await response.Content.ReadAsStringAsync();
                     dynamic rawRate = JsonConvert.DeserializeObject(stringResult);
-                    currency.PriceInUsd = rawRate.rates[symbol];
-                    currency.LastRetrieved = DateTime.Today;
-                    if (isNew)
-                        _context.Currencies.Add(currency);
-                    // Don't do anything if updating an existing currency; EF will handle the
-                    // change tracking for us
+                    currency = new Currency {
+                        CurrencyId = Guid.NewGuid(),
+                        Symbol = symbol,
+                        PriceInUsd = rawRate.rates[symbol],
+                        LastRetrieved = DateTime.Today
+                    };
+                    _context.Currencies.Add(currency);
                     await _context.SaveChangesAsync().ConfigureAwait(false);
                 }
                 catch (Exception e)
