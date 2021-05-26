@@ -6,6 +6,7 @@ using Coronado.Web.Data;
 using Coronado.Web.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace Coronado.Web.Controllers.Api
@@ -30,7 +31,7 @@ namespace Coronado.Web.Controllers.Api
             if (currency == null || currency.LastRetrieved < DateTime.Today) {
                 using var client = new HttpClient
                 {
-                    BaseAddress = new Uri("https://api.exchangeratesapi.io")
+                    BaseAddress = new Uri("https://api.exchangerate.host")
                 };
                 try
                 {

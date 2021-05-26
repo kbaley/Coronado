@@ -9,6 +9,7 @@ using AutoMapper;
 using Coronado.Web.Controllers.Dtos;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Coronado.Web.Controllers.Api
 {
