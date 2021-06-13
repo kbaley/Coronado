@@ -26,7 +26,7 @@ namespace Coronado.Web.Controllers.Api
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri("https://apidojo-yahoo-finance-v1.p.rapidapi.com/market" + requestUri)
+                RequestUri = new Uri("https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/v2" + requestUri)
             };
             request.Headers.Add("x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com");
             request.Headers.Add("x-rapidapi-key", _config.GetValue<string>("RapidApiKey"));
