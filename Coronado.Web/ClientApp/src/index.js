@@ -13,7 +13,7 @@ import { loadInvoices } from "./actions/invoiceActions";
 import { loadVendors } from "./actions/vendorActions";
 import { loadCurrencies } from "./actions/currencyActions";
 import { loadInvestments } from "./actions/investmentActions";
-import registerServiceWorker from './registerServiceWorker';
+// import registerServiceWorker from './registerServiceWorker';
 import { ThemeProvider } from '@material-ui/core';
 import theme from './theme';
 import { loadInvestmentCategories } from './actions/investmentCategoryActions';
@@ -44,4 +44,4 @@ ReactDOM.render(
   </Provider>,
   rootElement);
 
-registerServiceWorker();
+// registerServiceWorker();

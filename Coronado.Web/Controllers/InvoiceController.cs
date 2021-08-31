@@ -26,6 +26,7 @@ namespace Coronado.Web.Controllers
             _context = context;
         }
 
+        [Route("admin/invoices/GeneratePDF")]
         public async Task<IActionResult> GeneratePDF(Guid invoiceId)
         {
             var apiKey = _config.GetValue<string>("Html2PdfRocketKey");
@@ -82,6 +83,8 @@ namespace Coronado.Web.Controllers
 
             return value;
         }
+
+        [Route("admin/invoices/GenerateHTML")]
         public async Task<IActionResult> GenerateHtml(Guid invoiceId)
         {
             var invoice = await _context.FindInvoiceEager(invoiceId).ConfigureAwait(false);

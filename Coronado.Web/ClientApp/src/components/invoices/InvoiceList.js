@@ -33,7 +33,7 @@ export default function InvoiceList({ showPaid }) {
   }
 
   const downloadInvoice = (invoiceId) => {
-    window.open("/invoice/GeneratePDF?invoiceId=" + invoiceId);
+    window.open("/admin/invoices/GeneratePDF?invoiceId=" + invoiceId);
   }
 
   const emailInvoice = (invoiceId) => {
@@ -41,7 +41,7 @@ export default function InvoiceList({ showPaid }) {
   }
 
   const previewInvoice = (invoiceId) => {
-    window.open("/invoice/GenerateHTML?invoiceId=" + invoiceId);
+    window.open("/admin/invoices/GenerateHTML?invoiceId=" + invoiceId);
   }
 
   const showInvoice = (invoice) => {
