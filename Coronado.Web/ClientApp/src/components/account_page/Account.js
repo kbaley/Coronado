@@ -59,7 +59,6 @@ function Account({ match }) {
 
   const uploadQif = (file, fromDate, transactions) => {
     dispatch(accountActions.uploadQif(getSelectedAccount().accountId, file, fromDate, transactions));
-
   }
 
   const account = getSelectedAccount();

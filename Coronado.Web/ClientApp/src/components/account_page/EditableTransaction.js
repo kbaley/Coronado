@@ -122,19 +122,21 @@ export default function EditableTransaction(props) {
       setSelectedCategory('');
       return;
     }
-    let categoryId = category.categoryId;
+    let categoryId = (category ? category.categoryId : '');
     if (trx.transactionType !== 0) {
       categoryId = '';
     }
     setTrx({
       ...trx,
       categoryId: categoryId,
-      categoryDisplay: category.name,
+      categoryDisplay: category ? category.name : '',
     });
-    setSelectedCategory({
-      categoryId: category.categoryId,
-      name: category.name,
-    })
+    if (category) {
+      setSelectedCategory({
+        categoryId: category.categoryId,
+        name: category.name,
+      });
+    }
   }
 
   const updateTransaction = () => {

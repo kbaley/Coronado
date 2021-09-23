@@ -77,7 +77,10 @@ export default function TransactionList(props) {
           account={props.account} />
         {isLoading ? <tr><td colSpan="8"><Spinner /></td></tr> :
           transactions.map(trx =>
-            <TransactionRow key={trx.transactionId} transaction={trx}
+            <TransactionRow 
+              key={trx.transactionId} 
+              transaction={trx}
+              isEditing={trx.isEditing}
               onDelete={() => deleteTransaction(trx.transactionId)} />
           )
         }

@@ -43,7 +43,7 @@ export default function CategorySelect({ categories, selectedCategory, className
     if (option.inputValue) {
       return option.inputValue;
     }
-    return option.name;
+    return option.name || '';
   }
 
   const getOptionSelected = (option, value) => {

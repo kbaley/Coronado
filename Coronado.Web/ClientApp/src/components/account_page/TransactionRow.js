@@ -70,6 +70,14 @@ export default function TransactionRow(props) {
     }
   }, [props.transaction]);
 
+  React.useEffect(() => {
+    if (props.isEditing) {
+      setIsEditing(true);
+    } else {
+      setIsEditing(false);
+    }
+  }, [props.isEditing]);
+
   const startEditing = () => {
     setIsEditing(true);
     Mousetrap.bind('esc', cancelEditing)

@@ -1,5 +1,5 @@
 import initialState from './initialState';
-import { cloneDeep, concat, filter, orderBy, forEachRight } from 'lodash'; 
+import { cloneDeep, concat, filter, orderBy, forEachRight, forEach } from 'lodash'; 
 import * as actions from "../constants/transactionActionTypes.js";
 
 function computeRunningTotal(transactions, startingBalance) {
@@ -26,6 +26,9 @@ export const transactionReducer = (state = initialState.transactionModel, action
       }
 
     case actions.UPLOAD_QIF_SUCCESS:
+      forEach(action.transactions, (trx) => {
+        trx.isEditing = true;
+      });
       transactions = concat(cloneDeep(state.transactions), cloneDeep(action.transactions));
       
       return {
