@@ -37,9 +37,17 @@ export default function UploadQif({onUpload, account}) {
     setShow(false);
   }
 
+  const clearForm = () => {
+    setSelectedFile(null);
+    setFromDate(new Date().toISOString().split('T')[0]);
+    setFilename('No file selected');
+    setTransactions(''); 
+  }
+
   const onSave = () => {
     onUpload(selectedFile, fromDate, transactions);
     closeUploadForm();
+    clearForm();
   }
 
   const handleChangeField = (e) => {
