@@ -40,7 +40,8 @@ namespace Coronado.Web.Controllers.Api
                 fromDate = DateTime.MinValue;
             }
             return transactions
-                .Where(t => t.TransactionDate >= fromDate);
+                .Where(t => t.TransactionDate >= fromDate)
+                .Reverse();
         }
 
         // Assumes we're parsing for a credit card, specifically AMEX

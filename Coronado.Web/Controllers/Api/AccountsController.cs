@@ -79,20 +79,24 @@ namespace Coronado.Web.Controllers.Api
             {
                 transactions = _transactionParser.Parse(model.Transactions, model.AccountId, model.FromDate);
             }
+            var insertedTransactions = new List<TransactionForDisplay>();
             foreach (var trx in transactions)
             {
                 if (string.IsNullOrWhiteSpace(trx.DownloadId))
                 {
                     _transactionRepo.Insert(trx);
+                    insertedTransactions.Add(trx);
                 }
                 else
                 {
                     var existingTrx = _context.Transactions.Any(t => t.DownloadId == trx.DownloadId);
-                    if (!existingTrx)
+                    if (!existingTrx) {
                         _transactionRepo.Insert(trx);
+                        insertedTransactions.Add(trx);
+                    }
                 }
             }
-            return CreatedAtAction("PostQif", new { id = model.AccountId }, transactions);
+            return CreatedAtAction("PostQif", new { id = model.AccountId }, insertedTransactions);
         }
 
         [HttpPost]
