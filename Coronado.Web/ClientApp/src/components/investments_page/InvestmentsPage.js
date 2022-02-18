@@ -114,10 +114,14 @@ export default function InvestmentsPage() {
       </h1>
       <h3>USD</h3>
       <InvestmentList investments={filter(investments, i => i.currency === 'USD')} currency='USD' />
-      <h3>CAD</h3>
-      <InvestmentList investments={filter(investments, i => i.currency === 'CAD')} currency='CAD'>
-      <DisplayTotalRow text="Grand Total" value={getInvestmentsTotal()} secondaryValue={getBookValueTotal()} />
-      </InvestmentList>
+      {filter(investments, i => i.currency === 'CAD').length > 0 && 
+        <>
+          <h3>CAD</h3>
+          <InvestmentList investments={filter(investments, i => i.currency === 'CAD')} currency='CAD'>
+          <DisplayTotalRow text="Grand Total" value={getInvestmentsTotal()} secondaryValue={getBookValueTotal()} />
+          </InvestmentList>
+        </>
+      }
     </div>
   );
 }
