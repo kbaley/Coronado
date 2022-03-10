@@ -238,7 +238,7 @@ namespace Coronado.Web.Controllers.Api
 
             var transactions = new List<TransactionForDisplay>();
             for (var i = 0; i < lines.Length; i += 3) {
-                var date = lines[i];
+                var date = lines[i].TrimEnd();
                 var yearAndDescription = lines[i+1];
                 var amount = decimal.Parse(lines[i+2].Replace("$", "").Split(' ')[0]);
                 var year = int.Parse(yearAndDescription.Split('\t')[0].Trim());
