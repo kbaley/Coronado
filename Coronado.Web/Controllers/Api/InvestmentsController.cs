@@ -52,6 +52,7 @@ namespace Coronado.Web.Controllers.Api
                 .ToList();
             var dividends = GetDividendDtosFrom(investment);
             var mappedInvestment = _mapper.Map<InvestmentDetailDto>(investment);
+            mappedInvestment.Transactions = mappedInvestment.Transactions.OrderBy(t => t.Date);
             mappedInvestment.TotalPaid = Math.Round(investment.Transactions.Sum(t => t.Shares * t.Price), 2);
             mappedInvestment.CurrentValue = Math.Round(mappedInvestment.LastPrice * mappedInvestment.Shares);
             mappedInvestment.BookValue = Math.Round(mappedInvestment.AveragePrice * mappedInvestment.Shares);
@@ -103,9 +104,10 @@ namespace Coronado.Web.Controllers.Api
                     Name = i.Name,
                     Symbol = i.Symbol,
                     Shares = i.Transactions.Sum(t => t.Shares),
+                    TotalSharesBought = i.Transactions.Where(t => t.Shares > 0).Sum(t => t.Shares),
                     LastPrice = i.LastPrice,
                     // Don't divide by number of shares yet in case it's zero; we'll do this later
-                    AveragePrice = i.Transactions.Sum(t => t.Shares * t.Price),
+                    AveragePrice = i.Transactions.Where(t => t.Shares > 0).Sum(t => t.Shares * t.Price),
                     Currency = i.Currency,
                     DontRetrievePrices = i.DontRetrievePrices,
                     AnnualizedIrr = i.GetAnnualizedIrr(),
@@ -118,7 +120,7 @@ namespace Coronado.Web.Controllers.Api
             investments.ForEach(i =>
             {
                 i.CurrentValue = i.Shares * i.LastPrice;
-                i.AveragePrice = i.Shares == 0 ? 0 : i.AveragePrice / i.Shares;
+                i.AveragePrice = i.Shares == 0 ? 0 : i.AveragePrice / i.TotalSharesBought;
                 i.BookValue = i.Shares * i.AveragePrice;
             });
             var totalIrr = _context.Investments.GetAnnualizedIrr();

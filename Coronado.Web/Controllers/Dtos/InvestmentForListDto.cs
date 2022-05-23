@@ -37,5 +37,6 @@ namespace Coronado.Web.Controllers.Dtos
         public Guid? CategoryId { get; set; }
         public decimal CategoryPercentage { get; set; }
         public bool PaysDividends { get; set; }
+        public decimal TotalSharesBought { get; set; }
     }
 }

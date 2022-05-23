@@ -46,24 +46,22 @@ export default function InvestmentPage({ match }) {
         {investment.name} ({investment.symbol})
       </h1>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={4} >
+        <Grid item xs={12} lg={4} >
           <Card className={classes.stats}>
             <CardContent>
               <InvestmentStats investment={investment} />
             </CardContent>
           </Card>
-        </Grid>
-        <Grid item xs={12} md={8}>
-          <Card className={classes.transactionList}>
-            <CardContent>
-              <InvestmentTransactionList investment={investment} />
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={4}>
           <Card className={classes.transactionList}>
             <CardContent>
               <InvestmentDividendList investment={investment} />
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} lg={8}>
+          <Card className={classes.transactionList}>
+            <CardContent>
+              <InvestmentTransactionList investment={investment} />
             </CardContent>
           </Card>
         </Grid>

@@ -67,9 +67,10 @@ namespace Coronado.Web.Domain
 
         public decimal GetAveragePricePaid()
         {
-            var numShares = GetNumberOfShares();
+            var purchaseTransactions = Transactions.Where(t => t.Shares > 0);
+            var numShares = purchaseTransactions.Sum(t => t.Shares);
             if (numShares == 0) return 0;
-            return Transactions.Sum(t => t.Shares * t.Price) / numShares;
+            return purchaseTransactions.Sum(t => t.Shares * t.Price) / numShares;
         }
 
         public decimal GetCurrentValue()
