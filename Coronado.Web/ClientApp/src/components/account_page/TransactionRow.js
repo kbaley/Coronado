@@ -1,6 +1,6 @@
 import React from 'react';
 import { DecimalFormat, MoneyFormat } from '../common/DecimalFormat';
-import { IconButton, makeStyles, TableCell, TableRow } from '@material-ui/core';
+import { IconButton, makeStyles, TableCell, TableRow, Hidden } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditableTransaction from './EditableTransaction';
 import Moment from 'react-moment';
@@ -88,6 +88,13 @@ export default function TransactionRow(props) {
     Mousetrap.unbind('esc');
   }
 
+  const getDisplay = (category) => {
+    if (category === "TRANSFER" || category === "TRANSFER: Banco General 2") {
+      return "none";
+    }
+    return "table-row";
+  }
+
   const classes = useStyles();
 
   return (
@@ -98,7 +105,7 @@ export default function TransactionRow(props) {
         onFinishEdit={cancelEditing}
       /> :
 
-      <TableRow className={classes.gridRow}>
+      <TableRow className={classes.gridRow} style={{'display': getDisplay(trx.categoryDisplay)}}>
         <TableCell>
           <IconButton onClick={props.onDelete} component="span" className={classes.button}>
             <DeleteIcon className={classes.icon} fontSize="small" />
@@ -125,6 +132,6 @@ export default function TransactionRow(props) {
         <ClickableTableCell onClick={startEditing}>
           <MoneyFormat amount={trx.runningTotal} />
         </ClickableTableCell>
-      </TableRow>
+        </TableRow>
   );
 }

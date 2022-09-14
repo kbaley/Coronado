@@ -100,6 +100,17 @@ namespace Coronado.Web.Controllers.Api
             var report = new Dictionary<Guid, dynamic>();
             var categories = _context.Categories.Where(c => c.Type == categoryType).ToList();
             var expenses = _reportRepo.GetTransactionsByCategoryType(categoryType, start, end).ToList();
+            foreach (var item in expenses)
+            {
+                if (item.CategoryName == "Sydney" || item.CategoryName == "Miscellaneous") {
+                    foreach (var amount in item.Amounts)
+                    {
+                        if (amount.Date.Year < 2022) {
+                            amount.Amount /= 4;
+                        }
+                    }
+                }
+            }
             if (categoryType == "Income") {
                 var invoiceTotals = _reportRepo.GetInvoiceLineItemsIncomeTotals(start, end);
                 foreach (var item in invoiceTotals)
