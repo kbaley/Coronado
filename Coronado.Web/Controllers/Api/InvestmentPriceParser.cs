@@ -24,6 +24,7 @@ namespace Coronado.Web.Controllers.Api
             // Get symbols only for investments we have shares in
             var symbols = context.Investments
                 .Include(i => i.Transactions)
+                .Where(i => !i.DontRetrievePrices)
                 .Select(i => new {
                     i.Symbol,
                     Shares = i.Transactions.Sum(t => t.Shares)
