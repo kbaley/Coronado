@@ -37,6 +37,7 @@ export default function VendorField({vendors, onVendorChanged, value, className,
       freeSolo
       options={options}
       onChange={onChange}
+      autoHighlight
       autoSelect
       getOptionLabel={getOptionLabel}
       getOptionSelected={getOptionSelected}
