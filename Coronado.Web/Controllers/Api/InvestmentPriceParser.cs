@@ -36,12 +36,12 @@ namespace Coronado.Web.Controllers.Api
             var results = JsonConvert.DeserializeObject<List<MarketPrice>>(resultJson.ToString());
             foreach (var item in results)
             {
-                var investment = investments.SingleOrDefault(i => i.Symbol == item.symbol);
-                if (investment != null)
+                var investment = investments.Where(i => i.Symbol == item.symbol);
+                foreach (var i in investment)
                 {
-                    investment.LastPriceRetrievalDate = DateTime.Today;
-                    investment.LastPrice = item.regularMarketPrice;
-                    context.Investments.Update(investment);
+                    i.LastPriceRetrievalDate = DateTime.Today;
+                    i.LastPrice = item.regularMarketPrice;
+                    context.Investments.Update(i);
                 }
             }
             await context.SaveChangesAsync().ConfigureAwait(false);
