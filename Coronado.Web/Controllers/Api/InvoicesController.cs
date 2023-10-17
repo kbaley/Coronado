@@ -71,7 +71,7 @@ namespace Coronado.Web.Controllers.Api
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] InvoiceForPosting invoice)
         {
-            if (invoice.InvoiceId == null || invoice.InvoiceId == Guid.Empty) invoice.InvoiceId = Guid.NewGuid();
+            if (invoice.InvoiceId == Guid.Empty) invoice.InvoiceId = Guid.NewGuid();
             invoice.Balance = invoice.GetLineItemTotal();
             var invoiceMapped = _mapper.Map<Invoice>(invoice);
             _context.Invoices.Add(invoiceMapped);
@@ -80,7 +80,7 @@ namespace Coronado.Web.Controllers.Api
             invoice.CustomerName = customer.Name;
             invoice.CustomerEmail = customer.Email;
 
-            return CreatedAtAction("PostInvoice", new { id = invoice.InvoiceId }, invoice);
+            return CreatedAtAction("Post", new { id = invoice.InvoiceId }, invoice);
         }
 
         [HttpDelete("{id}")]

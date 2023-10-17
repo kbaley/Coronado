@@ -273,7 +273,7 @@ namespace Coronado.Web.Controllers.Api
                 var accountBalances = _context.GetAccountBalances().ToList();
                 var transactions = new[] { transaction };
 
-                return CreatedAtAction("PostTransaction", new { id = transaction.TransactionId }, new { transactions, accountBalances });
+                return CreatedAtAction("MakeCorrectingEntries", new { id = transaction.TransactionId }, new { transactions, accountBalances });
             }
             else
             {
@@ -410,10 +410,7 @@ namespace Coronado.Web.Controllers.Api
                 _context.Transfers.Remove(transaction.Transaction.LeftTransfer);
                 _context.Transfers.Remove(transaction.Transaction.LeftTransfer.RightTransaction.LeftTransfer);
             }
-            if (investment == null)
-            {
-                return NotFound();
-            }
+
             _context.Investments.Remove(investment);
             _context.SaveChanges();
             return Ok(investment);
