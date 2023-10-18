@@ -1,8 +1,8 @@
 using System;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Coronado.Web.Data;
@@ -31,18 +31,21 @@ namespace Coronado.Web.Controllers
         {
             var apiKey = _config.GetValue<string>("Html2PdfRocketKey");
 
-            using var client = new WebClient();
+            using var client = new HttpClient();
             var invoice = await _context.FindInvoiceEager(invoiceId).ConfigureAwait(false);
-            var options = new NameValueCollection
-                {
-                    { "apikey", apiKey },
-                    { "value", GetInvoiceHtml(invoice) }
-                };
+            var parms = new Dictionary<string, string>();
+            parms.Add("apikey", apiKey);
+            parms.Add("value", GetInvoiceHtml(invoice));
+            var content = new FormUrlEncodedContent(parms);
+            var result = await client.PostAsync("https://api.html2pdfrocket.com/pdf", content);
+            if (result.IsSuccessStatusCode)
+            {
+                HttpContext.Response.Headers.Add("content-disposition", $"attachment; filename=Invoice {invoice.InvoiceNumber}.pdf");
+                var stream = new MemoryStream(await result.Content.ReadAsByteArrayAsync());
+                return new FileStreamResult(stream, "application/pdf");
+            }
 
-            var ms = new MemoryStream(client.UploadValues("http://api.html2pdfrocket.com/pdf", options));
-
-            HttpContext.Response.Headers.Add("content-disposition", $"attachment; filename=Invoice {invoice.InvoiceNumber}.pdf");
-            return new FileStreamResult(ms, "text/html");
+            throw new Exception("Error generating PDF");
         }
 
         private string GetInvoiceHtml(Invoice invoice)
@@ -125,18 +128,22 @@ namespace Coronado.Web.Controllers
             };
             msg.AddTo(to);
             msg.AddCc(cc);
-            using (var webClient = new WebClient())
+            using (var webClient = new HttpClient())
             {
                 var pdfApiKey = _config.GetValue<string>("Html2PdfRocketKey");
-                var options = new NameValueCollection
+                var parms = new Dictionary<string, string>
                 {
-                    { "apikey", pdfApiKey },
-                    { "value", GetInvoiceHtml(invoice) }
+                    { "apikey", pdfApiKey }, { "value", GetInvoiceHtml(invoice) }
                 };
 
-                var attachmentContent = webClient.UploadValues("http://api.html2pdfrocket.com/pdf", options);
-                var file = Convert.ToBase64String(attachmentContent);
-                msg.AddAttachment($"Invoice {invoice.InvoiceNumber}.pdf", file);
+                var content = new FormUrlEncodedContent(parms);
+                var result = await webClient.PostAsync("https://api.html2pdfrocket.com/pdf", content).ConfigureAwait(false);
+                if (result.IsSuccessStatusCode)
+                {
+                    var stream = new MemoryStream(await result.Content.ReadAsByteArrayAsync());
+                    var file = Convert.ToBase64String(stream.ToArray());
+                    msg.AddAttachment($"Invoice {invoice.InvoiceNumber}.pdf", file);
+                }
 
             }
             await client.SendEmailAsync(msg).ConfigureAwait(false);

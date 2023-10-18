@@ -27,7 +27,7 @@ namespace Coronado.Web.Data
   {
     public static Guid GetId(this Guid id)
     {
-      return id == null || id == Guid.Empty ? Guid.NewGuid() : id;
+      return id == Guid.Empty ? Guid.NewGuid() : id;
     }
 
     public static bool IsNullOrEmpty(this Guid? id) {

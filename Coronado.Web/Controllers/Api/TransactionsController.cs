@@ -94,11 +94,9 @@ namespace Coronado.Web.Controllers.Api
         public async Task<IActionResult> PostTransaction([FromBody] TransactionForDisplay transaction)
         {
             var transactions = new List<TransactionForDisplay>();
-            if (transaction.TransactionId == null || transaction.TransactionId == Guid.Empty) transaction.TransactionId = Guid.NewGuid();
-            if (transaction.AccountId == null)
-            {
-                transaction.AccountId = _context.Accounts.Single(a => a.Name.Equals(transaction.AccountName, StringComparison.CurrentCultureIgnoreCase)).AccountId;
-            }
+            if (transaction.TransactionId == Guid.Empty) transaction.TransactionId = Guid.NewGuid();
+            transaction.AccountId ??= _context.Accounts
+                .Single(a => a.Name.Equals(transaction.AccountName, StringComparison.CurrentCultureIgnoreCase)).AccountId;
             transaction.SetAmount();
             transaction.EnteredDate = DateTime.Now;
             if (transaction.CategoryId.IsNullOrEmpty() && !string.IsNullOrWhiteSpace(transaction.CategoryName))

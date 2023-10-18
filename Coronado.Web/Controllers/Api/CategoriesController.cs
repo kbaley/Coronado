@@ -40,7 +40,7 @@ namespace Coronado.Web.Controllers.Api
         [HttpPost]
         public async Task<IActionResult> PostCategory([FromBody] Category category)
         {
-            if (category.CategoryId == null || category.CategoryId == Guid.Empty) category.CategoryId = Guid.NewGuid();
+            if (category.CategoryId == Guid.Empty) category.CategoryId = Guid.NewGuid();
             _context.Categories.Add(category);
             await _context.SaveChangesAsync().ConfigureAwait(false);
 

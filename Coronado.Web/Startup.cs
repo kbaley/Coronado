@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using AutoMapper;
 using Coronado.Web.Controllers.Api;
 
 namespace Coronado.Web
@@ -54,7 +54,9 @@ namespace Coronado.Web
             services.AddTransient<IInvestmentRetriever, InvestmentRetriever>();
             services.AddTransient<IReportRepository, ReportRepository>();
             services.AddDbContext<CoronadoDbContext>(options =>
-                options.UseNpgsql(connectionString));
+                options
+                    .UseSnakeCaseNamingConvention()
+                    .UseNpgsql(connectionString));
 
             services.AddAutoMapper(typeof(Startup));
 
@@ -90,13 +92,13 @@ namespace Coronado.Web
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory) {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-            loggerFactory.AddApplicationInsights(app.ApplicationServices, LogLevel.Debug);
+            
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 //            app.UseHttpsRedirection();
             app.UseRouting();

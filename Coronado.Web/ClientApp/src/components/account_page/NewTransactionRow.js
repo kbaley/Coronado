@@ -96,6 +96,36 @@ export default function NewTransactionRow(props) {
     });
     setSelectedCategory(localSelectedCategory);
   }
+  
+  const blurCredit = (e) => {
+    let credit = e.target.value;
+    if (credit === '') {
+      return;
+    }
+    if (isNaN(credit) === false && credit.indexOf('.') === -1) {
+      credit = (Number(credit) / 100).toFixed(2);
+    }
+    setTrx({
+      ...trx,
+      credit,
+    });
+
+  }
+
+  const blurDebit = (e) => {
+    let debit = e.target.value;
+    if (debit === '') {
+      return;
+    }
+    if (isNaN(debit) === false && debit.indexOf('.') === -1) {
+      debit = (Number(debit) / 100).toFixed(2);
+    }
+    setTrx({
+      ...trx,
+      debit,
+    });
+    
+  }
 
   const handleChangeDebit = (e) => {
     let credit = '';
@@ -244,6 +274,7 @@ export default function NewTransactionRow(props) {
           className={classes.input}
           value={trx.debit}
           onChange={handleChangeDebit}
+          onBlur={blurDebit}
           onKeyPress={handleKeyPress}
         />
       </TableCell>
@@ -254,6 +285,7 @@ export default function NewTransactionRow(props) {
           className={classes.input}
           value={trx.credit}
           onChange={handleChangeField}
+          onBlur={blurCredit}
           onKeyPress={handleKeyPress}
         />
       </TableCell>

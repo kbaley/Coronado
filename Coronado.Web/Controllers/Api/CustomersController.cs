@@ -39,7 +39,7 @@ namespace Coronado.Web.Controllers.Api
         [HttpPost]
         public async Task<IActionResult> PostCustomer([FromBody] Customer customer)
         {
-            if (customer.CustomerId == null || customer.CustomerId == Guid.Empty) customer.CustomerId = Guid.NewGuid();
+            if (customer.CustomerId == Guid.Empty) customer.CustomerId = Guid.NewGuid();
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync().ConfigureAwait(false);
 

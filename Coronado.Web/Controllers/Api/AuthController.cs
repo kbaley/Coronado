@@ -10,8 +10,6 @@ using System.Security.Claims;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Logging;
-using Coronado.Web.Domain;
-using System.Threading.Tasks;
 
 namespace Coronado.Web.Controllers.Api
 {

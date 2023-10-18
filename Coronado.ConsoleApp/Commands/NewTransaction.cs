@@ -17,7 +17,6 @@ namespace Coronado.ConsoleApp.Commands
             var transactionDate = DateTime.Today;
             while (true)
             {
-                ReadLine.BypassMode = true;
                 if (!GetInput("Date", out var date, transactionDate.ToShortDateString())) return;
                 ReadLine.BypassMode = true;
 
