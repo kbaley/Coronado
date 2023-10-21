@@ -12,8 +12,15 @@ const styles = theme => ({
   input: {
     fontSize: 14,
     fontFamily: "Roboto, Helvetica, Arial, sans-serif",
-    padding: 0,
   },
+  inputRight: {
+    fontSize: 14,
+    fontFamily: "Roboto, Helvetica, Arial, sans-serif",
+    "& input": {
+      textAlign: "right"
+    }
+  },
+  
   outlined: {
   }
 });
@@ -97,47 +104,32 @@ export default function NewTransactionRow(props) {
     setSelectedCategory(localSelectedCategory);
   }
   
-  const blurCredit = (e) => {
-    let credit = e.target.value;
-    if (credit === '') {
-      return;
-    }
-    if (isNaN(credit) === false && credit.indexOf('.') === -1) {
+  const handleChangeCredit = (e) => {
+    let credit = e.target.value.replace('.', '');
+    if (credit !== '' && isNaN(credit) === false && credit.indexOf('.') === -1) {
       credit = (Number(credit) / 100).toFixed(2);
     }
     setTrx({
       ...trx,
-      credit,
+      credit
     });
-
   }
 
-  const blurDebit = (e) => {
-    let debit = e.target.value;
-    if (debit === '') {
-      return;
-    }
-    if (isNaN(debit) === false && debit.indexOf('.') === -1) {
+    const handleChangeDebit = (e) => {
+    let debit = e.target.value.replace('.', '');
+    if (debit !== '' && isNaN(debit) === false && debit.indexOf('.') === -1) {
       debit = (Number(debit) / 100).toFixed(2);
     }
-    setTrx({
-      ...trx,
-      debit,
-    });
-    
-  }
-
-  const handleChangeDebit = (e) => {
     let credit = '';
-    const debit = e.target.value;
     if (transactionType === "MORTGAGE_PAYMENT" && mortgageType === 'fixedPayment' && debit !== '') {
       credit = mortgagePayment - Number(debit);
     }
     setTrx({
       ...trx,
       debit,
-      credit,
+      credit
     });
+    
   }
 
   const handleChangeCategory = (selectedCategory) => {
@@ -271,10 +263,9 @@ export default function NewTransactionRow(props) {
         <TransactionInput
           name="debit"
           fullWidth={true}
-          className={classes.input}
+          className={classes.inputRight}
           value={trx.debit}
-          onChange={handleChangeDebit}
-          onBlur={blurDebit}
+          onInput={handleChangeDebit}
           onKeyPress={handleKeyPress}
         />
       </TableCell>
@@ -282,10 +273,9 @@ export default function NewTransactionRow(props) {
         <TransactionInput
           name="credit"
           fullWidth={true}
-          className={classes.input}
+          className={classes.inputRight}
           value={trx.credit}
-          onChange={handleChangeField}
-          onBlur={blurCredit}
+          onInput={handleChangeCredit}
           onKeyPress={handleKeyPress}
         />
       </TableCell>
