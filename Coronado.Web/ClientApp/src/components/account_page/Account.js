@@ -12,6 +12,8 @@ import history from "../../history";
 import { withRouter } from 'react-router-dom';
 import { Box } from '@material-ui/core';
 import MiniAccountPage from './mini/MiniAccountPage';
+import { Icon } from '../icons/Icon';
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 function AccountHeader({ account }) {
   return <h1 style={{"float": "left"}}>
@@ -60,13 +62,22 @@ function Account({ match }) {
   const uploadQif = (file, fromDate, transactions) => {
     dispatch(accountActions.uploadQif(getSelectedAccount().accountId, file, fromDate, transactions));
   }
+  
+  const downloadTransactions = () => {
+    window.open("/admin/accounts/DownloadTransactions?accountId=" + account.accountId);
+  }
 
   const account = getSelectedAccount();
 
   return (
     <div>
       <Box display={{ xs: "none", md: "block" }}>
-        <div style={{ float: "right", width: "150px" }}>
+        <div style={{ float: "right", width: "200px" }}>
+          <Icon 
+            onClick={downloadTransactions} 
+            title="Download" 
+            icon={<GetAppIcon/>}
+          />
           <UploadQif account={account} onUpload={uploadQif} />
           <EditAccount account={account} onUpdate={updateAccount} accountTypes={accountTypes} />
           <DeleteAccount onDelete={deleteAccount} />
