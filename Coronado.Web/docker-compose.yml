@@ -1,0 +1,21 @@
+services:
+  coronado:
+    build:
+      context: .
+    working_dir: /code
+    ports:
+      - 5001:5001
+    volumes:
+      - ./:/code
+    command: dotnet run
+    environment:
+      - ASPNETCORE_URLS=http://localhost:5001/
+    
+
+volumes:
+  code:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./

@@ -1,0 +1,1 @@
+docker run -it --rm --name coronado_dev -p 5001:5001 -v $(pwd):/code coronado-dev-image bash
