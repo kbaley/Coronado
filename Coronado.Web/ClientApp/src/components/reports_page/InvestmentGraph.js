@@ -69,7 +69,11 @@ export default function InvestmentGraph() {
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="date" tickFormatter={formatXAxis} />
-          <YAxis tickFormatter={formatYAxis} />
+          <YAxis
+            tickFormatter={formatYAxis}
+            domain={["auto", "auto"]}
+            type="number"
+          />
           <Tooltip formatter={formatTooltip} labelFormatter={formatXAxis} />
           <Bar type="monotone" dataKey="total" fill={theme.palette.blue} />
         </BarChart>
