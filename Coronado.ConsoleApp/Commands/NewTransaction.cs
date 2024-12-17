@@ -32,6 +32,12 @@ namespace Coronado.ConsoleApp.Commands
                     ReadLine.AutoCompletionHandler = null;
                     return;
                 };
+                ReadLine.AutoCompletionHandler = new TagCompletionHandler(context);
+                if (!GetInput("Tags (comma-separated)", out var tags))
+                {
+                    ReadLine.AutoCompletionHandler = null;
+                    return;
+                };
                 ReadLine.AutoCompletionHandler = null;
                 if (!GetInput("Description", out var description)) return;
                 if (!GetInput("Amount", out var amount)) return;
@@ -41,6 +47,7 @@ namespace Coronado.ConsoleApp.Commands
                     TransactionDate = DateTime.Parse(date),
                     Vendor = vendor,
                     CategoryName = category,
+                    Tags = tags.Split(',').Select(tag => tag.Trim()).ToList(),
                     Amount = decimal.Parse(amount),
                     Description = description,
                     AccountId = context.SelectedAccount.AccountId,
@@ -112,6 +119,24 @@ namespace Coronado.ConsoleApp.Commands
         {
             var categories = _context.Categories.Where(c => c.Name.Contains(text));
             if (categories.Any()) return categories.Select(c => c.Name).ToArray();
+            return null;
+        }
+    }
+
+    class TagCompletionHandler : IAutoCompleteHandler
+    {
+        private readonly Datastore _context;
+
+        public TagCompletionHandler(Datastore context) : base()
+        {
+            _context = context;
+        }
+
+        public char[] Separators { get; set; } = new char[] { '\t' };
+        public string[] GetSuggestions(string text, int index)
+        {
+            var tags = _context.Transactions.SelectMany(t => t.Tags).Where(tag => tag.Contains(text)).Distinct();
+            if (tags.Any()) return tags.ToArray();
             return null;
         }
     }

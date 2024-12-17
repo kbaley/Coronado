@@ -8,6 +8,7 @@ import { IconButton, makeStyles, TableRow, TableCell } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel'
 import moment from 'moment';
 import { TransactionInput } from '../TransactionInput';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const styles = theme => ({
   input: {
@@ -36,6 +37,7 @@ export default function EditableTransaction(props) {
     debit: props.transaction.debit ? Number(props.transaction.debit).toFixed(2) : '',
     credit: props.transaction.credit ? Number(props.transaction.credit).toFixed(2) : '',
     categoryName: props.transaction.categoryDisplay,
+    tags: props.transaction.tags || [],
   });
   const vendors = useSelector(state => state.vendors);
   const categories = useSelector(state => getCategoriesForDropdown(state.categories, state.accounts, state.invoices));
@@ -53,6 +55,7 @@ export default function EditableTransaction(props) {
         debit: transaction.debit ? Number(transaction.debit).toFixed(2) : '',
         credit: transaction.credit ? Number(transaction.credit).toFixed(2) : '',
         categoryName: transaction.categoryDisplay,
+        tags: transaction.tags || [],
       });
       setSelectedCategory({
         categoryId: transaction.categoryId,
@@ -139,6 +142,13 @@ export default function EditableTransaction(props) {
     }
   }
 
+  const handleChangeTags = (event, newValue) => {
+    setTrx({
+      ...trx,
+      tags: newValue,
+    });
+  }
+
   const updateTransaction = () => {
     dispatch(transactionActions.updateTransaction(trx));
     props.onFinishEdit();
@@ -206,7 +216,22 @@ export default function EditableTransaction(props) {
             onKeyPress={handleKeyPress}
           />
         </TableCell>
-        <TableCell />
+        <TableCell>
+          <Autocomplete
+            multiple
+            freeSolo
+            options={[]}
+            value={trx.tags}
+            onChange={handleChangeTags}
+            renderInput={(params) => (
+              <TransactionInput
+                {...params}
+                className={classes.input}
+                placeholder="Tags"
+              />
+            )}
+          />
+        </TableCell>
       </TableRow>
   );
 }

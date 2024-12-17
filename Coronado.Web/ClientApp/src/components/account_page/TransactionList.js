@@ -39,6 +39,10 @@ const styles = theme => ({
       width: 100,
       maxWidth: 100,
     },
+    "& td:nth-child(9)": {
+      width: 200,
+      maxWidth: 200,
+    },
     "& input": {
       width: "100%",
     }
@@ -69,13 +73,14 @@ export default function TransactionList(props) {
           <TableCell>Description</TableCell>
           <TableCell>Debit</TableCell>
           <TableCell>Credit</TableCell>
+          <TableCell>Tags</TableCell>
           <TableCell></TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
         <NewTransactionRow
           account={props.account} />
-        {isLoading ? <tr><td colSpan="8"><Spinner /></td></tr> :
+        {isLoading ? <tr><td colSpan="9"><Spinner /></td></tr> :
           transactions.map(trx =>
             <TransactionRow 
               key={trx.transactionId} 
