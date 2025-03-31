@@ -1,0 +1,69 @@
+@page "/transactions"
+@using Coronado.Web.Controllers.Api
+@using Coronado.Web.Controllers.Dtos
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-4">
+    <MudPaper Class="pa-4">
+        <MudText Typo="Typo.h4">Transactions</MudText>
+        <MudTable Items="_transactions" Hover="true" Bordered="true" Striped="true">
+            <HeaderContent>
+                <MudTh>Date</MudTh>
+                <MudTh>Vendor</MudTh>
+                <MudTh>Category</MudTh>
+                <MudTh>Description</MudTh>
+                <MudTh>Debit</MudTh>
+                <MudTh>Credit</MudTh>
+                <MudTh>Actions</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Date">@context.TransactionDate.ToShortDateString()</MudTd>
+                <MudTd DataLabel="Vendor">@context.Vendor</MudTd>
+                <MudTd DataLabel="Category">@context.CategoryDisplay</MudTd>
+                <MudTd DataLabel="Description">@context.Description</MudTd>
+                <MudTd DataLabel="Debit">@context.Debit</MudTd>
+                <MudTd DataLabel="Credit">@context.Credit</MudTd>
+                <MudTd DataLabel="Actions">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => EditTransaction(context)">Edit</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="() => DeleteTransaction(context.TransactionId)">Delete</MudButton>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddTransaction">Add Transaction</MudButton>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private List<TransactionForDisplay> _transactions = new List<TransactionForDisplay>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _transactions = await Http.GetFromJsonAsync<List<TransactionForDisplay>>("api/transactions");
+    }
+
+    private void AddTransaction()
+    {
+        Navigation.NavigateTo("/add-transaction");
+    }
+
+    private void EditTransaction(TransactionForDisplay transaction)
+    {
+        Navigation.NavigateTo($"/edit-transaction/{transaction.TransactionId}");
+    }
+
+    private async Task DeleteTransaction(Guid transactionId)
+    {
+        var response = await Http.DeleteAsync($"api/transactions/{transactionId}");
+        if (response.IsSuccessStatusCode)
+        {
+            Snackbar.Add("Transaction deleted successfully", Severity.Success);
+            _transactions = await Http.GetFromJsonAsync<List<TransactionForDisplay>>("api/transactions");
+        }
+        else
+        {
+            Snackbar.Add("Failed to delete transaction", Severity.Error);
+        }
+    }
+}

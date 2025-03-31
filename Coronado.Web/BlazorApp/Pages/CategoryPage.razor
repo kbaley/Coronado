@@ -1,0 +1,110 @@
+@page "/categories"
+@using Coronado.Web.Controllers.Api
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@implements IDisposable
+
+<PageTitle>Categories</PageTitle>
+
+<MudText Typo="Typo.h4">Categories</MudText>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddCategory">Add Category</MudButton>
+
+<MudTable Items="_categories" Hover="true" Bordered="true" Striped="true">
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh>Type</MudTh>
+        <MudTh>Parent</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Type">@context.Type</MudTd>
+        <MudTd DataLabel="Parent">@GetParentCategoryName(context.ParentCategoryId)</MudTd>
+        <MudTd DataLabel="Actions">
+            <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="@(async () => await EditCategory(context))">Edit</MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="@(async () => await DeleteCategory(context.CategoryId))">Delete</MudButton>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+<MudDialog @ref="_dialog" MaxWidth="MaxWidth.Small">
+    <DialogContent>
+        <MudText Typo="Typo.h6">@(_isNewCategory ? "Add Category" : "Edit Category")</MudText>
+        <MudTextField @bind-Value="_category.Name" Label="Name" Required="true" />
+        <MudTextField @bind-Value="_category.Type" Label="Type" Required="true" />
+        <MudSelect T="Guid?" @bind-Value="_category.ParentCategoryId" Label="Parent Category">
+            <MudSelectItem T="Guid?" Value="null">None</MudSelectItem>
+            @foreach (var parentCategory in _categories)
+            {
+                <MudSelectItem T="Guid?" Value="parentCategory.CategoryId">@parentCategory.Name</MudSelectItem>
+            }
+        </MudSelect>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveCategory">Save</MudButton>
+        <MudButton Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private List<Category> _categories;
+    private Category _category = new Category();
+    private bool _isNewCategory;
+    private MudDialogInstance _dialog;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _categories = await Http.GetFromJsonAsync<List<Category>>("api/categories");
+    }
+
+    private void AddCategory()
+    {
+        _category = new Category();
+        _isNewCategory = true;
+        _dialog.Show();
+    }
+
+    private async Task EditCategory(Category category)
+    {
+        _category = category;
+        _isNewCategory = false;
+        _dialog.Show();
+    }
+
+    private async Task SaveCategory()
+    {
+        if (_isNewCategory)
+        {
+            await Http.PostAsJsonAsync("api/categories", _category);
+        }
+        else
+        {
+            await Http.PutAsJsonAsync($"api/categories/{_category.CategoryId}", _category);
+        }
+        _categories = await Http.GetFromJsonAsync<List<Category>>("api/categories");
+        _dialog.Hide();
+    }
+
+    private async Task DeleteCategory(Guid categoryId)
+    {
+        await Http.DeleteAsync($"api/categories/{categoryId}");
+        _categories = await Http.GetFromJsonAsync<List<Category>>("api/categories");
+    }
+
+    private void Cancel()
+    {
+        _dialog.Hide();
+    }
+
+    private string GetParentCategoryName(Guid? parentCategoryId)
+    {
+        if (parentCategoryId == null) return "None";
+        var parentCategory = _categories.FirstOrDefault(c => c.CategoryId == parentCategoryId);
+        return parentCategory?.Name ?? "None";
+    }
+
+    public void Dispose()
+    {
+        _dialog?.Dispose();
+    }
+}
