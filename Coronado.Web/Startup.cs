@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Coronado.Web.Controllers.Api;
+using MudBlazor.Services;
 
 namespace Coronado.Web
 {
@@ -86,6 +87,10 @@ namespace Coronado.Web
             services.AddMvc().AddNewtonsoftJson(
                 options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
+
+            services.AddRazorPages();
+            services.AddServerSideBlazor();
+            services.AddMudServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -116,6 +121,8 @@ namespace Coronado.Web
                 endpoints.MapControllerRoute(
                     name:"admin", 
                     pattern: "/admin/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapBlazorHub();
+                endpoints.MapFallbackToPage("/_Host");
             });
             app.UseSpa(spa => {
                 spa.Options.SourcePath = "ClientApp";

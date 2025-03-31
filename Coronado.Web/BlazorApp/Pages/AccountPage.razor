@@ -1,0 +1,63 @@
+@page "/account"
+@using Coronado.Web.Controllers.Api
+@using Coronado.Web.Controllers.Dtos
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-4">
+    <MudPaper Class="pa-4">
+        <MudText Typo="Typo.h4">Accounts</MudText>
+        <MudTable Items="_accounts" Hover="true" Bordered="true" Striped="true">
+            <HeaderContent>
+                <MudTh>Account Name</MudTh>
+                <MudTh>Current Balance</MudTh>
+                <MudTh>Currency</MudTh>
+                <MudTh>Actions</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Account Name">@context.Name</MudTd>
+                <MudTd DataLabel="Current Balance">@context.CurrentBalance</MudTd>
+                <MudTd DataLabel="Currency">@context.Currency</MudTd>
+                <MudTd DataLabel="Actions">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => EditAccount(context)">Edit</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="() => DeleteAccount(context.AccountId)">Delete</MudButton>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddAccount">Add Account</MudButton>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private List<AccountWithBalance> _accounts = new List<AccountWithBalance>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _accounts = await Http.GetFromJsonAsync<List<AccountWithBalance>>("api/accounts");
+    }
+
+    private void AddAccount()
+    {
+        Navigation.NavigateTo("/add-account");
+    }
+
+    private void EditAccount(AccountWithBalance account)
+    {
+        Navigation.NavigateTo($"/edit-account/{account.AccountId}");
+    }
+
+    private async Task DeleteAccount(Guid accountId)
+    {
+        var response = await Http.DeleteAsync($"api/accounts/{accountId}");
+        if (response.IsSuccessStatusCode)
+        {
+            Snackbar.Add("Account deleted successfully", Severity.Success);
+            _accounts = await Http.GetFromJsonAsync<List<AccountWithBalance>>("api/accounts");
+        }
+        else
+        {
+            Snackbar.Add("Failed to delete account", Severity.Error);
+        }
+    }
+}
